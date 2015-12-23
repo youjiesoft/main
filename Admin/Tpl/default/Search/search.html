@@ -1,0 +1,42 @@
+<empty name="error">
+<style>
+.pageFormContent p {
+    display: block;
+    float: left;
+    height: 21px;
+    margin: 0;
+    padding: 5px 0;
+    position: relative;
+    width: 380px;
+}
+</style>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" id="search_form" action="" class="pageForm required-validate" onsubmit="return searchSubmit(this);" >
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				{$searchhtml}
+				<input type="hidden" name="search_flag" value="1" />
+			</div>
+			<div class="clear"></div>
+			<div class="unit">
+				<h3>友情提示：</h3>
+				<p>1、不作为查找条件的字段可不填内容</p>
+				<p>2、多搜索方式和单搜索一样</p>
+			</div>			
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button onclick="searchSubmit();" type="button">{$Think.lang.search}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+<else />
+	<font style="text-align:center;color:red;font-size:16px;">
+		{$error}
+	</font>
+</empty>
+

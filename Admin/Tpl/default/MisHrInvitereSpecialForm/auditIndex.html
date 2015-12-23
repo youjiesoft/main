@@ -1,0 +1,61 @@
+<form id="pagerForm" action="__URL__/{$jumpUrl}" method="post">
+    <input type="hidden" name="pageNum" value="1"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+    <div class="panelBar">
+			<ul class="toolBar">
+				<if condition="$audit eq 0"> 
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrinviterespecialform_auditedit">
+						<li>
+							<a class="redo" href="__URL__/auditEdit/id/{sid_node}" target="navTab" title="特殊人员招聘报名表 审核" rel="__MODULE__auditEdit" mask="true" warn="请选择节点"><span>{$Think.lang.auditprocess}</span></a>
+						</li>
+					</if>
+				</if>
+			</ul>
+	        <form rel="pagerForm" onsubmit="return divSearch(this, '__MODULE__indexview')" action="__URL__/{$jumpUrl}" method="post">
+	            <div class="searchBar">
+	                <table class="searchContent">
+	                    <tr>
+	                        <include file="Public:quickSearchCondition" />
+	                    </tr>
+	                </table>
+	            </div>
+	        </form>
+		</div>
+    <table class="table" width="100%" layoutH="84">
+        <thead ename="{$ename}">
+        <tr>
+            <volist id="vo" name="detailList">
+                <if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="__MODULE__indexview" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if> <!--类型-->
+            </volist>
+        </tr>
+        </thead>
+        <tbody>
+            <volist id="vo" name="list" key="key2">
+              <tr target="sid" rel="{$vo['id']}"  dheight="437" dwidth="671"   onclick="onTrClickCheckbox(this,'id')"   <if condition="$audit eq 1">  title="特殊人员招聘报名表_查看" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/auditView/id/{$vo['id']}');"</if><if condition="$audit eq 0">title="特殊人员招聘报名表_审核" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/auditEdit/id/{$vo['id']}');"</if>>
+                    
+                <volist id="vo1" name="detailList">
+                    <td field="{$vo1[name]}" width="{$vo1[widths]}">
+                        <if condition="count($vo1['func']) gt 0">
+                            <volist name="vo1.func" id="nam">
+                                <if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+                                {:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+                                <if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}	<if condition="$audit eq 1"> 
+					 </if> </if>
+                            </volist>
+                        <else />
+                        {$vo[$vo1['name']]}
+                        </if>
+                    </td>
+                </volist>
+                </tr>
+            </volist>
+        </tbody>
+    </table>
+    <div class="panelBar panelPageBar">
+        <div class="pages"><span>共{$totalCount}条</span></div>
+        <div class="pagination" rel="__MODULE__indexview" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+    </div>
+</div>

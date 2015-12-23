@@ -1,0 +1,43 @@
+<include file="Public:pagerForm" />
+<div class="page">
+	<div class="pageContent">
+		<script>
+		//点击保存
+		function printsave(form){
+			var $form=$(form);
+			$.ajax({
+				type : 'POST',
+				dataType : "json",
+				url : "__URL__/update",
+				cache : false,
+				data : $form.serializeArray(),
+				success : function(json) {
+					DWZ.ajaxDone(json);
+				},
+				error : DWZ.ajaxError
+			});
+		}
+		//点击上传图片
+		function printuploadimg(form){
+			var $form=$(form);
+			$.ajax({
+				type : 'POST',
+				dataType : "json",
+				url : "__URL__/lookupuploadimg",
+				cache : false,
+				data : $form.serializeArray(),
+				success : function(json) {
+					//DWZ.ajaxDone(json);
+					/*if(json.statusCode==DWZ.statusCode.ok){
+						alert(json.data);
+					}*/
+				},
+				error : DWZ.ajaxError
+			});
+		}
+		</script>
+		<div class="pageFormContent" layoutH="20">
+			<iframe src="__URL__/lookupprintedit/id/{$vo['id']}" width="99%" height="1200" frameborder="0" ></iframe>
+		</div>
+		</div>
+</div>

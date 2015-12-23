@@ -1,0 +1,158 @@
+<script>
+//指标分类区域
+var misperformanceplan_addkpitypetd;
+//指标分类双击事件
+function misperformanceplan_ondblclickkpitype(typeid,kpitypeqz,obj){
+	//将指标分类区域赋值给全局变量
+	misperformanceplan_addkpitypetd=obj;
+	//获取下一个td 里面的指标ID
+	var val=$(obj).next('td').find('input[name^=plan_kpi]').val();
+	//参数组
+	var options = {};
+	options.mask ="true";
+	if(val){
+		//分类下有指标就是修改权重
+		$.pdialog.open("__URL__/add/step/1/typeid/"+typeid+"/kpitypeqz/"+kpitypeqz+"/edit/1",'bbbb','请修改考核分类权重',options);
+	}else{
+		//分类下无指标可修改权重及分类
+		$.pdialog.open("__URL__/add/step/1/typeid/"+typeid+"/kpitypeqz/"+kpitypeqz,'aaaa','请修改考核分类',options);
+	}
+	return false;
+}
+//移除指标分类
+function  MisPerformancePlan_del(obj){
+	alertMsg.confirm("您确定移除此考核分类吗", {
+		okCall: function(){
+			$(obj).parent().parent().remove();
+			//重新计算总和
+			planchangescore();
+		}
+	});
+}
+//指标区域双击事件
+function MisPerformancePlan_ondblclick(url,rel,title,obj){
+	var options = {};
+	options.mask ="true";
+	$.pdialog.open(url,rel,title,options);
+	return false;
+}
+//修改总和
+function planchangescore(){
+	var sum=0;
+	//循环指标分值区域
+	$("#MisPerformancePlan_tbody").find(".PlanKPIHidden_table_each").find('.countscore').each(function(){
+		//累加分值
+		if(Number($(this).val())){		
+		sum+=Number($(this).val());
+		}
+	});
+	//获取模板最高分
+	var mostscore= $("input[name='mostscore']").val();	
+	//更新总和分值
+	$("#sumscore").html(sum);
+	//指标分值不能超过模板最高分
+	if(sum>mostscore){
+		alertMsg.error('分值已超过最高分！');
+		return false;
+	}
+}
+//添加考核指标
+function MisPerformanceTemplate_addplankpi(typeid,$this){
+	//考核指标区域赋值给全局变量
+	thisplankpi = $($this).parents("td");  
+	//参数列表
+	var options = {};
+	options.mask ="true";
+	$.pdialog.open("__URL__/add/step/2/typeid/"+typeid,'anc','请选择考核指标',options);
+	return false;
+}
+//自动添加一行
+function MisPerformancePlan_detail(){
+	$("#MisPerformancePlan_tbody").find( "#MisPerformancePlan_addkeitype" ).show();
+}
+function MisPerformancePlan_addspinner(){ 
+	$("#MisPerformancePlan_tbody").find( ".spinner" ).spinner({min:1,max:100});
+}
+$(function(){
+	MisPerformancePlan_addspinner();
+	var sum=0;
+	//循环指标分值区域
+	$("#MisPerformancePlan_tbody").find(".PlanKPIHidden_table_each").find('.countscore').each(function(){
+		//累加分值
+		sum+=Number($(this).val());
+	});
+	//更新总和分值
+	$("#sumscore").html(sum);
+});
+
+</script>
+<div class="detail"> 
+	<div class="panelBar">
+		<h6 class="left">考核明细</h6>
+		<ul class="toolBar">
+			<li>
+				<a class="add" href="javascript:;" title="添加" onclick="MisPerformancePlan_detail()"><span>添加</span></a>
+			</li>
+		</ul>
+	</div>
+	<div class="tml-bg-white tml-pos-rel" layoutH="318">
+		<table style="table-layout:fixed;" class="tml-table tml-table-w">
+			<thead>
+				<tr>
+					<th>考核分类</th>
+					<th>考核指标</th>
+					<th class="tml-w100">分值</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody id="MisPerformancePlan_tbody">
+			<volist name="list" id="vo">
+				<tr> 
+				 	<td ondblclick="misperformanceplan_ondblclickkpitype('{$vo['kpitypeid']}','{$vo['kpitypeqz']}',this)" class="MisPerformancePlan_tbody_each" >
+				     	<input type="hidden" name="plan_kpitypeid[]"  value="{$vo['kpitypeid']}"/>
+				     	<input type="hidden"  name="plan_kpitypeqz[]" value="{$vo['kpitypeqz']}"/>
+			         	<span class="plan_kpitypeqz">{$vo['kpitypeid']|getFieldBy='id','name','mis_performance_type'}({$vo['kpitypeqz']}%)</span>
+			        </td> 
+				 	<td colspan="2" style="padding:0;"> 
+						<table class="tml-table-w" border="0" class="PlanKPIHidden_table">
+							<volist name="vo['kpi']" id="vos">
+								<tr class="PlanKPIHidden_table_each">
+								<td ondblclick="MisPerformanceTemplate_addplankpi('{$vo['kpitypeid']}',this)">{$vos['kpiid']|getFieldBy='id','name','mis_performance_kpi'}
+									<input type="hidden" value="{$vos['kpiid']}" name="plan_kpi{$vo['kpitypeid']}[]">
+								</td>
+								<td style="border:none;width: 100px;">
+									<input class="countscore required number spinner" maxlength='3'   type="text"  name="plan_kpiscore{$vo['kpitypeid']}[{$vos['kpiid']}]" value="{$vos['kpiscore']}" onblur="planchangescore()" style="width: 50px;" >
+								</td>
+								</tr>
+							</volist>
+						</table>
+					</td>
+					<td><a href="javascript:;" class="btnDel" onclick="MisPerformancePlan_del(this)" ></a></td>
+				 </tr>
+			</volist>
+				<tr id="MisPerformancePlan_addkeitype" style="display:none">
+					<td ondblclick="MisPerformancePlan_ondblclick('__URL__/add/step/1/','abcd','请选择考核分类',this)">&nbsp;
+					
+					</td>
+					<td>
+					</td>
+					<td>
+						<span></span>
+					</td>
+					<td><span></span></td>
+				</tr>
+				<tr  id="sum" <if  condition="!$list">style="display:none" </if>>
+					<td >
+						<span>总分</span>
+					</td>
+					<td>
+					</td>
+					<td>
+						<span id="sumscore">{$sumscore}</span>
+					</td>
+					<td><span></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

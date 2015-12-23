@@ -1,0 +1,115 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/auditProcess/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<input type="hidden" name="pid" value="{$vo['ptmptid']}">
+		<input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+        <input type="hidden" name="doinfo" />
+		
+		<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+		<input type="hidden" name="refreshtabs[url]" value="__APP__/MisHrInvitereSpecialForm/index">
+		<input type="hidden" name="refreshtabs[data]" value="{ ntdata:1}">
+		<input type="hidden" name="refreshtabs[title]" value="特殊人员招聘信息">
+		<input type="hidden" name="refreshtabs[type]" value="dialog">
+		
+		<input type="hidden" name="backprocess" value="流程回退">
+		<input type="hidden" name="auditprocess" value="流程审核">
+		<input type="hidden" name="endprocess" value="流程结束">
+		<input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+		<input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+		
+		<input type="hidden" name="refreshtabs[closeall]" value="1">
+		<div class="pageFormContent " layoutH="55">
+				<div class="contentTitle contentTitle_center">特殊人员招聘报名表{:W('ShowAdvices',array('id'=>$vo['id']))}
+					
+				</div>
+					<input type="hidden" name="picture" />
+					{:W('ShowOrderno',array(1,'mis_hr_invitere_special_form',$vo['orderno']))}
+					<div class="tml-form-col">
+						<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+						<input type="text" name="name" class="required"  readonly="readonly" value="{$vo.name}" />
+					</div>
+					<div class="tml-form-col">
+						<label>性&nbsp;&nbsp;&nbsp;&nbsp;别：</label>
+						<input type="text" name="sex"  readonly="readonly"  <if condition="$vo.sex eq '1'">value="男"<else/>value="女"</if> />
+						<input  type="hidden"  name="sex" value="{$vo.sex}" />
+					</div>
+					<div class="tml-form-row">
+						<label>身&nbsp;份&nbsp;证：</label>
+						<input name="chinaid"    value="{$vo.chinaid}"  readonly="readonly" type="text" class="textInput required" />
+					</div>
+					<div class="tml-form-col">
+						<label> 年&nbsp;&nbsp;&nbsp;&nbsp;龄：</label>
+						<input type="text" name="age" min="1" readonly="readonly" required="required"  value="{$vo.age}" maxlength="3" />
+					</div>
+					<div class="tml-form-col">
+						<label> 出生年月： </label>
+						<input name="birthday" type="text" yearstart="-40" value="{$vo.birthday}"  yearend="1" class="required" readonly="readonly" />
+					</div>
+					<div class="tml-form-col">
+						<label>应聘岗位：</label>
+						<input type="text" name="interviewposition" readonly="readonly" value="{$vo.interviewposition}"  class="required" />
+					</div>
+					<div class="tml-form-col">
+						<label>应聘时间：</label>
+							<input type="text" readonly="readonly" class="textInput date required" yearstart="-40" yearend="1" value="{$vo.interviewpositiondate|transtime}"   name="interviewpositiondate" />
+					</div>
+					<div class="tml-form-col">
+						<label> 联系方式： </label>
+						<input type="text" name="mobilephone" readonly="readonly"  value="{$vo.mobilephone}" class="phone"/>
+					</div>
+					<div class="tml-form-col">
+						<label>现住地址：</label>
+						<input name="address" type="text" readonly="readonly" value="{$vo.address}"  class="textInput" />
+					</div>
+					<div class="tml-form-row">
+						<label>审核意见：</label>
+                		<textarea rows="2" cols="60" class="required" name="doinfo"></textarea>
+					</div>
+					<hr />
+					<div class="clearfix">
+					<div class="tml-form-col">
+						<label>办&nbsp;理&nbsp;人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getUserName}" />
+						<input  type="hidden" value="{$vo.createid}"/>
+					</div>	
+					<div class="tml-form-col">
+					 	<label>办理时间：</label>
+						<input type="text" size="19" readonly="readonly" value="{$vo.createtime|transTime}" class="textInput required" />
+						<input type="hidden" name="createtime" value="{$vo.createtime}" />
+					</div>
+				</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishrinviterespecialform_auditprocess">
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="button"
+									onclick="auditProcess(this.form,'__MODULE__','dialog');">{$Think.lang.auditprocess}</button>
+							</div>
+						</div>
+					</li>
+				</if>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishrinviterespecialform_backprocess">
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="button"
+									onclick="BackProcess(this.form,'__MODULE__');">{$Think.lang.backprocess}</button>
+							</div>
+						</div>
+					</li>
+				</if>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.close}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,26 @@
+<div class="page">
+	<div class="pageContent">
+		<div class="tabs" currentIndex="0" eventType="click">
+            <div class="tabsHeader">
+                <div class="tabsHeaderContent">
+                    <ul>
+                        <li><a href="__APP__/MisAttachedConfig/ftp" class="j-ajax"><span>FTP设置</span></a></li>
+                        <li><a href="__APP__/MisAttachedConfig/edit" class="j-ajax"><span>附件设置</span></a></li>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+                    </ul>
+                </div>
+            </div>
+            <div class="tabsContent" style="background:#FFFFFF;padding:0px;">
+                    <div id="inventoryWarehouse"></div>
+                    <div id="inventoryWarehouseArea"></div>
+                    <div id="inventoryWarehouseShelf"></div>
+                    <div id="inventoryStatus"></div>
+            </div>
+        </div>
+	</div>
+</div>
+

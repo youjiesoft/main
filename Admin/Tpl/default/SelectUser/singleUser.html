@@ -1,0 +1,233 @@
+<script type="text/javascript">
+var data = '{$data}';// 插入的数据
+//生成联系人树
+$(document).ready(function(){
+    var zNodes = {$usertree};
+    var zNodesProcessRole = {$sysCompanytree};
+    var zNodesrolegroup = {$rolegrouptree};
+    var setting = {
+        view: {
+            selectedMulti: false,
+            fontCss: getFontCss
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: { 
+            onClick: zTreeSingleOnClick
+        }
+    };
+    $.fn.zTree.init($("#SingleUserTree"), setting, zNodes);
+    $.fn.zTree.init($("#SingleProcessRoleTree"), setting, zNodesProcessRole);
+    $.fn.zTree.init($("#SingleRolegroupTree"), setting, zNodesrolegroup);
+    getParentSingleObj();
+    countSelectSingleUserNum();
+});
+//获取已选择的人
+function getParentSingleObj(){
+	var dataarr = data.split(";");
+	var prefix = dataarr[0]; // 前缀CSS
+	var inputfields = new Array();// 创建字段别名数组
+	for(i = 1; i < dataarr.length; i++) {
+		var arr = dataarr[i].split(",");
+		inputfields[i-1] = arr[0];
+	}
+	console.log(inputfields);
+	var str = "<li>";
+	var text = null;
+	var $box = checkUser.parents(".unitBox:first");
+	
+	for(i = 0; i < inputfields.length; i++) {
+		$input = $box.find("input[class*='"+prefix+"."+inputfields[i]+"']");
+		if($input.length){
+			if($input.is(":text")) {
+				if(text === null && $.trim($input.val())) text = $input.val();
+			}
+			str += "<input type='hidden' name='"+inputfields[i]+"' value='"+$input.val()+"'>";
+		}
+	}
+	str += "<span>"+text+"</span></li>";
+	if(text) $("#js-selectSingleUserList").html(str);
+}
+// 选择接收人
+function zTreeSingleOnClick(event, treeId, treeNode) {
+	if (treeNode.id > 0) {
+		var dataarr = data.split(";");
+		var prefix = dataarr[0]; // 前缀CSS
+		var inputfields = new Array();// 创建字段别名数组
+		var fields = new Array();// 创建字段数组
+		for(i = 1; i < dataarr.length; i++) {
+			var arr = dataarr[i].split(",");
+			inputfields[i-1] = arr[0];
+			fields[i-1] = arr[1]?arr[1]:arr[0];
+		}
+		var str = "<li>";
+		for(i = 0; i < inputfields.length; i++) {
+			str += "<input type='hidden' name='"+inputfields[i]+"' value='"+treeNode[fields[i]]+"'>";
+		}
+		str += "<span>"+treeNode["title"]+"</span></li>";
+		$("#js-selectSingleUserList").html(str);
+		countSelectSingleUserNum();
+	}
+}
+//计算已选用户数量
+function countSelectSingleUserNum(){
+	var user = $("#js-selectSingleUserList").find("li");
+	var userNum = user.length;
+	if(!userNum){
+		userNum = 0;
+	}
+	$("#js-selectSingleUserNum").text(userNum);
+}
+// 保存单选人
+function saveSelectSingleUserList(){
+	var dataarr = data.split(";");
+	var prefix = dataarr[0]; // 前缀CSS
+	var $box = checkUser.parents(".unitBox:first");
+	var userList = $("#js-selectSingleUserList");
+	var userinput = userList.find("input");// 获取到选择的人
+	var callbackinput = ''; //设置回调
+	// 循需要单选的所有input
+	$box.find(":input").each(function(){
+		var $input = $(this);
+		// 判断有没有选择人
+		if(userinput.length>0){
+			// 有选择人情况下 设置选择人
+			for(i = 0; i < userinput.length; i++) {
+				var inputobj = $(userinput[i]);
+				// 查询匹配的input
+				if($input.hasClass(prefix+"."+inputobj.attr("name"))){
+					// 对select方式进行赋值
+					if($input.parent("div").hasClass("select")){
+						var ohtml = $input.html();
+						// 第一步替换掉选中的select
+						ohtml = ohtml.replace('selected="selected"', "");
+						ohtml = ohtml.replace("selected='selected'", "");
+						ohtml = ohtml.replace("selected=''", "");
+						ohtml = ohtml.replace('selected=""', "");
+						ohtml = ohtml.replace('selected', "");
+						$input.html(ohtml);
+						$input.children("option").each(function(){
+							var v =$(this).val();
+							if(inputobj.val() == v){
+								$(this).attr("selected","selected");
+							}
+						});
+						var html=$input.html();
+						var $refCombox=$input.parents("div.combox:first");
+						$input.html(html).insertAfter($refCombox);
+						$refCombox.remove();
+						$input.trigger("change").combox();
+					} else {
+						// 普通文本框赋值
+						$input.val(inputobj.val());
+					}
+					callbackinput = $(this).attr("callback");
+					if(callbackinput){
+						var $callback=callbackinput;
+						var args=inputobj.val();
+						if(!$.isFunction($callback)) $callback=eval('('+callbackinput+')');
+						$callback(args,this);						
+					}
+				}
+			}
+		} else {
+			// 没有选择人的情况进行清空内容
+			var inputfields = new Array();// 创建字段别名数组
+			for(i = 1; i < dataarr.length; i++) {
+				var arr = dataarr[i].split(",");
+				inputfields[i-1] = arr[0];
+			}
+			// 将所有匹配的值进行清空
+			for(i = 0; i < inputfields.length; i++) {
+				if($input.hasClass(prefix+"."+inputfields[i])){
+					if($input.parent("div").hasClass("select")){
+						var html = $input.html();
+						// 第一步替换掉选中的select
+						html = ohtml.replace('selected="selected"', "");
+						html = ohtml.replace("selected='selected'", "");
+						html = ohtml.replace("selected=''", "");
+						html = ohtml.replace('selected=""', "");
+						html = ohtml.replace('selected', "");
+						var $refCombox=$input.parents("div.combox:first");
+						$input.html(html).insertAfter($refCombox);
+						$refCombox.remove();
+						$input.trigger("change").combox();
+					} else {
+						$input.val("");
+					}
+				}
+			}
+		}
+	});
+	
+	
+	$.pdialog.closeCurrent();
+}
+// 删除选中的人
+function removeSelectSingleUser(){
+	$("#js-selectSingleUserList").find("li:hover").remove();
+	countSelectSingleUserNum();
+}
+</script>
+<div id="checkUserObj" class="pageContent">
+	<div class="address-dialog-body">
+		<div class="tml-row">
+			<div class="grid-50 left">
+				<h3 class="tml-h3">人员列表（{$num}）</h3>
+				<div class="address-dialog-box">
+					<div class="tabs" currentindex="0" eventtype="click" style="margin: 1px;">
+						<div class="tabsHeader">
+							<div class="tabsHeaderContent">
+								<ul>
+									<li><a href="#"><span>部门</span></a></li>
+									<li><a href="#"><span>角色</span></a></li>
+									<li><a href="#"><span>用户组</span></a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="tabsContent" style="background: none repeat scroll 0 0 #FFFFFF;border: none;">
+							<div>
+								<div class="member_searcher">
+									<input class="js-searchZTreeSubmit add_key left" type="text" id="SingleUserTreeSearchNodeKeys"/>
+									<button class="btn_member icon-search right" type="button" onclick="SearchZTreeNode('SingleUserTree','SingleUserTreeSearchNodeKeys')"></button>
+								</div>
+								<ul id="SingleUserTree" class="ztree" style="height: 250px; overflow: auto;"></ul>
+							</div>
+							<div>
+								<div class="member_searcher">
+									<input class="js-searchZTreeSubmit add_key left" type="text" id="SingleProcessRoleTreeeSearchNodeKeys" />
+									<button class="btn_member icon-search right" type="button" onclick="SearchZTreeNode('SingleProcessRoleTree','SingleProcessRoleTreeeSearchNodeKeys')"></button>
+								</div>
+								<ul id="SingleProcessRoleTree" class="ztree" style="height: 250px; overflow: auto;"></ul>
+							</div>
+							<div>
+								<div class="member_searcher">
+									<input class="js-searchZTreeSubmit add_key left" type="text" id="SingleRolegroupTreeSearchNodeKeys" />
+									<button class="btn_member icon-search right" type="button" onclick="SearchZTreeNode('SingleRolegroupTree','SingleRolegroupTreeSearchNodeKeys')"></button>
+								</div>
+								<ul id="SingleRolegroupTree" class="ztree" style="height: 250px; overflow: auto;"></ul>
+							</div>
+						</div>
+					</div>	
+				</div>
+			</div>
+			<div class="grid-50 right">
+				<h3 class="tml-h3">已选人员（<span id="js-selectSingleUserNum">0</span>）</h3>
+				<div class="address-dialog-box">
+					<ul class="address-dialog-list" id="js-selectSingleUserList" onclick="removeSelectSingleUser();">
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml_select_btn tml_formBar_btn_blue" onclick="saveSelectSingleUserList();">确定</button></li>
+			<!--<li><button class="tml-btn close">取消</button></li>-->
+		</ul>
+	</div>
+</div>

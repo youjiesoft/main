@@ -1,0 +1,53 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+        <input type="hidden" name="pid" value="{$pid}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar tml-border-t0">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_add "><li><a class="add" href="__URL__/add" target="navTab" title="节点添加"><span>{$Think.lang.add}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_delete "><li><a class="delete" href="__URL__/delete/id/{sid_node}/navTabId/__MODULE__" target="ajaxTodo"  title="你确定要删除吗？" warn="请选择节点"><span>{$Think.lang.del}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_edit "><li><a class="edit" href="__URL__/edit/id/{sid_node}" title="节点编辑" target="navTab"  rel="__MODULE__edit" warn="请选择节点"><span>{$Think.lang.change}</span></a></li></if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+			<notempty name="pid">
+			<li><a title="{$preptitle}" target="navTab" rel="__MODULE__"  href="__URL__/index/pid/{$prepid}" class="icon"><span>上一级</span></a></li>
+			</notempty>
+		</ul>
+	</div>
+
+	<table class="table" width="100%" layoutH="85">
+		<thead>
+		<tr>
+			<th width="25"><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+			<th width="350">名称</th>
+            <th>父节点</th>
+			<th width="120">{$Think.lang.action}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')">
+				<td><input type="checkbox" name="id" value="{$vo['id']}" /></td>
+                                <td><a href="__URL__/index/pid/{$vo['id']}/" target="navTab" title="配置_{$vo['name']}" rel="__MODULE__">{$vo.name}</a></td>
+				<td>{$vo['pid']|getFieldBy='id','name','MisImportExcel'}</td>
+				<td>{$vo['status']|showStatus=$vo['id']}|
+                                <a title="配置_{$vo['name']}" target="navTab" rel="__MODULE__ImportImage"  href="__URL__/orderimage/id/{$vo.id}" class="icon">查看导入顺序图</a>
+                                </td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

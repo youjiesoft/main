@@ -1,0 +1,104 @@
+<div class="pageFormContent xyEmployee" layoutH="32">
+	<div class="xyEmployeeBasicInfo">
+		<table>
+			<tbody>
+				<tr>
+					<td><label>员工编号</label></td>
+					<td><input class="xycodedata_read" type="text" name="orderno" value="{$vo.orderno}" readonly="readonly" /></td>
+					<td><label>姓&nbsp;&nbsp;&nbsp;&nbsp;名</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.name}"></td>
+					<td colspan="2" rowspan="4" style="text-align:center;">
+					<img style="border: 2px solid #f1f1f1; background-color: #468cda; width: 80px; height: 80px;"<if condition="$vo.picture">src="__PUBLIC__/Uploads/{$vo.picture}" <else/> src="__PUBLIC__/Images/xyimages/xyheader_image.jpg"</if> >
+					</td>
+				</tr>
+				<tr>
+					<td><label>性&nbsp;&nbsp;&nbsp;&nbsp;别</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" <if condition="$vo.sex eq '1'">value="男"<else/>value="女"</if> ></td>
+					<td><label>婚姻状况</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.ismarry}"></td>
+				</tr>
+				<tr>
+					<td><label>出生年月</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.birthday|transtime}" /></td>
+					<td><label>年&nbsp;&nbsp;&nbsp;&nbsp;龄</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.age}" /></td>
+				</tr>
+				<tr>
+					<td><label>民&nbsp;&nbsp;&nbsp;&nbsp;族 </label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.national|getFieldBy='id','name','mis_hr_typeinfo'}" /></td>
+					<td><label>政治面貌 </label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.politicsstatus}" /></td>
+				</tr>
+				<tr>
+					<td><label>身&nbsp;份&nbsp;证</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.chinaid}" style="width:120px;" /></td>
+					<td><label>联系电话 </label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.phone}"></td>
+					<td><label>公司短号</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.shortNumber}"></td>
+				</tr>
+				<tr>
+					<td><label>Q&nbsp;Q</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.qq}"></td>
+					<td><label>联系邮箱</label></td>
+					<td><input class="xycodedata_read" type="text" value="{$vo.email}" /></td>
+					<td><label>分机号 </label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.officeNumber}"></td>
+				</tr>
+				<tr>
+					<td><label>户籍地址</label></td>
+					<td colspan="5"><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.nativeaddress}" style="width:278px;" /></td>
+				</tr>
+				<tr>
+					<td><label>现居住地</label></td>
+					<td colspan="5"><input class="xycodedata_read" type="text" value="{$vo.address}"  style="width:278px;"/></td>
+				</tr>
+				<tr>
+					<td><label>毕业院校</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.school}" style="width:120px;" /></td>
+					<td><label>学&nbsp;&nbsp;&nbsp;&nbsp;历</label></td>
+					<td><input type="text" class="xycodedata_read" readonly="readonly" value="{$vo.education|getFieldBy='id','name','mis_hr_typeinfo'}" /></td>
+					<td><label>专&nbsp;&nbsp;&nbsp;&nbsp;业</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.profession}" /></td>
+				</tr>
+				<tr>
+					
+					<td><label>档&nbsp;案&nbsp;号 </label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.itemid}" ></td>
+					<td><label>体&nbsp;&nbsp;重(Kg)</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.weight}" /></td>
+					<td><label>身&nbsp;&nbsp;高(m)</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.employeeheight}" /></td>
+				</tr>
+	<!-- fix -->   
+				<tr>
+						<td><label>户口性质</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" <if condition="$vo.accounttype  eq  1">value="农村"</if> <if condition="$vo.accounttype  eq  0">value="城镇"</if> /></td>
+					<td><label>合约性质</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" <if condition="$vo.agreetypeid  eq  1">value="合同"</if> <if condition="$vo.agreetypeid  eq  2">value="兼职"</if> <if condition="$vo.agreetypeid  eq  3">value="自主择业"</if> <if condition="$vo.agreetypeid  eq  4">value="4050"</if><if condition="$vo.agreetypeid  eq  5">value="退休"</if>/></td>
+			
+					<td><label>血&nbsp;&nbsp;&nbsp;&nbsp;型</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.bloodtype}" /></td>
+				</tr>
+				<tr>
+					
+					<td><label>入职日期</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.indate|transtime}" /></td>
+					<td><label>转正日期</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.transferdate|transtime}" /></td>
+					<td><label>特&nbsp;&nbsp;&nbsp;&nbsp;长</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.specialskill}" /></td>
+				</tr> 
+				<tr>
+					<td><label>备注</label></td>
+					<td colspan="5"><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.remark}" style="width:278px;" /></td>
+				</tr>
+				<tr>
+					<td><label>U8编码</label></td>
+					<td colspan="5"><input class="xycodedata_read" type="text" readonly="readonly" value="{$vo.yongyouorderno}" style="width:278px;" /></td>
+				</tr>
+		<!-- fix -->		
+			</tbody>
+		</table>
+	</div>
+</div>

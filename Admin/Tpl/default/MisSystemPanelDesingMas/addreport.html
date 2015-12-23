@@ -1,0 +1,71 @@
+<script>
+$(function(){
+	var conf = new Object();
+	var data = '{$nodelist}';
+	conf.data = eval("("+data+")");//$.parseJSON(data);
+	conf.ids = '#addreportnbm1,#addreportnbm2',
+	conf.tag = 'group,node'; 
+	conf.pid = 'group_id';
+	conf.tex = 'name'; 
+	conf.val = 'id';  
+	//conf.container=$.pdialog.getCurrent() ;
+	conf.defaultVal='{$group_id}';
+	$.linkage(conf); 
+}); 
+
+</script>
+<style>
+	.tml-form-row label.tmp_label{margin-left:0px;width: 120px;float: none;font: 14px/30px "Microsoft Yahei","微软雅黑",sans-serif;}
+	.tml-form-row label.tmp_label:hover{color:#006699;}
+	</style>
+		
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insertsub/rel/missystempanellookupindex" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="id" value="{$id}">
+		<input type="hidden" name="type" value="2">
+		<div class="pageFormContent" layoutH="40">
+		<div style="width:90%" class="new_version_page">
+		<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">面板管理新增</span></div>
+		<div class="new_version_page_content">
+			<div class="tml-row">
+           
+				<div class="tml-form-col">
+						<label>面板名称：</label>
+						<input type="text" class="required" name="name" value="">
+				</div>
+				<div class="tml-form-col">
+				<label>组名称：</label>
+					<select name="group_id"  style="width:150px;" class="select2"  id="addreportnbm1"><option>--请选择--</option></select>
+				</div>
+			<div class="tml-form-col">
+				<label>所属模块：</label>
+				 <select  name="modelid"  style="width:150px;" class="select2" onchange="changedetail(this)" id="addreportnbm2"><option>--请选择--</option></select>
+			</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-row ">				
+					<label>外部url地址：</label>
+					<input type="text" name="url" placeholder="外部url请加http://" value="">				 
+				</div>			
+				<div class="tml-form-col">
+					<label>排序：</label> 
+					<input type="text" class="required" name="sort" value="">
+				</div>
+				<div class="tml-form-col">
+						<label>链接方式：</label>
+						<select name="target" class="select2" style="width:150px;">
+							<option value='navTab'>框架显示</option>
+							<option value='_blank'>新开页面</option>
+						</select>
+				</div>	
+		</div>
+        {:W('ShowAction')}		
+        </div>
+        </div>
+        </div>  
+	</form>
+	
+	</div>
+</div>
+

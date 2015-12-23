@@ -1,0 +1,241 @@
+<script>
+function subdelete1($this){
+    alertMsg.confirm("您确定要删除该条记录吗？", {
+        okCall: function(){
+            $this = $($this);
+            var id = $this.attr("rel");
+            $.ajax({
+                type: 'POST',
+                url : "__URL__/subdelete",
+                data: {id:id},
+                success:function(res){
+                    if(res) {
+                        $this.parents("tr:first").remove();
+                    }
+                }
+            });
+        }
+    });
+}
+//计算总金额 
+function totalpriceMisWorkFacilityApplyMasEdit(tr){
+    var $tr = $(tr);
+    $tr.find('input.quantity').blur(function(){
+        var $obj=$(this).parents("tr");
+        updateapplysubbluredit($obj);
+    });
+    $tr.find('input.unitprice').blur(function(){
+        var $obj=$(this).parents("tr");
+        updateapplysubbluredit($obj);
+    });
+}
+function updateapplysubbluredit(box){
+    var $box=$(box);
+    //数量 
+    var quantity =$box.find("input.quantity").val();
+    //不含税单价
+    var unitprice =$box.find("input.unitprice").val();
+    //格式化数据 
+    quantity =Number(quantity.replace(/,/g,""));
+    unitprice =Number(unitprice.replace(/,/g,""));
+    
+    $box.find("input.quantity").val(FormatN(quantity));
+    $box.find("input.unitprice").val(FormatN(unitprice));
+    var totalprice=comboxMathematicalOperation(unitprice+'*'+quantity);
+    $box.find("input.totalprice").val(FormatN(totalprice));  //赋值含税单价 
+}
+</script>
+    <div class="pageContent">
+    <form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+        <input type="hidden" name="id" value="{$vo.id}" >
+        <input type="hidden" value="1" name="ajax">
+        <input type="hidden" name="dotype" value="流程启动" />
+        <input type="hidden" name="ostatus" value="{$vo['ostatus']}" />
+        <input type="hidden" name="multi_lookup_reset">
+        <input type="hidden" name="refreshtabs[data]" value="1">
+        <input type="hidden" name="refreshtabs[url]" value="__MODULE__edit">
+        <div class="pageFormContent applecloth" layoutH="55">
+            <div class="keepContentCenter">
+                <H2 class="contentTitle contentTitle_center">办公设备申请
+                    {:W('ShowOrderno',array(0,'mis_work_facility_apply_mas',$vo['orderno']))}
+                </H2>
+            <fieldset class="zlqk_1">
+                <legend class="zlqk_2">
+                    <b>基本信息</b>
+                </legend>
+                <if condition='$fields["demanddate"]'>
+                <p>
+                    <label>{$fields["demanddate"]}：</label>
+                    <span class="xyInputWithUnit">
+                    <input type="text"  name="demanddate" onfocus="WdatePicker()" class="tml-border-r0 Wdate" value="{$vo.demanddate|transTime}" />
+               	    <span class="input-addon input-addon-calendar"></span>
+                    </span>
+                </p>
+                </if>
+                <if condition='$fields["applydepartmentid"]'>
+                <p>
+                    <label>{$fields["applydepartmentid"]}：</label>
+                    <select name="applydepartmentid" class="combox">
+                        <volist id="dept" name="deptidlist">
+                            <option value="{$dept['id']}" <if condition="$vo.applydepartmentid eq $dept['id']"> selected</if> >{$dept['name']}</option>
+                        </volist> 
+                    </select>
+                    
+                </p>
+                </if>
+                <br/>
+                <if condition='$fields["remark"]'>
+               <div class="unit">
+                      <label>{$fields["remark"]}：</label>
+                      <textarea  style="width:518px;height:50px" name="remark" minlength="0" maxlength="100" class="textInput required">{$vo.remark}</textarea>
+                </div>
+                </if>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <b>设备明细</b>
+                </legend>
+                <div class="xytable grid">
+                <table class="list nowrap itemDetail" callback="totalpriceMisWorkFacilityApplyMasEdit" addbutton="添加课程" style="width: 100%;">
+                    <thead>
+                        <tr style="text-align: center;">
+                        <th type="enum" width="85" size="9" enumUrl="__URL__/lookuptypeselect" fieldClass="required">设备类型</th>
+                        <th type="text" width="80" size="8" name="addequipmentname[]">名称</th>
+                        <th type="text" width="72" size="7" name="addversion[]">型号</th>
+                        <th type="enum" width="130" size="15" name="items.itemEnum[#index#]" enumUrl="__URL__/unitselect" >单位</th>
+                        <th type="text" fieldClass="changeblur unitprice" width="72" size="7" name="addunitprice[]">单价</th>
+                        <th type="text" fieldClass="changeblur quantity" width="72" size="7" name="addquantity[]">数量</th>
+                        <th type="text" fieldClass="changeblur totalprice" width="72" size="7" name="addtotalprice[]">总金额</th>
+                        <th type="text" width="72" size="7" name="adddescribe[]">描述</th>
+                        <th type="del" width="36">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="sublist" id="tlist">
+                            <tr class="unitBox" >
+                                <td>
+                                    <select name="editequipmenttype[{$tlist['id']}]">
+                                        <volist id="wty" name="typelist">
+                                             <option value="{$wty['id']}"  <if condition="$tlist['equipmenttype'] eq $wty['id']"> selected</if> >{$wty['name']}</option>
+                                        </volist>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" size="9" name="editequipmentname[{$tlist['id']}]" value="{$tlist.equipmentname}"/>
+                                </td>
+                                <td>
+                                    <input type="text" size="9" name="editversion[{$tlist['id']}]" value="{$tlist.version}"/>
+                                </td>
+                                <td> 
+                                    <select name="editunit[{$tlist['id']}]">
+                                        <volist id="bt" name="unitList">
+                                             <option value="{$bt['id']}"  <if condition="$tlist.unit eq $bt['id']"> selected</if> >{$bt['name']}</option>
+                                        </volist>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="text" size="9" class="changeblur unitprice" name="editunitprice[{$tlist['id']}]" value="{$tlist.unitprice|getDigits}"/>
+                                </td>
+                                <td>
+                                    <input type="text" size="9" class="changeblur quantity" name="editquantity[{$tlist['id']}]" value="{$tlist.quantity}"/>
+                                </td>
+                                <td>
+                                    <input type="text" size="9" class="changeblur totalprice" name="edittotalprice[{$tlist['id']}]" value="{$tlist.totalprice|getDigits}"/>
+                                </td>
+                                <td>
+                                    <input type="text" size="9" name="editdescribe[{$tlist['id']}]" value="{$tlist.describe}"/>
+                                </td>
+                                <td width="32">       
+                                  <if condition="$_SESSION.a eq 1 or $_SESSION.misbusinessdispatchingmanage_subdelete">
+                                    <a class="btnDel" href="javascript:void(0)"  rel="{$tlist['id']}" onclick="subdelete1(this);">删除</a>
+                                </if>
+                                </td>
+                            </tr>
+                        </volist>
+                    </tbody>
+                </table>
+                </div>
+            </fieldset>
+            <fieldset class="zlqk_1">
+                <legend class="fieldset_legend_toggle">
+                    <b>上传附件</b>
+                </legend>
+                    <div class="unit">
+                        <label>上传附件：</label>
+                        <input id="swfupload_misworkfacilityapplymas_edit" type="file" uploader="true" name="misworkfacilityapplymas_edit_file" formData="{ uploadpath:'MisWorkFacilityApplyMas' }" />
+                        <input type="image" onclick="$('#swfupload_misworkfacilityapplymas_edit').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                    </div>
+                <dl class="nowrap">
+                        <!--此处为上传列表-->
+                        <dt>
+                            <label>&nbsp;</label>
+                        </dt>
+                        <dd>
+                            <span id="swfupload_misworkfacilityapplymas_edit-queue" class="info uploadify_queue">
+                                <if condition="$attarry"> <volist name="attarry" id="att">
+                                <div class="uploadify-queue-item">
+                                    <div class="cancel">
+                                        <a class="dellink" href="__URL__/lookupdelatt/id/{$att['id']}" rel="{$att['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swfupload_misworkfacilityapplymas_edit-queue">X</a>
+                                    </div>
+                                    <span class="fileName">
+                                        <a href="__PUBLIC__/{$att.attached}" target="_blank">{$att['upname']}</a>
+                                    </span>
+                                    <span class="data"> - 已经传</span>
+                                    <div class="uploadify-progress">
+                                        <div class="uploadify-progress-bar" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                                </volist> </if>
+                            </span>
+                        </dd>
+                    </dl>
+            </fieldset>
+            <fieldset>
+                <legend class="fieldset_legend_toggle">
+                    <b>页脚</b>
+                </legend>
+                <p>
+                    <label>制单人：</label>
+                    <input type="text" readonly="readonly" class="textInput" value="{$vo.createid|getFieldBy='id','name','user'}" />
+                </p>
+                <p>
+                    <label>制单时间：</label>
+                    <input  class="textInput" readonly="readonly" value="{$vo.createtime|transTime}" />
+                </p>
+            </fieldset>
+        </div>
+    </div>
+        <div class="formBar">
+                <ul>
+                <if condition="$_SESSION.a eq 1 or $_SESSION.misworkfacilityapplymas_update">
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+                </if>
+                <if condition="$_SESSION.a eq 1 or $_SESSION.misworkfacilityapplymas_startprocess">   
+                    <if condition="$vo.auditState elt 0">
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="StartProcess(this.form,'__MODULE__');">{$Think.lang.startprocess}</button></div></div></li>
+                    </if>
+                </if>
+                    <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+                </ul>
+            </div>
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.xytable').bind('click mouseover', function(e){
+        var $this = $(this);
+        var $trs = $(this).find('tr');
+        var $target = $(e.target);
+        var $tr = $target.parents('tr');
+        if($tr.length > 0){
+            if(e.type == 'click'){
+                $trs.removeClass('selected');
+                $target.parents('tr').addClass('selected');
+            } else if(e.type == 'mouseover'){
+                $trs.removeClass('hover');
+                $target.parents('tr').addClass('hover');
+            }
+        }
+    });
+});
+</script>

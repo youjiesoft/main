@@ -1,0 +1,74 @@
+<div class="pageContent">
+	<form id="pagerForm" action="__URL__/index/type/1" method="post">
+		<input type="hidden" name="pageNum" value="{$pageNum}"/>
+		<input type="hidden" name="dwzpageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.crmsalecostform_add"><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" rel="__MODULE__add" title="销售费用新增" target="navTab" ><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.crmsalecostform_delete"><li><a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/id/{sid_node}/navTabId/__MODULE__" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li></if>
+		 	<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this, '__MODULE__indexview');" action="__URL__/index/type/1" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchConditionForAudit" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146" ajaxurl="__URL__/index" dwztotalPages="{$dwztotalpage}">
+		<thead ename="{$ename}">
+		<tr>
+			<th><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+			<volist id="vo" name="detailList">
+		    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+		    </volist>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$vo['id']}"  onclick="onTrClickCheckbox(this,'id')" title="销售费用编辑" ondblclick="ondblclick_navTab(this,'__MODULE__edit','__URL__/edit/id/{$vo['id']}');">
+				<td><input type="checkbox" <if condition="$vo['auditState'] neq 0 ">disabled="true" style="border:none; background-color:#FFF"<else/> name="id" </if> value="{$vo['id']}" /></td>
+				<volist id="vo1" name="detailList">
+					<if condition="$vo1[shows] eq 1">
+					<td field="{$vo1[name]}" width="{$vo1[widths]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+					</if>
+				</volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>显示</span>
+			<select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value})">
+				<option value="20" <if condition="$numPerPage eq 20"> selected </if> >20</option>
+				<option value="50" <if condition="$numPerPage eq 50 "> selected </if> >50</option>
+				<option value="100" <if condition="$numPerPage eq 100"> selected </if>>100</option>
+				<option value="200" <if condition="$numPerPage eq 200"> selected </if>>200</option>
+			</select>
+			<span>条，共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="__MODULE__indexview" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

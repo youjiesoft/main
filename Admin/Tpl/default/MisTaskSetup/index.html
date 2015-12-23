@@ -1,0 +1,26 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<div class="pageFormContent" layoutH="56">
+			<input type="hidden" name="id" value="{$setupinfo['id']}">
+			<div class="definedP">
+				<p>
+					<label>颜色区分时间(小时)：</label>
+					<input class="required" maxlength="100" placeholder="小时" name="interval" type="text" min="0" max="1000" size="25" value="{$setupinfo['interval']}" />
+				</p>
+				<p>
+					<label>设置颜色：</label>
+					<input class="required" placeholder="#ccc:#ccc:#ccc" maxlength="100" name="colorcoded" type="text" size="25" value="{$setupinfo['colorcoded']}" />
+				</p>
+				
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1">
+				<li><div class="button"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,970 @@
+<script type="text/javascript">
+//var datatable = initTableWNEWOne("#dataRoamMasnewAdd");
+
+
+
+
+//来源表字段（分普通表和视图）暂时存放以便调用
+function changesourcefield(obj){
+	var box=navTab.getCurrentPanel();
+	//来源表
+	var sourcetable = $(obj).val();
+	//获取当前表的标识
+	var tagobj = $(obj).closest("div.sourcetable").next("div.into_table_lay");
+	var tagname = tagobj.attr("tagname");
+	//先做一个目标和来源的对应关系
+	if(sourcetable){
+		$(obj).closest("select").next("input").val(sourcetable+','+tagname);
+	}else{
+		$(obj).closest("select").next("input").val('');
+	}	
+	//初始化加载按钮
+	var initsourcehtml ='<button type="button" class="tml_task_btn nqq_load_btn" onclick="getsourcefield(this)">点击加载</button>';
+	var sourcefieldsobj = tagobj.find('td.sourcefield');	
+	var sourcehtml = sourcefieldsobj.find('div.list_group_lay').html(initsourcehtml);
+	//隐藏关系按钮
+	box.find("button.relation").hide();
+	box.find("button.relation_view").hide();
+	//清除可能有的关联关系和视图关联关系配置
+	$("input[name='relation']",box).val('');
+	$("input[name='showrelation']",box).val('');
+	$("input[name='viewrelation']",box).val('');
+	$("input[name='showviewrelation']",box).val('');
+	$("span.js-relation-class",box).html('');
+	$("span.js-viewrelation-class",box).html('');
+	//中文名字段置空
+	tagobj.find('td.sourcename').find('div.list_group_lay').find("input").val('');
+	//组装来源字段下拉框
+	$.ajax({
+		type:"POST",
+		data:{sourcetable:sourcetable},
+		url:"__URL__/changesourcefield",
+		datatype:"json",
+		//global:false,
+		success:function(response){
+			var data=DWZ.jsonEval(response);
+			var html = '';
+			html += '<select class="select2" style="width:200px;" tagname="'+tagname+'" name="sfield['+sourcetable+'][]" onchange="changename(this)">';
+			html += '<option value="">请选择</option>';
+			if(data){
+				$.each(data,function(i,v){
+					var show='';
+					if(v.showname&&v.fieldtype){
+						show = v.name+'【'+v.showname+'】【'+v.fieldtype+'】';
+					}else if(v.showname){
+						show = v.name+'【'+v.showname+'】';
+					}else{
+						show = v.name;
+					}
+					html += '<option value="'+v.name+'" china="'+v.showname+'">'+show+'</option>';
+				});	
+			}			
+ 			html += '</select>';
+ 			//暂时放在隐藏的div里 用于调用
+ 			$("div.missystemdataroammas_sourcetable",box).find("select[tagname='"+tagname+"']").remove();
+			$("div.missystemdataroammas_sourcetable",box).append(html);
+		}
+	});
+}
+//点击加载来源字段
+function getsourcefield(obj,value){
+	var box=navTab.getCurrentPanel();
+	var tagname = $(obj).closest("div.into_table_lay").attr("tagname");
+	var tempname = $(obj).closest("div.list_group_lay").attr("tempname");
+	//此处要用clone（）方法，如果不用会导致点击一次后 sourcefieldshtml 清空 原因不明
+	var sourcefieldshtml = $("div.missystemdataroammas_sourcetable",box).find("select[tagname='"+tagname+"']").clone();
+	sourcefieldshtml.attr("name",tempname);
+	var sourcetd = $(obj).closest('div');
+	sourcetd.html(sourcefieldshtml);
+	if(value==undefined){
+		value='';
+		}
+	sourcetd.find("select").val(value).select2(); 
+}
+//随来源字段下拉框改变更改来源字段中文名
+function changename(obj){
+	var $this=$(obj);
+	var $value = $this.val();
+	var $china = $this.find('option:selected').attr('china');
+	if($value==''){
+		$this.closest('td').next().find('input').val('');
+	}else{
+		$this.closest('td').next().find('input').val($china);
+	}
+	$this.parents("tr").addClass("changed");
+}
+//关联关系
+/* function getDataRoamRaletion(modelname){
+	var relation = box.find('input[type="hidden"][name="relation"]').val();
+	var $selectval = $("#mymodelabc").val();
+	if($selectval == ''){
+		alertMsg.error("请先选择漫游model");
+		return false;
+	}
+	var title="关联关系";
+	var rel="roamMasRealtion";
+	var options={};
+	options.width="700";
+	options.height="400";
+	options.mask=true;
+	options.param = {relation:relation};
+    var url="__URL__/lookupDataRoamRaletion/sourcemodel/"+modelname+"/mymodel/"+$selectval;
+	DWZ.debug(url);
+	if(!url.isFinishedTm()){
+	alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+	return false;}
+	$.pdialog.open(url,rel,title,options);
+} */
+//关联关系
+ function getDataRoamRaletion($modelname,$type){
+	var box=navTab.getCurrentPanel();
+	var tables = box.find("input[name='s_f[]']");
+	var tablesarr = [];
+	$.each(tables,function(){
+		var value = $(this).val();
+		if(value) tablesarr.push(value);
+	})
+	var sourcemodel = box.find("input[name='sourcemodel']").val();
+	var targetmodel = box.find("input[name='targetmodel']").val(); 
+	var options={}; 
+	if($type==1){
+		var relation = box.find('input[type="hidden"][name="comparerelation"]').val();
+		options.width="850";
+		options.height="500";
+	  var url="__URL__/lookupDataRoamCompare";
+		var title="目标比较字段";
+	}else if($type==2){
+		var relation = box.find('input[type="hidden"][name="comparesourcerelation"]').val();
+		options.width="850";
+		options.height="500";
+	 	 var url="__URL__/lookupDataRoamSourceRaletion";
+		var title="本表比较字段";
+	}else{
+		var relation = box.find('input[type="hidden"][name="relation"]').val();
+		options.width="700";
+		options.height="400";
+	  var url="__URL__/lookupDataRoamRaletion";
+		var title="关联关系";
+	} 
+	var rel="roamMasRealtionTransit";  
+	options.mask=true;
+	options.param = {relation:relation,tablesarr:tablesarr,sourcemodel:sourcemodel,targetmodel:targetmodel,$type:$type};
+	DWZ.debug(url);
+	if(!url.isFinishedTm()){
+	alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+	return false;}
+	$.pdialog.open(url,rel,title,options);
+}
+function clearCompareRaletion($order){
+	var box=navTab.getCurrentPanel();
+	$("."+$order).html('');
+	box.find("input[name='comparerelation']").val("");
+	box.find("input[name='showcomparerelation']").val('');
+	box.find("button.comparerelation").hide();
+	//移除添加按钮中list
+}
+//视图关系 1个或多个
+function getDataRoamViewRaletion(modelname,viewname){
+	var box=navTab.getCurrentPanel();
+	var sourcetableobj = box.find("select[name^='sourcetable[']");
+	var sourcemodel = box.find("input[name='sourcemodel']").val();
+	var targetmodel = box.find("input[name='targetmodel']").val();
+	var viewrelation = box.find('input[type="hidden"][name="viewrelation"]').val();
+	var sfobj = box.find("input[name^='s_f[']");
+	console.log(sfobj);
+	var sourceview ='';
+	if(sourcetableobj){
+		$.each(sourcetableobj,function(){
+			var value = $(this).val();
+			var length = value.length-4;
+			var isviewindex = value.indexOf('View');
+			if(isviewindex == length && length>0){
+				if(sourceview==''){
+					sourceview += value;
+				}else{
+					sourceview += ','+value;
+				}
+			}
+			
+		});
+	}
+	var sf = '';
+	if(sfobj){
+		$.each(sfobj,function(){
+			var value = $(this).val();
+			if(sf==''){
+				sf += value;
+			}else{
+				sf += ';'+value;
+			}
+		});
+	}
+	if(sourceview){
+		var title="视图条件配置";
+		var rel="roamViewMasRealtion";
+		var options={};
+		options.width="700";
+		options.height="400";
+		options.mask=true;
+		options.param = {viewrelation:viewrelation,sourceview:sourceview,sf:sf,sourcemodel:sourcemodel,targetmodel:targetmodel};
+	    var url="__URL__/lookupDataViewRoamRaletion";
+		DWZ.debug(url);
+		if(!url.isFinishedTm()){
+		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+		return false;}
+		$.pdialog.open(url,rel,title,options);
+	}else{
+		alertMsg.error("来源没有视图");
+	}
+	
+	
+	/* var viewrelation = box.find('input[type="hidden"][name="viewrelation"]').val();
+	var sourcetable = box.find('select[name="sourcetable"]').val();
+	if(sourcetable){
+		$isview=sourcetable.indexOf("_isview")
+	}
+	if($isview==-1){
+		alertMsg.error("请把来源表选为视图！");
+		return false;
+	}	
+	var title="视图条件配置";
+	var rel="roamViewMasRealtion";
+	var options={};
+	options.width="700";
+	options.height="400";
+	options.mask=true;
+	options.param = {viewrelation:viewrelation};
+    var url="__URL__/lookupDataViewRoamRaletion/sourceview/"+sourcetable+"/mymodel/"+modelname;
+	DWZ.debug(url);
+	if(!url.isFinishedTm()){
+	alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+	return false;}
+	$.pdialog.open(url,rel,title,options); */
+}
+//保存刷新
+function navTabReferen(json){
+	DWZ.ajaxDone(json);
+	if(json.statusCode==DWZ.statusCode.error){
+		return false;
+	}
+	var model = '{$maslist[\'sourcemodel\']}';
+	$rel = $("#MisDataWanderBox");
+	$url = "__URL__/index/jump/jump/model/"+model;
+
+	//navTab.closeCurrentTab();
+	$rel.loadUrl($url,{},function(){
+		$rel.find("[layoutH]").layoutH();
+	});
+}
+
+//操作方式 添加了相同的删除操作 加参数name用于判别
+function rechangefun(obj,name){
+	if(name=='expdo'){
+		var namesub = "expremark"+$(obj).attr("name").substring(5);
+		var bluract = "synchronizationForOptionAndDel(this,2)";
+	}else if(name=='deldo'){
+		var namesub = "delremark"+$(obj).attr("name").substring(5);
+		var bluract = "";
+	}
+	//var namesub = "expremark"+$(obj).attr("name").substring(5);
+	var conremarkhtmlsec = $("#roam_mas_edit_conremark").html();
+	conremarkhtmlsec = conremarkhtmlsec.replace(/expremark\[\]/,namesub);	
+	var conremarkhtmlinp = '<div class="list_group_lay"><input type="text" class="list_input" name="'+namesub+'" onblur="'+bluract+'"/></div>';
+	var conremarkhtmlzdy = '<div class="list_group_lay"><input type="text" class="list_input" name="'+namesub+'" value="" onblur="'+bluract+'"/></div>';
+	var value= $(obj).val();
+	if(value==2){
+		$(obj).closest('td').next().html(conremarkhtmlsec);
+		$(obj).closest('td').next().find('select').select2();
+		if(name=="expdo"){
+			$(obj).closest('td').next().find('select').change();
+		}else if(name == 'deldo'){
+			$(obj).closest('td').next().find('select').attr('onchange','');
+		}
+		//$(obj).closest('tr').find('select[name="expremark'+namesub+'"]');
+	}else if(value==4){
+		$(obj).closest('td').next().html(conremarkhtmlzdy);
+		
+	}else if(value==3){
+		if(name=='expdo'){
+			var sqlcuttomarr = $(obj).closest("tr").find("input[name^='sqlcuttomarr']").val();
+		}else if(name=='deldo'){
+			var sqlcuttomarr = $(obj).closest("tr").find("input[name^='delsqlcuttomarr']").val();
+		}
+		var objname = $(obj).attr("name");
+		var title="自定义sql配置";
+		var rel="roamViewMasSqlCuttom";
+		var options={};
+		options.width="700";
+		options.height="400";
+		options.mask=true;
+		options.param = {objname:objname,sqlcuttomarr:sqlcuttomarr};
+	    var url="__URL__/lookupSqlCuttom";
+	    DWZ.debug(url);
+		if(!url.isFinishedTm()){
+		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+		return false;};
+		$.pdialog.open(url,rel,title,options);
+	}else{
+		$(obj).closest('td').next().html(conremarkhtmlinp);
+	}
+	$(obj).closest('td').next().find("select").select2();
+	$(obj).closest('td').next().initUI();
+}
+
+
+//自定义sql配置查看 添加了相同的删除操作 加参数name用于判别
+function clickchecksql(obj,name){
+	var sqlcuttomarr='';
+	if(name=='expdo'){
+		var sqlcuttomarr = $(obj).closest("tr").find("input[name^='sqlcuttomarr']").val();
+	}else if(name=='deldo'){
+		var sqlcuttomarr = $(obj).closest("tr").find("input[name^='delsqlcuttomarr']").val();
+	}
+	//var sqlcuttomarr = $(obj).closest("tr").find("input[name^='sqlcuttomarr']").val();
+	var objname = $(obj).closest("td").prev("td").find("select").attr("name");
+	var title="自定义sql配置";
+	var rel="roamViewMasSqlCuttom";
+	var options={};
+	options.width="700";
+	options.height="400";
+	options.mask=true;
+	options.param = {objname:objname,sqlcuttomarr:sqlcuttomarr};
+    var url="__URL__/lookupSqlCuttom";
+    DWZ.debug(url);
+	if(!url.isFinishedTm()){
+	alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+	return false;};
+	$.pdialog.open(url,rel,title,options);
+}
+//清空行数据
+function deletesubroam(obj){
+	var sub = $(obj).closest('tr').find('.subdelete');
+ 	sub.each(function(){
+		$(this).val('').change();
+	})
+}
+//关联关系 清楚按钮
+function clearRaletion($order){
+	$("."+$order).html('');
+	var $box=navTab.getCurrentPanel();
+	$box.find("input[name='relation']").val("");
+	$box.find("input[name='showrelation']").val('');
+	$box.find("button.relation").hide();
+	
+}
+//清除视图关联关系
+function clearViewRaletion($order){
+	$("."+$order).html('');
+	var $box=navTab.getCurrentPanel();
+	$box.find("input[name='viewrelation']").val("");
+	$box.find("input[name='showviewrelation']").val('');
+	$box.find("button.relation_view").hide();
+	//移除添加按钮中list
+}
+//当漫游类型为子流程时，强制指定来源动作为修改，目标动作为新增
+/* $(function(){
+	if(box.find("input[name='isbindsettable']").val() == '2'){
+		box.find("input[name='sourcetype[]']").attr("checked",false);
+		box.find("input[name='sourcetype[]'][value='2']").attr("checked",true);
+		box.find("input[name='targettype'][value='1']").attr("checked",true);
+		box.find("input[name='sourcetype[]']").attr('disabled' , true);
+		box.find("input[name='sourcetype[]']").eq(1).attr('disabled' , false);
+		box.find("input[name='targettype']").attr('disabled' , true);
+		box.find("input[name='targettype']").eq(0).attr('disabled' , false);
+	}
+	
+}) */
+//当漫游类型为子流程时，强制指定来源动作为修改，目标动作为新增
+function checkother(obj){
+	var box=navTab.getCurrentPanel();
+	if(box.find("input[name='isbindsettable']").val() == '2'){	
+		$(obj).attr("checked",true);
+	}		
+}
+//规则条件页面跳转
+function openRulesPage(obj){
+	var box=navTab.getCurrentPanel();
+	var sourcemodel = "{$maslist['sourcemodel']}";
+
+		$this = $(obj);
+		//获取需要的参数信息
+		//1、获取模型名称
+		var modelname =sourcemodel;//$this.attr("modelname");
+		//2、获取class的唯一名称标志，方便后面用JS赋值
+		var order =$this.attr("order");
+		//获取默认值
+		var listarr = $this.attr("listarr");
+		var rulespageinfo = box.find("input[name='rulespageinfo']").val();
+		var title=$this.attr("title")||$this.text();
+		var rel=$this.attr("rel")||"_blank";
+		var options={};
+		options.width="800";
+		options.height="580";
+		options.mask=true;
+		options.max=eval($this.attr("max")||"false");
+		options.maxable=eval($this.attr("maxable")||"true");
+		options.minable=eval($this.attr("minable")||"true");
+		options.fresh=eval($this.attr("fresh")||"true");
+		options.resizable=eval($this.attr("resizable")||"true");
+		options.drawable=eval($this.attr("drawable")||"true");
+		options.close=eval($this.attr("close")||"");
+		options.param  = {sourcemodel:modelname,order:order,listarr:listarr,rulespageinfo:rulespageinfo};
+		var url = "__URL__/openRulesPage";
+		DWZ.debug(url);
+		$.pdialog.open(url,rel,title,options);
+	
+}
+//清除规则条件
+function clearrulesinfo(){
+	var box=navTab.getCurrentPanel();
+	$("input[name='rulespageinfo']",box).val('');
+	$("button.rulespage",box).hide();
+}
+//操作方式为自定义sql时 操作描述用按钮点击查看
+/* $(".aacc").click(function(){
+	var name = $(this).attr("checkname");
+	clickchecksql(this,"'"+name+"'");
+}) */
+//操作和删除同步 3种情况 1、自定义sql由页面关闭时触发 2、函数时由描述下拉框值改变触发 3、操作描述为文本框时失去焦点时触发
+function synchronizationForOptionAndDel(obj,type){
+	//所在行统一的下标
+	//var firstinputname = $(obj).closest("tr").find("input[type='text']:first").attr("name");
+	var namesuffix= $(obj).attr("name").substr(9);	
+	//获取操作方式值 并赋给删除方式
+	var expdoname = 'expdo'+namesuffix;
+	var expdoval = $(obj).closest('tr').find("select[name='"+expdoname+"']").val();
+	//alert(expdoval);
+	$(obj).closest('tr').find("select[name='deldo"+namesuffix+"']").val(expdoval).change();
+	
+	//获取操作描述值 并赋给删除描述
+	 var expremarkval = $(obj).val();
+	
+	if(type=='1'){
+		//下拉框时		
+		$(obj).closest('tr').find("select[name='delremark"+namesuffix+"']").attr({"onchange":"","value":expremarkval}).change();
+		
+	}else if(type=='2'){
+		//文本框时
+		$(obj).closest("tr").find("input[name='delremark"+namesuffix+"']").attr({"onchange":'','value':expremarkval});
+	} 
+	
+	
+}
+
+$(function(){
+	var box=navTab.getCurrentPanel();
+	var data=DWZ.jsonEval({$targetinfojson});	
+	
+	 if(data){
+		addTableinfo(data,box);
+	} 
+});
+
+
+/**
+ * 异步加载addtableinfodetail生成表格
+ */
+function addTableinfo(data,box){
+	
+	var $html = "";
+	var i=1;
+	var t=500;
+	var sourcearr = $.parseJSON($("input[name='sourcearrjson']",box).val());
+	var sftable = $.parseJSON($("input[name='sftablejson']",box).val());
+	var s = Object.keys(data).length;
+	$.each(data,function(k,v){
+
+		var sourcetalbehtml = '';
+		if(i==1){
+			$("div.roam_detail",box).html('<h2 align="center">正在加载......</h2>');
+		}
+		//加载来源表集合
+		if(sourcearr && sourcearr[sftable[k]] && sourcearr[sftable[k]]!='null' && sftable && sftable[k] && sftable[k]!='null'){
+			 sourcetalbehtml = getsourcetablearr(sftable[k],k);
+		}else{
+			sourcetalbehtml = getsourcetablearr('','');
+		}
+		setTimeout(function(){addtableinfodetail(k,v,sourcetalbehtml,box,"dataRoamMasnewEdit_",i-1,s)},t);
+		i++;
+		t += 500;
+		
+	});
+	
+	//$("div.roam_detail",box).find(".select2").select2();
+}
+
+function getsourcetablearr(a,b){
+	var sourcetalbehtml	 = '<div class="tml-form-col roam_sourcetable">';
+	sourcetalbehtml += '<label>来源表：</label>';
+	sourcetalbehtml += '<select  name="sourcetable['+a+']" class="select2 " style="width:150px;" value="'+a+'" onchange="changesourcefield(this)">';
+	sourcetalbehtml += '<option value="">请选择</option>';
+	sourcetalbehtml += '<volist name="sourcearr" id="MisDynamicDatabaseVo">';
+	var checkedis = '';
+	if('{$key}' == a){
+		checkedis = 'selected="selected"';
+	}
+	sourcetalbehtml += '<option value="{$key}" '+checkedis+'>{$MisDynamicDatabaseVo}</option>';
+	sourcetalbehtml += '</volist>';
+	sourcetalbehtml += '</select>';
+	if(a){
+		sourcetalbehtml += '<input type="hidden" name="s_f[]" value="'+a+','+b+'"/>';
+	}else{
+		sourcetalbehtml += '<input type="hidden" name="s_f[]" value=""/>';
+	}	
+	sourcetalbehtml += '</div>';
+	return sourcetalbehtml;
+}
+/**
+ * 生成表格
+ */
+function addtableinfodetail(k,v,sourcetalbehtml,box,dividprev,i,s){
+	var $html='';
+	//构建datatable 数据
+ 	$html += '<div class="sourcetable nqq_table_header"><span class="left">'+v.target_tag+':'+v.target_title+'</span><span class="right">'+sourcetalbehtml+'</span></div>';
+	$html += '<div class="into_table_lay" tagname="'+k+'" style="width: 99%;">';
+	$html += '<table class="into_table_new nbm_data_table" table_data=\'{"ordering":true,"searching":true,"re_id":1,"search_column":1,"addRow":false,"paging":false}\'  id="dataRoamMasnewEdit_'+k+'">';
+	$html += '<thead ename="{$ename}">';
+	$html += '<tr>';
+	$html += ' <th>目标字段</th>';
+	$html += '<th>目标字段中文名</th>';
+	$html += '<th>目标字段类型</th>';
+	$html += '<th style="min-width:190px;width:190px;">来源字段</th>';
+	$html += '<th>来源字段中文名</th>';
+	/* $html += '<th>定位条件</th>';
+	$html += '<th>定位描述</th>'; */
+	$html += '<th>操作方式</th>';
+	$html += '<th>操作描述</th>';
+	$html += '<th>删除方式</th>';
+	$html += '<th>删除描述</th>';
+	$html += '<th>排序</th>';
+	$html += '<th>删除</th>';
+	$html += '</tr>';
+	$html += '</thead>';
+	$html += '<tbody>';
+	if(v['fields']){
+		$.each(v['fields'],function(i,val){
+			$html+='<tr>';
+			$html+='<td><div class="list_group_lay">';
+			$html+=val.name+'<input class="list_input" type="hidden" name="tfield['+k+']['+val.name+']" value="'+val.name+'" />';
+			$html+='<input type="hidden" name="sublistid['+k+']['+val.name+']" value="{$val[\'sublistid\']}">';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			$html+=val.showname+'<input class="list_input" type="hidden" name="tname['+k+']['+val.name+']" value="'+val.showname+'"/>';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			$html+=val.fieldtype+'<input class="list_input" type="hidden" name="tfieldtype['+k+']['+val.name+']" value="'+val.fieldtype+'"/>';
+			$html+='</div></td>';
+			$html+='<td class="sourcefield"><div class="list_group_lay" tempname="sfield['+k+']['+val.name+']">';
+			var sfieldhtml = '<button type="button" class="tml_task_btn nqq_load_btn" onclick="getsourcefield(this,\'\')" >点击加载</button>';
+			if(val['sfield']&&val['sfield']!='null'){
+				sfieldhtml = '<input type="text" class="subdelete list_input" name="sfield['+k+']['+val.name+']" value="'+val.sfield+'" onclick="getsourcefield(this,\''+val["sfield"]+'\')" />';
+			}
+			$html+=sfieldhtml;
+			$html+='</div></td>';
+			$html+='<td class="sourcename"><div class="list_group_lay">';
+			val.sname = val.sname?val.sname:'';
+			$html+='<input class="list_input subdelete" type="text" name="sname['+k+']['+val.name+']" value="'+val.sname+'"/>';
+			$html+='</div></td>';
+			/* $html+='<td><div class="list_group_lay">';
+			$html+='<input class="list_input subdelete" type="text" name="condo['+k+']['+val.name+']"/>';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			$html+='<input class="list_input subdelete" type="text" name="conremark['+k+']['+val.name+']"/>';
+			$html+='</div></td>'; */
+			$html+='<td><div class="list_group_lay">';
+			//$html+='<input type="text" name="expdo[]" />';
+			$html+='<select name="expdo['+k+']['+val.name+']" value="'+val.expdo+'" class=" list_select2  subdelete" onchange="rechangefun(this,\'expdo\');">';
+			//$html+='<option value="">请选择</option>';
+			var ex1 = '';
+			var ex2 = '';
+			var ex3 = '';
+			var ex4 = '';
+			var ex5 = '';
+			switch(val.expdo){
+				case '1':
+					ex1='selected="selected"';
+					break;
+				case '2':
+					ex2='selected="selected"';
+					break;
+				case '3':
+					ex3='selected="selected"';
+					break;
+				case '4':
+					ex4='selected="selected"';
+					break;
+				case '5':
+					ex5='selected="selected"';
+					break;
+			}
+			$html+='<option value="1" '+ex1+'>直接替换</option>';
+			$html+='<option value="2" '+ex2+'>函数处理</option>';
+			$html+='<option value="3" '+ex3+'>自定义SQL</option>';
+			$html+='<option value="4" '+ex4+'>人工设置</option>';
+			$html+='<option value="5" '+ex5+'>手写SQL</option>';
+			$html+='</select>';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			$html += dohtmlfunc(val.expdo,'exp',k,val.name,val);
+			//val.expremark = val.expremark?val.expremark:'';
+			//$html+='<input class="list_input subdelete" type="text" name="expremark['+k+']['+val.name+']" value="'+val.expremark+'" onblur="synchronizationForOptionAndDel(this,2)"/>';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			//$html+='<input type="text" name="expdo[]" />';
+			$html+='<select name="deldo['+k+']['+val.name+']"  class="list_select2  subdelete" value="'+val.deldo+'" onchange="rechangefun(this,\'deldo\');">';
+			//$html+='<option value="">请选择</option>';
+			var de1 = '';
+			var de2 = '';
+			var de3 = '';
+			var de4 = '';
+			var de5 = '';
+			var delremarkhtml = '';
+			switch(val.deldo){
+				case '1':
+					de1='selected="selected"';
+					break;
+				case '2':
+					de2='selected="selected"';
+					
+					break;
+				case '3':
+					de3='selected="selected"';
+					break;
+				case '4':
+					de4='selected="selected"';
+					break;
+				case '5':
+					de5='selected="selected"';
+					break;
+			}
+			$html+='<option value="1" '+de1+'>直接替换</option>';
+			$html+='<option value="2" '+de2+'>函数处理</option>';
+			$html+='<option value="3" '+de3+'>自定义SQL</option>';
+			$html+='<option value="4" '+de4+'>人工设置</option>';
+			$html+='<option value="5" '+de5+'>手写SQL</option>';
+			$html+='</select>';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			$html += dohtmlfunc(val.deldo,'del',k,val.name,val);
+			//val.delremark = val.delremark?val.delremark:'';
+			//$html+='<input class="list_input subdelete" type="text" name="delremark['+k+']['+val.name+']" value="'+val.delremark+'"/>';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			val.tsort = val.tsort?val.tsort:'';
+			$html+='<input class="list_input subdelete" type="text" name="tsort['+k+']['+val.name+']" value="'+val.tsort+'"/>';
+			$html+='</div></td>';
+			$html+='<td><div class="list_group_lay">';
+			$html+='<span class="tml-btn tml_look_btn tml_mp"  onclick="deletesubroam(this);">清除</span>';
+			$html+='</div></td>';						
+			$html+='</tr>';
+		})
+	}
+	$html += '</tbody>';
+	$html += '</table>';
+	$html += '</div>';
+	$(".roam_detail",box).append($html).find("select.select2").select2();
+	//$(".roam_detail",box).find("select[name^='expdo']").change();
+	datatable = initTableWNEWOne("#dataRoamMasnewEdit_"+k);
+	if(i==s) $("h2",box).remove();
+}
+//编辑操作描述和删除描述html
+/**
+ * 	type 操作方式或删除方式下拉框的值
+ 	expordel 指明是操作方式还是删除方式
+ 	k 所属表名
+ 	name 所属字段名
+ 	doval 值
+ */
+function dohtmlfunc(type,expordel,k,name,doval){
+	dohtml = '';
+	var functionName = {$functionNameJson};
+	if(expordel == 'exp'){
+		doval.expremark = doval.expremark?doval.expremark:'';
+		switch(type){
+		case '2':
+			dohtml +=  '<select name="expremark['+k+']['+doval.name+']" style="width:90px;" class="subdelete select2 list_select2 " onchange="synchronizationForOptionAndDel(this,1);">	';
+			$.each(functionName,function(i,v){
+				var selected='';
+				if(v.value == doval.expremark) selected='selected="selected"';
+				dohtml +=  '<option value="'+v.value+'" '+selected+'>'+v.name+'</option>';
+			});
+			dohtml +=  '</select>';
+			
+			break;
+		case '3':
+			dohtml +=  '<input type="button" class="tml_task_btn nqq_load_btn" onclick="clickchecksql(this,\'expdo\')" value="查看">';
+			dohtml +=  '<input type="hidden" name="expremark['+k+']['+doval.name+']" value=\''+doval.expremark+'\' />';
+			dohtml +=  '<input type="hidden" name="sqlcuttomarr['+k+']['+doval.name+']" value=\''+doval.sqlcuttomarr+'\' />';
+			break;
+		default:
+
+			dohtml +=  '<input class="subdelete list_input" type="text" name="expremark['+k+']['+doval.name+']"  value="'+doval.expremark+'" onblur="synchronizationForOptionAndDel(this,2);"/>';
+			break;
+		
+		}
+	}else{
+		doval.delremark = doval.delremark?doval.delremark:'';
+		switch(type){		
+		case '2':
+			dohtml +=  '<select name="delremark['+k+']['+doval.name+']" style="width:90px;" class="subdelete select2 list_select2 " \>	';
+			$.each(functionName,function(i,v){
+				var selected='';
+				if(v.value == doval.delremark) selected='selected="selected"';
+				dohtml +=  '<option value="'+v.value+'" '+selected+'>'+v.name+'</option>';
+			});
+			dohtml +=  '</select>';
+			
+			break;
+		case '3':
+			dohtml +=  '<input type="button" class="tml_task_btn nqq_load_btn" onclick="clickchecksql(this,\'deldo\')" value="查看">';
+			dohtml +=  '<input type="hidden" name="delremark['+k+']['+doval.name+']" value=\''+doval.delremark+'\' />';
+			dohtml +=  '<input type="hidden" name="delsqlcuttomarr['+k+']['+doval.name+']" value=\''+doval.delsqlcuttomarr+'\' />';
+			break;
+		default:
+
+			dohtml +=  '<input class="subdelete list_input" type="text" name="delremark['+k+']['+doval.name+']"  value="'+doval.delremark+'" \>';
+			break;
+		
+		}
+	}
+	return dohtml;
+}
+</script>
+<style>
+.grid .gridTbody .changed {
+    background: none repeat scroll 0 0 #F0F8FF;
+}
+</style>
+<div class="datagrid-mask" style="display:none;"></div>
+<div class="datagrid-mask-msg" style="display:none;"></div>
+<div class="missystemdataroammas_sourcetable" style="display:none;">
+<volist name="sourcetablefields" id="scfv">
+	<select class="subdelete" style="width:200px;" tagname="{$key}" name="sfield[{$key}]" onchange="changename(this)">
+		<option value="">请选择</option>
+		<volist name="sourcetablefields[$key]" id="scf">
+			<option value="{$scf.name}" china="{$scf.showname}">{$scf.name}【{$scf.showname}】</option>
+		</volist>
+	</select>
+</volist>
+</div>
+<div style="display:none;" class="select2" id="roam_mas_edit_conremark">
+		<select name="expremark[]" onchange="synchronizationForOptionAndDel(this,1);">	
+			<volist name="functionName" id="vofun">
+				<option value='{$vofun.value}'>{$vofun.name}</option>
+			</volist>
+		</select>
+	</div>
+<div class="page">
+	<div class="pageContent" style="background: #fff;">
+	<div style="display:none;" id="roam_mas_add_conremark">
+		<select name="expremark[]" style="width:90px;" class="list_select2 ">	
+			<volist name="functionName" id="vofun">
+				<option value='{$vofun.value}'>{$vofun.name}</option>
+			</volist>
+		</select>
+	</div>	
+	<form method="post" action="__URL__/update/rel/MisDataWanderBox" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone)">
+		<input type="hidden" name="refreshtabs[data]" value="1" />
+		<input type="hidden" name="refreshtabs[type]" value="navtab">
+		<input type="hidden" name="relation" value="{$relation}">
+		<input type="hidden" name="comparerelation" value="{$comparerelation}">		
+		<input type="hidden" name="comparesourcerelation" value="{$comparesourcerelation}">		
+		<input type="hidden" name="jump" value="jump">
+		<input type="hidden" name="model" value="{$maslist['sourcemodel']}">
+		<input type="hidden" name="sourcearrjson" value='{$sourcearrjson}' >
+		<input type="hidden" name="sftablejson" value='{$sftable}' >
+		<div class="pageFormContent">
+            <div class="work_shortcut_top lookup_top_header">修改</div>
+            <div class="set_configure" layoutH="95">
+                <div style="width: 95%;padding-left: 2.5%;">
+            <div class="fieldset_show_box mb10">
+				<legend
+					class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+					<b>表头信息</b>
+					<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+				</legend>
+			</div>
+			<div  class="fieldsetjs_show_box" style="display:none;">
+            <div class="tml-row">
+            	<div class="tml-form-col">
+					<label>漫游名称：</label>
+					<input type="text" name="title" value="{$maslist['title']}"  class="required"/>
+				</div>
+				<div class="tml-form-col">
+					<label>漫游类型：</label>
+					<input type="hidden" name="isbindsettable" value="{$maslist['isbindsettable']}">
+					<input type="text" value="{$roamtype}" readonly>
+				</div>
+				<div class="tml-form-col">
+					<label>循环表：</label>
+					<select  name="cycle" class="select2 list_select2 " style="width:160px;">
+					<volist name="sourcearr" id="cyclemv">
+						<option value="{$key}" <if condition="$key eq $maslist['cycle']">selected</if>>{$cyclemv}</option>
+					</volist>
+					</select>
+				</div>
+				<div class="tml-form-col " >
+					<label title="内嵌表是否单行插入">单行插入：</label>
+					<input type="checkbox" name="onlyoneinsert"  value="1" <if condition="$maslist.onlyoneinsert eq 1"> checked</if> />
+				</div>
+            </div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>来源model：</label>
+					<input type="text" name="sourcename" value="{$maslist['sourcemodel']|getFieldBy='name','title','node'}">
+					<input type="hidden" name="sourcemodel" value="{$maslist['sourcemodel']}">
+				</div>
+				<div class="tml-form-col">
+					<label>目标model：</label>
+					<input type="text" name="targetname" value="{$maslist['targetname']}">
+					<input type="hidden" name="targetmodel" value="{$maslist['targetmodel']}">
+				</div>
+				<div class="tml-form-col">
+					<label>是否调试：</label>
+					<input type="radio" name="isdebug" value="0" <if condition="$maslist['isdebug'] neq 1">checked</if>>否
+					<input type="radio" name="isdebug" value="1" <if condition="$maslist['isdebug'] eq 1">checked</if>>是
+				</div>
+					
+					<div class="tml-form-col" >
+						<label title="条件不满足时是否新增一条">强制新增：</label>
+						<input type="radio" name="forceadd" value="1"  <if condition="$maslist['forceadd'] eq 1">checked</if>>是
+						<input type="radio" name="forceadd" value="0" <if condition="$maslist['forceadd'] neq 1">checked</if>>否
+					</div>
+					<div class="tml-form-col" >
+						<label title="">配置类型：</label>
+						<select class="select2" name="conftype" style="width:100px">
+							<option value="0" <if condition="$maslist['conftype'] eq 0">selected</if>>用户自定义</option>
+							<option value="1" <if condition="$maslist['conftype'] eq 1">selected</if>>系统配置</option>
+						</select>
+					</div>
+			</div>
+			<div class="tml-form-row">
+					<label>目标字段比较：</label>
+					<button class="condition_btn condition_add" onclick="getDataRoamRaletion('{$modelname}',1);" type="button"><span class="icon-plus"></span> 添加</button>
+					<a class="condition_clear condition_btn" href="javascript:;" onclick="clearCompareRaletion('js-comparerelation-class');"><span class="icon-trash"></span> 清除</a>
+					<php>
+						if($maslist['comparerelation']&&strtolower($maslist['comparerelation'])!="null"){
+							$discomparerelation = "block";
+						}else{
+							$discomparerelation = "none";
+						}
+					</php>
+					<if condition="$maslist.comparerelation">
+					<button style="display:{$discomparerelation};" class="condition_btn condition_add see_only_btn comparerelation" onclick="getDataRoamRaletion('{$modelname}',1);" type="button"><span class="icon-eye-open"></span> 查看</button>
+					</if>
+					<!-- <span class="js-relation-class adddt">{$maslist.showrelation}</span> --> 
+				</div> 
+				<div class="tml-form-row">
+					<label>本表字段比较：</label>
+					<button class="condition_btn condition_add" onclick="getDataRoamRaletion('{$modelname}',2);" type="button"><span class="icon-plus"></span> 添加</button>
+					<a class="condition_clear condition_btn" href="javascript:;" onclick="clearCompareRaletion('js-comparesourcerelation-class');"><span class="icon-trash"></span> 清除</a>
+					<php>
+						if($maslist['comparesourcerelation']&&strtolower($maslist['comparesourcerelation'])!="null"){
+							$discomparesourcerelation = "block";
+						}else{
+							$discomparesourcerelation = "none";
+						}
+					</php>
+					<if condition="$maslist.comparesourcerelation">
+					<button style="display:{$discomparesourcerelation};" class="condition_btn condition_add see_only_btn comparesourcerelation" onclick="getDataRoamRaletion('{$modelname}',2);" type="button"><span class="icon-eye-open"></span> 查看</button>
+					</if>
+					<!-- <span class="js-relation-class adddt">{$maslist.showrelation}</span> --> 
+				</div> 
+		<div class="tml-form-row">
+				<label>关联关系：</label>
+				<button class="condition_btn condition_add" onclick="getDataRoamRaletion('{$modelname}');" type="button"><span class="icon-plus"></span> 添加</button>
+				<a class="condition_clear condition_btn" href="javascript:;" onclick="clearRaletion('js-relation-class');"><span class="icon-trash"></span> 清除</a>
+				<php>
+					if($maslist['relation']&&strtolower($maslist['relation'])!="null"){
+						$disrelation = "block";
+					}else{
+						$disrelation = "none";
+					}
+				</php>
+				<if condition="$maslist.relation">
+				<button style="display:{$disrelation};" class="condition_btn condition_add see_only_btn relation" onclick="getDataRoamRaletion('{$modelname}');" type="button"><span class="icon-eye-open"></span> 查看</button>
+				</if>
+				<!-- <span class="js-relation-class adddt">{$maslist.showrelation}</span> -->
+				<input type="hidden" name="showrelation" value="{$maslist.showrelation}">
+			</div>
+		<div class="tml-form-row">
+			<label>视图关联关系：</label>
+            <div class="add_del_btn_viewgroup">
+                <button class="condition_btn condition_add" id="viewandresult"  onclick="getDataRoamViewRaletion('{$modelname}','{$maslist.sourcetable}');" type="button"><span class="icon-plus"></span> 添加</button>
+                <a class="condition_clear condition_btn" href="javascript:;" onclick="clearViewRaletion('js-viewrelation-class');"><span class="icon-trash"></span> 清除</a>
+                <php>
+					if($maslist['viewrelation']&&strtolower($maslist['viewrelation'])!="null"){
+						$disrelationview = "block";
+					}else{
+						$disrelationview = "none";
+					}
+				</php>
+				<if condition="$maslist['viewrelation']">
+                <button style="display:{$disrelationview};" class="condition_btn condition_add see_only_btn relation_view" id="viewandresult"  onclick="getDataRoamViewRaletion('{$modelname}','{$maslist.sourcetable}');" type="button"><span class="icon-eye-open"></span> 查看</button>
+            	</if>
+            </div>
+			<input type="hidden" name="viewrelation" value='{$maslist.viewrelation}'/>
+			<input type="hidden" name="showviewrelation" value='{$maslist.showviewrelation}'/>
+			<!-- <span class="js-viewrelation-class adddt">{$maslist.showviewrelation}</span> -->
+			</div>
+	        <!-- <div class="tml-form-row">
+	            <label>规则条件：</label>
+	            {:W('ShowAddResult', array('model'=>$maslist['sourcemodel'],'data'=>$maslist) )}
+	        </div> -->
+	        <div class="tml-form-row">
+            <label>规则条件：</label>
+			<div class="rules_add" style="display: inline-block; float: left;">
+				<button class="condition_btn condition_add p_addresult{$cls} "
+					type="button" rel="{$model}_addresult" order="{$cls}"
+					modelname="{$model}" multitype="{$multitype}"
+					listarr="{$vo['rulesinfo']}" onclick="openRulesPage(this);" title="添加规则条件">
+					<span class="icon-plus"></span>
+					添加
+				</button>
+				<a class="condition_clear condition_btn "
+					onclick="clearrulesinfo();" href="javascript:;">
+					<span class="icon-trash"></span>
+					清除
+				</a>
+				<input type="hidden" name="rulespageinfo" value='{$rulespageinfo}'>
+				<php>
+					if($rulespageinfo&&strtolower($rulespageinfo)!="null"){
+						$disp = "block";
+					}else{
+						$disp = "none";
+					}
+				</php>
+				<button style="display:{$disp};" class="rulespage condition_btn condition_add see_only_btn p_addresult{$cls} "
+					type="button" rel="{$model}_addresult" order="{$cls}"
+					modelname="{$model}" multitype="{$multitype}"
+					listarr="{$vo['rulesinfo']}" onclick="openRulesPage(this);" title="添加规则条件">
+					<span class="icon-eye-open"></span>
+					查看
+				</button>
+			</div>
+			</div>
+			<input type="hidden" name="id" value="{$maslist['id']}" />
+			<input type="hidden" name="targetname" value="{$maslist['targetname']}">
+			<input type="hidden" name="targetmodel" value="{$maslist['targetmodel']}">
+		</div>
+		<div class="fieldset_show_box mb10">
+			<legend
+				class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+				<b>表字段信息</b>
+				<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+			</legend>
+		</div>
+		<div  class="fieldsetjs_show_box">
+        <div class="roam_detail">
+        
+					
+		</div>	
+		</div>
+                {:W('ShowAction')}
+	    </div>
+	</div>
+</div>
+		
+	</form>
+	</div>
+</div>

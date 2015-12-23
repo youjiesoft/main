@@ -1,0 +1,36 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+		    <div class="unit">
+				<label>{$fields["code"]}：</label>
+				<input type="text" name="code" class="required alphanumeric" maxlength="10" value="" />
+			</div>
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" name="name" class="required" maxlength="25" value="" />
+			</div>
+			<div class="unit">
+				<label>上级类型</label>
+				<if condition="$pid eq 0 ">（类型）顶级节点
+				<else/>{$pid|getFieldBy='id','name','mis_construction_team_type'}</if>
+			</div>
+			<input type="hidden" name="parentid" value="{$pid}" />
+			<div class="unit" style="width:500px;">
+				<label>{$fields["remark"]}：</label>
+				<textarea name="remark" rows="2" maxlength="200" cols="40"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misconstructionteamtype_insert">
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+

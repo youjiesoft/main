@@ -1,0 +1,27 @@
+<!--<h2 class="contentTitle">请选择需要上传的附件</h2>-->
+<form action="__URL__/uploade/rel/myfileManagerBox" method="post" enctype="multipart/form-data" class="pageForm required-validate" onsubmit="return iframeCallback(this, dialogAjaxDone)">
+	<input type="hidden" name="step" value="1"/>	<!-- 一个状态值，表示是执行上传功能，而不是跳转页面 -->
+	<input type="hidden" name="pid" value="{$pid}"/><!-- 父节点ID。表示上传到那个文件夹下面 -->
+	<div class="pageContent">
+		<div class="pageFormContent" layoutH="60">
+			<div><span class="file_manager_tips"><i class="icon-comments"></i> 操作提示：最多同时上传5个文件</span></div>
+			<br>
+			<div>
+				<input id="swfupload_MisFileManager_edit" type="file" auto="true" uploader="true" name="MisFileManagerfile" formData="{ uploadpath:'MisFileManager' }" fileSizeLimit="10MB" />
+				<div class="clear"></div>
+				<div id="swfupload_MisFileManager_edit-queue" class="clearfix uploadify_queue" style="height:100%;"></div>
+				
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button type="submit" class="tml_select_btn tml_formBar_btn_blue">保存</button>
+				</li>
+				<!--<li>-->
+					<!--<button class="close tml-btn" type="button">关闭</button>-->
+				<!--</li>-->
+			</ul>
+		</div>
+	</div>
+</form>

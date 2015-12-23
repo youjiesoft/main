@@ -1,0 +1,404 @@
+<script>
+    //删除任务消息(真删)
+    function mistaskdeletemsg(obj,id){
+        if (id == '') {
+            return false;
+        }
+        $.ajax({
+            url  :"__URL__/lookupdeleteMSG",
+            type :"POST",
+            data : {id:id},
+            success : function(succ){
+                if (succ == 1) {
+                    obj.parentNode.parentNode.removeChild(obj.parentNode);
+                }
+            }
+        });
+    }
+</script>
+<div id="mistaskrefreshtabsid" style="display: none;">
+    <a style="display: none;" class="isquestion" dheight="450" dwidth="600"></a>
+    <a style="display: none;" class="mistaskistaskinfo" dheight="530" dwidth="744" ></a>
+    <a style="display: none;" class="mistaskissolve" dwidth="600" dheight="450" ></a>
+    
+</div>
+<div class="page">
+    <div class="pageContent">
+        <div>
+			<div class="panelBar">
+				<ul class="toolBar">
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_indexview">
+						<li>
+							<a class="tbtask" mask="true" target="navTab" rel="__MODULE__indexview" title="发布的任务" href="__URL__/indexview">
+							<span>发布的任务</span>
+							</a>
+						</li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_traceindex">
+						<li>
+							<a class="tbtaskarrow" mask="true" target="navTab" rel="__MODULE__traceindex" title="跟踪的任务" href="__URL__/traceindex">
+							<span>跟踪的任务</span>
+							</a>
+						</li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_index">
+						<li>
+							<a class="tbtaskpencil" mask="true" target="navTab" rel="mistaskadscription_index" title="执行的任务" href="__APP__/MisTaskAdscription/index">
+								<span>执行的任务</span>
+							</a>
+						</li>
+					</if>
+                    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_myattention">
+						<li>
+							<a class="tbadduser" mask="true" target="navTab" rel="mistaskinformation_myAttention" title="我的关注" href="__URL__/myAttention">
+								<span>我的关注</span>
+							</a>
+						</li>
+					</if>
+                    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_insert">
+						<li>
+							<a class="tbtaskplus" mask="true" target="navTab" rel="mistaskinformation_insert" title="新增任务" href="__URL__/add">
+								<span>新增任务</span>
+							</a>
+						</li>
+					</if>
+                    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_mycalendar">
+						<li>
+							<a class="addCalendar" href="__APP__/MisTaskAdscription/myCalendar" rel="MisTaskAdscriptionmyCalendar" target="navTab"   title="我的日历">
+                                <span>我的日历</span>
+                            </a>
+						</li>
+					</if>
+				</ul>
+			</div>
+			<div class="clearfix tml-p10" layoutH="53">
+                <div class="left grid-50">
+                    <div class="panel">
+                    	<h1>我的任务待办</h1>
+						<div>
+							<div class="tabs" eventtype="click" currentindex="0">
+								<div class="tabsHeader">
+									<div class="tabsHeaderContent">
+										<ul>
+											<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_edit">
+												<li class="selected"><a href="javascript:;"><span>执行任务</span></a></li>
+											</if>
+											<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_trace">
+												<li class="selected"><a href="javascript:;"><span>跟踪任务</span></a></li>
+											</if>
+											<li class="selected"><a href="javascript:;"><span>任务缺陷</span></a></li>
+											<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskquestion_edit">
+												<li class="selected"><a href="javascript:;"><span>任务问题</span></a></li>
+											</if>
+											<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_edit">
+												<li class="selected"><a href="javascript:;"><span>任务人员转交</span></a></li>
+											</if>
+										</ul>
+									</div>
+								</div>
+								<div class="tabsContent" style="height:230px;padding:0;position:relative;">
+									<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_edit"> 
+										<div>
+											<if condition="$mistaskexecute">
+												<table class="xyDataTable" width="100%">
+													<thead>
+														<tr>
+															<td><strong>任务名称</strong></td>
+															<td><strong>发布时间</strong></td>
+															<td><strong>紧急程度</strong></td>
+															<td><strong>状态</strong></td>
+															<td style="width:30px;"><strong>难度</strong></td>
+															<td><strong>进度</strong></td>
+															<td><strong>超期</strong></td>
+														</tr>
+													</thead>
+													<tbody>
+														<volist name="mistaskexecute" id="exevo">
+															<tr target="sid_node" rel="{$exevo['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="530" dwidth="744" title="任务执行" drel="MisTaskAdscriptionedit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__APP__/MisTaskAdscription/edit/id/{$exevo.id}");'>
+																<td style="text-align:left;">{$exevo['title']|missubstr=25, true}</td>
+																<td>{$exevo['createtime']|transTime=###,'Y-m-d H:i'}</td>
+																<td <if condition="$exevo.urgentstatus eq 1">class="levelGreen"</if><if condition="$exevo.urgentstatus eq 2">class="levelOrange"</if><if condition="$exevo.urgentstatus eq 3">class="levelRed"</if>></td>
+																<td>{$exevo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}</td>
+																<td>{$exevo['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+																<td>
+																	<span class="taskprogressbar">
+																		<span class="taskpspan1" style="width:{$exevo['chedule']}%;"></span>
+																		<span class="taskpspan2">{$exevo['chedule']}%</span>
+																	</span>
+																</td>
+																<td <if condition="$exevo.enddate ELT time()">class="taskisdelay"<else/>class="tasknotdelay"</if>></td>
+															</tr>
+														</volist>
+													</tbody>
+												</table>
+											<else/>
+												<div class="unit">
+													<label>&nbsp;&nbsp;</label>
+													<span>没有数据</span>
+												</div>
+											</if>
+										</div>
+									</if>
+									<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_trace">
+										<div>
+											<if condition="$mistasktrack">
+												<table class="xyDataTable"width="100%">
+													<thead>
+														<tr>
+															<td><strong>任务名称</strong></td>
+															<td><strong>发布时间</strong></td>
+															<td><strong>紧急程度</strong></td>
+															<td><strong>状态</strong></td>
+															<td style="width:30px;"><strong>难度</strong></td>
+															<td><strong>进度</strong></td>
+															<td><strong>超期</strong></td>
+														</tr>
+													</thead>
+													<tbody>
+														<volist name="mistasktrack" id="trackvo">
+															<tr target="" rel="{$trackvo['taskid']}" onclick="onTrClickCheckbox(this,'id')" dheight="530" dwidth="744" title="跟踪执行" drel="MisTaskInformationtrace" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/trace/identifying/1/id/{$trackvo.taskid}");'>
+																<td style="text-align:left;">{$trackvo['title']|missubstr=25, true}</td>
+																<td>{$trackvo['createtime']|transTime=###,'Y-m-d H:i'}</td>
+																<td <if condition="$trackvo.urgentstatus eq 1">class="levelGreen"</if><if condition="$trackvo.urgentstatus eq 2">class="levelOrange"</if><if condition="$trackvo.urgentstatus eq 3">class="levelRed"</if>></td>
+																<td>{$trackvo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}</td>
+																<td>{$trackvo['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+																<td>
+																	<span class="taskprogressbar">
+																		<span class="taskpspan1" style="width:{$trackvo['chedule']}%;"></span>
+																		<span class="taskpspan2">{$trackvo['chedule']}%</span>
+																	</span>
+																</td>
+																<td <if condition="$trackvo.enddate ELT time()">class="taskisdelay"<else/>class="tasknotdelay"</if>></td>
+															</tr>
+														</volist>
+													</tbody>
+												</table>
+											<else/>
+												<div class="unit">
+													<label>&nbsp;&nbsp;</label>
+													<span>没有数据</span>
+												</div>
+											</if>
+										</div>
+									</if>
+									<div>
+										<if condition="$feedbacklist">
+											<ul>
+												<volist name="feedbacklist" id="feedbackvo">
+													<li>
+														<a title="反馈缺陷" href="__URL__/lookupsolve/id/{$feedbackvo['id']}/type/view/" width="700" height="480" target="dialog" mask="true">{$feedbackvo['remark']}</a>
+														<span style="text-align:right;text-indent:0;width:40%;">
+														<font color="#999999">{$feedbackvo['createtime']|transTime=###,'Y-m-d H:i'}</font>
+														</span>
+													</li>
+												</volist>
+											</ul>
+										<else/>
+											<div class="unit">
+												<label>&nbsp;&nbsp;</label>
+												<span>没有数据</span>
+											</div>
+										</if>
+									</div>
+									<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskquestion_edit">
+										<div>
+											<if condition="$todoquestionlist">
+												<ul>
+													<volist name="todoquestionlist" id="todovo">
+														<li>
+															<a href="__APP__/MisTaskquestion/edit/id/{$todovo['id']}" target="dialog" rel="MisTaskquestionedit" title="查看问题" height="450" width="600">{$todovo['title']|missubstr=###,80,true}</a>
+															&nbsp;&nbsp;&nbsp;&nbsp;<span style="text-align:right;text-indent:0;width:40%;">
+															<font color="#999999">{$todovo['createtime']|transTime=###,'Y-m-d H:i'}</font>
+															</span>
+														</li>
+													</volist>
+												</ul>
+											<else/>
+												<div class="unit">
+													<label>&nbsp;&nbsp;</label>
+													<span>没有数据</span>
+												</div>
+											</if>
+										</div>
+									</if>
+									<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_edit">
+										<div>
+											<if condition="$result">
+												<ul>
+													<volist name="result" id="result" key="$key">
+														<li>
+															<a href="__URL__/edit/id/{$result['taskid']}/isreplaprincipal/1"  rel="__MODULE__edit" target="navTab"title="查看/编辑任务">{$result['title']|missubstr=###,40,true}</a>
+															<span style="text-align:right;text-indent:0;width:40%;">
+																<span color="#999999">{$result['createtime']|transTime=###,'Y-m-d H:i'}</span>
+															</span>
+														</li>
+													</volist>
+												</ul>
+											<else/>
+												<div class="unit">
+													<label>&nbsp;&nbsp;</label>
+													<span>没有数据</span>
+												</div>
+											</if>
+										</div>
+									</if>
+								</div>
+								<div class="tabsFooter">
+									<div class="tabsFooterContent"></div>
+								</div>
+							</div>
+						</div>
+                    </div>
+                </div>
+				<div class="left grid-50">
+                    <div class="panel" defh="260">
+                    	<h1>任务消息</h1>
+                        <div class="">
+                            <div class="clearfix data">
+                            <if condition="$msglist">
+                            <ul>
+                                <volist name="msglist" id="msglistvo">
+                                    <li style="border-bottom:1px dashed #0000ff;line-height:30px;">
+                                        <a height="600" width="1000" mask="true" target="dialog" href="__APP__/MisMessageInbox/readMessage/id/{$msglistvo.id}">
+                                            ({$msglistvo.relevanceid|getFieldBy='mis_task_information.id','title','MisTaskInformationView'}){$msglistvo.sendid|getFieldBy='id','title','MisMessage'}
+                                        </a>
+                                        <span>
+                                            <font color="#999999">(发送时间:
+                                            {$msglistvo.createtime|transTime='Y-m-d H:i:s'})</font>
+                                        </span>
+                                        <a class='delAddressee' title='删除该功能' onclick="mistaskdeletemsg(this,'{$msglistvo.sendid}')" href='javascript:;'>删除</a>
+                                    </li>
+                                </volist> 
+                            </ul>
+                            <else/>
+                                <div class="unit">
+                                    <label>&nbsp;&nbsp;</label>
+                                    <span>没有数据</span>
+                                </div>
+                            </if>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+				<div class="clear"></div>
+                <div class="panel collapse" defh="240" minh="100">
+                    <h1>我发布的任务</h1>
+                    <div class="">
+                        <if condition="$mistaskinfo">
+                        <table class="xyDataTable" width="100%">
+                            <thead>
+                                <tr>
+                                    <td><strong>任务名称</strong></td>
+                                    <td><strong>计划结束</strong></td>
+                                    <td style="width:60px;"><strong>紧急程度</strong></td>
+                                    <td><strong>状态</strong></td>
+                                    <td style="width:30px;"><strong>难度</strong></td>
+                                    <td><strong>进度</strong></td>
+                                    <td><strong>超期</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <volist name="mistaskinfo" id="infovo">
+                                    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_trace">
+                                        <tr ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/trace/identifying/2/id/{$infovo.taskid}');" dheight="530" dwidth="744"  title="查看任务"  onclick="onTrClickCheckbox(this,'id')" rel="{$infovo['taskid']}" target="sid">
+                                    <else/>
+                                        <tr>
+                                    </if>
+                                        <td style="text-align:left;">{$infovo['title']|missubstr=40, true}</td>
+                                        <td>{$infovo['enddate']|transTime=###,'Y-m-d H:i'}</td>
+                                        <td <if condition="$infovo.urgentstatus eq 1">class="levelGreen"</if><if condition="$infovo.urgentstatus eq 2">class="levelOrange"</if><if condition="$infovo.urgentstatus eq 3">class="levelRed"</if>></td>
+                                        <td>{$infovo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}</td>
+                                        <td>{$infovo['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+                                        <td>
+                                            <span class="taskprogressbar">
+                                                <span class="taskpspan1" style="width:{$infovo['chedule']}%;"></span>
+                                                <span class="taskpspan2">{$infovo['chedule']}%</span>
+                                            </span>
+                                        </td>
+                                        <td <if condition="$infovo.enddate ELT time()">class="taskisdelay"<else/>class="tasknotdelay"</if>></td>
+                                    </tr>
+                                </volist>
+                            </tbody>
+                        </table>
+                        <else/>
+                            <div class="unit">
+                                <label>&nbsp;&nbsp;</label>
+                                <span>没有数据</span>
+                            </div>
+                        </if>
+                    </div>
+                </div>
+                <div class="panel collapse" defh="240" minh="100">
+                    <h1>我的关注</h1>
+                    <div class="">
+                        <table class="table" width="100%">
+                            <thead>
+                                <tr>
+                                    <th><strong>任务名称</strong></th>
+                                    <th><strong>发布时间</strong></th>
+                                    <th><strong>紧急程度</strong></th>
+                                    <th><strong>状态</strong></th>
+                                    <th style="width:30px;"><strong>难度</strong></th>
+                                    <th><strong>进度</strong></th>
+                                    <th><strong>超期</strong></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <volist name="attenlist" id="attenlistvo">
+                                    <if condition="$attenlistvo.type eq 3">
+                                        <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_edit">
+                                            <tr target="" rel="{$attenlistvo['taskid']}" onclick="onTrClickCheckbox(this,'id')" dheight="530" dwidth="744" title="执行任务" drel="MisTaskAdscriptionedit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__APP__/MisTaskAdscription/edit/identifying/1/id/{$attenlistvo.id}");'>
+                                                <td style="text-align:left;">{$attenlistvo['title']|missubstr=40, true}</td>
+                                                <td>{$attenlistvo['createtime']|transTime=###,'Y-m-d H:i'}</td>
+                                                <td <if condition="$trackvo.urgentstatus eq 1">class="levelGreen"</if><if condition="$trackvo.urgentstatus eq 2">class="levelOrange"</if><if condition="$trackvo.urgentstatus eq 3">class="levelRed"</if>></td>
+                                                <td>{$attenlistvo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}</td>
+                                                <td>{$attenlistvo['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+                                                <td>
+                                                    <span class="taskprogressbar">
+                                                        <span class="taskpspan1" style="width:{$attenlistvo['chedule']}%;"></span>
+                                                        <span class="taskpspan2">{$attenlistvo['chedule']}%</span>
+                                                    </span>
+                                                </td>
+                                                <td <if condition="$attenlistvo.enddate ELT time()">class="taskisdelay"<else/>class="tasknotdelay"</if>></td>
+                                            </tr>
+                                        </if>
+                                    <else/>
+                                        <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_traceindex">
+                                            <tr target="" rel="{$attenlistvo['taskid']}" onclick="onTrClickCheckbox(this,'id')" dheight="530" dwidth="744" title="跟踪查看" drel="MisTaskInformationtrace" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/trace/identifying/1/id/{$attenlistvo.taskid}");'>
+                                                <td style="text-align:left;">{$attenlistvo['title']|missubstr=40, true}</td>
+                                                <td>{$attenlistvo['createtime']|transTime=###,'Y-m-d H:i'}</td>
+                                                <td <if condition="$trackvo.urgentstatus eq 1">class="levelGreen"</if><if condition="$trackvo.urgentstatus eq 2">class="levelOrange"</if><if condition="$trackvo.urgentstatus eq 3">class="levelRed"</if>></td>
+                                                <td>{$attenlistvo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}</td>
+                                                <td>{$attenlistvo['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+                                                <td>
+                                                    <span class="taskprogressbar">
+                                                        <span class="taskpspan1" style="width:{$attenlistvo['chedule']}%;"></span>
+                                                        <span class="taskpspan2">{$attenlistvo['chedule']}%</span>
+                                                    </span>
+                                                </td>
+                                                <td <if condition="$attenlistvo.enddate ELT time()">class="taskisdelay"<else/>class="tasknotdelay"</if>></td>
+                                            </tr>
+                                        </if>
+                                    </if>
+                                </volist>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="taskboardarea-w88">
+                    <div><h4>标示灯</h4></div>
+                    <div class="dashboard_detail">
+                        <ul class="taskLegend clearfix">
+							<li>任务紧急程度：</li>
+                            <li><span class="levelGreen">宽松</span></li>
+                            <li><span class="levelOrange">一般</span></li>
+                            <li><span class="levelRed">紧急</span></li>
+                            <li><span class="tasknotdelay">未超期</span></li>
+                            <li><span class="taskisdelay">已超期</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

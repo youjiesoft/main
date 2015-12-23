@@ -1,0 +1,30 @@
+<div class="pageContent">
+	<div class="tabs" currentIndex="{$zhi}" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishremployeeleavemanagement_indexview">
+						<li><a href="__URL__/index/type/1" rel="__MODULE__indexview" class="j-ajax"><span>个人单据</span></a></li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishremployeeleavemanagement_waitaudit">
+						<li><a href="__URL__/waitAudit" class="j-ajax" rel="__MODULE__waitAudit"><span>待审单据</span></a></li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishremployeeleavemanagement_alreadyaudit">
+						<li><a href="__URL__/alreadyAudit" class="j-ajax" rel="__MODULE__alreadyAudit"><span>已审单据</span></a></li>
+				    </if>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishremployeeleavemanagement_indexview">
+				<div id="__MODULE__indexview" class="unitBox"></div>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishremployeeleavemanagement_waitaudit">
+				<div id="__MODULE__waitAudit" class="unitBox"></div>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishremployeeleavemanagement_alreadyaudit">
+				<div id="__MODULE__alreadyAudit" class="unitBox"></div>
+			</if>
+		</div>
+	</div>
+</div>

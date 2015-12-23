@@ -1,0 +1,412 @@
+<style>
+	table.tree_table {
+		line-height: 35px;
+		font-size: 12px;
+		border-color: #d8d8d8;
+		/* width:1000px; */
+		margin-top: 50px;
+	}
+	table.tree_table tbody tr td {
+		padding: 0 1em;
+	}
+
+	table td {
+		word-break: keep-all;
+		white-space: nowrap;
+	}
+
+	table.tree_table thead tr th {
+		border-color: #d8d8d8;
+		text-align: center;
+		background: #f0f0f0;
+	}
+	table.tree_table tbody tr td:not(:first-child) {
+		border: 1px solid #d8d8d8;
+	}
+	/*table.tree_table tbody tr td:first-child {*/
+	/*padding-left: 1px;*/
+	/*}*/
+	.treeTable_select_btn {
+		border: none;
+		padding: 6px 10px;
+	}
+	/* table.tree_table span.indenter {
+		border-left: 1px dotted #999;
+		height: 100%;
+	} */
+	table.tree_table span.navIndenter {
+		padding: 0.2em 0 0.2em 0;
+	}
+	table.tree_table tr.expanded span.indenter a,
+	table.tree_table tr.collapsed span.indenter a,
+	table.tree_table tr.expanded.selected span.indenter a,
+	table.tree_table tr.collapsed.selected span.indenter a {
+		background: none;
+		position: relative;
+		font-size: 14px;
+	}
+	table.tree_table tr.expanded span.indenter a:before,
+	table.tree_table tr.expanded.selected span.indenter a:before,
+	table.tree_table tr.collapsed span.indenter a:before,
+	table.tree_table tr.collapsed.selected span.indenter a:before {
+		top: 7px;
+		left: -10px;
+		position: absolute;
+		background: #e0e0e0;
+		text-align: center;
+		width: 100%;
+		height: 20px;
+		line-height: 20px;
+		border: 1px solid #3498db;
+		font-weight: 700;
+		border-radius: 4px;
+		z-index: 2;
+	}
+	table.tree_table tr.expanded span.indenter a:before,
+	table.tree_table tr.expanded.selected span.indenter a:before {
+		content: "-";
+	}
+	table.tree_table tr.collapsed span.indenter a:before,
+	table.tree_table tr.collapsed.selected span.indenter a:before {
+		content: "+";
+	}
+
+	/*.indenter {*/
+		/*border: 1px solid #999;*/
+		/*border-right: none;*/
+		/*border-top: none;*/
+		/*border-bottom: none;*/
+	/*}*/
+
+	/* table.tree_table tr.expanded span.indenter a:after,
+	table.tree_table tr.expanded.selected span.indenter a:after,
+	table.tree_table tr.collapsed span.indenter a:after,
+	table.tree_table tr.collapsed.selected span.indenter a:after {
+		content: " ";
+		width: 100%;
+		height: auto;
+		border-top: 1px dotted #999;
+		top: 17px;
+		left: 0;
+		position: absolute;
+		z-index: 1;
+	}
+
+	.next_end .navIndenter,
+	.expanded .navIndenter {
+		position: relative;
+	}
+	.expanded .navIndenter:before {
+		content: " ";
+		width: 1px;
+		height: 30px;
+		border-left: 1px dotted #999;
+		top: 15px;
+		left: -3px;
+		position: absolute;
+	}
+	.next_end .navIndenter:before {
+		content: " ";
+		width: 20px;
+		height: auto;
+		border-top: 1px dotted #999;
+		top: 8px;
+		left: -20px;
+		position: absolute;
+		z-index: 1;
+	}
+	.next_end .navIndenter:after {
+		content: " ";
+		width: 0;
+		height: auto;
+		border-left: 1px dotted #999;
+		top: 8px;
+		left: -20px;
+		position: absolute;
+		z-index: 1;
+	} */
+	.nydb_abl {
+		position:absolute;
+		top:42px;
+		left:0;
+		height: 40px;
+		background: #fff;
+		width: 100%;
+		padding-top: 5px;
+		z-index: 1;
+		border-bottom: 1px solid #d8d8d8;
+	}
+	.nydb_abl_btn {
+	    background: #fff;
+	    border: 1px solid #d8d8d8;
+	    border-radius: 4px;
+	    color: #808080;
+	    padding: 3px 10px;
+	    margin-left: 15px;
+	    font-size: 14px;
+	}
+	.nydb_abl_btn:hover {
+		border-color: #379be9;
+		background: #379be9;
+		color: #fff;
+	}
+	.nydb_abl_se {
+		border: 1px solid #d8d8d8;
+		background: none;
+		width: 40px;
+		border-left: none;
+		height:32px;
+		margin-right: 20px;
+		border-radius: 0 4px 4px 0;
+	}
+	.nydb_abl_se:hover {
+		background: #379be9;
+		border-color: #379be9;
+		color: #fff;
+	}
+	.nydb_abl_in {
+		border: 1px solid #d8d8d8;
+		background: none;
+		width: 100px;
+		border-right: none;
+		height:26px;
+		border-radius: 4px 0 0 4px;
+		padding-left: 5px;
+	}
+	.nydb_abl_in:focus{
+		border-right: none;
+	}
+</style>
+<div style="overflow: auto;" layoutH="40">
+<div id="searchTemp" style="display: none;">
+</div>
+	<div class="nydb_abl">
+		<a class="left nydb_abl_btn" href="#" onclick="jQuery('#example-advanced').treetable('expandAll'); return false;">全展</a>&nbsp;&nbsp;
+		<a class="left nydb_abl_btn" href="#" onclick="jQuery('#example-advanced').treetable('collapseAll'); return false;">全合</a>
+		<button class="right nydb_abl_se icon-search" id="search"></button>
+		<input class="right nydb_abl_in" type="text" name="lookuptreekeyword">
+	</div>
+	<table id="example-advanced" class="tree_table">
+			<thead>
+				<tr>
+					<volist name="searchFieldsArr" id="item">
+						<if condition="$detailList[$item][shows] eq 1">
+							<th <if condition="$detailList[$item][widths]">width="{$detailList[$item][widths]}"</if>
+							<if condition="$detailList[$item][sorts]">orderField="{$detailList[$item][sortname]}" class="{$sort}"</if>>
+							{$detailList[$item][showname]}</th>
+						</if>
+					</volist>
+					<th>操作</th>
+				</tr>
+				</thead>
+		<tbody>
+		<volist name="vo" id="item">
+			<tr data-nbm-id='_{$item["id"]}'
+			<if condition="$item.parentid neq '0'">
+				data-nbm-p-id='_{$item.parentid}'
+			</if>
+			>
+			<volist id="field" name="searchFieldsArr" key="key">
+				<if condition="$detailList[$field][shows] eq 1">
+					<td width="{$detailList[$field][widths]}"  <if condition="$item['nextEnd'] eq 1">class="next_end"</if>>
+					<if condition="$key eq 1"><span class="navIndenter"></if>
+					<if condition="count($detailList[$field]['func']) gt 0">
+						<volist name="detailList[$field][func]" id="nam">
+							{:getConfigFunction($item[$field] , $nam , $detailList[$field]['funcdata'][0] )}
+						</volist>
+						<else />
+						{$item[$field]}
+					</if>
+					<if condition="$key eq 1"></span></if>
+					</td>
+				</if>
+			</volist>
+			<td>
+				<if condition="$isnextend eq 1 ">
+					<php>
+					$t=1;
+					if(isset($item['show_tree_node']) && $item['show_tree_node']==0){
+						$t ='';
+					}
+					
+					</php>
+					<if condition="$item['nextEnd'] eq 1 and !empty($t)">
+						<a class="btnSelect lookup_select_btn treeTable_select_btn"  style="" href='javascript:$.bringBack({$item|json_encode})' title="查找带回">选择</a>
+					</if>
+				<else/>
+					<if condition="$item['show_tree_node'] eq 1 or !isset($item['show_tree_node'])">
+						<a class="btnSelect lookup_select_btn treeTable_select_btn"  style="" href='javascript:$.bringBack({$item|json_encode})' title="查找带回">选择</a>
+					</if>
+				</if>
+				
+
+			</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+</div>
+<script>
+
+
+	var defaultWidth =  $("#example-advanced").find('thead').find('th:first').width();
+	console.log(defaultWidth);
+	$("#example-advanced").treetable({
+		//expanderTemplate: "<b>>></b>",
+		indenterTemplate: "<span class='indenter'></span>",
+		//indent : '4',
+		nodeIdAttr: "nbmId", // maps to data-tt-id
+		parentIdAttr: "nbmPId", // maps to data-tt-parent-id
+		expandable: true ,
+		// 关闭节点
+		onNodeCollapse: function() {
+			var node = this;
+			//$("#example-advanced").treetable("unloadBranch", node);
+		},
+		// 展开节点
+		onNodeExpand: function() {
+			var node = this;
+			var td = node.row.find('td:first');
+			var width=node.level()*19 + td.find('.navIndenter').outerWidth() + td.find('.indenter').outerWidth() +24;
+			var obj = node.row.parent().parent().find('thead').find('th:first');
+			//console.log('计算出的宽度值 ：'+width +'     当前操作项宽度 ： '+obj.outerWidth() +'     左平移宽度 ：'+node.level()*19);
+			if(width >=obj.outerWidth() ){
+				//obj.width(width);
+			}else{
+				//obj.width(obj.outerWidth());
+			}
+		}
+	});
+	// Highlight selected row
+	$("#example-advanced tbody").on("mousedown", "tr", function() {
+		$(".selected").not(this).removeClass("selected");
+		$(this).toggleClass("selected");
+	});
+</script>
+
+<script>
+$(function(){
+		// 以ID为Key的数据记录
+		var arrkey=new Object();
+		// 以序号为Kye的数据记录
+		var arrIndex = new Array();
+		// 当前显示序号
+		var curIndex=-1;
+		// 查询果
+		var ret = 1;
+		// 关键词框获取焦点时将原值清空，查询结构改默认。
+		$('input[name="lookuptreekeyword"]').focus(function(){
+			$(this).val('');
+			ret = 1;
+			$('#searchTemp').empty();
+			curIndex=0;
+			arrkey = new Object();
+			arrIndex = new Array();
+		});
+		$('#search').click(function(){
+			// 数据记录有值时不需要再次查询，做项切换选中效果
+			//console.info('curIndex :' +curIndex);
+			if(arrIndex.length){
+				var temp = curIndex++;
+				if(temp +1 > arrIndex.length){
+					temp=curIndex=0;
+				}
+				if(arrkey[arrIndex[temp]]){
+					//$("#example-advanced").treetable("expandNode", arrkey[arrIndex[temp]]);
+					$("#example-advanced").treetable("reveal", arrkey[arrIndex[temp]]);
+					$("#example-advanced").find('tr[data-nbm-id="'+arrkey[arrIndex[temp]]+'"]').mousedown();
+					
+					var index = $("#example-advanced tr:visible").index($("#example-advanced").find('tr[data-nbm-id="'+arrkey[arrIndex[temp]]+'"]'));
+					
+					var obj = $("#example-advanced").find('tr[data-nbm-id="'+arrkey[arrIndex[temp]]+'"]');
+					var offset = obj.offset();
+					var top = index*obj.height();//offset.top>168?obj.index()*obj.height()+65 : 0;
+					
+					obj.closest('div[layouth]').animate({
+					      scrollTop: top
+					    }, "slow");
+				}
+				//console.log(arrkey[arrIndex[temp]]);
+			}else{
+				// 获取输入的被检查值
+				//console.log('获取输入的被检查值');
+				var keyword = $.trim($('input[name="lookuptreekeyword"]').val());
+				if(ret){
+					// 检索页面数据
+					ret = highlightLookupTree(keyword);
+				}
+			}
+		});
+		
+
+	function highlightLookupTree(s){
+		arrkey = new Object();
+		arrIndex = new Array();
+		if (s.length==0){
+			return false;
+		  }
+		  s=encode(s);
+		  if($('#searchTemp').html()==''){
+			  var clone = $('#example-advanced').clone().removeAttr('id').removeAttr('class');
+		  		$('#searchTemp').html(clone);
+		  		$('#searchTemp').find('input').remove();
+		  		$('#searchTemp').find('button').remove();
+		  		var obj = $('#searchTemp').get(0);
+		  }else{
+			  var obj = $('#searchTemp').get(0);
+		  }
+		  
+		  var rep = new RegExp('<span\s+class=.?highlight.?>([^<>]*)<\/span>','gi');
+		  // /<span\s+class=.?highlight.?>([^<>]*)<\/span>/gi
+		  var t=obj.innerHTML.replace(rep,"$1");
+		  
+		  obj.innerHTML=t;
+		  var cnt=loopSearch(s,obj);
+		  t=obj.innerHTML
+		  //var r="/{searchHL}(({(?!\/searchHL})|[^{])*){\/searchHL}/g";
+		  var r = new RegExp('{searchHL}(({(?!\/searchHL})|[^{])*){\/searchHL}','g');
+		  t=t.replace(r,"<span class='highlight'>$1</span>");
+		  obj.innerHTML=t;
+		  $('span.highlight').each(function(){
+			var id = $(this).closest('tr').attr('data-nbm-id');
+			if(!arrkey[id]){
+				arrIndex.push(id);
+			}
+			arrkey[id] = id;
+		  });
+		}
+
+		
+		  
+		function loopSearch(s,obj){
+		  var cnt=0;
+		  if (obj.nodeType==3){
+			cnt=replacesss(s,obj);
+			return cnt;
+		  }
+		  for (var i=0,c;c=obj.childNodes[i];i++){
+			if (!c.className||c.className!="highlight")
+			  cnt+=loopSearch(s,c);
+		  }
+		  return cnt;
+		}
+		function replacesss(s,dest){
+		  var r=new RegExp(s,"g");
+		  var tm=null;
+		  var t=dest.nodeValue;
+		  var cnt=0;
+		  if (tm=t.match(r)){
+			cnt=tm.length;
+			t=t.replace(r,"{searchHL}"+decode(s)+"{/searchHL}")
+			dest.nodeValue=t;
+		  }
+		  return cnt;
+		}
+		function encode(s){
+		  return s.replace(/&/g,"&").replace(/</g,"<").replace(/>/g,">").replace(/([\\\.\*\[\]\(\)\$\^])/g,"\\$1");
+		}
+		function decode(s){
+		  return s.replace(/\\([\\\.\*\[\]\(\)\$\^])/g,"$1").replace(/>/g,">").replace(/</g,"<").replace(/&/g,"&");
+		}
+});
+</script>

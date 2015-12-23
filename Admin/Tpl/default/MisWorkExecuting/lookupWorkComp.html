@@ -1,0 +1,56 @@
+<style>
+.gml-work-lmb{
+	margin-bottom:10px;
+}
+.work_group_sort dd {
+	font-size:16px;
+	color:#0000CD;
+}
+.work_group_sort dd a{
+	color:#0000CD;
+	text-decoration: underline;
+}
+</style>
+<div class="work_shortcut" layouth="40">
+    <div class="work_shortcut_top"></div>
+    <div class="work_shortcut_content" layouth="80">
+ 		<dl class="work_group_sort" style="padding:0 10px;">
+ 			<if condition="$typelist">
+	 			<dt style="font-size:22px;padding:0px;">已发待批</dt>
+	 			<volist name="typelist" id="wat" key="key2">
+	 				<dl class="work_group_sort">
+			            <dt>{$wat['leixingmingchen']}</dt>
+			            <div class="tml_style_line tml_slb_blue work_lmb gml-work-lmb"></div>
+			            <volist name="wat.waitcount" id="cc">
+			            	<dd>
+			            		<a reltype="MisWorkMonitoring_1" rel="MisWorkExecutingbox" target="ajax" href="__URL__/index/jump/jump/md/MisWorkMonitoring/worktype/3/rel/MisWorkExecutingbox/tablename/{$cc.tablename}/typeid/{$wat.id}" >
+			            			{$cc['nodename']}(<span style="color:#FF0000;">{$cc['count']}</span>)
+			            		</a>
+			            	</dd>
+			            </volist>
+			            <div class="clear"></div>
+			        </dl>
+	 			</volist>
+ 			</if>
+        </dl>
+        <dl class="work_group_sort" style="padding:0 10px;">
+        	<if condition="$doingtypelist">
+	 			<dt style="font-size:22px;padding:0px;">已发办结</dt>
+	 			<volist name="doingtypelist" id="do" key="key3">
+	 				<dl class="work_group_sort">
+			            <dt>{$do['leixingmingchen']}</dt>
+			            <div class="tml_style_line tml_slb_blue work_lmb gml-work-lmb"></div>
+			            <volist name="do.overcount" id="xx">
+			            	<dd>
+			            		<a reltype="MisWorkMonitoring_2" rel="MisWorkExecutingbox" target="ajax" href="__URL__/index/jump/jump/md/MisWorkMonitoring/worktype/4/rel/MisWorkExecutingbox/tablename/{$xx.tablename}/typeid/{$do.id}" >
+			            			{$xx['nodename']}(<span style="color:#FF0000;">{$xx['count']}</span>)
+			            		</a>
+			            	</dd>
+			            </volist>
+			            <div class="clear"></div>
+			        </dl>
+	 			</volist>
+ 			</if>
+        </dl>
+    </div>
+</div>

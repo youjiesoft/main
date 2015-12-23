@@ -1,0 +1,78 @@
+
+<script>$(".additem").additem()</script>
+<div class="page">
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="refreshtabs[url]" value="__MODULE__edit">
+		<input type="hidden" name="refreshtabs[data]" value="1">
+		<input type="hidden" name="dotype" value="流程启动" />
+		<input type="hidden" name="ostatus" value="{$vo.ostatus}" />
+		<input type="hidden" class="selectaudituser.mangid" name="audit_option_user" value="" callback="auditOpion" />
+		<a class="input-addon   input-addon-add" style="display: none;" rel="lookupSelectAuditOption" id="auditselectoption" href="__URL__/lookupSelectAuditOption/modulename_auditoption/__MODULE__/audittype/dialog" lookupGroup="selectaudituser">选择下一步审核人</a>
+		<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+			<div class="keepContentCenter form-affix-content">
+				<div class="contentTitle contentTitle_center form-affix-title">
+					外出申请{:W('ShowFlow')}
+					<span class="auto_code">
+						<b>No.</b>
+						<input type="text" name="orderno" value="{$orderno}" <if condition="$writable eq 0">readonly="readonly"class="xycodedata_read"<else/>class="xycodedata_write required alphanumeric"</if>/>
+						<span class="xyNextButtonDisable">
+						</span>
+					</span>
+					</div>
+			<fieldset>
+				<legend class="fieldset_legend_toggle">
+					<b>基础信息</b>
+				</legend><div class="tml-row">
+							<div class="tml-form-col">
+								<label>{$fields["hrname"]}:</label>
+								<input  type="text" name="hrname" class="" value="{$vo['hrname']}">
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["deptname"]}:</label>
+								<input  type="text" name="deptname" class="" value="{$vo['deptname']}">
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["starttime"]}:</label>
+								<div class="tml-input-append">
+					<input type="text"  class="date required" readonly="true"  name="starttime" value="{$vo['starttime']|date='Y-m-d',###}">
+					<a href="javascript:;" class="inputDateButton input-addon input-addon-calendar">选择</a>
+					</div>
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["endtime"]}:</label>
+								<div class="tml-input-append">
+					<input type="text"  class="date required" readonly="true"  name="endtime" value="{$vo['endtime']|date='Y-m-d',###}">
+					<a href="javascript:;" class="inputDateButton input-addon input-addon-calendar">选择</a>
+					</div>
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["returntime"]}:</label>
+								<div class="tml-input-append">
+					<input type="text"  class="date required" readonly="true"  name="returntime" value="{$vo['returntime']|date='Y-m-d',###}">
+					<a href="javascript:;" class="inputDateButton input-addon input-addon-calendar">选择</a>
+					</div>
+							</div></div>
+							<div class="tml-form-row">
+								<label>{$fields["result"]}:</label>
+								<textarea cols="80" rows="2"  name="result">{$vo['result']}</textarea>
+							</div>
+							<div class="tml-form-row">
+								<label>{$fields["remark"]}:</label>
+								<textarea cols="80" rows="2"  name="remark">{$vo['remark']}</textarea>
+							</div><div class="tml-row">
+							<div class="tml-form-col">
+								<label>{$fields["text10"]}:</label>
+								<input  type="text" name="text10" class="" value="{$vo['text10']}">
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["text11"]}:</label>
+								<input  type="text" name="text11" class="" value="{$vo['text11']}">
+							</div></div></fieldset>
+			     {:W('ShowAction')}
+			</div>
+		</div>
+	</form>
+</div>
+</div>

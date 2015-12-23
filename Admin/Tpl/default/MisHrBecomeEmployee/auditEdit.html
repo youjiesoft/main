@@ -1,0 +1,142 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/auditProcess/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<input type="hidden" name="pid" value="{$vo['ptmptid']}">
+		<input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+		
+		<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+		<input type="hidden" name="refreshtabs[url]" value="__APP__/MisHrBecomeEmployee/index">
+		<input type="hidden" name="refreshtabs[data]" value="{ ntdata:1}">
+		<input type="hidden" name="refreshtabs[title]" value="人员转正管理">
+		<input type="hidden" name="refreshtabs[type]" value="dialog">
+		
+		<input type="hidden" name="backprocess" value="流程回退">
+		<input type="hidden" name="auditprocess" value="流程审核">
+		<input type="hidden" name="endprocess" value="流程结束">
+		<input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+		<input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+		
+		<input type="hidden" name="refreshtabs[closeall]" value="1">
+		<input type="hidden" class="selectaudituser.mangid" name="audit_option_user" value="" callback="auditOpionPorcess" />
+		<a class="input-addon input-addon-addon input-addon-add" rel="lookupSelectAuditOption" style="display: none;" id="auditselectoption" href="__URL__/lookupSelectAuditOption/modulename_auditoption/__MODULE__/audittype/dialog" lookupGroup="selectaudituser">选择下一步审核人</a>
+		
+			<div class="contentTitle contentTitle_center">
+			<if condition="$vo.regulartype eq '2'">代办</if>转正申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+			</div>
+			<div class="pageFormContent " layoutH="105">
+				<fieldset>
+					<if condition="$vo.regulartype eq '2'">
+						<table class="table" width="100%">
+							<thead>
+								<tr>
+									<th>姓名</th>
+									<th>职务</th>
+									<th>入职日期</th>
+									<th>试用期</th>
+									<th>已试用</th>
+								</tr>
+							</thead>
+							<tbody class="Basicsaleprojectlist">
+							<volist id="void" name="volistid" > 
+								<tr>
+									<td>
+									 <input type="hidden" name="employeeid[]" value="{$void.id}">{$void.name}
+									</td>
+									<td>{$void.dutylevelid|getFieldBy='id','name','duty'}</td>
+									<td>{$void['indate']|transTime}</td>
+									<td>{$void['pedate']}(天)</td>
+									<td>{$void['date']}(天)</td>
+								</tr>
+							</volist>
+							</tbody>
+						</table>
+					 <else/>
+						 <div class="tml-row">	
+						 {:W('ShowOrderno',array(1,'mis_hr_regular_employee',$vo['orderno']))}
+							<div class="tml-form-col">
+								<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+								<input type="hidden" name="employeeid"  value="{$vo.employeeid}" />
+				                <input type="text" class="org.name" name="employeename"  readonly="readonly" value="{$basicEmployeeVO.name}" readonly="readonly"/>
+								<!-- <span class="info"><a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a> </span> -->
+							</div>
+							<div class="tml-form-col">		 
+								<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+				                <input type="text" name="deptname" readonly="readonly" value="{$vo.deptname}" />
+							</div>
+							<div class="tml-form-col">	
+								<label>职&nbsp;&nbsp;&nbsp;&nbsp;级：</label>
+								<input type="text" name="coname"  value="{$vo.coname}" readonly="readonly"/>
+							</div>
+							<div class="tml-form-col">	
+								<label>岗&nbsp;&nbsp;&nbsp;&nbsp;位：</label>
+				                <input type="text" class="org.worktypename"   readonly="readonly" value="{$vo.worktypename}" />
+							</div>
+							<div class="tml-form-col">	
+								<label>试&nbsp;用&nbsp;期：</label>
+								<div class="tml-input-append">
+								<input type="text"  value="{$pedate}" readonly="readonly"/> 
+								<span class="input-addon-unit" title="天">天</span>
+								</div>
+							</div>
+							<div class="tml-form-col">	
+								<label>已&nbsp;试&nbsp;用：</label>
+								<div class="tml-input-append">
+								<input type="text" name="date" value="{$vo['date']}" readonly="readonly"/> 
+								<span class="input-addon-unit" title="天">天</span>
+								</div>
+							</div>
+							<div class="tml-form-col">	
+								<label>入职日期：</label>
+								<div class="tml-input-append">
+									<input type="text" size="15" name="indate" readonly="readonly" class="Wdate" id="probationdate_e" value="{$vo.indate|transTime}"/>
+									<span class="input-addon input-addon-calendar"></span>
+								</div>
+							</div>
+						    <div class="tml-form-col">	
+								<label>转正日期：</label>
+								<div class="tml-input-append">
+									<input type="text" name="positivedate" size="15" readonly="readonly" class="Wdate" value="{$vo.positivedate|transTime}"/>
+									<span class="input-addon input-addon-calendar"></span>
+								</div>
+							</div>
+						</div>
+					</if>
+				</fieldset>
+				<if condition="$vo.regulartype eq '2'">
+					<fieldset>
+						<div class="tml-form-col">
+							<label>转正日期：</label>
+							<div class="tml-input-append">
+								<input type="text" name="positivedate" class="Wdate required org1.transferdate" size="15" id="positivedate_e" readonly="readonly" value="{$vo.positivedate|transTime}"/>
+								<span class="input-addon input-addon-calendar"></span>
+							</div>
+						</div>
+					</fieldset>
+				</if>
+				<fieldset>
+					<div class="tml-form-row">
+						<label>个人总结：</label>
+	              		<textarea name="remark" readonly="readonly" class="required">{$vo.remark}</textarea>
+					</div>
+					<div class="tml-form-row">
+						<span class="tml-help-block"  style="color:red">* 试用期间工作总结（内容包括对试用期工作的回顾、总结，对公司企业文化的理解；<br/>自己在工作中的优点及不足，如何改进存在的不足；对今后工作的设想、建议等）。</span>
+					</div>
+				</fieldset>
+				<div class="divider-content"><span></span></div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>申&nbsp;请&nbsp;人：</label>
+						<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}" />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>申请时间：</label>
+						<input type="text" readonly="readonly" value="{$vo.createtime|transTime}"/>
+					</div>	
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

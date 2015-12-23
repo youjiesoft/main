@@ -1,0 +1,168 @@
+<script>
+$(function() {
+	var $img = $("#xtimg");
+	if(window.ActiveXObject) {
+		$img.attr("usemap","#Map_7_1");
+	} else {
+		$img.attr("usemap","#Map_7");
+	}
+});
+
+</script>
+<script>
+$(function() {
+	var $img = $("#xsimg");
+	if(window.ActiveXObject) {
+		$img.attr("usemap","#Map_7_1");
+	} else {
+		$img.attr("usemap","#Map_7");
+	}
+	
+	function myresize(){
+		var mywidth = $(window).width();
+		var width1 = mywidth - 250 - 60;
+		$(".salesQuotationmas").width(width1);
+		}
+	
+	window.onresize = function() {
+		myresize();
+		var mywidth = $(window).width();
+		
+		if(mywidth < 880) {
+			//$("#xsimg").width($(".salesQuotationmas").width() - 7) ;
+			$(".salesQuotationmas_img").get(0).style.overflowX = "scrolly" ;
+			
+		} else {
+			//$("#xsimg").width("auto");
+			$(".salesQuotationmas_img").get(0).style.overflow = "hidden";
+		}
+	}
+	
+	myresize();
+	
+});
+
+</script>
+
+<div id="salesQuotationmas_z">
+	<div id="myleft" class="salesQuotationmas left">
+		<div class="xypreferences">
+			<ul>
+				<li><a href="__APP__/Role/index" rel="Role" target="navTab" title="权限管理"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="权限管理"><span>权限管理</span></a></li>
+				<li><a href="__APP__/Node/index" rel="Node" target="navTab" title="节点管理"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="节点管理"><span>节点管理</span></a></li>
+				<li><a href="__APP__/MisAttachedConfig/index" rel="MisAttachedConfig" target="navTab" title="附件配置"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="附件配置"><span>附件配置</span></a></li>
+				<li><a href="__APP__/EmailSendRecord/index" rel="EmailSendRecord" target="navTab" title="邮件发送记录"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="邮件发送记录"><span>邮件发送记录</span></a></li>
+				<li><a href="__APP__/Backup/index" rel="Backup" target="navTab" title="数据库备份"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="数据库备份"><span>数据库备份</span></a></li>
+				<li><a href="__APP__/MisTodo/index" rel="MisTodo" target="navTab" title="待办事务"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="待办事务"><span>待办事务</span></a></li>
+				<li><a href="__APP__/MisAnnouncement/index" rel="MisAnnouncement" target="navTab" title="供应商类型"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="供应商类型"><span>供应商类型</span></a></li>
+				<li><a href="__APP__/MisAnnouncement/index" rel="MisAnnouncement" target="navTab" title="系统公告"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="系统公告"><span>系统公告</span></a></li>
+				<li><a href="__APP__/MisUserEvents/index" rel="MisUserEvents" target="navTab" title="重要日程"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="重要日程"><span>重要日程</span></a></li>
+				<li><a href="__APP__/MisNotice/index" rel="MisNotice" target="navTab" title="官方动态"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="官方动态"><span>官方动态</span></a></li>       
+				<li><a href="__APP__/UpgradeLocal/index" rel="UpgradeLocal" target="navTab" title="本地升级"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="本地升级"><span>本地升级</span></a></li>
+				<li><a href="__APP__/FileCheck/index" rel="FileCheck" target="navTab" title="文件检测"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="文件检测"><span>文件检测</span></a></li>
+			</ul>
+		</div>
+		<!--<div class="xitsz">
+   			<img id="xtimg" src="__PUBLIC__/Images/xtsz.png" border="0"/>
+    		<map name="Map_7" id="Map_7">
+              <a href="__APP__/Role/index" rel="Role" target="navTab" title="权限管理" shape="rect" coords="40,15,100,82"></a>
+              <a href="__APP__/Node/index" rel="Node" target="navTab" title="节点管理" shape="rect" coords="186,12,251,81"></a>
+              <a href="__APP__/MisAttachedConfig/index" rel="MisAttachedConfig" target="navTab" title="附件配置" shape="rect" coords="343,14,400,84"></a>
+              <a href="__APP__/EmailSendRecord/index" rel="EmailSendRecord" target="navTab" title="邮件发送记录" shape="rect" coords="489,18,556,83"></a>
+              <a href="__APP__/Backup/index" rel="Backup" target="navTab" title="数据库备份" shape="rect" coords="33,147,101,219"></a>
+              <a href="__APP__/MisTodo/index" rel="MisTodo" target="navTab" title="待办事务" shape="rect" coords="191,149,250,217"></a>
+              <a href="__APP__/MisAnnouncement/index" rel="MisAnnouncement" target="navTab" title="供应商类型" shape="rect" coords="341,150,400,218"></a>
+              <a href="__APP__/MisAnnouncement/index" rel="MisAnnouncement" target="navTab" title="系统公告" shape="rect" coords="494,149,565,219"></a>
+              <a href="__APP__/MisUserEvents/index" rel="MisUserEvents" target="navTab" title="重要日程" shape="rect" coords="37,283,104,354"></a>
+              <a href="__APP__/MisNotice/index" rel="MisNotice" target="navTab" title="官方动态" shape="rect" coords="195,285,258,355"></a>              
+              <a href="__APP__/UpgradeLocal/index" rel="UpgradeLocal" target="navTab" title="本地升级" shape="rect" coords="335,282,408,354"></a>
+              <a href="__APP__/FileCheck/index" rel="FileCheck" target="navTab" title="文件检测" shape="rect" coords="500,283,558,354"></a>                          
+            </map>  
+            <map name="Map_7_1" id="Map_7_1">
+              <a href="__APP__/Role/index" rel="Role" target="navTab" title="权限管理"><area shape="rect" coords="40,15,100,82"/></a>
+              <a href="__APP__/Node/index" rel="Node" target="navTab" title="节点管理"><area shape="rect" coords="186,12,251,81"/></a>
+              <a href="__APP__/MisAttachedConfig/index" rel="MisAttachedConfig" target="navTab" title="附件配置"><area shape="rect" coords="343,14,400,84"/></a>
+              <a href="__APP__/EmailSendRecord/index" rel="EmailSendRecord" target="navTab" title="邮件发送记录"><area shape="rect" coords="489,18,556,83"/></a>
+              <a href="__APP__/Backup/index" rel="Backup" target="navTab" title="数据库备份"><area shape="rect" coords="33,147,101,219"/></a>
+              <a href="__APP__/MisTodo/index" rel="MisTodo" target="navTab" title="待办事务"><area shape="rect" coords="191,149,250,217"/></a>
+              <a href="__APP__/MisAnnouncement/index" rel="MisAnnouncement" target="navTab" title="供应商类型"><area shape="rect" coords="341,150,400,218"/></a>
+              <a href="__APP__/MisAnnouncement/index" rel="MisAnnouncement" target="navTab" title="系统公告"><area shape="rect" coords="494,149,565,219"/></a>
+              <a href="__APP__/MisUserEvents/index" rel="MisUserEvents" target="navTab" title="重要日程"><area shape="rect" coords="37,283,104,354"/></a>
+              <a href="__APP__/MisNotice/index" rel="MisNotice" target="navTab" title="官方动态" shape="rect" coords="195,285,258,355"></a>            
+              <a href="__APP__/UpgradeLocal/index" rel="UpgradeLocal" target="navTab" title="本地升级" shape="rect" coords="335,282,408,354"></a>
+              <a href="__APP__/FileCheck/index" rel="FileCheck" target="navTab" title="文件检测" shape="rect" coords="500,283,558,354"></a>              
+            </map>
+		</div>-->
+	</div>
+	<div id="myright" class="right">
+    	<div class="salesQuotationmas_d1">
+        <div class="salesQuotationmas_d_bg">
+            <ul>
+                <li class="sqm_all sqm_jc left"></li>
+                <li class="sqm_title left">基础档案</li>
+                <li class="sqm_all sqm_bz right"></li>
+            </ul>
+        </div>
+        <div class="salesQuotationmas_d_bg1">
+            <ul class="left">
+                <li><a href="">业务类型</a></li>
+                <li><a href="">往来单位</a></li>
+                <li><a href="">货位</a></li>
+                <li><a href="">员工</a></li>
+                <li><a href="">出入库类别</a></li>
+            </ul>
+            <span class="salesQuotationmas_xt left"></span>
+            <ul class="left">
+                <li><a href="">存货</a></li>
+                <li><a href="">部门</a></li>
+                <li><a href="">计量单位</a></li>
+                <li><a href="">仓库</a></li>
+            </ul>
+        </div>
+    </div>
+    	<div class="salesQuotationmas_d1">
+        <div class="salesQuotationmas_d_bg">
+            <ul>
+                <li class="sqm_all sqm_sj left"></li>
+                <li class="sqm_title left">相关数据</li>
+                <li class="sqm_all sqm_bz right"></li>
+            </ul>
+        </div>
+        <div class="salesQuotationmas_d_bg1 salesQuotationmas_d_bg2">
+            <ul class="left">
+                <li><a href="">采购入库单</a></li>
+                <li><a href="">销售出库单</a></li>
+                <li><a href="">调拨单</a></li>
+            </ul>
+            <span class="salesQuotationmas_xt salesQuotationmas_xt1 left"></span>
+            <ul class="left">
+                <li><a href="">其他入库单</a></li>
+                <li><a href="">其他出库单</a></li>
+                <li><a href="">费用分摊单</a></li>
+            </ul>
+        </div>
+    </div>
+    	<div class="salesQuotationmas_d1">
+        <div class="salesQuotationmas_d_bg">
+            <ul>
+                <li class="sqm_all sqm_bb left"></li>
+                <li class="sqm_title left">相关报表</li>
+                <li class="sqm_all sqm_bz right"></li>
+            </ul>
+        </div>
+        <div class="salesQuotationmas_d_bg1 salesQuotationmas_d_bg3">
+            <ul class="left">
+                <li><a href="">收发存汇总表</a></li>
+                <li><a href="">呆滞存货分析表</a></li>
+                <li><a href="">库存周转率分析表</a></li>
+                <li><a href="">库存资金占用分析表</a></li>
+                <li><a href="">库龄分析表</a></li>
+                <li><a href="">库存台账</a></li>
+                <li><a href="">存货总账</a></li>
+                <li><a href="">存货明细账</a></li>
+            </ul>
+        </div>
+    </div>
+    </div>
+</div>
+

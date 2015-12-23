@@ -1,0 +1,127 @@
+<if condition="$groupid">
+	<li class="xypart">
+	    <input type="hidden" name="panelsort[]" value="{$sort}">
+	    <div class="part_title">
+	        <h3 class="{$color}"><a class="more" target="navTab" rel="MisFileManager" title="文档管理" href="__APP__/MisFileManager/index"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand" href="#"></a><span 
+	
+	class="expand">{$name}</span></h3>
+	    </div>
+	    <div class="part_content">
+	        <div id="panel_word">
+	        </div>
+	        <div>
+			<div class="js-panelmethod" style="height: 140px;overflow:hidden;">
+	           <div class="data nbm" id="work">
+	           		<if condition="$snlist">
+						<if condition="$type eq 2">
+							<ul class="company_content_ul1">				
+								<volist name="snlist" id="vo">
+									<li>
+											【{$flist['category']|getFieldBy="id","name","mis_file_manager"}】{$flist.name}
+											<span class="right">
+										<if condition="$_SESSION.a eq 1 or in_array($vo['id'],$managerfid) or ($vo['category'] eq 1 && $vo['createid'] eq $_SESSION.authId)">
+											<a height="400" width="660" mask="true" title="" target="dialog" rel="lookupWriteAss" href="__APP__/MisFileManager/lookupWriteAss/id/{$vo['id']}">[属性]</a>
+										</if>
+										<if condition="$vo.type eq 2 &&( $ifread gt 1 or $vo.ifread gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))">
+											&nbsp;{$vo['filepath']}
+										<elseif condition="$vo.type eq 0 && $vo.isplay eq 1 &&( $ifread gt 1 or $vo.ifread gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))" />
+											&nbsp;<a style="cursor:pointer;" rel="__APP__/MisFileManager/playSWF/name/{$vo.codeurl}/filename/{$vo.name}" onclick="openNewWindowsDisplayFile(this)">在线查看</a>
+										</if>
+										<if condition="$vo.type eq 0 &&( $ifexecute gt 1 or $vo.ifexecute gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))">
+											&nbsp;<a title="{$vo.name}" title="" href="__APP__/MisFileManager/misFileManageDownload/path/{$vo.codeurl}/rename/{$vo.name}" target="_blank">下载</a>
+										</if>
+									</span>
+									</li>
+								</volist>				
+							</ul>
+						<else/>
+						<!-- 共享文件夹 -->
+							<ul class="company_content_ul">
+								<volist name="snlist" id="flist">
+									<li>
+									<if condition="$flist.online">
+										<a style="cursor:pointer;" rel="__URL__/playSWF/name/{$flist.codeurl}/filename/{$flist.name}" onclick="openNewWindowsDisplayFile(this)">【{$flist['category']|getFieldBy="id","name","mis_file_manager"}】{$flist.name}</a>
+										<else/>
+										【{$flist['category']|getFieldBy="id","name","mis_file_manager"}】{$flist.name}
+									</if>
+									<if condition="$flist.type eq 0 &&( $ifexecute gt 1 or $flist.ifexecute gt 0 or $_SESSION.a eq 1 or in_array($flist['id'],$managerfid))">
+									    <button class="file_download" onclick="downfile('__APP__/MisFileManager/misFileManageDownload/path/{$flist.codeurl}/rename/{$flist.name}');">下载<span class="icon-download-alt"></span></button>
+								    </if>
+									</li>
+								</volist>
+							</ul>
+						</if>
+					<else/>
+						<div class="noData">
+							没有共享文件
+						</div>
+					</if>
+				</div>
+	        </div>
+	        </div>
+	    </div>
+	    <div class="part_foot">
+	        <div class="part_footer"></div>
+	    </div>
+	</li>
+<else/>
+	<script>
+	function getDocIndex1($this,type){
+		$($this).addClass('active');
+	    $($this).siblings('.active').removeClass('active');
+	
+		$("#work").loadUrl(TP_APP+"/MisSystemPanel/workplatform/type/"+type,{},function(){
+		$("#work").find("[layoutH]").layoutH();},false);
+	}
+	</script>
+	<script language=javascript>
+		function downfile(str)
+		{
+		  window.location.href = str;
+		}
+	</script>
+	<li>
+	    <div class="tml_new_lay office_cell"></div>
+	    <div class="expert_btn">
+	        <a class="active" onclick="getDocIndex1(this,1)" href="#">最新文档</a>&nbsp;&nbsp;
+	        <a title="文档管理" onclick="getDocIndex1(this,2)" href="#">个人文档</a>&nbsp;&nbsp;
+	        <a title="文档管理" rel="MisFileManager" target="navTab" href="__APP__/MisFileManager/index/pid/5/cid/5/share/share" >共享文档</a>&nbsp;&nbsp;
+	        <a title="文档管理" rel="MisFileManager" target="navTab" href="__APP__/MisFileManager/index/pid/2/cid/2/share/share" >单位文档</a>
+	    </div>
+	     <if condition="$snlist">
+			<if condition="$type eq 2">
+				<ul  class="expert_cell_warp" id="work">
+					<volist name="snlist" id="vo">
+						<li>
+		                      <a style="cursor:pointer;" rel="__APP__/MisFileManager/playSWF/name/{$vo.codeurl}/filename/{$vo.name}" onclick="openNewWindowsDisplayFile(this)"><span>【{$vo['category']|getFieldBy="id","name","mis_file_manager"}】</span>{$vo.name}</a>
+		                      <button class="file_download" onclick="downfile('__APP__/MisFileManager/misFileManageDownload/path/{$vo.codeurl}/rename/{$vo.name}');">下载<span class="icon-download-alt"></span></button>
+			            </li>
+					</volist>
+				</ul>
+			<else/>	
+				<ul class="expert_cell_warp" id="work">
+					<volist name="snlist" id="flist">
+						<li>
+							<if condition="$flist.online">
+								<a style="cursor:pointer;" rel="__URL__/playSWF/name/{$flist.codeurl}/filename/{$flist.name}" onclick="openNewWindowsDisplayFile(this)"><span>【{$flist['category']|getFieldBy="id","name","mis_file_manager"}】</span>{$flist.name}</a>
+							</if>
+							<if condition="$flist.type eq 0 &&( $ifexecute gt 1 or $flist.ifexecute gt 0 or $_SESSION.a eq 1 or in_array($flist['id'],$managerfid))">
+								<button class="file_download" onclick="downfile('__APP__/MisFileManager/misFileManageDownload/path/{$flist.codeurl}/rename/{$flist.name}');">下载<span class="icon-download-alt"></span></button>
+						    </if> 
+						</li>
+					</volist>
+				</ul>
+			</if>
+		<else/>
+			没有共享文件
+		</if> 
+		<div class="letter_mb">
+			<a href="__APP__/MisFileManager/index" rel="MisFileManager" target="navTab" title="文档管理" class="tml_new_live_link">更多</a>
+		</div>
+	</li>
+	
+
+</if>
+
+
+

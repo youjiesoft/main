@@ -1,0 +1,28 @@
+<div class="new_version_page_content">
+
+
+<table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+	<tbody>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["orderno"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['orderno']}<div class="display_none {$classNodeSettingArr['orderno']}"></div></td>
+			<td class="cell_left" width="12%">{$fields["danjumingchen"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['danjumingchen']}<div class="display_none {$classNodeSettingArr['danjumingchen']}"></div></td>
+			<td class="cell_left" width="12%">{$fields["tixingtiaojian"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['tixingtiaojian']}<div class="display_none {$classNodeSettingArr['tixingtiaojian']}"></div></td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["tixingnarong"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['tixingnarong']}<div class="display_none {$classNodeSettingArr['tixingnarong']}"></div></td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+		</tr>
+	</tbody>
+</table>
+	{~$appendPageContentArr = getBindTabsContent('MisAutoEwe',$vo,'view')}
+	{$appendPageContentArr[2]}
+	{$appendPageContentArr[3]}
+		{:W('ShowAction')}
+</div>

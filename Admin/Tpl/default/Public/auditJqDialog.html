@@ -1,0 +1,54 @@
+<script>
+var $dialog = $.pdialog.getCurrent();
+var val = $dialog.find("textarea").val();
+$dialog.find("textarea").val("").focus().val(val);
+$dialog.find("textarea").focus();
+function onsubmitAuditDialog() {
+	var textarea = $dialog.find("textarea").val()
+	var useridArr = $dialog.find("input[name='userid']").val()
+	if (textarea.length <= 0) {
+		alertMsg.error('请填写审核意见！');
+		return false;
+	}
+	$.pdialog.close($dialog);
+	//$.pdialog.closeCurrent();
+	var $navTab = navTab.getCurrentPanel();
+	$navTab.find("input[name='doinfo']").val(textarea);
+	$navTab.find("input[name='useridArr']").val(useridArr);
+	var form = $navTab.find("form");
+	return validateCallback(form[0], refreshtabsAudit);
+}
+</script>
+<div class="pageContent">
+	<div class="pageFormContent" layoutH="56">
+		<fieldset>
+			<div class="tml-form-row">
+			    <label><strong>加签对象：</strong></label>
+			    <div class="tml-input-append2">
+			     <input type="hidden"  name="userid" value="" class="rowaccessOrg1.userid" />
+			    <input type="text" style="width: 320px;" name="username" value="" class="textInput rowaccessOrg1.name" readonly="readonly" />
+			    <a class="input-addon input-addon-addon input-addon-add" lookupgroup="rowaccessOrg1" href="__APP__/MisOfficialdocumentOutAudit/lookupmanage">查找带回</a>
+			    <a title="清空人员" class="input-addon input-addon-recycle" href="javascript:;" onclick="clearInputInDialog(this,'userid,username');"></a>
+			   </div>
+		    </div>
+			<div class="tml-form-row">
+				<label><strong>审核意见：</strong></label>
+				<textarea style="width: 360px; height: 100px" name="doinfo" class="required">同意</textarea>
+			</div>
+			<div class="unit" style="color:red;">
+				<span>
+					*当前核稿人为最后一人。如果需要加签审核，请选择加签对象，继续进行核稿。
+					<br/><br/>
+					*如不需继续核稿，请填写当前审核意见(加签对象留空)，确定即可
+				</span>
+			</div>			
+		</fieldset>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li>
+				<button class="tml-btn tml-btn-primary" type="button" onclick="onsubmitAuditDialog();">确定</button>
+			</li>
+		</ul>
+	</div>
+</div>

@@ -1,0 +1,24 @@
+<div class="pageContent">
+	<div class="tabs" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<li><a href="__URL__/index/step/1/remindMap/{$_REQUEST['remindMap']}" rel="misworkfacilitymanage_index" class="j-ajax"><span>设备管理</span></a></li>
+						<li><a href="__APP__/MisWorkFacilityInventory/lookupinventory/id/{$_REQUEST['id']}/remindMap/{$_REQUEST['remindMap']}" rel="misworkfacilityinventory_lookupinventory" class="j-ajax"><span>库存动态</span></a></li>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_index">
+						<li><a href="__APP__/MisWorkFacilityDistribute/lookupdistribute/id/{$_REQUEST['id']}/remindMap/{$_REQUEST['remindMap']}" rel="misworkfacilitydistribute_index" class="j-ajax"><span>库存分布</span></a></li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misworkfacilitystatistical_index">
+						<li><a href="__APP__/MisWorkFacilityStatistical/index/remindMap/{$_REQUEST['remindMap']}" rel="misworkfacilitystatistical_index" class="j-ajax"><span>库存统计</span></a></li>
+					</if>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent tml-p0">
+				<div id="misworkfacilitymanage_index"></div>
+				<div id="misworkfacilityinventory_lookupinventory"></div>
+				<div id="misworkfacilitydistribute_index"></div>
+				<div id="misworkfacilitystatistical_index"></div>
+		</div>
+	</div>
+</div>

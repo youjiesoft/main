@@ -1,0 +1,56 @@
+<script>
+function choose(obj){
+	//获取选中流程的ID
+	var flowid = $(obj).val();
+	$onebox = $.pdialog.getCurrent();
+	if(isNullorEmpty(flowid)){
+		//获取选中流程的名称
+		var name = $(obj).find('option:selected').attr("rel");
+		$onebox.find("input[name='title']").val(name);
+		$onebox.find("input[name='id']").val(flowid);
+		var url = TP_APP+"/CommonFlows/lookupChooseFlow/flowid/"+flowid;
+		$("#flowschoose").loadUrl(url,{},function(){
+			$("#flowschoose").find("[layoutH]").layoutH();
+		});
+	}else{
+		$onebox.find("input[name='title']").val("");
+		$onebox.find("input[name='id']").val("");
+		var url = TP_APP+"/CommonFlows/lookupChooseFlow/flowid/0";
+		$("#flowschoose").loadUrl(url,{},function(){
+			$("#flowschoose").find("[layoutH]").layoutH();
+		});
+	}
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/lookupUpdateFlows" class="pageForm required-validate" onsubmit="return validateCallback(this, updateFlowsAjaxDone)">
+	<input type="hidden" name="id" value="{$vo['id']}" />
+	<input type="hidden" name="tablename" value="{$md}" />
+	<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>流程名称：</label>
+				<input type="text" class="required" name="title" value="{$vo.title}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>可选流程：</label>
+				<select class="combox" onchange="choose(this);">
+					<option value="">请选择</option>
+					<volist name="flowslist" id="flst">
+						<option rel="{$flst.title}" <if condition="$vo.id eq $flst.id">selected="selected"</if> value="{$flst.id}">{$flst.title}</option>
+					</volist>
+				</select>
+			</div>
+		</div>
+		<div id="flowschoose">
+			<include file="chooseFlowWidget" />
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+		</ul>
+	</div>
+	</form>
+</div>

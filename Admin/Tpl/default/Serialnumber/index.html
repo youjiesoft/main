@@ -1,0 +1,28 @@
+<div class="page">
+	<div class="pageContent pageForm">
+		<div class="pageFormContent" layoutH="58">
+		<table class="list" style="width:100%">
+		<tr class="row" ><th colspan="2" class="space">基础授权</th></tr>
+		<tr class="row" ><td width="15%">密钥:</td><td>{$list[key]}</td></tr>
+		<tr class="row" ><td width="15%">产品编号:</td><td>{$list[pcode]}</td></tr>
+		<tr class="row" ><td width="15%">产品版本:</td><td>{$list[version]}</td></tr>
+		<tr class="row" ><td width="15%">授权时间:</td><td>{$list['fc']|transTime='Y-m-d H:i:s'}</td></tr>
+		<tr class="row" ><td width="15%">软件形式:</td><td>{$list[software]}</td></tr>
+		<tr class="row" ><td width="15%">用户名:</td><td>{$list[username]}</td></tr>
+		<tr class="row" ><td width="15%">公司名:</td><td>{$list[company]}</td></tr>
+		<tr class="row" ><td width="15%">过期时间:</td><td>{$list[expired]|transTime='Y-m-d H:i:s'}</td></tr>
+		<tr class="row" ><td width="15%">并发数:</td><td>{$list[online]}</td></tr>
+		<?php $module=array(); $module=explode(",",$list['module']); ?>
+		<tr class="row" ><th colspan="2" class="space">授权模块</th></tr>
+		<volist id="module" name="module">
+		<tr class="row" ><td width="15%">{$key}</td><td>{$module|getFieldBy='name','title','Node'}</td></tr>
+		</volist>
+		</table>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+</div>

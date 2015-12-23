@@ -1,0 +1,778 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="robots" content="nofollow" />
+<meta name="robots" content="noarchive" />
+<title><if condition="$companyid">{:C('COPYRIGHT')}</if></title>
+<!--
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/extJS/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/extJS/example.css" />
+-->
+<!-- bootstrap-->
+<!--<link href="__PUBLIC__/bootstrap/css/bootstrap.css" rel="stylesheet" />-->
+
+<link href="__PUBLIC__/Images/404/css.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Js/DataTables/media/css/jquery.dataTables.css" />
+<!--do start-->
+<link href="__PUBLIC__/Css/tmlstyle/tml.css" rel="stylesheet" type="text/css" media="screen"/>
+<link href="__PUBLIC__/dwz2/themes/css/print.css" rel="stylesheet" type="text/css" media="print"/>
+<link href="__PUBLIC__/Css/colorbox/colorbox.css" rel="stylesheet" />
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" media="screen" href="__PUBLIC__/Js/jqGrid/themes/redmond/jquery-ui-1.8.2.custom.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="__PUBLIC__/Js/jqGrid/css/ui.jqgrid.css" />
+<!-- 日程 -->
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Css/fullcalendar.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Css/fullcalendar.print.css" media="print" />
+
+<script src="__PUBLIC__/Js/Huploadify/Huploadify.css"></script>
+<link href="__PUBLIC__/Js/uploadify/css/uploadify.css" rel="stylesheet" type="text/css" media="screen"/>
+
+<!-- ztree -->
+<link href="__PUBLIC__/Css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+<!--[if IE]>
+<link href="__PUBLIC__/dwz2/themes/css/ieHack.css" rel="stylesheet" type="text/css" media="screen"/>
+<![endif]-->
+<!-- 日期 -->
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Css/flow/workflow.css" />
+<!--换肤-->
+<!--<link href="__PUBLIC__/Css/tmlstyle/tml_skin_red.css" rel="stylesheet" type="text/css" media="screen"/>-->
+<!--<link href="__PUBLIC__/Css/tmlstyle/tml_skin_green.css" rel="stylesheet" type="text/css" media="screen"/>-->
+<!-- DataTables -->
+<!--兼容样式-->
+<!--<link href="__PUBLIC__/Css/tmlstyle/jui_bootstrap_compatible.css" rel="stylesheet" />-->
+
+<link href="__PUBLIC__/Js/newCombobox/jquery.ajax-combobox.css" rel="stylesheet" />
+
+<script>
+// window.onerror = function(errorMsg, url, lineNumber) {
+// 		try{
+// 			alertMsg.error("页面JS错误");
+// 			$("#background,#progressBar").hide();
+// 		}catch(err){
+// 			console.log(errorMsg);
+// 		}
+// 		return false;  
+// }
+var TP_ROOT = "__ROOT__";
+var TP_TMPL = "__TMPL__";
+var TP_APP  = "__APP__";
+var TP_PUBLIC  = "__PUBLIC__";
+var TP_URL  = "__URL__";
+var TP_DECIMAL='{:getDigits(0,false)}';
+var dialogMaskNum = 0;
+</script>
+<script src="__PUBLIC__/Js/jquery-1.7.1.js" type="text/javascript"></script>
+<!-- bootstrap-->
+<!--<script src="__PUBLIC__/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>-->
+
+<!-- swfupload -->
+<script src="__PUBLIC__/Js/swfupload/scripts/swfupload.js"></script>
+<!-- uploadify -->
+<script src="__PUBLIC__/Js/uploadify/scripts/jquery.uploadify.js"></script>
+<!-- html5 uploadify -->
+<script src="__PUBLIC__/Js/Huploadify/jquery.Huploadify.js"></script>
+<!-- 条件js -->
+<script src="__PUBLIC__/Js/addResult.js" type="text/javascript"></script>
+		
+
+<script type="text/javascript" language="javascript" src="__PUBLIC__/Js/DataTables/media/js/jquery.dataTables.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/tml.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/jquery.table_wang_info_new.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/chosen/chosen.css" />
+
+<script src="__PUBLIC__/chosen/chosen.jquery.js" type="text/javascript"></script>
+<link href="__PUBLIC__/Js/select2/select2.css" rel="stylesheet"/>
+<script type="text/javascript" language="javascript" src="__PUBLIC__/Js/select2/select2.js"></script>
+<script src="__PUBLIC__/Js/jquery.popupwindow.js" type="text/javascript"></script>
+<script src="__PUBLIC__/dwz2/js/jquery.cookie.js" type="text/javascript"></script>
+<script src="__PUBLIC__/dwz2/js/jquery.validate.js" type="text/javascript"></script>
+<script src="__PUBLIC__/dwz2/js/jquery.bgiframe.js" type="text/javascript"></script>
+
+<script src="__PUBLIC__/Js/jquery.anchorsToolBar.js" type="text/javascript"></script>
+<script src="__PUBLIC__/Js/jquery.affix-form.js" type="text/javascript"></script>
+<script src="__PUBLIC__/Js/jquery.switch.js" type="text/javascript"></script>
+<script src="__PUBLIC__/dwz2/js/dwz.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/dwz2/js/dwz.regional.zh.js" type="text/javascript"></script>
+<script src="__PUBLIC__/ueditor/ueditor.config.js" type="text/javascript"></script>
+<script src="__PUBLIC__/ueditor/ueditor.all.min.js" type="text/javascript"></script>
+<script src="__PUBLIC__/Js/jquery.marquee.js" type="text/javascript"></script>
+<script src="__PUBLIC__/Js/addResult.js" type="text/javascript"></script> 
+<script src="__PUBLIC__/Js/EsbApi/esblink.api.js" type="text/javascript"></script> 
+<!-- 引入百度地图API -->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=yshpYZlwnyEREkgdIgHcCPVx"></script>
+<!-- lodop打印 -->
+<!-- 日程 -->
+<script src="__PUBLIC__/Js/jquery-ui-1.10.3.custom.js" type="text/javascript"></script>
+<script src="__PUBLIC__/Js/fullcalendar.js" type="text/javascript"></script>
+<!-- 聊天室js start -->
+<!--  
+<script src="http://<php>echo $_SERVER['SERVER_NAME'].':'.C('chat_port');</php>/socket.io/socket.io.v0.9.9.js" type="text/javascript"></script>
+-->
+<!-- 预加载 -->
+<script src="__PUBLIC__/Js/LAB.min.js" type="text/javascript"></script>
+<!-- 导航js -->
+<!-- 自定义js -->
+<script src="__PUBLIC__/Js/main.js" type="text/javascript"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/jquery.dragsort.js"></script>
+
+<script type="text/javascript" src="__PUBLIC__/Js/common.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/calculator.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/highcharts.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/plugin.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/jquery.cookie.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Js/newCombobox/jquery.ajax-combobox.js"></script>
+
+
+<!--	列表树插件 -->
+<link rel="stylesheet" href="__PUBLIC__/Js/jqueryTable/screen.css" media="screen" />
+<link rel="stylesheet" href="__PUBLIC__/Js/jqueryTable/jquery.treetable.css" />
+<link rel="stylesheet" href="__PUBLIC__/Js/jqueryTable/jquery.treetable.theme.default.css" />
+<script src="__PUBLIC__/Js/jqueryTable/jquery.treetable.js"></script>
+
+<script>
+$(function() {
+	$LAB.script("__PUBLIC__/Charts/FusionCharts.js")
+	.script("__PUBLIC__/Js/jquery.colorbox.js")
+	.script("__PUBLIC__/Js/jquery.autocomplete.js")
+	.script("__PUBLIC__/Js/jquery.ztree.all-3.4.js")
+	.script("__PUBLIC__/My97DatePicker/WdatePicker.js")
+	.script("__PUBLIC__/Js/jquery.lazyload.min.js")
+	.script("__PUBLIC__/Js/jqGrid/js/jquery.jqGrid.min.js")
+	.script("__PUBLIC__/Js/jqGrid/js/i18n/grid.locale-en.js")
+	.script("__PUBLIC__/Js/report_forms.js")
+	.script("__PUBLIC__/Js/LodopFuncs.js")
+	.script("__PUBLIC__/dwz2/xheditor/xheditor-1.1.12-zh-cn.min.js")
+	.script("__PUBLIC__/Js/jquery.textSearch-1.0.js")
+    .wait(function(){
+    	// 等待所有script加载完再执行这个代码块
+    	//<!--百度编辑器的HomeURl-->
+    	window.UEDITOR_HOME_URL = '__ROOT__/Public/ueditor/';
+    	// 判断加载 初始化弹出
+    	setTimeout(initOpenNavTab, 2000);
+    	function initOpenNavTab(){
+    		var objarr = {$data};
+    		// 判断是否有data参数
+    		if(objarr){
+    			//分割后[0]为实际路径,[1]为标签显示名称,[2]对应Model,[3]对应类型 dialog跟navtab 默认是navtabf
+    			var urls = TP_APP+"/"+objarr['url'].replace(/\,/g, "/");
+    			if(objarr['target']){
+    				if(objarr['target']=='Dialog'){
+    					var options = {};
+    					options.width = 980;
+    					options.height = 566;
+    					options.mask = true;
+    				   $.pdialog.open(urls,objarr['model'],objarr['title'],options);		
+    				}else{
+    					navTab.openTab(objarr['model'], urls, {title : objarr['title'],fresh : true,data : {}});
+    				}
+    			}else{
+    				navTab.openTab(objarr['model'], urls, {title : objarr['title'],fresh : true,data : {}});
+    			}
+    		} else {
+    			/* if('{$MisWorkMonitoringcount}'!=0 || "{$remindcount[0]}"){
+        			$.pdialog.open('__APP__/MisSystemPanelMethod/userinterface', 'userinterface', '欢迎您！',{width:600,height:500,mask:false,global:false});
+        		 } */
+    		}
+    	}
+       // 站点地图
+       var cuarWindowHeight = $(window).height();
+       $('div.site_map_lay .map_content').height(cuarWindowHeight - 200);
+       
+       window.onresize = function()
+       {  
+			var cuarWindowHeight = $(window).height();
+			$('div.site_map_lay .map_content').height(cuarWindowHeight - 200);
+       }
+       
+        $("a.site_map").toggle(function(){
+            $('div.site_map_lay').fadeIn(200);
+            $("#navikeyinput").focus();
+            $("a.site_map .map_name").html("关闭导航");},
+        function(){
+            $('div.site_map_lay').fadeOut(200);
+            $("a.site_map .map_name").html("系统导航");}
+        );
+    });
+});
+</script>
+<script>
+$(window).off("message");
+$(window).on('message', function (e) {
+    var command = e.originalEvent.data, origin = e.originalEvent.origin;
+    var arr = command.split("###");
+    if(arr.length>0 && arr[0]=="openTMLNavTab"){
+    	var data = arr[1].split("&&&");
+    	$.ajax({
+   		   type: "POST",
+   		   url: TP_URL+"/getTMLNavTabId/module/"+data[0]+"/orderno/"+arr[4],
+   		   data: "",
+   		   success: function(url){
+   			   if(url!==""){
+		   		   var title=data[1]?data[1]:"报表查看";
+		   	       var tabid="baobiao_view";
+		   	       var fresh=true;
+		   	       var external=false;
+		   	       navTab.openTab(tabid,url,{title:title,fresh:fresh,external:external});
+   			   }
+   		   }
+   		});
+   		
+    }
+});
+
+if(typeof io != 'undefined'){
+	var socketio;
+	var unreadMsgs;
+	document.cookie = 'socketUid=<php>echo $_SESSION[C("USER_AUTH_KEY")];</php>;path=/;';
+
+	$(document).ready(function(){
+		socketio = new io.connect("http://<php>echo $_SERVER['SERVER_NAME'].':'.C('chat_port');</php>");
+		unreadMsgs = {};
+		/* 被其他地方的登陆挤下线 */
+		socketio.on('bePoped', function(){
+			alert('您的帐号有其他地方的登陆，被迫下线，如不是您本人允许，请修改密码');
+			window.location.href = TP_APP + '/Public/logout/';
+		});
+
+		$('li[tabid="MisChat"] span').live('click',function(){
+			$(this).removeClass('newMsgIn');
+		});
+
+		/* 提示有新消息 */
+		socketio.on('noticeMsgIn', function(data){
+			if($('#chat_flag').length == 0){
+				$('#room_enter .shownotic').show();
+				data.time = msgTime();
+
+				if(typeof unreadMsgs[data.from] == 'undefined'){
+					unreadMsgs[data.from] = [];
+				}
+
+				unreadMsgs[data.from].push(data);
+			}else if($('#chat_flag:visible').length == 0){
+				$('li[tabid="MisChat"] span').addClass('newMsgIn');
+			}
+		});
+
+		function msgTime(){
+			var date = new Date();
+			var minutes = date.getMinutes();
+			var seconds = date.getSeconds();
+			minutes = minutes >= 10 ? minutes : '0' + minutes;
+			seconds = seconds >= 10 ? seconds : '0' + seconds;
+			return date.getHours() + ':' + minutes + ':' + seconds;
+		};
+	});
+}
+function changecompang(obj){
+	var val=$(obj).val();
+	$.ajax({
+		type : "POST",
+		url : "__URL__/lookupchangec",
+		data : {
+			'companyid' : val,
+		},
+		success : function(response) {
+			window.location.reload();
+		}
+	});
+	
+}
+function changecompang1(obj,id){
+	
+	$.ajax({
+		type : "POST",
+		url : "__URL__/lookupchangec",
+		data : {
+			'companyid' : id,
+		},
+		success : function(response) {
+			window.location.reload();
+		}
+	});
+	
+}
+</script>
+<script>
+//不支持ie6显示
+if($.browser.msie && ($.browser.version == "6.0") && !$.support.style){
+	alert("要想浏览效果更佳,请使用IE6以上版本!");
+	//window.location.href="http://yun.tmlsoft.com";
+}
+</script>
+<script>
+	//发起工作遮罩层处理
+	$(function() {
+		$(".index_work_lay").css("width",$(".tml_box_content").width()+30);
+	});
+</script>
+<style>
+
+</style>
+</head>
+<body scroll="no">
+	<if condition="(Cookie::get('needupgrade') eq 1)">
+		<!-- <div class="upgradenotice">
+			<a target="navTab" rel="TMLupgrade" title="系统升级" href="__APP__/Public/upgrade">您目前使用的 TML 程序有新版本发布，请及时升级<span>在线升级</span></a>
+		</div> -->
+	</if>
+	<div class="xymodal_overlay" id="xyModalOverlay1"></div>
+	<div class="xymodal" id="xyModal1"></div>
+	<div class="xymodal_arrow" id="xymodalArrow1"></div>
+	<div class="xymodal_overlay" id="xyModalOverlay2"></div>
+	<div class="xymodal" id="xyModal2"></div>
+	<div class="xymodal_arrow" id="xymodalArrow2"></div>
+	<div id="layout">
+		<div id="header">
+			<div class="headerNav">
+				<a class="" href="{$Think.config.bbsurl}" style="display:inline-block; position: absolute;left:10px; top:5px;">
+					<if condition="$logoPic != null">
+						<img alt="logo" height="40" src="__PUBLIC__/Uploads/{$logoPic}" />
+					<else/>
+						<img alt="logo" height="40" src="__PUBLIC__/Images/logo.png" />
+					</if>
+					<!-- <if condition="$uid!=1 ">
+					切换公司
+					<select name="changecompanyid"  onchange="changecompang(this)" class="combox">
+						<volist name="MisSystemCompanyList" id="MisSystemCompanyVo">
+							<option  <if condition="$_SESSION['companyid'] eq $MisSystemCompanyVo">selected</if> value="{$MisSystemCompanyVo}">{$MisSystemCompanyVo|getFieldBy='id','name','mis_system_company'} </option>
+						</volist>
+					</select>
+					</if> -->
+				 </a>
+                <div class="login_company">
+                	<span class="company_name">{$companyname}</span>
+	                <if condition="count($MisSystemCompanyList) gt 1">
+	                	<span class="icon-angle-down company_select"></span>
+	                </if>
+                </div>
+                 <div id="loadcompany" class="company_cut top_drop_lay">
+					<ul>
+						<volist name="MisSystemCompanyList" id="MisSystemCompanyVo">
+							<li <if condition="$MisSystemCompanyVo.companyid eq $companyid">class="active"</if> onclick="changecompang1(this,{$MisSystemCompanyVo['companyid']})">{$MisSystemCompanyVo['name']} </li>
+						</volist>
+					</ul>
+				</div>
+                <script type="text/javascript">
+					$(function(){
+						$("span.company_name,span.company_select").click(function(){
+							$("#loadcompany").toggle();
+						});
+
+						$("#loadcompany").mouseleave(function(){
+								$("#loadcompany").hide();	
+							})
+					})
+                    $(function(){
+                        $('.user_operate_ul li a.theme').click(function(){
+                            $(this).closest("ul").find("a").removeClass('active');
+                            $(this).addClass('active');
+                        });
+                    });
+				</script>
+				<div style="position:absolute;top:7px; left:23%;width:45%;height:30px;z-index:100;color:#363636;font-size:12pt;line-height:20px">
+				 	<marquee behavior="scroll" width="100%" scrollamount="3" direction="left" line-height="10px">
+					 	<ul>
+						 	<li style=" float:left; clear: right; white-space: nowrap;height: 30px;list-style: none;">
+						 		{$roll|htmlspecialchars_decode}
+						 	</li>
+					 	</ul>
+				 	</marquee>
+				 </div>
+				<!--<ul class="nav" id="mainpanel">-->
+				<ul class="right_top" id="mainpanel">
+					<li class="nav_first">
+					<div id="loadusername" class="top_drop_lay user_more_operate">
+						<ul class="user_operate_ul">
+							<li><a href="__APP__/UserInfo/index"target="navTab" rel="UserInfo">个人资料</a></li>
+							<li>
+                                <a href="__APP__/MisMessage/index/messageType/inboxself" target="navTab" title="收件箱" rel="MisMessage">
+                                    <span>邮件</span>
+                                    <span class="tips_number js-countemail">{$newmsg['countsum']}</span>
+                                </a>
+                            </li>
+							<li>
+                                <a href="#">
+                                    <span>待处理工作</span>
+                                    <span class="tips_number">{$workCount}</span>
+                                </a>
+                            </li>
+							<li>
+                                <span class="left">换肤：</span>
+                                <a class="left skin_blue theme active" title="默认" href="#"></a>
+                                <a class="left skin_green theme" title="绿色" href="#"></a>
+                                <a class="left skin_red theme" title="红色" href="#"></a>
+							</li>
+						</ul>
+					</div>
+					<script type="text/javascript">
+					$(function(){
+						$("#mainpanel .login_user_name ").click(function(){
+							$("#loadusername").toggle();
+						})
+						$("#loadusername").mouseleave(function(){
+							$("#loadusername").hide();	
+						})
+					})
+					</script>
+                        <img class="user_photo" width="38" height="38" <if condition="$loaduserpicture">src="__PUBLIC__/{$loaduserpicture}" <else/>src="__PUBLIC__/Uploads/img/photo/photo.jpg" </if> alt=""/>
+                        <span class="login_user_name">{$Think.session.loginUserName}</span>
+                    </li>
+                    <li>
+                        <a class="cache_clean" target="dialog" width="300" height="250" mask="true" href="__URL__/clearcache" title="清空缓存">清空缓存</a>
+                    </li>
+                    <li>
+                        <a class="logout_btn" href="__APP__/Public/logout/" title="退出系统">退出 <span class="icon-power-off"></span></a>
+                    </li>
+
+					<!--<li class="navList" id="msgindexnewrefurbish">-->
+						<!--<a class="messages" href="__APP__/MisMessage/index/messageType/inboxself" title="收件箱" id="messages" target="navTab" rel="MisMessage"><small>短消息</small><em id="alertusermsgnum" <eq name="newmsg.countsum" value="0">style="display:none;"</eq> class="alert_num"><span class="js-countemail">{$newmsg['countsum']}</span></em></a>-->
+						<!--<div class="messageInfo" id="messageInfo">-->
+							<!--<span class="messageInfoArrow"></span>-->
+							<!--<h3>邮件消息</h3>-->
+							<!--<ul>-->
+								<!--<li><a href="__APP__/MisMessage/index/messageType/inboxself" title="收件箱" target="navTab" rel="MisMessage">收件箱(<span class="js-selfemail">{$newmsg['countInboxMessage']}</span>)</a></li>-->
+								<!--<li><a href="__APP__/MisMessage/index/messageType/inboxsystem" title="系统信息" target="navTab" rel="MisMessage">系统信息(<span class="js-systememail">{$newmsg['countSystemMessage']}</span>)</a></li>-->
+							<!--</ul>-->
+						<!--</div>-->
+					<!--</li>-->
+					<!--<li class="navList" id="alertpanel">-->
+						<!--<a class="alerts" href="#" title="待处理">待处理-->
+							<!--<span class="msg" id="msg_work"></span>-->
+							<!--<em class="alert_num"<eq name="worklist.daiban" value="0">style="display:none;"</eq>>{$workCount}</em>-->
+						<!--</a>-->
+						<!--<div class="subpanel" style="display:none;">-->
+							<!--<h3>待处理工作</h3>-->
+							<!--<ul	id="MisTodoShow"></ul>-->
+						<!--</div>-->
+					<!--</li>-->
+					<!--<li class="navList"><a class="navGroup" href="__APP__/MisSystemDepartment/organization" tabid="__APP__MisSystemDepartment"  target="dialog" width="980" height="566"  mask="true" rel="MisSystemDepartment">组织结构</a></li>-->
+					<!--<if condition="$_SESSION.a eq 1">-->
+					<!--<li class="navList"><a class="navGuide" href="__URL__/guidance" target="dialog" tabid="__MODULE__importconfig" height="350" width="700" rel="index" title="引导页面">引导页面</a></li>-->
+					<!--<li class="navList"><a class="navClean" target="dialog" width="300" height="250" mask="true" href="__URL__/clearcache" title="清空缓存">清空缓存</a></li>-->
+					<!--</if>-->
+					<!--<li class="navList"><a class="navLogout" href="__APP__/Public/logout/" title="注销">注销</a></li>-->
+				</ul>
+
+				<!-- <ul class="themeList" id="themeList">
+					<li theme="default" class="default"><div>蓝色</div></li>
+					<li theme="green" class="green"><div>绿色</div></li>
+					<li theme="purple" class="purple"><div>紫色</div></li>
+					<li theme="silver" class="silver"><div>银色</div></li>
+					<li theme="azure" class="azure"><div>天蓝</div></li>
+					<li theme="azureplus" class="default"><div class="selected">天蓝+</div></li>
+					<li theme="xystyle2" class="default"><div>深蓝</div></li>
+				</ul> --><!--
+				<include file="Public:example" /> -->
+				<script>
+					function deletecache(){
+						var u='__APP__/Index/clear_cache/';
+						$.ajax({
+							type:'GET',
+							url:u,
+							success:function(json){
+								json = DWZ.jsonEval(json);
+								alertMsg.correct(json.message);
+							},
+							error:DWZ.ajaxError});
+						return false;
+					}
+					function myopendialog(){
+					    $.pdialog.open("__APP__/MisUserApps/add", 'fifterDiv', '添加APP应用', {resizable:false});
+					    return false;
+					}
+				</script>
+
+			</div>
+
+		<!--<div id="navMenu">{$often}</div>-->
+		</div>
+		<div id="container">
+			<div id="navTab" class="tabsPage">
+				<div class="tabsPageHeader">
+					<div class="mymenu-trigger">
+						<a href="#" id="xyStartMenuTrigger"><span class="icon-reorder"></span><span> 菜单</span></a>
+					</div>
+					<div class="tabsPageHeaderContent"><!-- 显示左右控制时添加 class="tabsPageHeaderMargin" -->
+						<ul class="navTab-tab">
+							<li tabid="main" class="main"><a href="javascript:void(0)"><span><span class="home_icon">我的主页</span></span></a></li>
+						</ul>
+					</div>
+					<div class="tabsLeft">left</div><!-- 禁用只需要添加一个样式 class="tabsLeft tabsLeftDisabled" -->
+					<div class="tabsRight">right</div><!-- 禁用只需要添加一个样式 class="tabsRight tabsRightDisabled" -->
+					<div class="tabsMore">more</div>
+
+				</div>
+				<ul class="tabsMoreList">
+					<li><a href="javascript:void(0)">我的主页</a></li>
+				</ul>
+
+				<div class="navTab-panel tabsPageContent layoutBox">
+					<div style="height:100%;position:relative;">
+						<div class="pageFormContent s_modules" id="s_modules" >
+							<include file="lookupuserindex" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <div class="site_map_lay">
+        <div class="site_map_warp">
+            <div class="map_searcher">
+                <input class="add_map_name left"  type="text" placeholder="请输入您要查找的内容" name="" id="navikeyinput">
+                <a href="#naviselect" id="naviselecta" onclick="navikeyfind();"><button class="map_search_btn icon-search right " type="button"></button></a>
+            </div>
+            <div class="map_header">
+                <div class="map_header_title">系统导航</div>
+            </div>
+            <div class="map_content">
+                <ul class="map_con_ul">
+                <volist name="navilist" id="vo">
+                    <li>
+                        <div class="big_kind_lay left"><a class="big_kind" href="#">{$vo.name}</a></div>
+                        <div class="cell_kind_lay right">
+                            <volist name="vo['_child']" id="v1">
+                            <dl class="cell_kind">
+                                <dt>【{$v1.title}】</dt>
+                                <volist name="v1['_child']" id="v2">
+                                <dd><a href="javascript:void(0);" dhref="__APP__/{$v2.name}/index" rel="{$v2.name}" title="{$v2.title}" class="navilist1" onclick="jumpToIndex1(this);" id="{$v2.id}">{$v2.title}</a></dd>
+                                </volist>
+                            </dl> 
+                            </volist>                         
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+				</volist>
+                </ul>
+            </div>
+        </div>
+    </div>
+	<div id="footer">
+        <button class="animation_elm">
+            <span class="icon-medkit"></span> 反馈错误
+        </button>
+        Copyright &copy; 2014 {:C('COPYRIGHT')}
+         	<!-- <a style="color:red; display:none;" class="remindaspan remind_centrality" target="navTab" title="提醒中心" rel="MisSystemDataRemindMas" href="__APP__/MisSystemDataRemindMas/index">您有新的提醒信息！<img src="__PUBLIC__/Images/newremind.gif"/></a> -->
+        <a class="right site_map" href="#">
+            <span class="icon-map-marker map_icon"></span>
+            <span class="map_name">系统导航</span>
+        </a>
+    </div>
+	<!-- 打印插件 -->		
+		<object id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>
+			<embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0 pluginspage="__TMPL__/Lodop/install_lodop.exe"></embed>
+		</object>
+<!-- footpanel -->
+	<!-- 菜单分组 -->
+	<div class="xystartmenu" id="xystartmenu">
+		<div class="xystartmenu_title">
+		</div>
+		<div class="xystartmenu_con clearfix">
+			<div class="xystartmenu_main">
+				{$pannels}
+			</div>
+			<div class="xystartmenu_sub"></div>
+		</div>
+	</div><!-- end of xystartmenu_con -->
+<div class="xystartmenu_shadow" id="xyStartMenuShadow"></div>
+<style>
+.map_searching {
+    background:background: none repeat scroll 0 0 red;
+}
+</style>
+<!-- 系统导航js -->
+<script type="text/javascript">
+//回车模拟a标签点击效果
+$(function(){
+	$('#navikeyinput').keydown(function(e){
+		if(e.keyCode==13){
+			navikeyfind();
+		}		
+		});
+	
+});
+
+$(function(){
+	var account= $.cookie('test');
+	if(account!='123'){
+		//userAlert();
+	}
+})
+var map_searching_index = -1;
+
+function navikeyfind() {
+    var value = $.trim($("#navikeyinput").val());// 取得关键字
+    if (value === "") return; // 如果关键字为空则直接返回
+    // 判断当前树和检索关键字是否相同
+    var list = $("ul").find(".navilist1");
+	list.attr("name","");
+	var frist_num = 0;
+	var find_obj = $(".map_con_ul li a.find_this");
+	var select_obj = $(".map_con_ul li a.select");
+	if(find_obj.length==select_obj.length){
+		map_searching_index = -1;
+		list.removeClass("find_this");
+		
+	}
+	list.removeClass("map_searching");
+    $.each(list,function(i){
+    	$(this).removeClass('select');
+    	$(this).attr("name","");
+    	if($(this).text().indexOf(value)>-1){
+    		$(this).addClass('select');
+			if(map_searching_index==-1 || (frist_num ==0 && i > map_searching_index)){
+				map_searching_index = i;
+				frist_num = map_searching_index;
+				$(this).attr("name","naviselect");
+	    		$(this).addClass("find_this");
+			}
+    	}
+    });
+    if(map_searching_index!=-1){
+    	list.eq(map_searching_index).addClass("map_searching");
+    }
+    
+    window.location.href=$('#naviselecta').attr('href');
+}
+
+$("#navikeyinput").change(function(){
+	map_searching_index = -1;
+	$("ul").find(".navilist1").removeClass("find_this");
+});
+
+function jumpToIndex1($obj){
+	// 站点地图
+    $("a.site_map").click();
+	var $this = $($obj);
+	var title=$this.attr("title")||$this.text();
+	var tabid=$this.attr("rel")||"_blank";
+	var fresh=eval($this.attr("fresh")||"true");
+	var external=eval($this.attr("external")||"false");
+	var url=unescape($this.attr("dhref"));
+	DWZ.debug(url);
+	if(!url.isFinishedTm()){
+	alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+	return false;}
+	navTab.openTab(tabid,url,{title:title,fresh:fresh,external:external});
+}
+</script>
+<!-- 系统导航js结束  -->
+<script type="text/javascript">
+;(function($, xy){
+	var $this = $('#xystartmenu');
+	var $trigger = $('#xyStartMenuTrigger');
+	var $shadow = $('#xyStartMenuShadow');
+	var main = $this.find('.xystartmenu_main');
+	var $li = main.find('li');
+	var mainLi = main.children('ul').children('li');
+	var mainLiLength = mainLi.length;
+	var use = $this.find('.xystartmenu_sub');
+	var subLi = use.find('li');
+	var subLiLength = subLi.length;
+	var $ul = null;
+	var timer = null;
+	var i = 0;
+	var w = 182 * Math.ceil(mainLiLength / 12);
+	w = w + 158 * Math.ceil(subLiLength / 11) + 'px';
+	$this.width(w);
+	$shadow.width(w);
+	
+	$trigger.bind('click', function(e){
+		e.preventDefault();
+		e.stopPropagation();
+		$this.show();
+		$shadow.show();
+	});
+	
+	$li.bind('mouseenter', function(){
+		var $this = $(this);
+		$this.addClass('hov');
+		var pxy = $this.offset();
+		var oUl = $this.children('ul');
+		xy.startMenuPosition(oUl, pxy);
+		$(this).children('ul').show();
+	}).bind('mouseleave', function(){
+		$(this).removeClass('hov');
+		$(this).children('ul').hide();
+	}).bind('click', function(){
+		$this.find('.xystartmenu_s_ul').hide().end().hide();
+		$shadow.hide();
+	});
+	
+	$(document).bind('click', function(e){
+		var $target = $(e.target);
+		$this.hide();
+		$shadow.hide();
+	});
+	
+	subLi.bind('click', function(){
+		$this.hide();
+		$shadow.hide();
+	});
+/*	
+	while(mainLiLength > 12){
+		$Ul = $('<ul></ul>');
+		for(i = 12; i < mainLiLength; i++){
+			$Ul.append(mainLi[i]);
+		}
+		main.append($Ul);
+		mainLiLength = $Ul.children('li').length;
+	}
+*/	
+	if(subLiLength == 0){
+		use.hide();
+	}
+	
+	while(subLiLength > 11){
+		$Ul = $('<ul></ul>');
+		for(i = 11; i < subLiLength; i++){
+			$Ul.append(subLi[i]);
+		}
+		use.append($Ul);
+		subLiLength = $Ul.find('li').length;
+	}
+	
+	$shadow.height($this.height());
+	
+	$this.bind('click', function(e){
+		e.stopPropagation();
+	});
+	
+	$ul = null;
+	
+	$('#messages, #messageInfo').bind('mouseenter', function(e){
+		clearTimeout(timer);
+		$('#messageInfo').show();
+	}).bind('mouseleave', function(e){
+		timer = setTimeout(function(){
+			$('#messageInfo').hide();
+		}, 500);
+	});
+})(jQuery, xy);
+/* 添加模块可拖动 */
+$("#partList").dragsort({ dragSelector: "li .part_title", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+function saveOrder(){
+	var panelindex = "0";
+	$("#partList").find("input[name='panelsort[]']").each(function(){
+		panelindex += ","+$(this).val();
+	});
+	if (panelindex == "0") {
+		return false;
+	}
+	$.ajax({
+		type:"POST",
+		url: TP_APP+"/MisSystemPanelMethod/savepanelsort",
+		data:{panelindex:panelindex},
+		async:true,
+		global:false
+	});
+	return false;
+}
+var wsdata='{$wsdata}';
+</script>
+</body>
+<script src="__PUBLIC__/Js/wssend.js" type="text/javascript"></script> 
+</html>

@@ -1,0 +1,86 @@
+<script>
+$("#searchby_publicfiles{$modelname}").change(function(){
+	var v=$(this).val();
+	if( v=="createtime"){
+		$("#searchby_publicfiles{$modelname}2").css("display","block");
+		$("#searchby_publicfiles{$modelname}1").css("display","none");
+		$("#searchby_publicfiles{$modelname}3").css("display","none");
+		$("#searchby_publicfiles{$modelname}4").css("display","none");
+	} else if( v=="pid"){
+		$("#searchby_publicfiles{$modelname}3").css("display","block");
+		$("#searchby_publicfiles{$modelname}1").css("display","none");
+		$("#searchby_publicfiles{$modelname}2").css("display","none");
+		$("#searchby_publicfiles{$modelname}4").css("display","none");
+	}else if( v=="technosphere"){
+		$("#searchby_publicfiles{$modelname}4").css("display","block");
+		$("#searchby_publicfiles{$modelname}1").css("display","none");
+		$("#searchby_publicfiles{$modelname}2").css("display","none");
+		$("#searchby_publicfiles{$modelname}3").css("display","none");
+	}else{
+		$("#searchby_publicfiles{$modelname}1").css("display","block");
+		$("#searchby_publicfiles{$modelname}2").css("display","none");
+		$("#searchby_publicfiles{$modelname}3").css("display","none");
+		$("#searchby_publicfiles{$modelname}4").css("display","none");
+	}
+});
+</script>
+<div class="pageHeader">
+	<form rel="pagerForm" onsubmit="return navTabSearch(this);" action="__URL__/index" method="post">
+		<input type="hidden" name="modelname" value="{$modelname}">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div id="searchby_publicfiles{$modelname}1" <neq name="ifhidden" value="0"> style="display:none;" </neq>>
+							请输入关键字：
+							<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+						<div id="searchby_publicfiles{$modelname}2" <neq name="ifdatehidden" value="0"> style="display:none;" </neq>>
+							请输入查询日期：
+							<input type="text" readonly="readonly" value="{$datestart}" format="yyyy-MM-dd HH:mm" class="date textInput readonly" name="datestart">
+							<-------->
+							<input type="text" readonly="readonly" value="{$dateend}" format="yyyy-MM-dd HH:mm" class="date textInput readonly" name="dateend">
+						</div>
+						<div id="searchby_publicfiles{$modelname}4" <neq name="searchbyid" value="technosphere"> style="display:none;" </neq>>
+							<label style="width:90px;">请选择技术领域：</label>
+							<select name="technosphere" class="combox">
+								<option value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="ftype" name="fieldtype">
+									<option  value="{$key}" <if condition="$tcpid eq $key">selected="selected"</if>>{$ftype}</option>
+								</volist>
+							</select>
+						</div>
+						<div id="searchby_publicfiles{$modelname}3" <neq name="searchbyid" value="pid"> style="display:none;" </neq>>
+							<label style="width:90px;">请选择流程类型：</label>
+							<select name="pid" class="combox">
+								<option value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="fplist" name="prinfolist">
+									<option <eq name="lcid" value="{$key}">selected</eq> value="{$key}">{$fplist}</option>
+								</volist>
+							</select>
+						</div>
+					</td>
+					<td>
+						<select id="searchby_publicfiles{$modelname}"  class="combox"  name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option  value="{$vou['id']}" <eq name="searchbyid" value="$vou['id']">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option  value="{$voty['id']}" <eq name="searchtypeid" value="$voty['id']">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,55 @@
+<script type="text/javascript">
+$(function(){ 
+		var conf1 = new Object(); 
+    	conf1.data = '{$depdata}'; 
+    	conf1.ids ='.a,.b';
+    	conf1.tag ='compay,dept'; 
+    	conf1.pid = 'companyid'; 
+    	conf1.tex = 'name';
+    	conf1.val = 'id'; 
+    	conf1.defaultVal='{$companyid},{$departmentid}';
+    	conf1.container = $.pdialog.getCurrent(); // 新加组件作用域
+    	conf1.istree=true ; // 是否开启树形数据功能。
+    	conf1.islastchoice =true; // 是否开启最下一项可选择功能
+		$.linkage(conf1); 
+ });
+</script>
+
+<div class="pageContent">
+	<form method="post" action="__APP__/MisRoleGroup/insert" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+			<input type="hidden" name="catgory" value="3"/> <!-- 项目人员类别 -->
+			<div class="tml-row" id="nbm_tml-row">
+				<div class="tml-form-col">
+					<label>公&nbsp;&nbsp;&nbsp;&nbsp;司：</label>
+					<select  name="companyid" class="a chosen required "></select>
+				</div>
+				<div class="tml-form-col">
+					<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+					<select name="departmentid" class="b chosen required">
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>岗位名称：</label>
+					<input type="text" class="required" maxlength="25" name="name" />
+				</div>
+				<div class="tml-form-col">
+					<label>排序：</label>
+					<input type="text" maxlength="4" name="sort" />
+				</div>
+				<div class="tml-form-col">
+	                <label>状&nbsp;&nbsp;&nbsp;&nbsp;态：</label>
+	                <select name="status" class="combox">
+	                    <option value="1" selected>启用</option>
+	                    <option value="0">禁用</option>
+	                </select>
+	            </div>
+			</div>		
+			<div class="tml-form-row">
+            <label>备注：</label>
+            <textarea name="remark" class="textInput" maxlength="100" rows="4" cols="40"></textarea>
+        </div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

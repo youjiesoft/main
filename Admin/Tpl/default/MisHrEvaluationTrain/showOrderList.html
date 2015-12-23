@@ -1,0 +1,56 @@
+<form method="post" action="__URL__/tagUserDone/" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogunclose);">
+	<input type="hidden" name="trainid" value="{$trainid}" />
+	<div class="pageContent" selector="h1" style="width:auto;margin:0 auto;text-align:left;background-color:white;height:auto;border:1px solid silver;" layoutH="33" >
+		<!-- 数据区开始  -->    
+		<table class="list" width="99%">
+			<thead>
+				<tr>
+					<th>签到</th><th>姓名</th><th>部门</th><th>职位</th><th>电话</th><th>备注</th>					
+				</tr>
+			</thead>
+			<tbody>
+				<volist id="vo" name="list">
+					<tr>
+						<td><input type="checkbox" name="onOrder[]"  <eq name="vo.status" value="2">checked</eq> value="{$vo['personid']}" />-{$key+1}</td>
+						<td>{$vo['personid']|getFieldBy='id','name','MisHrPersonnelPersonInfo'}</td>
+						<td>{$vo['personid']|getFieldBy='id','name','MisSystemDepartment'}</td>
+						<td>{$vo['personid']|getFieldBy='id','dutyname','MisHrPersonnelPersonInfo'}</td>
+						<td>{$vo['personid']|getFieldBy='id','phone','MisHrPersonnelPersonInfo'}-{$vo['personid']|getFieldBy='id','shortNumber','MisHrPersonnelPersonInfo'}</td>
+						<td>{$vo['remark']}</td>
+					</tr>
+				</volist>
+			</tbody>
+		</table>
+		<!-- 数据区结束 -->   
+		<div class="clear"></div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationtrain_export">	
+			<li>
+				<div class="buttonActive">
+					<div class="buttonContent">
+						<button type="submit">签到{$Think.lang.save}</button>
+					</div>
+				</div>
+			</li>
+			</if>
+			<li>
+				<a class="button" href="javascript:;" style="float:right;"><span>打印</span></a>
+			</li>	
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationtrain_export">		
+			<li>
+				<a class="button" href="__URL__/export/trainid/{$trainid}" style="float:right;" ><span>导出Excel</span></a>						
+			</li>	
+			</if>
+			<li>
+				<div class="button">
+					<div class="buttonContent">
+						<button type="button" class="close">{$Think.lang.close}</button>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+
+</form>

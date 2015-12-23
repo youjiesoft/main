@@ -1,0 +1,46 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/misperformancelevel_rightcontent" class="pageForm required-validate"  onsubmit="return validateCallback(this,dialogAjaxDone);"  >
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>等级分类：</label>
+					<select name="typeid" class="combox">
+						<volist name="typelist" id="list">
+							<option <eq name="type" value="$key"> selected </eq> value={$key}>{$list}</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>等级编码：</label>
+					<input type="text" name="code" readonly="readonly" value="{$code}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>等级名称：</label>
+					<input type="text" class="required" maxlength="10" name="name" value="" />
+				</div>
+				<div class="tml-form-col">
+					<label>成绩开始值：</label>
+					<input type="text" class="required number" maxlength="25" name="startresult" value="" />
+				</div>
+				<div class="tml-form-col">
+					<label>成绩结束值：</label>
+					<input type="text" class="required number" maxlength="25" name="endresult" value="" />
+				</div>
+			</div>
+			<div class="tml-form-row" >
+				<label>备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+				<textarea name="remark" maxlength="200"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancelevel_insert">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

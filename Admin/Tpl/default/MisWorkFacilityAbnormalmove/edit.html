@@ -1,0 +1,80 @@
+    <div class="pageContent">
+    <form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+        <input type="hidden" name="callbackType" value="closeCurrent">
+        <input type="hidden" name="contracttype" value="{$table}">
+        <input type="hidden" name="id" value="{$vo.id}">
+        <div class="pageFormContent applecloth" layoutH="56">
+            <div class="keepContentCenter form-affix-content">
+                <div class="contentTitle contentTitle_center form-affix-title">办公设备异动
+                    
+                </div>
+                <fieldset class="zlqk_1">
+                    <legend class="zlqk_2">
+                        <b>基本信息</b>
+                    </legend>
+                     <div class="tml-row">
+                     {:W('ShowOrderno',array(1,'mis_work_facility_abnormalmove',$vo['orderno']))}
+	                   <if condition='$fields["movedate"]'>
+                    <div class="tml-form-col"> 
+                        <label>{$fields["movedate"]}：</label>
+                        <span class="xyInputWithUnit">
+                        <input type="text"  name="movedate" onfocus="WdatePicker()" class="tml-border-r0 Wdate" value="{$vo.movedate|transtime}"/>
+                		<span class="input-addon input-addon-calendar"></span>
+                        </span>
+                    </div>
+                    </if>
+                    <if condition='$fields["movedeptid"]'>
+                   <div class="tml-form-col"> 
+                        <label>{$fields["movedeptid"]}：</label>
+                        <select name="movedeptid" class="combox">
+                            {$deptidlist}
+                        </select>    
+                    </div>
+                    <div class="tml-form-col"> 
+                        <label>{$fields["place"]}：</label>
+                        <input type="text" name="place" value="{$vo.place}"/>
+                       </div>
+                    </if>
+                     </div>
+                    <if condition='$fields["remark"]'>
+                    <div class="tml-form-row"> 
+                          <label>{$fields["remark"]}：</label>
+                          <textarea   name="remark"  style="height:50px;" class="textInput">{$vo.remark}</textarea>
+                    </div>
+                    </if>
+                    </fieldset>
+                <fieldset>
+                    <legend>
+                        <b>异动明细</b>
+                    </legend>
+                       <div id="misworkfacilityabnormalmove_edit"  >
+						<include file="lookuptypedetails" />
+					</div>
+                </fieldset>
+                <fieldset class="zlqk_1">
+                    <legend class="fieldset_legend_toggle">
+                        <b>上传附件</b>
+                    </legend>
+                    <!-- 附件信息 -->
+					{:W('ShowUpload',$attarry)}
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>页脚</b>
+                    </legend>
+                    <div class="tml-row">
+	                    <div class="tml-form-col">
+	                        <label title="制单人">制单人：</label>
+	                        <input type="text" readonly="readonly" class="textInput" value="{$vo.createid|getFieldBy='id','name','user'}" />
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="制单时间">制单时间：</label>
+	                        <input class="textInput" readonly="readonly" value="{$vo.createtime|transTime}" />
+	                    </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        {:W('ShowAction',array('data'=>$vo))}
+    </form>
+</div>

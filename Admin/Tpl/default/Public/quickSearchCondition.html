@@ -1,0 +1,32 @@
+<td class="tml_select_option_left">
+    <select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+        <volist id="qsl" name="quickSearchList">
+            <option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+        </volist>
+    </select>
+    <input type="hidden" name="time" value="{$time}" />
+    <input type="hidden" name="remindMap" value="{$remindMap}"/>
+    {:W('HiddenInput')}
+</td>
+<td class="tml_select_option_center">
+	<volist id="qsl" name="quickSearchList">
+		<if condition="$qsl['quickname'] eq $quicksearchby">
+			<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+				{$qsl['html']}
+			</div>
+		<else/>
+			<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+				{$qsl['html']}
+			</div>
+		</if>
+	</volist>
+</td>
+<td class="tml_select_option_right">
+	<button class="xySearch" type="submit"><span class="icon-search"></span></button>
+</td>
+<td>
+	<a class="xyAdvancedSearch" href="__APP__/Search/advancedsearch/model/{$ename}/searchbyinc/{$searchbyinc}" rel="__MODULE__advancedsearch" width="700" height="500" target="dialog" mask="true">高级检索</a>
+</td>
+<td>
+	<a class="xyAdvancedSearch" href="__URL__/lookupUserSetField/model/{$ename}" rel="__MODULE__userSetField" width="700" height="500" target="dialog" mask="true" title="列表设置">设置</a>
+</td>

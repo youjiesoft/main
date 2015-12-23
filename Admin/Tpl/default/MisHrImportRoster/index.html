@@ -1,0 +1,40 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/import/navTabId/" class="pageForm required-validate" onsubmit="return iframeCallback(this,navTabAjaxDone);" enctype="multipart/form-data" target="callbackframe" >
+		<input type="hidden" name="pactcheckid" value="{$id}" >
+		<div class="pageFormContent" layoutH="56">
+			<table   border="0" cellspacing="0" >
+				<tr>
+					<td>
+						<div class="unit">
+							<label>请选择导入文件:</label>
+							<input class="required textInput" type="file"  name="attached" />
+							<span class="info"><a href="__PUBLIC__/Uploads/SysInitImportTemplate/员工花名册示范模板.xls">点此下载示范文件</a></span>
+							<span class="info" style="margin-left:20px;">
+							<a   href="__URL__/importconfig/" rel="__MODULE__importconfig" title="导入配置" target="dialog" tabid="__MODULE__importconfig" height="465" width="500"  mask="true" >
+							<span>导入模板配置</span>
+							</a></span>
+						</div>
+					</td>
+				</tr>
+					<tr>
+						<td>
+							<span class="info">温馨提醒：(为保证数据导入正确请上传后缀为xls的文件!)</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<label>操作类型：</label>
+							<select name="operation" class="combox">
+								<OPTION  value="add">新增</OPTION>
+								<OPTION  value="update">新增及修改</OPTION>
+							</select>
+						</td>
+					</tr>
+				</table>
+		</div>
+		{:W('ShowAction')}
+	</form>
+	</div>
+</div>
+

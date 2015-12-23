@@ -1,0 +1,101 @@
+<script type="text/javascript">
+$(function(){
+		$("ul.xyz_marqueedata[issroll='1']").kxbdMarquee({direction:"up",scrollDelay:"70"});
+
+});
+
+</script>
+
+<div eventtype="click" currentindex="0" class="tabs">
+<if condition="count($sublist) gt 1">
+
+	<div class="tabsHeader">
+		<div class="tabsHeaderContent design_tabs_content">
+			<ul>
+				<volist name="sublist" id="tvo" key = "i">
+				<li <if condition="$i eq 1">class="selected"</if>><a href="javascript:;">{$tvo.name}</a></li>
+				</volist>
+				
+			</ul>
+		</div>
+	</div>
+	<div class="tabsContent tml-p0">
+		<volist name="sublist" id="svo" key = "i">
+		<div>
+		<if condition="$svo.type eq '2'">
+			<a target="{$svo.target}" href="{$svo.url}" class="design_more" title="{$svo.name}">更多</a>
+			<iframe frameborder="0" src="{$svo.url}" allowtransparency="true" scrolling="yes" style="width: 100%; height: 500px">
+			</iframe>
+		<else/>
+			<ul class="expert_cell_warp xyz_marqueedata" issroll="{$svo.issroll}">
+				<volist id="vo" name="svo['list']" key="key2">
+					<a href="{$svo[link]}" rel="{$svo[rel]}" target="{$svo[target]}">
+					<li>
+					  <i class="icon-double-angle-right"></i>
+					  <volist id="vo1" name="svo['detailList']">
+						<span style="display:inline-block;width:{$vo1[widths]};" >
+							<if condition="count($vo1['func']) gt 0">
+								<volist name="vo1.func" id="nam">
+									<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+									{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+									<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+								</volist>
+							<else />
+							{$vo[$vo1['name']]}
+							</if>
+						&nbsp;&nbsp;</span>
+					  </volist>
+					</li></a>
+				</volist>
+					</ul>
+		</if>
+				
+		</div>
+		</volist>
+	</div>
+	<div class="tabsFooter">
+		<div class="tabsFooterContent"></div>
+	</div>
+<else/>
+	<volist name="sublist" id="svo" key = "i">
+		<div class="">
+		<if condition="$svo.type eq '2'">
+		<ul class="expert_cell_warp">
+			<a target="{$svo.target}" href="{$svo.url}" class="design_more" title="{$svo.name}">更多</a>
+			<iframe frameborder="0" src="{$svo.url}" allowtransparency="true" scrolling="yes" style="width: 100%; height: 500px">
+			</iframe>
+			
+		</ul>
+		<else/>
+			<ul class="expert_cell_warp xyz_marqueedata" issroll="{$svo.issroll}">
+				<volist id="vo" name="svo['list']" key="key2">
+					<a href="{$svo[link]}" rel="{$svo[rel]}" target="{$svo[target]}" title="">
+					<li>
+ 						<i class="icon-double-angle-right"></i>
+					  <volist id="vo1" name="svo['detailList']">
+					 
+						<span style="display:inline-block;width:{$vo1[widths]};" >
+							<if condition="count($vo1['func']) gt 0">
+								<volist name="vo1.func" id="nam">
+									<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+									{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+									<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+								</volist>
+							<else />
+							{$vo[$vo1['name']]}
+							</if>
+						&nbsp;&nbsp;</span>
+					  </volist>
+					</li></a>
+				</volist>
+			</ul>
+		</if>
+				
+		</div>
+	</volist>
+</if>	
+</div>
+
+
+
+

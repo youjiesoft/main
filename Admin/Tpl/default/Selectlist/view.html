@@ -1,0 +1,53 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$name}" >
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>名称：</label>
+					<input type="text" class="required" name="name" value="{$name}" readonly="readonly"/>
+				</div>
+				<div class="tml-form-col">
+					<label>描述：</label>
+					<input type="text" class="" name="remark" value="{$vo.remark}" readonly="readonly"/>
+				</div>
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select name="status" class="combox">
+						<option <if condition="$vo.status eq 1">selected</if> value="1">开启</option>
+						<option <if condition="$vo.status eq 0">selected</if> value="0">禁用</option>
+					</select>
+				</div>
+				 <div class="tml-form-col" >
+						<label title="">配置类型：</label>
+						<input type="radio" name="conftype" value="0" <if condition="$vo.conftype eq 0">checked</if>>用户自定义
+	                    <input type="radio" name="conftype" value="1" <if condition="$vo.conftype eq 1">checked</if>>系统配置
+					</div>
+			</div>
+			<div class="dialog-box">
+                <table class="data-table" cellspacing="0" id="Selectlist_ex_edit" width="100%">
+                    <thead>
+                        <tr>
+                            <td style="width:200px;"><strong>键</strong></td>
+                            <td><strong>值</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    	<volist name="selectlistname" id="sname">
+	                        <tr>
+								<td><input type="text" class="gangwei_d xytdinput"  name="arr_key[]" value="{$key}" readonly="readonly"/></td>		
+	                            <td><input type="text" class="gangwei_d xytdinput" name="arr_val[]" value="{$sname}" readonly="readonly"/> </td>                                
+	                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+
+	</div>
+</div>
+
+

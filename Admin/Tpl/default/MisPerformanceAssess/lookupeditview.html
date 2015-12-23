@@ -1,0 +1,68 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 合并行
+	var kpitype = "";
+	var kpitypetd = null;
+	var rowspan = 1;
+	var $box=navTab.getCurrentPanel();
+	$box.find(".plankpitype").each(function(){
+		var val = $(this).text();
+		if(val != kpitype){
+			kpitype = val;
+			kpitypetd = $(this);
+			rowspan = 1;
+			$(this).attr("rowspan",rowspan);
+		} else {
+			rowspan = rowspan+1;
+			kpitypetd.attr("rowspan",rowspan);
+			$(this).remove();
+		}
+	});
+});
+</script>
+<form method="post" action="__URL__/update/navTabId/__MODULE__edit" class="pageForm required-validate"  onsubmit="return validateCallback(this,navTabAjaxDone);"  >
+<input type="hidden" name="planid" value="{$planid}" />
+<input type="hidden" name="byuser" value="{$byuser}" />
+<table class="list">
+	<thead>
+		<tr>
+			<th>考核分类名称</th>
+			<th>考核项目名称</th>
+			<th>分数</th>
+			<volist id="prvo" name="prlist">
+				<th>
+					{$prvo['inuser']|getFieldBy=###,"id","name","User"}
+					({$prvo["inuserqz"]}%)
+				</th>
+			</volist>
+		</tr>
+	</thead>
+	<?php $countScore = 0;?>
+	<tbody>
+		<volist id="plan" name="planandinusers" key="key1">
+			<tr>
+				<td class="plankpitype">{$plan['kpitypename']}({$plan['kpitypeqz']}%)</td>
+				<td>{$plan['kpiname']}</td>
+				<td>{$plan['kpiscore']}<?php $countScore += $plan['kpiscore'];?></td>
+				<volist id="prvo" name="prlist" key="key2">
+					<td>
+						<if condition="in_array($plan['id'], $prvo['inuserskpi'])">
+							<input type="text" style="width: 70px;" name="inuserscore{$prvo['id']}[{$plan['id']}]" value="{$prvo['inuserscore'][$plan['id']]}">
+						</if>
+					</td>
+				</volist>
+			</tr>
+		</volist>
+		<tr>
+			<td colspan="2" align="center">总分</td>
+			<td>{$countScore}</td>
+			<volist id="prvo" name="prlist" key="key2">
+				<td>
+				</td>
+			</volist>
+		</tr>
+	</tbody>
+</table>
+<if condition="$prlist"><button class="xyicon xyIconStartButton" type="submit">保存</button></if>
+</form>

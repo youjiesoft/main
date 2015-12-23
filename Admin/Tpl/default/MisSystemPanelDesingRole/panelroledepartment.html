@@ -1,0 +1,29 @@
+<form id="pagerForm" action="__URL__/index/frame/1/md/{$md}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+		</ul>
+	</div>
+	<table class="table" width="100%" layoutH="148">
+		<thead>
+		<tr>
+			<th>序号</th>
+			<th>部门编码</th>
+			<th>部门名称</th>
+		</tr>
+		</thead>
+		<tbody>
+		    <volist id="v" name="list">
+			    <tr rel="{$v.id}" types="2" onclick="missystempaneldesingrole(this);">
+				    <td>{$v['id']}</td>
+				    <td>{$v['code']}</td>
+                    <td>{$v['name']}</td>
+			    </tr>
+		    </volist>
+		</tbody>
+	</table>
+</div>

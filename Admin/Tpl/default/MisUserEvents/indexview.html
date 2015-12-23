@@ -1,0 +1,161 @@
+<script>
+$(document).ready(function () {
+	var $refBox=$("#calendarManage").parents("div.layoutBox:first");
+	var iRefH=$refBox.height();
+	var iLayoutH=50;
+	var iH=iRefH-iLayoutH>50?iRefH-iLayoutH:50;
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    var calendar = $('#calendarManage').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            /* right: 'month,agendaWeek,agendaDay' */
+        },
+        weekMode:'variable',
+        defaultView:'month',
+        titleFormat: {
+            month: 'yyyy年MMM月',
+            week: "yyyy年MMM月d日{ '&#8212;' [ yyyy年][MMM月]d日}",
+            day: 'yyyy年MMM月d日, dddd'
+        },
+        axisFormat: 'H',
+        allDayText: '跨天',
+        timeFormat: {
+            agenda: 'H:mm{ – H:mm}'
+        },
+        columnFormat: {
+            month: 'ddd',
+            week: 'M.d dddd',
+            day: 'M/d dddd'
+        },
+        height:iH,
+        monthNames: ['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'],
+        monthNamesShort: ['1','2','3','4','5','6','7','8','9','10','11','12'],
+        dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+        dayNamesShort: ['日','一','二','三','四','五','六'],
+        today: ["今天"],
+        firstDay: 1,
+        buttonText: {
+            today: '今天',
+            month: '月',
+            week: '周',
+            day: '日',
+            prev: "<span class='fc-text-arrow'>&lsaquo;</span>",
+            next: "<span class='fc-text-arrow'>&rsaquo;</span>",
+            prevYear: "<span class='fc-text-arrow'>&laquo;</span>",
+            nextYear: "<span class='fc-text-arrow'>&raquo;</span>"
+       },
+       /* 显示日程  */
+       viewDisplay: function (view) {
+           var viewStart = $.fullCalendar.formatDate(view.start, "yyyy-MM-dd HH:mm:ss");
+           var viewEnd = $.fullCalendar.formatDate(view.end, "yyyy-MM-dd HH:mm:ss");
+           $("#calendarManage").fullCalendar('removeEvents');
+           $.post("__URL__/lookupGetdate", { start: viewStart, end: viewEnd }, function (data) {
+               var resultCollection = jQuery.parseJSON(data);
+               $.each(resultCollection, function (index, term) {
+                   $("#calendarManage").fullCalendar('renderEvent', term, true);
+               });
+           }); 
+      },
+      selectable: true,
+      selectHelper: true,
+      /* 新增日程  */
+      select: function(start, end, allDay) {
+          var options={};
+          options.width=700;
+          options.height=600;
+          options.mask=true;
+          var start = $.fullCalendar.formatDate(start, "yyyy-MM-dd HH:mm:ss");
+          var end = $.fullCalendar.formatDate(end, "yyyy-MM-dd HH:mm:ss");
+          start = start.replace(/-/g,'/'); 
+          var date = new Date(start);
+          var startTime = (date.getTime())/1000;
+          end = end.replace(/-/g,'/'); 
+          var date1 = new Date(end);
+          var endTime = (date1.getTime())/1000;
+          /* options.param = "enddate="+end+"&startdate="+start; */
+          $.pdialog.open("__URL__/add/enddate/"+endTime+"/startdate/"+startTime,'add','新增日程 ',options);
+     },
+      /* 拖拽日程  */
+      editable: true,
+      eventDrop:function( event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view ) {
+          /* if (!confirm("你确定要移动日程吗? ")) { */
+              var zhuaistartdate = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm");
+              var zhuaienddate = $.fullCalendar.formatDate(event.end, "yyyy-MM-dd HH:mm");
+              var id =  event.id ;
+              $.ajax({
+                  type: "POST",
+                  url: "__URL__/lookupUpdateDate",
+                  data: {"startdate": zhuaistartdate,"enddate": zhuaienddate, "id": id},
+                  dataType:"text",
+                  success: function (d) {
+                     if(d == '1'){
+                         //alert("移动成功 ");
+                     }else {
+                         //alert("移动失败 ");
+                     }
+                  }
+              });
+          /* }  */
+      },
+      /* 改变大小  */
+      eventResize:function( event, dayDelta, minuteDelta, revertFunc, jsEvent, ui, view ) {
+    	  var changetartdate = $.fullCalendar.formatDate(event.start, "yyyy-MM-dd HH:mm");
+          var changeenddate = $.fullCalendar.formatDate(event.end, "yyyy-MM-dd HH:mm");
+          var id =  event.id ;
+          $.ajax({
+              type: "POST",
+              url: "__URL__/lookupUpdateDate/changeSize/1",
+              data: { "enddate": changeenddate, "id": id ,'startdate':changetartdate},
+              success: function (d) {
+                 if(d == '1'){
+                     //alert("大小改变成功! ");
+                 }else {
+                    //alert("大小改变失败! ");
+                 }
+              }
+          });
+      },
+      /*修改日志 */
+      eventClick:function( event, jsEvent, view ) {
+          var id = event.id;
+          var loginuserid = {$loginuserid};
+          overall= event;
+          var options={};
+          options.width=700;
+          options.height=600;
+          options.mask=true;
+          if(event.createid == undefined){
+        	  $.pdialog.open("__URL__/edit/id/"+id,'edit','修改日程',options);
+        	  return false;
+          }
+          if(event.createid == loginuserid){
+        	  $.pdialog.open("__URL__/edit/id/"+id,'edit','修改日程',options);
+          }else {
+        	  $.pdialog.open("__URL__/lookupview/id/"+id,'lookupview','查看日程',options);
+          }
+      }
+    });
+    $(window).resize(function(){
+    	var $refBox=$("#calendarManage").parents("div.layoutBox:first");
+    	var iRefH=$refBox.height();
+    	var iLayoutH=50;
+    	var iH=iRefH-iLayoutH>50?iRefH-iLayoutH:50;
+    	$('#calendarManage').fullCalendar('option', 'height', iH);
+    });
+});
+var overall;
+</script>
+<div class="clearfix" style="margin:0 auto;">
+	<!--<div class="left">
+		<ul>
+			<li class="clearfix" style="padding:60px 0 10px 0;line-height:20px;"><div class="left" style="border-radius:10px;width:20px;height:20px; background:#E9443A;"></div>&nbsp;&nbsp;<span>紧急处理</span></li>
+			<li class="clearfix" style="padding:30px 0 10px 0;line-height:20px;"><div class="left" style="border-radius:10px;width:20px;height:20px; background:#FFAC24;"></div>&nbsp;&nbsp;<span>优先处理</span></li>
+			<li class="clearfix" style="padding:30px 0 10px 0;line-height:20px;"><div class="left" style="border-radius:10px;width:20px;height:20px; background:#57CF54;"></div>&nbsp;&nbsp;<span>一般处理</span></li>
+		</ul>
+	</div>-->
+	<div id='calendarManage'></div>
+</div>

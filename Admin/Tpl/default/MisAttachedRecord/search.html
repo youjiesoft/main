@@ -1,0 +1,42 @@
+<form id="pagerForm" action="__URL__/search">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" value="{$orderid}" name="orderid"/>
+	<input type="hidden" value="{$type}" name="type"/>
+	
+</form>
+<div class="pageContent">
+	<table class="table" layoutH="58" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>文件名称</th>
+				<th>订单编号</th>
+				<th>附件类型</th>
+				<eq name="view" value="0">
+                	<th>{$Think.lang.action}</th>
+                </eq>
+			</tr>
+		</thead>
+		<tbody>
+            <volist id="vo" name="list">
+            <tr>
+				<td>{$vo['id']}</td>
+                <td><a href="__PUBLIC__/{$vo['attached']}" target="_blank">{$vo['upname']}</a></td>
+				<td>{$vo['orderid']}</td>
+				<td>{$vo['type']}-{$aryType[$vo['type']]['typename']}</td>
+				<eq name="view" value="0">
+					<td>{$vo['status']|showStatus=$vo['id']}</td>
+				</eq>
+			</tr>
+            </volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

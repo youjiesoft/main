@@ -1,0 +1,65 @@
+<style>
+.Ru {
+    background: url("__PUBLIC__/Images/icon/mail_colse.png") no-repeat 0 transparent;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background-origin: padding-box;
+    background-size: auto auto;
+}
+.Kw{
+    background: url("__PUBLIC__/Images/icon/mail_open.png") no-repeat 0 transparent;
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background-origin: padding-box;
+    background-size: auto auto;
+}
+</style>
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid" id="testsss">
+    <form id="pagerForm" action="__APP__/MisMessageInbox/index/type/ajaxcall" method="post">
+        <input type="hidden" name="pageNum" value="1"/>
+        <input type="hidden" name="orderField" value="{$order}" />
+        <input type="hidden" name="orderDirection" value="{$sort}" />
+        <input type="hidden" name="dwzpageNum" value="1"/>
+        <input type="hidden" name="numPerPage" value="{$numPerPage}" />
+    </form>
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li style="display:none;"><a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li>
+            <li style="display:none;"><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/readMessage/id/{sid_node}" target="dialog" mask="true" warn="请选择数据" height="450"><span><span class="icon icon-eye-open icon_lrp"></span>查看</span></a></li>
+            <li style="display:none;"><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/replymessage/id/{sid_node}" target="navTab" warn="请选择数据" width="620" height="460"><span><span class="icon  icon-edit-sign icon_lrp"></span>回复</span></a></li>
+            <li><a class="edit tml-btn tml_look_btn tml_mp" href="__APP__/MisMessage/index" target="navTab" rel="MisMessage"><span><span class="icon icon-envelope-alt icon_lrp"></span>短消息</span></a></li>
+        </ul>
+    </div>
+    <table class="table" width="80%" >
+        <thead>
+            <tr>
+                <th width="25"><div class="Ru" title="">&nbsp;&nbsp;</div></th>
+                <th width="30">编号</th>
+                <th width="150">收件人</th>
+                <th width="250">主题</th>
+                <th width="125">发送时间</th>
+            </tr>
+        </thead>
+        <tbody>
+            <volist id="vo" name="list">
+                <tr target="sid_node" rel="{$vo.id}" >
+                    <td width="20"><div class="<if condition="$vo['readedStatus'] eq '0'">Ru<else/>Kw</if>" title="">&nbsp;&nbsp;</div></td>
+                    <td>{$vo.id}</td>
+                    <td onclick="ondblclick_dialog('a.edit','MisMessageedit','__URL__/readMessage/id/{$vo.id}','查看邮件');">
+                        {$vo.sendid|getFieldBy='id','recipientname','MisMessage'}
+                    </td>
+                    <td>{$vo.sendid|getFieldBy='id','title','MisMessage'}</td>
+                    <td>{$vo.createtime|transTime='Y-m-d H:i:s'}</td>
+                </tr>
+            </volist>
+        </tbody>
+    </table>
+    <div class="panelBar panelPageBar">
+	<div class="pages"><span>共{$totalCount}条</span></div>
+        <div class="pagination" rel="testsss" targetType="navTab"  totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+    </div>
+</div>
+
+

@@ -1,0 +1,288 @@
+<style>
+	.pageFormContent .definedP label {
+	    float: left;
+	    line-height: 21px;
+	    padding: 0 5px 0 10px;
+	    width: 200px;
+	}
+	.pageFormContent .definedP p{
+		width:430px;
+	}
+</style>
+<div class="pageContent">
+	<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<div class="pageFormContent" layoutH="56">
+			<div class="definedP">
+				<p>
+					<label>销售客户单价关联表：</label>
+					<input class="required" maxlength="100" name="unitTable" type="text" size="25" value="{$list['unitTable']}" />
+				</p>
+				<p>
+					<label>销售协议价字段：</label>
+					<input class="required" maxlength="100" name="unitPrice" type="text" size="25" value="{$list['unitPrice']}" />
+				</p>
+				<p>
+					<label>盘点后生成流程节点：</label>
+					<select name="stockToAdjustPid" class="combox">
+						<volist name="procelist" id="plist">
+							<if condition="$list['stockToAdjustPid'] eq $key">
+								<option selected value="{$key}">{$plist}</option>
+								<else/>
+								<option value="{$key}">{$plist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>盘点后生成调整单类型：</label>
+					<select name="stockToAdjustTypeid" class="combox">
+						<volist name="aduList" id="otlist">
+							<if condition="$list['stockToAdjustTypeid'] eq $key">
+								<option selected value="{$key}">{$otlist}</option>
+								<else/>
+								<option value="{$key}">{$otlist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>采购供应商关联表：</label>
+					<input class="required" maxlength="100" name="purchaseUnitTable" type="text" size="25" value="{$list['purchaseUnitTable']}" />
+				</p>
+				<p>
+					<label>采购协议价字段：</label>
+					<input class="required" maxlength="100" name="purchaseUnitPrice" type="text" size="25" value="{$list['purchaseUnitPrice']}" />
+				</p>
+				<p>
+					<label>销售审核后生成采购申请类型：</label>
+					<select name="salesToPurchaseTypeid"  class="combox">
+						<volist name="appList" id="alist">
+							<if condition="$list['salesToPurchaseTypeid'] eq $key">
+								<option selected value="{$key}">{$alist}</option>
+								<else/>
+								<option value="{$key}">{$alist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>销售退货生成入库单据类型：</label>
+					<select name="returnmasTotypeid" class="combox">
+						<volist name="intoList" id="intolist">
+							<if condition="$list['returnmasTotypeid'] eq $key">
+								<option selected value="{$key}">{$intolist}</option>
+								<else/>
+								<option value="{$key}">{$intolist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>销售退货生成入库单默认仓库：</label>
+					<select name="returnsubTohouse" class="combox">
+						<volist name="whlist" id="whlist">
+							<if condition="$list['returnsubTohouse'] eq $key">
+								<option selected value="{$key}">{$whlist}</option>
+								<else/>
+								<option value="{$key}">{$whlist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>物料入库类型之采购入库：</label>
+					<select name="intopurchaseTypeid" class="combox">
+						<volist name="intoList" id="intolist">
+							<if condition="$list['intopurchaseTypeid'] eq $key">
+								<option selected value="{$key}">{$intolist}</option>
+								<else/>
+								<option value="{$key}">{$intolist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>物料入库类型之其他入库：</label>
+					<select name="intoOtherTypeid" class="combox">
+						<volist name="intoList" id="intolist">
+							<if condition="$list['intoOtherTypeid'] eq $key">
+								<option selected value="{$key}">{$intolist}</option>
+								<else/>
+								<option value="{$key}">{$intolist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>物料退货流程节点选择：</label>
+					<select name="returnToIntomasptmptid" class="combox">
+						<volist name="procelist" id="plist">
+							<if condition="$list['returnToIntomasptmptid'] eq $key">
+								<option selected value="{$key}">{$plist}</option>
+								<else/>
+								<option value="{$key}">{$plist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>退货自动生成出库单流程号：</label>
+					<select name="retuenpToOutMasPid" class="combox">
+						<volist name="procelist" id="plist">
+							<if condition="$list['retuenpToOutMasPid'] eq $key">
+								<option selected value="{$key}">{$plist}</option>
+								<else/>
+								<option value="{$key}">{$plist}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>采购退货完成自动生成出库单类型：</label>
+					<select name="retuenpToOutMasTypeid" class="combox">
+						<volist name="outList" id="outLists">
+							<if condition="$list['retuenpToOutMasTypeid'] eq $key">
+								<option selected value="{$key}">{$outLists}</option>
+								<else/>
+								<option value="{$key}">{$outLists}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>物料出库单据之销售出库：</label>
+					<select name="outSalesTypeid" class="combox">
+						<volist name="outList" id="outListss">
+							<if condition="$list['outSalesTypeid'] eq $key">
+								<option selected value="{$key}">{$outListss}</option>
+								<else/>
+								<option value="{$key}">{$outListss}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>物料出库单据之其他出库：</label>
+					<select name="outOtherTypeid" class="combox">
+						<volist name="outList" id="outListsss">
+							<if condition="$list['outOtherTypeid'] eq $key">
+								<option selected value="{$key}">{$outListsss}</option>
+								<else/>
+								<option value="{$key}">{$outListsss}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>物料出库单据之货运出库：</label>
+					<select name="outfreightTypeid" class="combox">
+						<volist name="outList" id="outListzs">
+							<if condition="$list['outfreightTypeid'] eq $key">
+								<option selected value="{$key}">{$outListzs}</option>
+								<else/>
+								<option value="{$key}">{$outListzs}</option>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>判断审核后的单据可见性：</label>
+					<select name="auditUser" class="combox">
+							<option value="0" <eq name="list['auditUser']" value="0">selected</eq>>所有人可见</option>
+							<option value="1" <eq name="list['auditUser']" value="1">selected</eq>>审核人或自己可见</option>
+					</select>
+				</p>
+				<p>
+					<label>设置数字的小数点位数：</label>
+					<select name="digits" class="combox">
+							<option value="1" <eq name="list['digits']" value="1">selected</eq>>保留1位小数</option>
+							<option value="2" <eq name="list['digits']" value="2">selected</eq>>保留2位小数</option>
+							<option value="3" <eq name="list['digits']" value="3">selected</eq>>保留3位小数</option>
+							<option value="4" <eq name="list['digits']" value="4">selected</eq>>保留4位小数</option>
+							<option value="5" <eq name="list['digits']" value="5">selected</eq>>保留5位小数</option>
+							<option value="6" <eq name="list['digits']" value="6">selected</eq>>保留6位小数</option>
+					</select>
+				</p>
+				<p>
+					<label>常用体积单位：</label>
+					<select name="capacity" class="combox">
+						<volist name="unitlist" id="vt">
+							<if condition="$vt['typeid'] eq 4">
+								<if condition="$vt['id'] eq  $list['capacity']">
+									<option value="{$vt['id']}" selected>[{$vt['code']}]{$vt['name']}</option>
+									<else/>
+									<option value="{$vt['id']}">[{$vt['code']}]{$vt['name']}</option>
+								</if>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>常用重量单位：</label>
+					<select name="weight" class="combox">
+						<volist name="unitlist" id="wt">
+							<if condition="$wt['typeid'] eq 2">
+								<if condition="$wt['id'] eq  $list['weight']">
+									<option value="{$wt['id']}" selected>[{$wt['code']}]{$wt['name']}</option>
+									<else/>
+									<option value="{$wt['id']}">[{$wt['code']}]{$wt['name']}</option>
+								</if>
+							</if>
+						</volist>
+					</select>
+				</p>
+				<p>
+					<label>是否修改销售订单金额：</label>
+					<select name="salsereadonly" class="combox">
+							<option value="false" <eq name="list['salsereadonly']" value="false">selected</eq>>不可修改</option>
+							<option value="true" <eq name="list['salsereadonly']" value="true">selected</eq>>可修改</option>
+					</select>
+				</p>
+				<volist name="list['auditState']" id="vo">
+					<p>
+					<label>{$vo[id]} --->流程审核状态：</label><input class="required" maxlength="100" name="auditState[{$vo[id]}]" type="text" size="25" value="{$vo[name]}" />
+					</p>
+				</volist>
+				<p>
+					<label>物料新增物料使用中：</label>
+					<select name="isuseringproduct_forproductadd" class="combox">
+						<option value="true" <if condition="$list['isuseringproduct_forproductadd'] eq 'true'">selected</if> >是</option>
+						<option value="false" <if condition="$list['isuseringproduct_forproductadd'] eq 'false'">selected</if> >否</option>
+					</select>
+				</p>
+				<p>
+					<label>物料修改是否可修改编码(code)：</label>
+					<select name="iseditproductcode_forproductedit" class="combox">
+						<option value="true" <if condition="$list['iseditproductcode_forproductedit'] eq 'true'">selected</if> >是</option>
+						<option value="false" <if condition="$list['iseditproductcode_forproductedit'] eq 'false'">selected</if> >否</option>
+					</select>
+				</p>
+				<p>
+					<label>物料是否可审核：</label>
+					<select name="isauditproduct_forproductaudit" class="combox">
+						<option value="true" <if condition="$list['isauditproduct_forproductaudit'] eq 'true'">selected</if> >是</option>
+						<option value="false" <if condition="$list['isauditproduct_forproductaudit'] eq 'false'">selected</if> >否</option>
+					</select>
+				</p>
+				<p>
+					<label>物料审核时是否可以修改编码：</label>
+					<select name="iseditproduct_forproductaudit" class="combox">
+						<option value="true" <if condition="$list['iseditproduct_forproductaudit'] eq 'true'">selected</if> >是</option>
+						<option value="false" <if condition="$list['iseditproduct_forproductaudit'] eq 'false'">selected</if> >否</option>
+					</select>
+				</p>
+				
+				
+				
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

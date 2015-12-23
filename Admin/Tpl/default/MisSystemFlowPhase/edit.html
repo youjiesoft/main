@@ -1,0 +1,40 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/MisSystemFlowPhase_left" class="pageForm required-validate" onsubmit="return iframeCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<div class="pageFormContent" layoutH="48">
+				<div class="tml-row">
+					{:W('ShowOrderno',array('1','mis_system_flow_type',$vo['orderno']))}
+					<div class="tml-form-col">
+						<label>{$fields["name"]}:</label> 
+						<input type="text" name="name" class="required" value="{$vo['name']}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["sort"]}:</label>
+						<input  type="text" name="sort" class="" value="{$vo.sort}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["parentid"]}:</label>
+						<select class="select2 required" name="parentid">
+							{:getDataBaseByHtml('mis_system_flow_type',array('selected'=>$vo['parentid'],'conditions'=>'outlinelevel = 1'))}
+						</select>
+					</div>
+					<div class="clear"></div>
+					<div class="tml-form-col">
+						<label>动态阶段:</label>
+						<select class="select2" name="isshow">
+							<option value="0" <if condition="$vo['isshow'] eq 0">selected</if>>否</option>
+							<option value="1" <if condition="$vo['isshow'] eq 1">selected</if>>是</option>
+						</select>
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["remark"]}:</label>
+					<textarea cols="80" rows="2" name="remark">{$vo['remark']}</textarea>
+				</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

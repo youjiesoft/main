@@ -1,0 +1,153 @@
+<script>
+//双击进入文件下一层 
+function onDbClickFile(id,cid,isshare,uid){
+	var $box = navTab.getCurrentPanel();
+	var $form = $box.find("#FileManagerpagerForm");
+	if(isshare==1){
+		var url = TP_APP + "/MisFileManager/index/share/1/pid/"+id+"/cid/"+cid;
+	}else{
+		if (uid!=''){
+			var url = TP_APP + "/MisFileManager/index/share/1/pid/"+id+"/cid/"+cid+"/uid/"+uid;
+		}else{
+			var url = TP_APP + "/MisFileManager/index/pid/"+id+"/cid/"+cid;//code
+		}
+		
+	}
+	navTab.reload( url );
+	//$box.find("button[type='submit']").click();
+}
+</script>
+<style>
+.gridTbody [field=size] {
+	text-align:right;
+}
+.gridTbody [field=name] {
+	text-align:left;
+}
+
+</style>
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$share eq 0 && $cid neq 5">
+				<if condition="$_SESSION.a eq 1 or ($cid eq 1) or ($_SESSION.misfilemanager_add && in_array($pid,$managerfid))">
+					<li>
+						<a class="addtml-btn tml_look_btn tml_mp" href="__URL__/add/pid/{$pid}" width="620" rel="__MODULE__add" height="500" title="新建文件夹" target="dialog" mask="true">
+							<span><span class="icon-plus icon_lrp"></span>创建文件夹</span>
+						</a>
+					</li>
+				</if>
+				<if condition="$_SESSION.a eq 1 or ($cid eq 1) or ($_SESSION.misfilemanager_uploade && in_array($pid,$managerfid))">
+					<li>
+						<a class="add tml_look_btn tml_mp" href="__URL__/uploade/pid/{$pid}" width="620" rel ="__MODULE__uploade" height="500" title="上传文件" target="dialog" mask="true">
+							<span><span class="icon-upload-alt icon_lrp"></span>上传文件</span>
+						</a>
+					</li>
+				</if>
+				<if condition="$_SESSION.a eq 1 or ($cid eq 1) or ($_SESSION.misfilemanager_delete && in_array($pid,$managerfid))">
+					<li>
+						<a class="tml_look_btn tml_mp" title="确实要删除这些记录吗?" target="selectedTodo" callback="delete_file_back" callbackdata="{$pid}" rel="id" postType="string" href="__URL__/delete/navTabId/__MODULE__" class="delete">
+							<span><span class="icon-trash icon_lrp"></span>删除文件</span>
+						</a>
+						<script>
+							function delete_file_back(json,d) {
+								onDbClickFile(d,'{$cid}','{$share}','{$uid}');
+							}
+						</script>
+					</li>
+				</if>
+				<if condition="$_SESSION.a eq 1 or ($cid eq 1) or ($_SESSION.misfilemanager_edit && in_array($pid,$managerfid))">
+					<li>
+						<a class="edit tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}" rel="__MODULE__edit" target="dialog" mask="true" width="620" height="500">
+							<span><span class="icon-edit icon_lrp"></span>修改</span>
+						</a>
+					</li>
+				</if>
+				<if condition="$_SESSION.a eq 1 or ($cid eq 1) or (in_array($pid,$managerfid))">
+					<li>
+						<a class="edit tml_look_btn tml_mp" href="__URL__/move/id/{sid_node}" rel="__MODULE__move" target="dialog" mask="true" width="400" height="440">
+							<span><span class="icon-move icon_lrp"></span>移动文件</span>
+						</a>
+					</li>
+				</if>
+			</if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form rel="pagerForm" id="FileManagerpagerForm" onsubmit="return divSearch(this, 'myfileManagerBox');" action="__URL__/index" method="post">
+			<input type="hidden" name="jump" value="1">
+			<input type="hidden" name="cid" value="{$cid}"/>
+			<input type="hidden" name="pid" value="{$pid}"/>
+			<input type="hidden" name="share" value="{$share}">
+			<input type="hidden" name="uid" value="{$uid}"/>
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead  ename="{$ename}">
+			<tr>
+				<th width="22"><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+				<volist id="vo" name="detailList">
+			    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="misordertypesBox" orderField="{$vo[showname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+				</volist>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')" title="文档管理" <if condition="$vo.type eq 1">ondblclick="onDbClickFile( '{$vo.id}','{$cid}','{$share}','{$uid}' );"</if>   <if condition="($share eq 0 && $cid eq 5)">ondblclick="onDbClickFile( '{$vo.id}','1','0','{$vo.shareeduserid}' );"</if>  >
+				<td><input type="checkbox" name="id" value="{$vo['id']}" /></td>
+				<volist id="vo1" name="detailList">
+					<if condition="$vo1[shows] eq 1">
+					<td field="{$vo1[name]}" width="{$vo1[widths]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+					</if>
+				</volist>
+				<td title="">
+<if condition="$_SESSION.a eq 1 or in_array($vo['id'],$managerfid) or ($vo['category'] eq 1 && $vo['createid'] eq $_SESSION.authId)">
+<a height="400" width="660" mask="true" title="[属性]->{$vo.name}" target="dialog" rel="lookupWriteAss" href="__URL__/lookupWriteAss/id/{$vo['id']}">[属性]</a>
+</if>
+<if condition="$vo.type eq 2 &&( $ifread gt 1 or $vo.ifread gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))">
+&nbsp;{$vo['filepath']}
+<elseif condition="$vo.type eq 0 && $vo.isplay eq 1 &&( $ifread gt 1 or $vo.ifread gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))" />
+&nbsp;
+<a style="cursor:pointer;" rel="__URL__/playSWF/name/{$vo.codeurl}/filename/{$vo.name}" onclick="openNewWindowsDisplayFile(this)">在线查看</a>
+</if>
+<if condition="$vo.type eq 0 &&( $ifexecute gt 1 or $vo.ifexecute gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))">
+&nbsp;<a title="{$vo.name}" title="" href="__URL__/misFileManageDownload/path/{$vo.codeurl}/rename/{$vo.name}" target="_blank">下载</a>
+</if>
+				</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="myfileManagerBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

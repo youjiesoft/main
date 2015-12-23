@@ -1,0 +1,176 @@
+<script>
+$(function(){
+	setTimeout(function(){
+		onresizeTables();
+	}, 0);
+});
+	
+function onresizeTables(){
+	var cheight = $("#onresizetables").outerHeight(true);
+	var grid = $("#onresizetables").find("div.gridScroller");
+	var count = grid.length;
+	var height = $("#onresizetables").find("div.panelBar").height();
+	$("#onresizetables").find("div.gridHeader").each(function(){
+		height += $(this).height();
+	});
+	var h = (cheight - height - 4)/count;
+	$("#onresizetables").find("div.gridScroller").height(h);
+}
+$(window).resize(function() {
+	setTimeout(function() {
+		onresizeTables();
+	}, 100);
+});
+/* function dynamicconftable(ob){
+	$("#"+ob).slideToggle();
+} */
+</script>
+<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+	<input type="hidden" name="model" value="{$model}" >
+	<input type="hidden" name="jump" value="1">
+	<div class="pageContent" >
+		<div class="panelBar">
+			<div style="float: left;font-size: 18px;font-weight: 700;line-height: 32px;padding-left: 50px;">{$name}</div>
+			<div style=" float: right;font-weight: bold;line-height: 32px;">
+				<a href="__URL__/tpltitleset/model/{$model}" rel="{$model}quickSearch" target="dialog" mask="true" title="检索配置" height="400" width="818">模板栏目标题配置</a>
+				 | 
+				<a href="__URL__/quickSearch/model/{$model}" rel="{$model}quickSearch" target="dialog" mask="true" title="检索配置" height="400" width="818">检索配置</a>
+				 | 
+				<a target="dialog" href="__URL__/lookupRowAccess/setmodule/{$model}" rel="__MODULE__rowaccess" width="800" mask="true" height="500">列权限配置</a>
+				|
+				<a target="dialog" href="__URL__/add/md/{$model}" rel="__MODULE__add" width="700" mask="true" height="520">配置文件添加</a>
+				<!--  | <a href="{$searchurl}" target="navTab">搜索模板配置</a> -->&nbsp;&nbsp;&nbsp;&nbsp;
+				<!-- |<label>当前搜索模板：</label>
+				<input class="checkByInput" checkfor="searchTpl" show="cname" type="text" value="{$searchinc['cname']}" />
+				<input type="hidden" name="search_tpl_id" value="{$searchinc['id']}" /> -->
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="onresizetables" layoutH="77">
+		<div id="dynamicconftable" >
+			<table class="table" id="indexlist" width="100%">
+				<thead>
+				<tr>
+					<th style="font-weight: 700;">字段英文</th>
+					<th style="font-weight: 700;">字段中文</th>
+					<th style="font-weight: 700;">字段帮助</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'indexlist','table');" />列显示</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'indexlist','table');" />导出</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'indexlist','table');" />列排序</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'indexlist','table');" />规则</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'indexlist','table');" />消息</th>
+					<th style="font-weight: 700;">列宽度</th>
+					<th style="font-weight: 700;">关联列表</th>
+					<th style="font-weight: 700;">关联函数</th>
+					<!-- <th><input type="checkbox" onclick="all_select(this,'indexlist');" />是否搜索</th> -->
+					<th style="font-weight: 700;">排序</th>
+					<th style="font-weight: 700;">状态</th>
+					<th style="font-weight: 700;">操作</th>
+				</tr>
+				</thead>
+				<tbody>
+				<volist id="vo" name="list">
+					<tr name="fields">
+						<td><if condition="!empty($vo['areashows'])">{$vo['areashows']}_</if>{$vo['name']}</td>
+						<td><input type="text" style="width:80px;color:#868686;" name="showname[{$key}]" value="{$vo['showname']}" /></td>
+						<td><input type="text" style="width:80px;color:#868686;" name="helpvalue[{$key}]" value="{$vo['helpvalue']}" /></td>
+						<td>
+							<input type="checkbox" name="shows[{$key}]" value="1" <eq name="vo.shows" value="1">checked</eq> />
+						</td>
+						<td><input type="checkbox" name="isexport[{$key}]" value="1" <eq name="vo.isexport" value="1">checked</eq> /></td>
+						<td><input type="checkbox" name="sorts[{$key}]" value="1" <eq name="vo.sorts" value="1">checked</eq> /></td>
+						<td><input type="checkbox" name="rules[{$key}]" value="1" <eq name="vo.rules" value="1">checked</eq> /></td>
+						<td><input type="checkbox" name="message[{$key}]" value="1" <eq name="vo.message" value="1">checked</eq> /></td>
+						<td><input type="text" style="color:#868686;"  class="digits" size="6" name="widths[{$key}]" value="{$vo['widths']}" /><span class="info"></span></td>
+						<td><input type="text" style="color:#868686;"   name="models[{$key}]" size="15" value="{$vo['models']}" /><span class="info"></span></td>
+						<td><input type="text" style="color:#868686;" name="methods[{$key}]" style="color:#868686;"   size="15" value="{$vo['methods']}" /><span class="info"></span></td>
+						<!-- <td><input type="checkbox" name="issearch[{$key}]" value="1" <eq name="vo.issearch" value="1">checked</eq> /></td> -->
+						<td><input type="text" name="sortnum[{$key}]" style="color:#868686;" value="{$vo['sortnum']}" size="6"/><span class="info"></span></td>
+						<td>
+							<select class="combox" name="status[{$key}]">
+								<option <if condition="$vo['status'] gt -1"> selected </if> value="1"> 启用</option>
+								<option <eq name="vo.status" value="-1"> selected </eq> value="-1">未启用</option>
+							</select>
+						</td>
+						<td><a href="__URL__/linkshow/setmodule/{$model}/key/{$key}"   style="color:#15428B;" target="navTab">关联配置</a>|<a href="__URL__/edit/md/{$model}/key/{$key}" mask="true" style="color:#15428B;" target="dialog" width="700" height="520" title="编辑配置文件">编辑</a>|<a href="__URL__/delete/md/{$model}/key/{$key}/rel/dynamicconfBox" style="color:#15428B;" target="ajaxTodo" title="删除配置文件字段">删除</a>
+						<!--  | <a href="__URL__/searchconf/setmodule/{$model}/key/{$key}" target="navTab">搜索配置</a> -->
+						 </td>
+					</tr>
+				</volist>
+				</tbody>
+			</table>
+		</div>
+		<if condition="$sublist">
+			<div class="panelBar">
+				<div style="float: left;font-size: 18px;font-weight: 700;line-height: 32px;padding-left: 50px;">{$name}明细</div>
+				<div style=" float: right;font-weight: bold;line-height: 32px;">
+					<a href="__URL__/subQuickSearch/model/{$model}" rel="{$model}subQuickSearch" target="dialog" title="检索配置" height="400" width="818">检索配置</a> | <a target="dialog" href="__URL__/lookupRowAccess/setmodule/{$model}/issub/1" rel="__MODULE__rowaccess" width="800" mask="true" height="500">列查看权限</a>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div id="dynamicconftablesub" >
+				<table class="table" id="sublist" width="100%">
+					<thead>
+					<tr>
+						<th style="font-weight: 700;">字段英文</th>
+						<th style="font-weight: 700;">字段中文</th>
+						<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'sublist','table');" />列显示</th>
+						<th style="font-weight: 700;">列权限人员</th>
+						<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'sublist','table');" />导出</th>
+						<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'sublist','table');" />列排序</th>
+						<th style="font-weight: 700;">列宽度</th>
+						<th style="font-weight: 700;">关联列表</th>
+						<th style="font-weight: 700;">关联函数</th>
+						<!-- <th><input type="checkbox" onclick="all_select(this,'indexlist');" />是否搜索</th> -->
+						<th style="font-weight: 700;">排序</th>
+						<th style="font-weight: 700;">操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<volist id="vo" name="sublist">
+						<tr name="fields">
+							<td><if condition="!empty($vo['areashows'])">{$vo['areashows']}_</if>{$vo['name']}</td>
+							<td><input  style="width:80px;color:#868686;" type="text" name="subshowname[{$key}]" value="{$vo['showname']}" /></td>
+							<td><input type="checkbox" name="subshows[{$key}]" value="1" <eq name="vo.shows" value="1">checked</eq> />
+							</td>
+							<td><a href="__URL__/lookupForbidView/issub/1/setmodule/{$model}/key/{$key}" mask="true" target="dialog" rel="quanxian_view">查看</a>
+							<td><input type="checkbox" style="color:#868686;"  name="subisexport[{$key}]" value="1" <eq name="vo.subisexport" value="1">checked</eq> /></td>
+							<td><input type="checkbox" name="subsorts[{$key}]" value="1" <eq name="vo.sorts" value="1">checked</eq> /></td>
+							<td><input style="color:#868686;" type="text" class="digits" size="6" name="subwidths[{$key}]" value="{$vo['widths']}" /><span class="info"></span></td>
+							<td><input style="color:#868686;" type="text" name="submodels[{$key}]" size="15" value="{$vo['models']}" /><span class="info"></span></td>
+							<td><input style="color:#868686;" type="text" name="submethods[{$key}]" size="15" value="{$vo['methods']}" /><span class="info"></span></td>
+							<!-- <td><input type="checkbox" name="subissearch[{$key}]" value="1" <eq name="vo.issearch" value="1">checked</eq> /></td> -->
+							<td><input type="text" style="color:#868686;" name="subsortnum[{$key}]" value="{$vo['sortnum']}" size="6"/><span class="info"></span></td>
+							<td><a href="__URL__/linkshow/setmodule/{$model}/key/{$key}/issub/1" style="color:#15428B;" target="navTab">配置</a></td>
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+		</if>
+		
+		
+		
+		
+		<div class="formBar">
+		<label style="float:left">宽度范例(100):<span style="display:inline-block;background:#000;width:100px;">&nbsp;</span></label>
+		<ul>
+			<li><button class="tml-btn tml-btn-default" type="reset">{$Think.lang.reset}</button></li>
+		<if condition="$_SESSION.a eq 1 or $_SESSION.duty_update">
+			<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+		</if>
+		</ul>
+	</div>
+	
+	
+	
+	
+	</div>
+	
+	
+	
+	
+	
+	</div>
+	
+</form>

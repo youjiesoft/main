@@ -1,0 +1,195 @@
+<script>
+$(function(){
+	var box = navTab.getCurrentPanel();
+	//添加成员
+	$("li.source",box).die();
+	$("div.grid-50.left li.source",box).on("click",function(){
+		var v = $("div.grid-50.right input[name='id']",box).val();
+		if(v){
+			var val = $(this).find("span.sourcekey").attr("sourcekey");
+			var showtitle = $(this).find("span.sourcekey").text();
+			var lic = '<li>';
+				lic += '<input type="hidden" name="member[]" value="'+val+'">';
+				lic += '<span>'+showtitle+'</span>';
+				lic +='</li>';
+			$("div.grid-50.right ul",box).append(lic);
+			$(this).hide();
+			$("#xyz_list_enable_choice_count").text($("div.grid-50.left").find("li:visible").length);
+			$("#xyz_zu_member_number").text($("div.grid-50.right").find("li").length);
+
+		}
+	});
+	//删除成员
+	$("div.grid-50.right",box).die("click");
+	$("div.grid-50.right",box).on("click","li",function(){
+		var val = $(this).find("input[name*='member']").val();
+		$("div.grid-50.left",box).find("li span[sourcekey='"+val+"']").show();
+		$("div.grid-50.left",box).find("li span[sourcekey='"+val+"']").closest('li').show();
+		$(this).remove();
+		$("#xyz_list_enable_choice_count").text($("div.grid-50.left").find("li:visible").length);
+		$("#xyz_zu_member_number").text($("div.grid-50.right").find("li").length);
+	});
+	var nameval = $("input[name='name']",box).val();
+	$("input[name='name']",box).blur(function(){
+	var newname = $(this).val();
+	var subid = $(this).closest("form").find("input[name='id']").val();
+	var temp = $.trim(newname);
+	$("li.zuli a",box).each(function(){		
+		if(temp == $.trim($(this).text())){
+			temp='';
+		}
+	});
+	if(temp){
+		$("li.zuli[listid='"+subid+"'] a",box).text(newname);
+	}else{
+		$("li.zuli[listid='"+subid+"'] a",box).text(nameval);
+		$(this).val(nameval);
+	}
+	});
+})
+</script>
+<style>
+    .grid_style_lay {
+        border: 1px solid #d8d8d8;
+        border-radius: 4px;
+        overflow: auto;
+        width:49%;
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,0.058);
+    }
+    .source_ul_lay,.result_ul {
+        padding: 5px 10px 0;
+    }
+    .source_ul_lay li {
+        border: 1px solid #d8d8d8;
+        width: calc(50% - 7px);
+        line-height: 35px;
+        float: left;
+        border-radius: 0 18px 18px 0;
+        margin-bottom: 5px;
+        text-indent: 1em;
+        font-size: 15px;
+        position: relative;
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,0.05);
+    }
+    .source_ul_lay li:nth-of-type(odd) {
+        margin-right: 10px;
+    }
+    .source_ul_lay li:hover {
+        box-shadow: inset 5px 0 0 #d8d8d8;
+        transition: all .18s linear;
+    }
+    .grid_style_lay h3 {
+        height: 45px;
+        line-height: 45px;
+        background-position: 8px 18px;
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,0.08);
+        background-color: rgba(0,0,0,.02);
+        font-weight: 400;
+        font-size: 16px;
+    }
+    .grid_style_lay h3 span {
+        font-weight: 700;
+    }
+    .source_ul_lay li:hover:before {
+        content: '√';
+        position: absolute;
+        top: 0;
+        right: 10px;
+        color: #e51c23;
+    }
+    .sourcekey {
+        display: block;
+    }
+    .result_ul li {
+        /*border: 1px solid rgba(3,169,244,.1);*/
+        border: 1px solid rgba(0,0,0,.03);
+        width: calc(50% - 7px);
+        line-height: 35px;
+        float: left;
+        border-radius: 18px;
+        margin-bottom: 5px;
+        text-indent: 1em;
+        font-size: 15px;
+        position: relative;
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,0.05);
+        /*color: #fff;*/
+        color: #363636;
+        /*background-color: rgba(3,169,244,.5);*/
+        background-color: rgba(0,0,0,.05);
+    }
+    .result_ul li:nth-of-type(odd) {
+        margin-right: 10px;
+    }
+    .result_ul li:hover:before {
+        content: "×";
+        position: absolute;
+        top: 0;
+        right: 10px;
+        color: #e51c23;
+        cursor: pointer;
+    }
+    .name_order_lay {
+        width: calc(50% - 7px);
+        line-height: 35px;
+        float: left;
+        margin-bottom: 12px;
+        font-size: 15px;
+    }
+    .name_order_lay label {
+        padding-left: 10px;
+    }
+    .name_order_lay input {
+        padding-left: 5px;
+        width: 150px;
+        height: 26px;
+        border: 1px solid #d8d8d8;
+        border-radius: 4px;
+        font-family: microsoft yahei;
+    }
+</style>
+<div>
+    <!-- 可选列表 -->
+    <div class="grid-50 left grid_style_lay" layoutH="190">
+        <php>$num=count($list['list'])-count($grouplist[$subid]['member']);</php>
+        <h3 class="tml-h3">可选列表（<span id="xyz_list_enable_choice_count">{$num}</span>）</h3>
+        <div class="clearfix p5">
+            <div class="member_searcher right" style="width: 200px;">
+                <input class="add_key left search" id="MisSystemDataAccessCarrierTypeTreeSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+                <button class="btn_member icon-search right" onclick="searchli(this)" type="button"></button>
+            </div>
+            <div class="clear"></div>
+            <ul class="source_ul_lay">
+                <volist name="list['list']" id="vo">
+                    <php>$disp='';if(in_array($key,$grouplist[$subid]['member'])) $disp = "display:none;";</php>
+                    <li class="source"  style="{$disp}">
+                        <span class="sourcekey" sourcekey="{$key}">{$vo}</span>
+                    </li>
+                </volist>
+            </ul>
+        </div>
+    </div>
+    <!-- 组分配 -->
+    <div class="grid-50 right grid_style_lay" layoutH="190">
+        <input type="hidden" name="id" value="{$grouplist[$subid].id}">
+        <php>$subnum = count($grouplist[$subid]['memberinfo']);</php>
+        <h3 class="tml-h3">{$grouplist[$subid]['name']}（<span id="xyz_zu_member_number">{$subnum}</span>）</h3>
+        <div class="name_order_lay">
+            <label>组名称：</label>
+            <input name="name" type="text" value="{$grouplist[$subid]['name']}">
+        </div>
+        <div class="name_order_lay">
+            <label>组编码：</label>
+            <input name="orderno" type="text" value="{$grouplist[$subid]['orderno']}">
+        </div>
+        <div class="clear"></div>
+        <ul class="result_ul">
+            <volist name="grouplist[$subid]['memberinfo']" id="gvv">
+                <li>
+                    <input type="hidden" name="member[]" value="{$gvv.name}">
+                    <span>{$gvv.showname}</span>
+                </li>
+            </volist>
+        </ul>
+    </div>
+    <div class="clear"></div>
+</div>

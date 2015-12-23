@@ -1,0 +1,130 @@
+<script>
+function QQInfo(){
+	alertMsg.error('用户还未上传QQ号码！')
+}
+function changeorganization(obj){
+	var $box=navTab.getCurrentPanel();
+	$changeDiv = $(obj).parent().parent().parent().prev();
+	$val = $(obj).val();
+	if($val=='name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索姓名");
+	}
+	if($val=='mis_system_department-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索部门");
+	}
+	if($val=='duty-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职位");
+	}
+	if($val=='dutyname'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职务");
+	}
+	if($val=='mis_hr_personnel_person_info-phone'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索电话");
+	}
+	if($val=='all'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索员工姓名,部门,职位,职务");
+	}
+}
+</script>
+<form id="pagerForm" action="__URL__/organization">
+	<input type="hidden" name="pageNum" value="{$pageNum}" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	<input type="hidden" name="deptid" value="{$deptid}" />
+	<input type="hidden" name="parentid" value="{$parentid}" />
+	<input type="hidden" name="jump" value="1" />
+	<input type="hidden" name="searchby" value="{$searchby}" />
+	<input type="hidden" name="keyword" value="{$keyword}" />
+</form>
+<div class="">
+	<div class="panelBar">
+		<form id="pagerForm" onsubmit="return divSearch(this,'missystemdepartment');" action="__URL__/organization/rel/missystemdepartment" method="post">
+			<input type="hidden" name="deptid" value="{$deptid}" />
+			<input type="hidden" name="parentid" value="{$parentid}" />
+			<input type="hidden" name="jump" value="1" />
+			<ul class="toolBar">
+				<li>
+					<a class="tbrefresh" target="ajax" title="显示全部用户" rel="missystemdepartment"  href="__URL__/organization/jump/1/showtype/0/deptid/{$deptid}/">
+					<span>显示全部</span>
+					</a>
+				</li>
+				<li>
+					<a class="tbrefresh" target="ajax" title="显示在线人数" rel="missystemdepartment"  href="__URL__/organization/jump/1/showtype/1/deptid/{$deptid}/">
+					<span>显示在线</span>
+					</a>
+				</li>
+			</ul>
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<td>
+							<input type="text" <if condition="$placeholder">placeholder="{$placeholder}"<else/>placeholder="搜索员工姓名,部门,职位,职务"</if>  class="keyword" name="keyword"  value="{$keyword}" />
+						</td>
+						<td>
+							<select class="combox searchby"  onchange="changeorganization(this)"   name="searchby" >
+								 <option value="all" <if condition="$searchby eq 'all'">selected="selected"</if>>全部</option>
+								 <option value="name" <if condition="$searchby eq 'name'">selected="selected"</if>>姓名</option>
+								 <option value="mis_system_department-name" <if condition="$searchby eq 'mis_system_department-name'">selected="selected"</if>>部门</option>
+								  <option value="duty-name" <if condition="$searchby eq 'duty-name'">selected="selected"</if>>职位</option>
+								 <option value="mis_hr_personnel_person_info-phone" <if condition="$searchby eq 'mis_hr_personnel_person_info-phone'">selected="selected"</if>>电话</option>
+							</select>
+						</td>
+						<td>
+							<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div class="xyGroup" layoutH="70">
+		<ul class="xyGroupItems clearfix">
+		
+		
+			<volist name="list" id="volist">
+				<li class="xyGroupItem">
+					<div class="xyGroupItemPhoto">
+						<div class="xyGroupItemPhotoCon">
+							<div class="xyGroupItemPhotoImg">
+								<img alt="" width="80px" height="80px" src="{$volist.picture}" />
+							</div>
+							<if condition="$volist.userid eq $uid">
+								<div class="xyGroupItemPhotoSelf">
+									<img alt="当前用户" src="__PUBLIC__/Images/xyimages/organization/self.png" />
+								</div>
+							</if>
+						</div>
+						<h6 class="xyGroupItemInfoName" <if condition="$volist.userid eq $uid">style="color:red"</if> >{$volist.name}(<if condition="$volist.sex eq '1'">男<else/>女</if>)</h6>
+						<p class="xyGroupItemInfoDepartment">{$volist.deptid|getFieldBy='id','name','mis_system_department'}</p>
+					</div>
+					<div class="xyGroupItemInfo">
+						<p class="xyGroupItemInfoList"><span class="xyGroupItemInfoPosition">职位</span>{$volist.dutyid|getFieldBy='id','name','mis_system_duty'}</p>
+						<p class="xyGroupItemInfoList"><span class="xyGroupItemInfoExtPhone">分机</span>{$volist.officeNumber}</p>
+						<p class="xyGroupItemInfoList"><span class="xyGroupItemInfoPhone">电话</span>{$volist.phone}</p>
+						<p class="xyGroupItemInfoList"><span class="xyGroupItemInfoShortPhone">短号</span>{$volist.shortNumber}</p>
+						<p class="xyGroupItemInfoList"><span class="left tml-icon tml-icon-mail tml-mr3">邮件</span><a href="__URL__/lookupsendmessage/userid/{$volist.id}" target="dialog" width="700" height="610" mask="true"><span>发站内信</span></a>
+						</p>
+						<p class="xyGroupItemInfoList">
+							<if condition="$volist.qq">
+								<a class="" target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin={$volist.qq}&site=qq&menu=yes">
+							<else/>
+								<a class="" href="javascript:;" onclick="QQInfo()">
+							</if>
+							<img alt="QQ交谈" src="http://wpa.qq.com/pa?p=2:168660460:41%20&r=0.22914223582483828" /></a>
+						</p>
+					</div>
+				</li>
+			</volist>
+		
+		
+		
+		</ul>
+	</div>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination"  rel="missystemdepartment"  targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

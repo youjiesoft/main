@@ -1,0 +1,177 @@
+<style>
+.pageFormContent p {
+    display: block;
+    float: left;
+    height: 21px;
+    margin: 0;
+    padding: 5px 0;
+    position: relative;
+    width: 600px;
+}
+
+#data_search td input{
+	width:80px;
+}
+
+#data_search td select{
+	width:100px;
+}
+
+#data_search td .main{
+	height:20px;
+}
+
+#search_table .close{
+	background:url(__PUBLIC__/dwz/themes/default/images/dialog/dialogpanel_icon.png) no-repeat;
+	text-indent:-1000px;
+	height:19px;
+	width:19px;
+	display:block;
+	margin-left:5px;
+}
+#search_table .close:hover{
+	background-position:0 -50px;
+}
+#searchList {
+    width:100%;
+    list-style-type:none;
+    margin:0px;
+}
+#searchList li {
+    float:left;
+    padding:5px;
+    width:60px;
+    margin-right: 8px;
+}
+#searchList div {
+    width:100%;
+    height:20px;
+    line-height:20px;
+    border:solid 1px black;
+    background-color:#E0E0E0;
+    text-align:center;
+    vertical-align:middle;
+}
+.placeHolder div {
+    background-color:#FFC !important;
+    border:dashed 1px blue !important;
+}
+</style>
+<script type="text/javascript">
+    var sortJson = '{$sortjson}', sSortHtml = '';
+    if($.trim(sortJson) != ''){
+	$('input[name="sortjson"]').val(sortJson);
+	sortJson = $.parseJSON(sortJson);
+	confirmTables(sortJson);
+    }else{
+	confirmTables(true);
+    }
+    function searchchangetable(obj,data){
+	var input = $(obj).parent().parent().find("input[name='search_tablesname']");
+	input.attr("map","array('table_name'=>"+data.insert+");");
+	$(obj).parent().parent().find("input[name='search_tablesname']").val('');
+    }
+</script>
+<div class="pageContent" id="data_search">
+	<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return searchSave(this, navTabAjaxDone);">
+		<div class="pageFormContent" layoutH="56">
+			<div style="float:left;width:680px;">
+				<h3><label style="width:200px;">一、请选择要搜索的动态配置：</label></h3>
+				<!--<p>
+					<select onchange="confirmSearch(this.value);" class="combox" name="dynamicname">
+					<option value=""> - 动态配置名称列表 - </option>
+					<volist name="models" id="vo">
+						<option <if condition="$dname eq $key">selected</if> value="{$key}">{$vo}</option>
+					</volist>
+					</select>
+				</p>-->
+				<!-- <input type="text" class="required checkByInput xytdinput" checkfor="isDynamic_Allocation"
+				     insert="en" show="ch" callback="isconfirmSearch" value="{$models[$dname]}" /> -->
+				<input type="text" value="{$name}">
+				<input type="hidden" name="dynamicname" value="{$dname}">
+				<div style="float:left;" id="search_fields">
+					<table id="search_table">
+						<thead style="line-height:20px;height:20px;text-align:center;">
+							<tr>
+								<td width="140">显示字段</td>
+								<td width="140">字段别名</td>
+								<td width="140">关联类型</td>
+								<td width="140">匹配表</td>
+								<td width="140">匹配字段</td>
+								<td width="140">&nbsp;</td>
+							</tr>
+						</thead>
+						<tbody>
+							<volist id="vo" name="fields">
+								<tr>
+									<td><input size="30" type='text' value='{$vo[0]}' class='required textInput' /></td>
+									<td><input size="30" type='text' value='{$vo[1]}' class='required textInput' /></td>
+									<td><input size="30" style="width:200px;" type='text' value='{$vo[2]}' class='required textInput' /></td>
+									<td>
+									  <!--  <input size="30" style="width:150px;" type='text' value='{$vo[3]}' class='required textInput' />-->
+									    <input size="30" style="width:150px;" type="text" value="{$vo[3]}" />
+									</td>
+									<td>
+									   <!-- <input size="30" type='text' value='{$vo[4]}' class='required textInput' />-->
+									    <input size="30" name="search_tablesname" type="text" value="{$vo[4]}"  />
+									</td>
+									<td><a href='#close' onclick='removeSearchField(this);' class='close'>close</a></td>
+								</tr>
+							</volist>
+						</tbody>
+					</table>
+					<p>
+						<input type="button" value="新增字段" onclick="addSearchField();" />
+						<input type="button" value="确定分配" onclick="confirmTables();" />
+					</p>
+				</div>
+			</div>
+
+			<div id="relate_tables" style="float:left;width:500px;">
+				<h3>二、填写表关联信息：</h3>
+				<table id="tables" style="<lt name='num' value='1'>display:none;</lt>margin:10px 0;">
+					<thead style="line-height:20px;height:20px;text-align:center;">
+						<tr>
+							<td>表名</td>
+							<td>表关联字段</td>
+							<td>相关表</td>
+							<td>相关表字段</td>
+						</tr>
+					</thead>
+					<tbody>
+						{$tablehtml}
+					</tbody>
+					<tfoot>
+						<tr>
+							<td colspan="4">
+								<font color="red">*</font> 点击以上表名，设置主要查询表，当前主表为 <b><span id="maintable2">{$maintable}</span></b>
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+				<p id="oneTable" style="<egt name='num' value='1'>display:none;</egt>margin:10px 0;width:480px;color:blue;">因为只有一个表，故此步略过</p>
+				<h3>三、填写搜索条目相关信息：</h3>
+				<p><label>排序：</label></p>
+				<ul id="searchList"></ul>
+				<input type="hidden" name="sortjson" />
+				<p><label>条件(英文逗号隔开)：</label><input style="width:450px;" type="text" name="condition" value="{$condition}" /></p>
+				<p><label>名称(英文、唯一)：</label><input class="required textInput" type="text" name="ename" value="{$ename}" /></p>
+				<p><label>中文名称：</label><input class="required textInput" type="text" name="cname" value="{$cname}" /></p>
+				<p><label>备注：</label><textarea name="remark">{$remark}</textarea></p>
+			</div>
+			<input type="hidden" name="id" value="{$id}" />
+			<input type="hidden" id="maintable" name="maintable" value="{$maintable}" />
+			<input type="hidden" id="fields" name="relatefields" />
+			<input type="hidden" id="relatetables" name="relatetables" />
+
+		</div>
+		<div class="formBar">
+			<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.search_update"><li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li></if>
+				<li>
+					<div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

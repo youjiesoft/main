@@ -1,0 +1,5 @@
+<?php
+$notauth= array(
+	'NOT_AUTH_MODULE'=>'Public,MisOaItems,MisOaItemsWaitFor,UserInfo,ReportCharts,CheckFor,Search,MisChat,SendMsg,MisMessage,MisMessageInbox,MisMessageOutbox,MisMessageDrafts,MisMessageRecycle,ReportExcel,OAHelper,MisMessagePhone,MisHrRemindBecomeEmployee,MisHrRemindEmployeeContract,MisUserEvents,MisSystemFunctionalBox,WXHelper,MisAutoZpg,MisAutoUuo,MisAutoVhz,MisAutoShb,MobileNongDan',		// 默认无需认证模块
+	'NOT_AUTH_ACTION'=>'allot,getDBData,acquire,mybusiness,getFormFlow,showMessage,myCoursesList,roleGroupAuthorizeC,exportBysearchHtml,baseInfo,detail,clear_cache,workplatform,audit,insert,update,view,waitAudit,alreadyAudit,auditProcess,backprocess,auditEdit,startprocess,auditView,seeProcessDetail,seeAuditUser,playSWF,sureProcess,getAllScheduleList,setDbhaSmsgType,organization,misimportexceladd,misimportexcelinsert,tmlbbs,misFileManageDownload',	// 默认无需认证操作
+);

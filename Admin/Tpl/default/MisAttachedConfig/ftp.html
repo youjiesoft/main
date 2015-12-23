@@ -1,0 +1,66 @@
+<div class="page">
+	<div class="pageContent">
+
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="user_id" value="<?php echo $_SESSION[C('USER_AUTH_KEY')] ?>">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<input type="hidden" name="ajax" value="1">
+		<div class="pageFormContent" layoutH="84">
+                            <h3 class="h1">FTP设置</h3>
+                                <div class="unit">
+                                    <label>使用FTP方式上传</label>
+                                        <SELECT name="status" class="combox">
+                                                <option value="1">开启</option>
+                                                <option value="0">禁用</option>
+                                        </SELECT>
+                                    远程附件功能。可将附件上传到远程服务器。尤其针对镜像站点，可将附件传至主站点，便于附件的统一管理
+                                </div>
+                            <div class="unit">
+                                    <label>站点附件地址</label>
+                                        <input class="textInput" size="30" value="" name="config[ftpweb]">
+                                        源站点附件地址。如:http://127.0.0.1/Public/Uploads
+                                </div>
+                            <div class="unit">
+                                    <label>FTP服务器地址</label>
+                                        <input class="textInput" size="30" value="" name="ftp[server]">
+                                        FTP远程服务器地址
+                                </div>
+                            <div class="unit">
+                                    <label>FTP服务器端口</label>
+                                        <input class="textInput" size="30" value="21" name="ftp[port]">
+                                        FTP服务器端口。默认为21
+                                </div>
+                            <div class="unit">
+                                    <label>FTP上传目录</label>
+                                        <input class="textInput" size="30" value="" name="ftp[dir]">
+                                        请确保该目录等同于源站点的根目录
+                                </div>
+                            <div class="unit">
+                                    <label>FTP帐号</label>
+                                        <input class="textInput" size="30" value="" name="ftp[user]">
+                                        FTP帐号
+                                </div>
+                            <div class="unit">
+                                    <label>FTP密码</label>
+                                        <input class="textInput" size="30" value="********" name="ftp[pass]">
+                                        FTP密码
+                                </div>
+                            <div class="unit">
+                                    <label>FTP超时[秒]</label>
+                                        <input class="textInput" size="30" value="10" name="ftp[timeout]">
+                                        系统将在设定时间内等待服务器的响应
+                                </div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misattachedconfig_update">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+

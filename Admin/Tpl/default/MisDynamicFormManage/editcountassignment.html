@@ -1,0 +1,36 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/accountassignmentreturn" class="pageForm required-validate" onsubmit="return validateCallback(this,MisDynamicFormManageecountassignment);">
+			<input type="hidden" name="fieldtag" value="{$fieldtag}">
+			<div class="pageFormContent " layoutH="56">
+				<div class="tml-form-col">
+				<label>绑定字段：</label>
+					<select name='countassignment' class="select2">
+						<option value=''>请选择</option>
+						<volist name="list" id="vo">
+						<option value='{$vo.fieldname}' <if condition="$vo.fieldname eq $assignmentfield">selected</if>>{$vo.fieldname}【{$vo.title}】</option>	
+						</volist>
+					</select>
+				</div>
+				<div class="formBar">
+				<ul>
+					<li><button class="tml_select_btn tml_formBar_btn_blue enterIndex" type="submit">确定</button></li>					<!--<li><button type="button" class="tml-btn close">关闭</button></li>-->
+				</ul>
+				</div>
+			</div>
+            
+		</form>
+	</div>
+</div>
+<script>
+//将本页面处理过好了的json值传递到上一个页面
+function MisDynamicFormManageecountassignment($form){
+	DWZ.ajaxDone($form);
+	if($form.statusCode==DWZ.statusCode.ok){
+		var data = $.parseJSON($form.data);
+		countassignmentConfig(data.fieldtag,data.countassignment); 
+	}
+	$.pdialog.closeCurrent();
+}
+
+</script>

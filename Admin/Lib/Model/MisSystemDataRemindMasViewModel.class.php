@@ -1,0 +1,32 @@
+<?php
+class MisSystemDataRemindMasViewModel extends ViewModel {
+	public $viewFields = array(
+			'mis_system_data_remind_mas'=>array(
+					'_as'=>'mis_system_data_remind_mas',
+					'id',
+					'modelname',
+					'pkey',
+					'msginfo',
+					'type',
+					'status',
+					'porderno',
+					'createtime',
+					'linkstatus',
+					'_type'=>'LEFT'
+			),
+			'mis_system_data_remind_sub'=>array(
+					'_as'=>'mis_system_data_remind_sub',
+					'masid',
+					'id'=>'subid',
+					'userid',
+					'operation',
+					'isread',
+					'readtime',
+					'issend',
+					'sendtime',
+					'status'=>'substatus',
+					'_on'=>'mis_system_data_remind_mas.id=mis_system_data_remind_sub.masid',
+					'_type'=>'LEFT'
+			),
+	);
+}

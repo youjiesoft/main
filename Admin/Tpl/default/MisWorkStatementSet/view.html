@@ -1,0 +1,67 @@
+<script>
+function workstateSet_addpeople(id,name,step){
+	if(step=="edit_MisWorkStatementSetone"){
+		var $strHtml = appendUserHtml(step,'leadid',id,name,'leadname');
+	}
+	if(step=="edit_MisWorkStatementSettwo"){
+		var $strHtml = appendUserHtml(step,'staffid',id,name,'staffname');
+	}
+	 $("#"+step).append($strHtml);
+}
+//选择带回
+ function workstateSet_selectinto(step){
+ 	var id;
+ 	var name;
+ 	$(".tbodylist").find("input[type='checkbox']").each(function(){
+ 		if($(this).attr("checked")=='checked'){
+ 			id = $(this).attr("userid");
+ 			name = $(this).attr("username");
+ 			workstateSet_addpeople(id,name,step);
+ 		}
+ 	});
+ }
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="id" value="{$vo.id}">
+			<div class="pageFormContent applecloth" layoutH="56">
+					<div class="clear"></div>
+					<div>
+	                    <label>{$fields["leadname"]}：</label>
+	                    <ul class="addressee left" id="edit_MisWorkStatementSetone" style="border:1px solid #ccc;height:50px;width:320px;">
+	                    	<volist name="leadid" id="leadidvo">
+                                <li>
+                                <input type='hidden' name="leadid[]" value="{$leadidvo}"/>
+                                <span><input type="hidden" name="leadname[]" value="{$leadname[$key]}"/>{$leadname[$key]}</span>
+                                <a  class="delAddressee" title='删除该功能' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>
+                                </li>
+                            </volist>
+	                    </ul>
+	                    <a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage/step/edit_MisWorkStatementSetone" lookupGroup="org1">查找带回</a>
+	                </div>
+	                <div class="clear" style="height:5px;"></div>	
+	                <div>
+	                    <label>{$fields["staffname"]}：</label>
+	                    <ul class="addressee left" id="edit_MisWorkStatementSettwo" style="border:1px solid #ccc;height:50px;width:320px;">
+	                    	<volist name="staffid" id="staffidvo">
+                               <li>
+	                               <input type='hidden' name="staffid[]" value="{$staffidvo}"/>
+	                               <span><input type="hidden" name="staffname[]" value="{$staffname[$key]}"/>{$staffname[$key]}</span>
+	                               <a  class="delAddressee" title='删除该功能' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>
+                               </li>
+	                         </volist>
+	                    </ul>
+	                    <a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage/step/edit_MisWorkStatementSettwo" lookupGroup="org1">查找带回</a>
+	                </div>
+					<div class="clear"></div>		
+					<div class="unit">
+						<label>{$fields["remark"]}：</label>
+						<TEXTAREA rows="2" cols="50" class="textInput" name="remark">{$vo.remark}</TEXTAREA>
+					</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

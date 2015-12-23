@@ -1,0 +1,43 @@
+<style>
+#fifter .close{
+	background:url('__PUBLIC__/dwz2/themes/default/images/dialog/dialogpanel_icon.png') no-repeat;
+	text-indent:-1000px;
+	height:19px;
+	width:19px;
+	display:inline-block;
+	margin-left:5px;
+}
+#fifter .close:hover{
+	background-position:0 -50px;
+}
+.pageFormContent p {
+    display: block;
+    float: left;
+    height: 21px;
+    margin: 0;
+    padding: 5px 0;
+    position: relative;
+    width: 380px;
+}
+</style>
+<div class="pageContent">
+	<empty name="error">
+	<form id="search_form" method="post" action="" class="pageForm" onsubmit="return searchSubmit{$searchtype}(this);">
+		<div id="fifter{$searchtype}" layoutH="58" class="pageFormContent">
+			<div class="unit">
+				<label>{$singlesearch['showname']}:</label>{$singlesearch['html']}
+				<input type="hidden" name="search_flag" value="1" />
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">搜索</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	<else />
+		<div layoutH="20" class="pageFormContent">
+			<font color="red">{$error}</font>
+		</div>
+	</empty>
+</div>

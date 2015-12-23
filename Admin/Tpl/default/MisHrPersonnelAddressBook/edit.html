@@ -1,0 +1,124 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/mishrpersonneladdressbookmodel/jump/1" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent smallFormContent" layoutH="58">
+				<div class="tml-form-col">
+					<label>姓名：</label>
+					<input name="name" type="text" class="textInput required" size="17" value="{$vo.name}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>性别：</label>
+					<select name="sex" class="combox">
+						<option <eq name="vo.sex" value="1">selected</eq> value="1">男</option>
+						<option <eq name="vo.sex" value="0">selected</eq> value="0">女</option>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>部门：</label>
+					<select name="deptid" class="combox">
+					    <option value="0" selected >选择部门</option>
+						{$deptlist}
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>职位：</label>
+					<input type="text"  class="textInput required" size="17" name="dutyname" value="{$vo.dutyname}">
+				</div>
+				<div class="tml-form-col">
+					<label>职级：</label>
+				 	<select name="dutylevelid" class="combox required">
+				 		<option value="0" selected >选择职级</option>
+						<volist name="deptlevellist" id="dtlevelist">
+							<option value="{$dtlevelist.id}" <if condition="$dtlevelist['id'] eq $vo['dutylevelid']">selected</if> >{$dtlevelist.name}</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>联系电话：</label>
+					<input name="phone" type="text"  class="textInput required phone" size="17" value="{$vo.phone}"/>
+				
+				</div>
+				<div class="tml-form-col">
+					<label>邮箱：</label>
+					<input name="email" type="text"  class="textInput email" size="17" value="{$vo.email}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>短号：</label>
+					<input name="shortNumber" type="text"  class="textInput " size="17" value="{$vo.shortNumber}"/>
+				</div>
+				
+				<div class="tml-form-col">
+					<label>分机号：</label>
+					<input name="officeNumber" type="text"  class="textInput " size="17" value="{$vo.officeNumber}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>传真号：</label>
+					<input name="faxNumber" type="text"  class="textInput " size="17" value="{$vo.faxNumber}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>QQ：</label>
+					<input name="qq" type="text"  class="textInput " size="17" value="{$vo.qq}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>所属公司：</label>
+					<select class="combox" name="companyid">
+						<volist name="companylist" id="comlist">
+							<option  value="{$comlist.id}" <if condition="$vo['companyid'] eq $comlist.id">selected</if>>{$comlist.name}</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>标记显示：</label>
+					<select class="combox" name="isbook">
+						<option  value="1" <eq name="vo.isbook" value="1">selected</eq>>是</option>
+						<option  value="0" <eq name="vo.isbook" value="0">selected</eq>>否</option>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>字母排序：</label>
+					<select name="stringSort" class="combox">
+					    <option <eq name="vo.stringSort" value="ALL">selected</eq> value="ALL" >ALL</option>
+						<option <eq name="vo.stringSort" value="A">selected</eq> value="A" >A</option>
+						<option <eq name="vo.stringSort" value="B">selected</eq> value="B" >B</option>
+						<option <eq name="vo.stringSort" value="C">selected</eq> value="C" >C</option>
+						<option <eq name="vo.stringSort" value="D">selected</eq> value="D" >D</option>
+						<option <eq name="vo.stringSort" value="E">selected</eq> value="E" >E</option>
+						<option <eq name="vo.stringSort" value="F">selected</eq> value="F" >F</option>
+						<option <eq name="vo.stringSort" value="G">selected</eq> value="G" >G</option>
+						<option <eq name="vo.stringSort" value="H">selected</eq> value="H" >H</option>
+						<option <eq name="vo.stringSort" value="I">selected</eq> value="I" >I</option>
+						<option <eq name="vo.stringSort" value="J">selected</eq> value="J" >J</option>
+						<option <eq name="vo.stringSort" value="K">selected</eq> value="K" >K</option>
+						<option <eq name="vo.stringSort" value="L">selected</eq> value="L" >L</option>
+						<option <eq name="vo.stringSort" value="M">selected</eq> value="M" >M</option>
+						<option <eq name="vo.stringSort" value="N">selected</eq> value="N" >N</option>
+						<option <eq name="vo.stringSort" value="O">selected</eq> value="O" >O</option>
+						<option <eq name="vo.stringSort" value="P">selected</eq> value="P" >P</option>
+						<option <eq name="vo.stringSort" value="Q">selected</eq> value="Q" >Q</option>
+						<option <eq name="vo.stringSort" value="R">selected</eq> value="R" >R</option>
+						<option <eq name="vo.stringSort" value="S">selected</eq> value="S" >S</option>
+						<option <eq name="vo.stringSort" value="T">selected</eq> value="T" >T</option>
+						<option <eq name="vo.stringSort" value="U">selected</eq> value="U" >U</option>
+						<option <eq name="vo.stringSort" value="V">selected</eq> value="V" >V</option>
+						<option <eq name="vo.stringSort" value="W">selected</eq> value="W" >W</option>
+						<option <eq name="vo.stringSort" value="S">selected</eq> value="X" >X</option>
+						<option <eq name="vo.stringSort" value="Y">selected</eq> value="Y" >Y</option>
+						<option <eq name="vo.stringSort" value="Z">selected</eq> value="Z" >Z</option>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>项目名称:</label>
+					<div class="tml-input-append">
+						<input type="text" class="org.name"  name="report_name" size="50" value="{$vo['projectid']|getFieldBy='id','name','mis_sales_project'}">
+						<a class="input-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a>
+						<input type="hidden" name="projectid" value="{$vo['projectid']}" class="readonly  org.mangid"/>
+					</div>
+				</div>
+
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+	</form>
+	</div>
+</div>

@@ -1,0 +1,106 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$ztree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+           check: {
+        	   autoCheckTrigger:true,
+        	   chkboxType:{ "Y" : "ps", "N" : "ps" },
+        	   chkStyle : "checkbox", 
+        	   enable : true,
+        	   nocheckInherit : false,
+        	   chkDisabledInherit : false,
+        	   radioType : "level"
+           },
+			callback: {
+				onCheck: zTreeOnClick
+			}
+		};
+	$.fn.zTree.init($("#allotgrouptrrnewbox"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("allotgrouptrrnewbox");
+	/* var valid = '{$valid}';
+    var nodes = zTree.getNodesByParam("id", 2, null);
+    zTree.checkNode(nodes[0]);
+    var nodetr = zTree.getNodesByParam("id", 4, null);
+    zTree.checkNode(nodetr[0]); */
+    
+});
+function zTreeOnClick(e,treeId,treeNode){
+    var treeObj=$.fn.zTree.getZTreeObj("allotgrouptrrnewbox"),
+    nodes=treeObj.getCheckedNodes(true),
+    v="";
+    for(var i=0;i<nodes.length;i++){
+   	 v+=nodes[i].id + ",";
+   	 nodes[i].getParentNode();
+    }
+    $("input[name='treenode']").val(v);
+}
+</script>
+<style>
+    .allot_group_tree {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+    .allot_group_tree .member_searcher {
+        width: 200px;
+        position: absolute;
+        top: 0;
+        right: 20px;
+    }
+    .allot_tree_lay {
+        width: 25%;
+        float: left;
+        font-size: 15px;
+    }
+    .allot_tree_lay input {
+        padding-left: 5px;
+        width: 150px;
+        height: 26px;
+        border: 1px solid #d8d8d8;
+        border-radius: 4px;
+        font-family: microsoft yahei;
+    }
+    .allot_tree_lay span {
+        margin-right: 10px;
+        line-height: 32px;
+    }
+    .allot_tree_lay label {
+        margin-left: 5px;
+    }
+</style>
+<div class="allot_group_tree">
+    <div class="allot_tree_lay">
+        <label>组名称：</label>
+        <input name="name" type="text" value="{$grouplist[$subid]['name']}">
+    </div>
+    <div class="allot_tree_lay">
+        <label>组编码：</label>
+        <input name="orderno" type="text" value="{$grouplist[$subid]['orderno']}">
+    </div>
+    <div class="allot_tree_lay">
+        <label>开启：</label>
+        <span><input name="order" id="allotYes" type="radio" value="1"><label for="allotYes">是</label></span>
+        <span><input name="order" id="allotNo" type="radio" value="2"><label for="allotNo">否</label></span>
+    </div>
+    <input type="hidden" name="treenode"/>
+    <input type="hidden" name="typetree" value="typetree">
+    <input type="hidden" name="id" value="{$subid}">
+    <div class="close">
+        <div class="clearfix p5">
+            <div class="member_searcher">
+                <input class="add_key left" id="allotgrouptreerightNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+                <button class="btn_member icon-search right" onclick="SearchZTreeNode('allotgrouptrrnewbox','allotgrouptreerightNodeKeys')" type="button"></button>
+            </div>
+        </div>
+        <ul id="allotgrouptrrnewbox" class="ztree" layoutH="227"></ul>
+    </div>
+</div>

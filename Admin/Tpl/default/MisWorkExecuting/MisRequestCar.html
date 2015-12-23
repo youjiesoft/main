@@ -1,0 +1,105 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/md/{$md}/rel/{$rel}" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+		<input type="hidden" name="id" value="{$vo['id']}" /> 
+		<input type="hidden" name="issendcar" value="2"/>
+		<input type="hidden" name="dotype" value="1"/>
+		<input type="hidden" name="md" value="{$md}"/>
+		<div class="pageFormContent " layoutH="54">
+			<div class="tml-row">
+					<if condition='$fields["usename"]'>
+						<div class="tml-form-col ">
+						    <label>{$fields["usename"]}： </label>
+						    <input type="text" name="usename" readonly="readonly" value="{$vo['usename']}" >
+						</div>
+		          	</if>
+		            <if condition='$fields["departmentID"]'>
+						<div class="tml-form-col ">	
+							<label>{$fields["departmentID"]}： </label>
+							<input readonly="readonly" value="{$vo['departmentID']|getFieldBy='id','name','MisSystemDepartment'}"  type="text"class="readonly textInput" />
+						</div>
+		            </if>
+		            <if condition='$fields["departurePlace"]'>
+						<div class="tml-form-col ">	
+							<label>{$fields["departurePlace"]}： </label>
+							<input type="text" readonly="readonly" name="departurePlace" value="{$vo['departurePlace']}">
+						</div>
+		            </if>
+		            <if condition='$fields["arrivePlace"]'>
+						<div class="tml-form-col ">	
+							<label>{$fields["arrivePlace"]}： </label>
+							<input type="text" readonly="readonly" name="arrivePlace"  value="{$vo['arrivePlace']}">
+						</div>
+		            </if>
+		            <if condition='$fields["occupy"]'>
+						<div class="tml-form-col ">	
+						    <label>{$fields["occupy"]}： </label>
+							<if condition="$vo.occupy eq '1'"><input type="text"  readonly="readonly"  value="一天"></if>
+							<if condition="$vo.occupy eq '2'"><input type="text"  readonly="readonly"  value="上午"></if>
+							<if condition="$vo.occupy eq '3'"><input type="text"  readonly="readonly"  value="下午"></if>
+							<if condition="$vo.occupy eq '4'"><input type="text"  readonly="readonly"  value="多天"></if>
+						</div>
+		            </if>
+		            <if condition='$fields["cartype"]'>
+						<div class="tml-form-col ">	
+							<label>{$fields["cartype"]}： </label>
+							<input readonly="readonly" value="{$vo['cartype']|getFieldBy='id','name','mis_vehicle_type'}"  type="text"class="readonly textInput" />
+						</div>
+		            </if>
+		             <if condition='$fields["departureTime"]'>
+						<div class="tml-form-col ">	
+							<label>{$fields["departureTime"]}： </label>
+							<input type="text" readonly="readonly"  name="departureTime" format="yyyy-MM-dd HH:mm" value="{$vo['departureTime']|transTime='Y-m-d H:i'}">
+						</div>
+		             </if>
+					 <if condition='$fields["planReturnTime"]'>
+						<div class="tml-form-col ">	
+							<label>{$fields["planReturnTime"]}： </label>
+							<input type="text" readonly="readonly" name="planReturnTime" format="yyyy-MM-dd HH:mm" value="{$vo['planReturnTime']|transTime='Y-m-d H:i'}">
+						</div>
+		             </if>
+		             <if condition='$fields["carID"]'>
+						<div class="tml-form-col ">
+							<label>{$fields["carID"]}： </label>
+							<div class="tml-input-append2">
+								<input type="text" class="required org1.carno" name="carno" autocomplete='off' readonly="readonly" value="{$vo.carID|getFieldBy='id','carno','mis_system_car'}"/>
+								<input type="hidden" class="org1.id" name="carID"  /><!-- 类型对象ID -->
+								<a class="input-addon input-addon-addon input-addon-add" param="field=id,carno&model=MisSystemCar&conditions=status,1" href="__URL__/lookupGeneralSelf" lookupGroup="org1" >车辆选择</a>
+								<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:;" onclick="clearOrg('org1');"></a>
+							</div>
+						</div>
+			 	   </if>
+				  <if condition='$fields["yuetongcard"]'>
+					<div class="tml-form-col ">
+					    <label>{$fields["yuetongcard"]}： </label>
+					    <input type="text" readonly="readonly" name="yuetongcard" <if condition="$vo.yuetongcard eq '1'">value="需要"<else />value="不需要"</if>>
+					</div>
+	           	  </if>
+	              <if condition='$fields["mileage"]'>
+					<div class="tml-form-col ">
+						<label>{$fields["mileage"]}： </label>
+						<input type="text" name="mileage" readonly="readonly" class="textInput" value="{$vo.mileage}">
+					</div>
+	              </if>
+         	</div>   
+             <if condition='$fields["passengerpersonname"]'>
+				<div class="tml-form-row">
+					<label>{$fields["passengerpersonname"]}： </label>
+					<textarea name="passengerpersonname" readonly="readonly">{$vo.passengerpersonname}</textarea>
+				</div>
+             </if>
+              <if condition='$fields["reason"]'>
+				<div class="tml-form-row">
+					<label>{$fields["reason"]}： </label>
+					<textarea name="reason" readonly="readonly">{$vo['reason']}</textarea>
+				</div>
+              </if>
+              <if condition='$fields["remark"]'>
+				<div class="tml-form-row">
+					<label>{$fields["remark"]}： </label>
+					<textarea name="remark" readonly="readonly">{$vo['remark']}</textarea>
+				</div>
+              </if>
+		</div>
+	{:W('ShowAction')}
+	</form>
+</div>

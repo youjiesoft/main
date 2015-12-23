@@ -1,0 +1,21 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="navTab" rel="MisTaskInformationindexview" title="{$name}" href="__APP__/MisTaskInformation/index"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <div class="xytag">
+            <a class="active" href="#" onclick="getmistaskinfo(this,1)">发布的任务</a>
+            <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_edit">
+                |
+                <a href="#" onclick="getmistaskinfo(this,2)">执行的任务</a>
+            </if>
+        </div>
+        <div id="mistaskinfo">
+            <include file="mistaskinfo" />
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

@@ -1,0 +1,18 @@
+<chart caption='Quarterly Sales Summary' subcaption='Figures in $'
+       xAxisName='Quarter' yAxisName='Sales' showAboutMenuItem='0'  showPrintMenuItem='0' exportEnabled='0'>
+    <set label='Quarter 1' value='420500' />
+    <set label='Quarter 2' value='295400' />
+    <set label='Quarter 3' value='523400' />
+    <set label='Quarter 4' value='465400' />
+    <styles>
+        <definition>     
+           <style name='myCanvasAnimX' type='Animation'
+                  param='_xScale' start='0' duration='1' />\
+           <style name='myCanvasAnimY' type='Animation'
+                  param='_yScale' start='0' duration='1' />\
+       </definition>
+       <application>     
+         <apply toObject='Canvas' styles='myCanvasAnimX,myCanvasAnimY' />
+        </application>
+    </styles>
+</chart>

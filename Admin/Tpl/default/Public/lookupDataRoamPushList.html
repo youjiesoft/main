@@ -1,0 +1,45 @@
+<div class="pageContent" style="overflow: auto;">
+	<div class="xypc">
+		<div id="xywrap" class="xywrap clearfix">
+			<div class="general_wrap">
+                 <div class="general_wrap_top"  layouth="58">
+                     <div class="fast_nav_content">
+                         <div class="tml_line_lay">
+                             <span class="tml_line_header">生成单据（拉动）</span>
+                             <div class="tml_style_line tml_sl4 tml_slb_54d5eb"></div>
+                         </div>
+                     	<table class="tml_set_table tml_task_list" style="margin:0px;width:100%;" id="indexlist" width="100%">
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>来源单据</th>
+									<th>目标单据</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<volist id="vo" name="result" key="key2">
+									<tr name="fields">
+										<td>
+											{$key2}
+										</td>
+										<td>
+											{$vo.sourcename}
+										</td>
+										<td>
+											{$vo.targetname}
+										</td>
+										<td>
+											<a class="tml_task_btn" param="newconditions={$vo['rules']}&model={$vo['sourcemodel']}"  href="__APP__/{$vo['targetmodel']}/lookupDataRoamPush/sourcemodel/{$vo['sourcemodel']}/targetmodel/{$vo['targetmodel']}/type/4" lookupGroup="org" >生成单据</a>
+											<!-- <a class="tml_task_btn"   href="__APP__/{$vo['targetmodel']}/lookupDataRoamPush/sourcemodel/{$vo['sourcemodel']}/targetmodel/{$vo['targetmodel']}/type/4" target="navTab" >生成单据</a>-->
+										</td>
+									</tr>
+								</volist>
+							</tbody>
+						 </table>
+                     </div>
+                 </div>
+            </div>
+		</div>
+	</div>
+</div>

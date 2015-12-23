@@ -1,0 +1,68 @@
+<div class="pageContent">
+    <form method="post" action="__URL__/lookupAdjunct" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <input type="hidden" name="id" value="{$vo['id']}">
+        <input type="hidden" name="refreshtabs[data]" value="1">
+        <div class="pageFormContent applecloth" layoutH="95">
+            <div class="keepContentCenter">
+                <H2 class="contentTitle contentTitle_center">
+                   附件信息
+                </H2>
+                <div class="unit">
+                    <label>任务名称：</label>
+                    <input type="text" class="required" readonly style="width:500px;"  value="{$task['title']}" />
+                </div>
+                <div class="clear"></div>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>任务附件</b>
+                    </legend>
+                        <if condition="$isattarry">
+                            <volist name="isattarry" id="att">
+                                <p style="padding:0;"><label>附件{$key+1}</label><a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+                            </volist>
+                        </if>
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>成果附件</b>
+                    </legend>
+                    <if condition="$isattarry">
+                        <volist name="isattarry" id="att">
+                            <p style="padding:0;"><label>附件{$key+1}</label><a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+                        </volist>
+                    </if>
+                        
+                        
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>终止说明附件</b>
+                    </legend>
+                     <if condition="$stopattarry">
+                        <volist name="stopattarry" id="stopatt">
+                            <p style="padding:0;"><label>附件{$key+1}</label><a class="attlink" rel="{$stopatt['id']}" target="_blank" href="__PUBLIC__/{$stopatt['attached']}"><span class="info">{$stopatt['upname']}</span></a></p>
+                        </volist>
+                    </if>
+                </fieldset>
+                
+                
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>打回说明附件</b>
+                    </legend>
+                     <if condition="$backattarry">
+                        <volist name="backattarry" id="stopatt">
+                            <p style="padding:0;"><label>附件{$key+1}</label><a class="attlink" rel="{$stopatt['id']}" target="_blank" href="__PUBLIC__/{$stopatt['attached']}"><span class="info">{$stopatt['upname']}</span></a></p>
+                        </volist>
+                    </if>
+                </fieldset>
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+            </ul>
+        </div>
+    </form>
+</div>
+    

@@ -1,0 +1,101 @@
+<style>
+.new_table {
+    color: #808080;
+    font-size: 14px;
+    margin: 0 auto 10px;
+    text-align: center;
+    width: 96%;
+}
+.new_table th {
+    background: #fafafa none repeat scroll 0 0;
+    color: #484848;
+}
+.new_table th, .new_table td {
+    border: 1px solid #d8d8d8;
+    line-height: 35px;
+    text-align: center;
+}
+.new_table td input, .new_table td select {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 1px solid #e8e8e8;
+    border-radius: 2px;
+    color: #484848;
+    font-family: "Microsoft Yahei";
+    height: 22px;
+    line-height: 22px;
+    margin: 6px 0;
+    width: 90%;
+}
+.new_table td input:focus {
+    border-color: #a8a8a8;
+}
+</style>	
+	<div class="pageContent">
+		<form method="post" action="">
+			<div class="pageFormContent " layoutH="40">
+				<if condition="$data['dataview']">
+					<div class="dataview">
+						<h3>该表单被下列系统视图引用：</h3>
+						<table class="new_table">
+							<thead>
+								<tr>
+									<th width="50%">被引用字段</th>
+									<th width="50%">系统视图名称</th>									
+								</tr>
+							</thead>
+							<tbody>
+								<volist name="data['dataview']" id="viewv">
+								<tr>
+									<td>{$viewv.fields}</td>
+									<td><a href="__APP__/MisSystemDataviewMas" rel="MisSystemDataviewMas" target="navTab" title="系统视图">{$viewv.title}</a></td>
+								</tr>
+								</volist>
+							</tbody>
+						</table>
+					</div>
+				</if> 
+				<if condition="in_array('roam',$reqote)">
+					<div class="roam">
+						<h3>该表单被下列漫游引用：</h3>
+						<table class="new_table">
+							<thead>
+								<tr>
+									<th>被引用字段</th>
+									<th>数据漫游名称</th>
+								</tr>
+							</thead>
+							<tbody>
+								<volist name="data['roam']" id="roamv">
+								<tr>
+									<td>{$roamv.fields}</td>
+									<td><a href="__APP__/MisSystemDataRoamMas" rel="MisSystemDataRoamMas" target="navTab" title="数据漫游">{$roamv.title}</a></td>
+								</tr>
+								</volist>
+							</tbody>
+						</table>
+					</div>
+				</if>
+				<if condition="in_array('lookup',$reqote)">
+					<div class="lookup">
+						<h3>该表单被下列参照引用：</h3>
+						<table class="new_table">
+							<thead>
+								<tr>
+									<th style="widty:50%;">被引用字段</th>
+									<th style="widty:50%;">参照名称</th>
+								</tr>
+							</thead>
+							<tbody>
+								<volist name="data['lookup']" id="lookupv">
+								<tr>
+									<td>{$lookupv.fields}</td>
+									<td><a href="__APP__/LookupObj" rel="LookupObj" target="navTab" title="参照生单管理">{$lookupv.title}</a></td>
+								</tr>
+								</volist>
+							</tbody>
+						</table>
+					</div>
+				</if>
+			</div>
+		</form>
+	</div>

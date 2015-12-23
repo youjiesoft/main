@@ -1,0 +1,164 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="id" value="{$vo.id}">
+			<input type="hidden" name="dotype" value="流程启动" />
+			<input type="hidden" name="ostatus" value="{$vo['ostatus']}" />
+			<div class="pageFormContent applecloth" layoutH="56">
+				<div class="keepContentCenter {$auditImgClass}">
+					<H2 class="contentTitle contentTitle_center">销售费用申请单
+						<span class="auto_code">
+                            <if condition="$updataid">
+                                <a href="javascript:;" class="xyPrevButton" onclick="changeTheDocNum('__MODULE__','edit',{$updataid})"></a>
+                            <else/>
+                                <span class="xyPrevButtonDisable"></span>
+                            </if>
+                            <b>No. </b>
+							<!--可以输入的就去掉两个readonly 同时改xycodedata_read为xycodedata_write-->
+							<input type="text" name="orderno" value="{$vo.orderno}" <if condition='$writable eq 0'> readonly="readonly" class="xycodedata_read" <else/> class="xycodedata_write required alphanumeric" </if> />
+						    <if condition="$downdataid">
+                                <a href="javascript:;" class="xyNextButton" onclick="changeTheDocNum('__MODULE__','edit',{$downdataid})"></a>
+                            <else/>
+                                <span class="xyNextButtonDisable"></span>
+                            </if>
+                        </span>
+					</H2>
+					<fieldset>
+						<legend>基本信息</legend>
+						<p>
+							<label>{$fields["typeid"]}：</label>
+							<select name="typeid" class="required combox">
+								<option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="votype" name="typelist">
+								<option value="{$key}"
+									<if condition="$key eq $vo['typeid']">selected</if>
+									>{$votype}
+								</option>
+								</volist>
+							</select>
+						</p>
+						<P>
+							<label>{$fields["customerid"]}：</label>
+							<input type="text" class="checkByInput required org1.name" class="" name="customername" value="{$vo['customerid']|getFieldBy='id','name','MisSalesCustomer'}" show='name' insert='id' checkfor='MisSalesCustomer' autocomplete='off' />
+							<input type="hidden" class="org1.id" name="customerid" value="{$vo.customerid}" callback="changecustomer" />
+							<a class="input-addon input-addon-addon input-addon-userplus" param="field=id,code,name&model=MisSalesCustomer&conditions=status,1" href="__URL__/lookupGeneral" lookupGroup="org1">客户选择</a>
+						</P>
+						<p>
+							<label>{$fields["companyid"]}名称：</label>
+							<select name="companyid" class="combox">
+								<option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="vocom" name="companylist">
+								<option value="{$key}"
+									<if condition="$key eq $vo['companyid'] ">selected</if>
+									>{$vocom}
+								</option>
+								</volist>
+							</select>
+						</p>
+						<p>
+							<label>{$fields["projectid"]}：</label>
+							<input type="text" class="checkByInput backchange org2.name" value="{$vo['projectid']|getFieldBy='id','name','MisSalesProject'}" show='name' insert='id' checkfor='MisSalesProject' autocomplete='off' />
+							<input type="hidden" class="backchange org2.id" name="projectid" value="{$vo.projectid}" />
+							<a class="btnLook lookupproject" param="field=id,code,name&model=MisSalesProject&conditions=status,1" href="__URL__/lookupGeneral" lookupGroup="org2">项目选择</a>
+						</p>
+						<p>
+							<label>{$fields["sacnoid"]}：</label>
+							<input type="text" class="checkByInput backchange org3.name" value="{$vo['sacnoid']|getFieldBy='id','name','MisSalesContractmas'}" show='name' insert='id' checkfor='MisSalesContractmas' autocomplete='off' />
+							<input type="hidden" class="backchange org3.id" name="sacnoid" value="{$vo.sacnoid}" />
+							<a class="btnLook lookupcontract" param="field=id,code,name&model=MisSalesContractmas&conditions=status,1;auditstate,3" href="__URL__/lookupGeneral" lookupGroup="org3">合同选择</a>
+						</p>
+						<p>
+							<label>{$fields["cappid"]}：</label>
+							<select name="cappid" class="required combox">
+								<option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="vot" name="applacationlist">
+								<option value="{$key}"
+									<if condition="$key eq $vo['cappid'] ">selected</if>
+									>{$vot}
+								</option>
+								</volist>
+							</select>
+						</p>
+						<p>
+							<label>{$fields["rqdate"]}：</label>
+                                <input type="text" value="{$vo['rqdate']|transTime}" name="rqdate" onfocus="WdatePicker()" size="17" class="tml-border-r0 Wdate" />
+                                <span class="input-addon input-addon-calendar"></span>
+						</p>
+						<p>
+							<label>{$fields["userid"]}：</label>
+							<select name="userid" class="required combox">
+								<option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="vou" name="userlist">
+								<option value="{$key}"
+									<if condition="$key eq $vo['userid']">selected</if>
+									>{$vou}
+								</option>
+								</if> </volist>
+							</select>
+						</p>
+						<p>
+							<label>{$fields["apamount"]}：</label>
+							<input type="text" class="required number"
+								onblur="FormatNumber(this);" value="{$vo.apamount|getDigits}"
+								name="apamount" />
+						</p>
+						<div class="clear"></div>
+						<div class="unit">
+							<label>{$fields["sumary"]}：</label>
+							<textarea cols="60" rows="2" name="sumary">{$vo.sumary}</textarea>
+						</div>
+						<div class="clear"></div>
+						<div class="unit">
+							<label>{$fields["remark"]}：</label>
+							<textarea cols="60" rows="2" name="remark">{$vo.remark}</textarea>
+						</div>
+						<!-- <br />
+						<div class="unit">
+							<label>上传附件：</label>
+							<input id="swfupload_applymas_add" type="file" uploader="true" name="applymasfile" formData="{ uploadpath:'Purchasing' }" />
+							<input type="image" onclick="$('#swfupload_applymas_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+						</div>
+						 -->
+						<!--此处为上传列表-->
+						<!-- <div class="unit nowrap">
+							<label>&nbsp;</label>
+							<span id="swfupload_applymas_add-queue" class="info uploadify-queue"></span>
+						</div> -->
+					</fieldset>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.crmsalecostform_update">
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">{$Think.lang.save}</button>
+							</div>
+						</div>
+					</li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.crmsalecostform_startprocess">
+						<if condition="$vo.auditState elt 0">
+						<li>
+							<div class="buttonActive">
+								<div class="buttonContent">
+									<button type="button"
+										onclick="StartProcess(this.form,'__MODULE__');">{$Think.lang.startprocess}</button>
+								</div>
+							</div>
+						</li>
+						</if>
+					</if>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.cancel}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

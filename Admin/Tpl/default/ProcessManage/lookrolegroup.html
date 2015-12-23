@@ -1,0 +1,63 @@
+<script type="text/javascript">
+var swid = '{$switch}';
+<!--
+function a($id,$name){
+	var $box =$.pdialog.getCurrent();
+	$("#abcde"+swid).html($name);
+	$.pdialog.closeCurrent();
+}
+//-->
+</script>
+
+<form id="pagerForm" action="__URL__/lookrolegroup" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return dialogSearch(this);" action="__URL__/lookrolegroup" method="post">
+		<input type="hidden" name="switch" value="{$switch}" />
+		<div class="searchBar">
+                 <table class="searchContent">
+				<tr>
+					<td>
+						<input type="text"  placeholder="搜索角色名称"  class="keyword" name="keyword"  value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox searchby" name="searchby" >
+							<volist name="searchbylist" id="searchby">
+								 <option value="{$searchby.id}"> {$searchby.val} </option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+					</td>
+				</tr>
+			</table>
+            </div>
+	</form>
+</div>
+<div>
+	<table class="table" width="100%" layoutH="146">
+		<thead>
+			<tr>
+				<th>序号</th>
+				<th>角色名称</th>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr rel="{$vo['id']}">
+				<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+				<td  class="name" ondblclick="a({$vo.id},'{$vo.name}');">{$vo['name']}</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div> 

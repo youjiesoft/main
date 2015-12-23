@@ -1,0 +1,57 @@
+<script>
+$(function(){
+	var url = "__URL__/lookupStatisticsChart";
+	var type = '{$type}';
+	if(type) url = url+"/type/"+type;
+	var swf = 'Column3D';
+	chart("__PUBLIC__/Charts/"+swf+".swf","singleChart",url,"600", "250");
+	$('#selectSingleChart').selectButton().change(function(){
+		var swf = $(this).val();
+		chart("__PUBLIC__/Charts/"+swf+".swf","singleChart",url,"600", "250");
+	});
+});
+</script>
+<div class="pageContent">
+	<table class="list" style="width: 400px;">
+	<thead>
+		<tr>
+			<th>计划编号</th>
+			<th>名称</th>
+			<th>成绩</th>
+			<th>等级</th>
+		</tr>
+	</thead>
+	<tbody>
+		<volist id="pavo" name="pavlist">
+			<tr>
+				<td>{$pavo['planorderno']}</td>
+				<td>{$pavo['planname']}</td>
+				<td>{$pavo['score']}</td>
+				<td>{$pavo['level']}</td>
+			</tr>
+		</volist>
+		<tr>
+			<td></td>
+			<td>最高分</td>
+			<td>{$maxScore}</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>平均分</td>
+			<td>{$avgScore}</td>
+			<td></td>
+		</tr>
+	</tbody>
+</table>
+<div class="clearfix" style="margin:10px;">
+    <select name="select" id="selectSingleChart" class="">
+		<option value="Column2D">2D柱图</option>
+		<option value="Column3D" selected="selected">3D柱图</option>
+		<option value="Pie2D">2D饼图</option>
+		<option value="Pie3D">3D饼图</option>
+		<option value="Line">线图</option>
+    </select>
+</div>
+<div id="singleChart"></div>
+</div>

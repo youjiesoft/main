@@ -1,0 +1,82 @@
+<style>
+table,tr,td,th{border: 1px solid #9BDBFF; height:60px;}
+th{text-align: left;}
+.curstep{background:#0096ff; color:#FFF;}
+.baobiao{ background-color:#caf7fb; text-align:center; font-weight:bold;}
+.btn{
+    border:1px solid blue;
+    background-color:Silver;
+    width:100px;
+}
+select{min-width:300px;}
+
+</style>
+<table width="100%" border="0" cellspacing="0">
+  <tr class="baobiao">
+    <td>升级向导</td>
+    <td class="curstep">第一步：检测环境</td>
+    <td>第二步：升级包下载</td>
+    <td>第三步：程序升级</td>
+    <td>第四步：完成</td>
+  </tr>
+</table>
+<br>
+<form action="__URL__/step_two" method="post">
+<!--
+<div class="pageContent">
+	<table class="table" width="100%" layoutH="43">
+		<thead>
+		<tr>
+			<th>环境监测</th>
+            <th>当前服务器</th>
+            <th>推荐配置</th>
+            <th>最低要求</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="file">
+			<tr target="sid_node" >
+                <td>{$key}<td>
+                <td>{$key}<td>
+				<td>{$vo}<td>
+				<td>{$vo}<td>
+                <td>{$vo}<td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+-->
+	<table class="table" width="100%" layoutH="43">
+		<thead>
+		<tr>
+			<th>文件/目录对象</th>
+            <th>当前状态</th>
+            <th>所需状态</th>
+		</tr>
+		</thead>
+		<tbody>
+		<?php $status=1;?>
+		<volist id="filedir" name="filedir">
+			<tr target="sid_node" >
+                <td width="60%">{$filedir[0]}</td>
+				<td>
+				<?php if($filedir[1]==1){
+				echo "可读写";
+				}else{echo "不可读写"; $status=0;}
+				?></td>
+				<td>可读写</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+		<div>
+		<?php
+		if($status==0){
+		echo "文件环境检测未通过".$status;
+		}else{
+		echo '文件环境检测通过 <input type="submit" name="button" id="button" value="下一步" />';
+		}
+		?>
+		</div>
+</div>
+</form>

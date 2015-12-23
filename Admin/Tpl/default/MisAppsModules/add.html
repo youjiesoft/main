@@ -1,0 +1,39 @@
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required" name="name" />
+			</div>
+			<div class="unit"  style="width:500px;">
+				<label>{$fields["path"]}：</label>
+				<input type="text" class="required" name="path" />
+                    <span>(*APP里面的方法名称)</span>
+			</div>
+			<div class="unit"  style="width:500px;">
+				<label>{$fields["remark"]}：</label>
+                <textarea name="remark" maxlength="100" class="textInput" rows="2" cols="40"></textarea>
+			</div>
+			<div class="unit" >
+				<label>{$fields["status"]}：</label>
+				<SELECT name="status">
+					<option value="1">启用</option>
+					<option value="0">禁用</option>
+				</SELECT>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misappsmodules_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+

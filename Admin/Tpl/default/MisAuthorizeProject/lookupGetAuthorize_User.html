@@ -1,0 +1,39 @@
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+<form id="pagerForm" action="__URL__/lookupGetAuthorize_User/userid/{$userid}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="userid" value="{$userid}"/>
+</form>
+<div class="panelBar">
+		<ul class="toolBar">
+			<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add/step/2/stepType/0/userid/{$userid}" rel="MisAuthorizeProject_User_add" target="dialog" mask="true"><span><span class="icon icon-plus icon_lrp"></span>添加</span></a></li>
+			<li><a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/step/2/rel/abc" target="ajaxTodo" title="确定要删除吗?"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li>
+			<li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/step/2/id/{sid_education_name}" rel="MisAuthorizeProject_User_edit" target="dialog" mask="true"><span><span class="icon icon-edit icon_lrp"></span>修改</span></a></li>
+		</ul>
+	</div>
+	<table class="table" width="99%" layoutH="100">
+		<thead>
+			<tr>
+				<th width="22">编号</th>
+				<th>类型对象</th>
+				<th>类型</th>
+				<th>控制器名称</th>
+				<th>表名</th>
+				<th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr target="sid_education_name" rel="{$vo['id']}" drel="MisAuthorizeProject_User_edit" title="个人权限_修改" ondblclick='ondblclick_dialog(this,$.pdialog.getCurrent(),"__URL__/edit/step/1/id/{$vo.id}");'>
+					<td>{$key+1}</td>
+					<td>{$vo['objectname']}</td>
+					<td>{$vo['type']|excelTplselected ='0:个人,1:权限组'}</td>
+					<td>{$vo['modelname']}</td>
+					<td>{$vo['tablename']}</td>
+					<td>{$vo['remark']}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+</div>

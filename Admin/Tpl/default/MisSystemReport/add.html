@@ -1,0 +1,95 @@
+<script>
+$(function(){
+	var conf = new Object();
+	var data = '{$nodelist}';
+	conf.data = eval("("+data+")");//$.parseJSON(data);
+	conf.ids = '#nbm1,#nbm2',
+	conf.tag = 'group,node'; 
+	conf.pid = 'group_id';
+	conf.tex = 'name'; 
+	conf.val = 'id';  
+	conf.container=$.pdialog.getCurrent() ;
+	conf.defaultVal='{$group_id}';
+	$.linkage(conf); 
+}); 
+function panelDeleteRole(obj){
+	var $box=$.pdialog.getCurrent();
+	$box.find(obj).parents("div.removediv").remove();
+	$box.find("._itemIndex").each(function(i){
+		 $(this).text(i+1);
+	 });
+}
+</script>
+<style>
+	.tml-form-row label.tmp_label{margin-left:0px;width: 120px;float: none;font: 14px/30px "Microsoft Yahei","微软雅黑",sans-serif;}
+	.tml-form-row label.tmp_label:hover{color:#006699;}
+	</style>
+		
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/missystemreport_index" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="jump" value="jump">
+		<input type="hidden" name="modeid" value="{$group_id}">
+		<input type="hidden" name="type" value="1">
+		<div class="pageFormContent" layoutH="58">
+		
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>报表名称：</label>
+					<input type="text" class="required" name="name" value="">
+				</div>
+			</div>
+			<div class="tml-row">
+					<div class="tml-form-row">
+						<label>引用地址：</label>
+						<input type="text" class="required" name="url" value="" >
+					</div>
+					<div class="clear"></div>
+					<span style="padding: 0 0 8px 130px;display:inline-block;">如果是外部引用必须加上http://</span>	
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>组名称：</label>
+					<select name="group_id"  class="select2"  id="nbm1"><option>--请选择--</option></select>
+				</div>
+				<div class="tml-form-col">
+					<label>所属模块：</label>
+					<select  name="modelid"  class="select2" id="nbm2"><option>--请选择--</option></select>
+				</div>		
+				<div class="tml-form-col">
+					<label>展现方式：</label>
+					<select name="showmethod" class="select2">
+						<option value="newtab">内嵌</option>
+						<option value="blank">弹出</option>
+					</select>
+				</div>	
+				<div class="tml-form-col">
+					<label>是否基础报表：</label>
+					<select name="isbasetab" class="select2">
+						{:getSelectByHtml('debit','select')}
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>排序：</label>
+					<input type="text" class="required" name="sort" value="">
+				</div>
+				<div class="tml-form-col">
+				  <label>显示高度：</label>
+				  <div class="tml-input-append">
+				   <input type="text" class="required" name="height" value="200">
+				    <span class="input-addon-unit">px</span>
+				  </div>
+				</div>
+				<div class="tml-form-col">
+					<label>是否首页显示：</label>
+					<select name="isindex" class="select2">
+						{:getSelectByHtml('debit','select')}
+					</select>
+				</div>		
+			</div>      
+		</div>
+        {:W('ShowAction')}		  
+	</form>
+	
+	</div>
+</div>

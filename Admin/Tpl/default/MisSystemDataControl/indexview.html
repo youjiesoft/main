@@ -1,0 +1,66 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			 <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/add/modelname/{$modelname}" title="数据控制_新增" target="navTab" rel="__MODULE__add"><span><span class="icon icon-plus icon_lrp"></span>新增</span></a></li>
+		   <li><a class="edit js-edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}/modelname/{$modelname}" rel="MisDataWandereditBox" target="navTab"><span><span class="icon icon-edit icon_lrp"></span>编辑</span></a></li>
+		    <li><a target="ajaxTodo" href="__URL__/delete/id/{sid_node}/rel/MisDataWanderBox" title="你确定要删除吗？" warn="请选择一条组记录" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>删除</span></a></li>
+<!-- 			 <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initdb" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>初始化</span></a></li> 
+			 <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initstrelation" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>strelation初始化</span></a></li>
+			  <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initrelationtable" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>关系表初始化</span></a></li>
+			  <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initrules" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>规则条件初始化</span></a></li>    -->	
+		</ul>
+		<form rel="pagerForm" onSubmit="return  divSearch(this,'MisDataWanderBox');" action="__URL__/index" method="post">
+			<input type="hidden" name="jump" value="jump" />
+			<input type="hidden" name="model" value="{$modelname}" />
+	        <div class="searchBar">
+	            <table class="searchContent">
+	                <tr>
+	                    <include file="Public:quickSearchCondition" />
+	                </tr>
+	            </table>
+	        </div>
+	    </form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+			<th width="24">序号</th>
+			<volist id="vo" name="detailList">
+				<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="MisSystemCompanyZtree" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			</volist>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$vo['id']}" model="{$vo['sourcemodel']}" onclick="onTrClickCheckbox(this,'id');">
+			<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+			  <volist id="vo1" name="detailList">
+				<td field="{$vo1[name]}" width="{$vo1[widths]}">
+					<if condition="count($vo1['func']) gt 0">
+						<volist name="vo1.func" id="nam">
+							<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+							{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+							<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+						</volist>
+					<else />
+					{$vo[$vo1['name']]}
+					</if>
+				</td>
+			  </volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="MisDataWanderBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

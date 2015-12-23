@@ -1,0 +1,69 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misFileManagerBox"), setting, zNodes);
+});
+</script>
+<style>
+.dialog .treeright_temp .grid,
+.dialog .treeright_temp .panelPageBar{border-left:0px;}
+.dialog .pageContent_NoPaddingTop{margin-top:-15px!important;}
+</style>
+<div class="pageContent pageContent_NoPaddingTop">
+	<div class="treeleft" style="border-right:1px solid #d8d8d8;padding-top:10px;">
+		<div class="close">
+			<div class="clearfix p5" style="padding-top:0px;">
+				<div class="member_searcher">
+					<input class="add_key left enterIndex textInput" type="text" id="misFileManagerBoxSearchNodeKeys" placeholder="请输入查找词" name="">
+					<button class="btn_member icon-search right enterIndex" onclick="SearchZTreeNode('misFileManagerBox','misFileManagerBoxSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="misFileManagerBox" class="ztree" layoutH="44" ></ul>
+		</div>
+	</div>
+	<div id="misFileManagerGetDeptBox" class="positiveBox treeright treeright_temp">
+		<include file="lookupmanagelist" />
+	</div>
+</div>
+ <script>
+/* $(document).ready(function(){
+	var zNodes = {$typeTree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misFileManagerBox"), setting, zNodes);
+}); */
+</script>
+<!--<div class="pageContent">
+	<div class="treeleft">
+		<div class="close">
+			<div class="clearfix p5">
+				<input class="tree-search-input" type="text" id="misFileManagerBoxSearchNodeKeys" />
+				<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('misFileManagerBox','misFileManagerBoxSearchNodeKeys')" type="button">搜索</button>
+			</div>
+			<ul id="misFileManagerBox" class="ztree" layoutH="44" ></ul>
+		</div>
+	</div>
+	<div id="misFileManagerGetDeptBox" class="positiveBox treeright">
+		<include file="lookupmanagelist" />
+	</div>
+</div> -->

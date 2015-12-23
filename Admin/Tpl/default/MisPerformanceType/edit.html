@@ -1,0 +1,59 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" class="pageForm required-validate" 
+		<if condition="$vid neq '1'">
+			action="__URL__/update/navTabId/__MODULE__" 
+			<if condition="$vo.type eq '1'">
+				onsubmit="return refreshTreeEdit(this,'name','misperformancelevel_rightcontent_tree');" 
+				</if>
+				<if  condition="$vo.type eq '2'">
+				onsubmit="return refreshTreeEdit(this,'name','misperformancekpitree');" 
+				</if>
+				<if  condition="$vo.type eq '3'">
+				onsubmit="return refreshTreeEdit(this,'name','misperformancetemplate_rightcontent_tree');" 
+			</if>
+		</if>
+			action="__URL__/update/rel/MisPerformanceTypeRelIndex" 
+			onsubmit="return validateCallback(this, dialogAjaxDone)"
+		>
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<input type="hidden" name="ajax" value="1">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-form-row tml-w330">
+				<if condition="$vo.type eq '1' or $vo.type eq '2' or $vo.type eq '3'"><label>分类名称：</label><else /><label>评分人类型：</label></if>
+				<input type="text" class="required"  name="name"   value="{$vo.name}" />
+				<div></div>&nbsp;
+				<if condition="$vo.type eq  '1'">
+					<div class="left tml-checkbox">
+						<label>
+							<input type="checkbox"  value="1" <if condition="$vo.isdefault eq '1'">checked="checked"</if>  name="isdefault" />默认
+						</label>
+					</div>
+				</if>
+			</div>
+			<div class="tml-form-row">
+				<if condition="$vo.type eq '1' or $vo.type eq '2' or $vo.type eq '3'">
+					<label>备&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+					<else />
+					<label>备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+				</if>
+					<textarea name="remark">{$vo.remark}</textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_update">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+            <if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_delete">
+                <li>
+                    <button class="tml-btn tml-btn-orange" type="button" onclick='deleteRecord(this,"{$vo.id}","MisPerformanceType","dialog")'>{$Think.lang.del}</button>
+                </li>
+            </if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

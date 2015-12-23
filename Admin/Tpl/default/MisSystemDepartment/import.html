@@ -1,0 +1,35 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/import/navTabId/__MODULE__/rel/MisSystemCompanyA" class="pageForm required-validate" onsubmit="return iframeCallback(this,dialogAjaxDone);" enctype="multipart/form-data">
+		<input type="hidden" name="pactcheckid" value="{$id}" >
+		<div class="pageFormContent" layoutH="56">
+			<div class="tml-form-row">
+				<label>导入文件：</label>
+				<input class="required textInput" type="file" style="width:200px;"  name="attached" />
+				<span class="tml-form-text p5">
+					<a href="__PUBLIC__/Uploads/SysInitImportTemplate/部门示范模板.xls">点此下载示范文件</a>
+				</span>
+			</div>
+			<div class="tml-form-row">
+				<span class="tml-form-text">温馨提醒：(为保证数据导入正确请上传后缀为xls的文件!)</span>
+			</div>
+			<div class="tml-form-row">
+				<div clss="tml-form-col">
+					<label>操作类型：</label>
+					<select name="operation" class="combox">
+						<option  value="add">新增</option>
+						<option  value="update">新增及修改</option>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemdepartment_import">
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>
+

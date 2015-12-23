@@ -1,0 +1,61 @@
+<script type="text/javascript">
+    var sysTimeout = null;
+    function subworkbenchChange($this,$id){
+        if(sysTimeout) clearTimeout(sysTimeout);
+		$($this).parent().siblings('.cu').removeClass('cu');
+        $($this).parent().parent().parent().parent().find("li").removeClass('cu');
+         $($this).parent().addClass('cu');
+        var url = $($this).attr('url');
+        if($id == '-1'){
+             $("#listcou").empty();
+            var html ="<div class=\"company_main_title\"><h4><span>收件箱</span></h4></div><div style=\"min-height:260px;\" id=\"message_div\">";
+            $("#listcou").append(html);
+            $("#message_div").loadUrl(url+"/type/ajaxcall",{},function(){
+        		$("#message_div").find("[layoutH]").layoutH();});
+        }else{
+            $("#listcou").loadUrl(url,{},function(){
+        		$("#listcou").find("[layoutH]").layoutH();});
+        }
+    }
+    function opworkbenchChange($id){
+        var strdisplay = $("#workbench"+$id).css('display');
+        if(strdisplay == "block"){
+			return false;
+        } else {
+            $("#workbench"+$id).slideDown(200).parent().siblings('li').children('div').slideUp(200);
+        }
+    }
+    $(function(){
+        var defaulttemplet = "{$defaulttemplet}";
+        if(defaulttemplet == "MisMessageInbox/index"){
+            var html ="<div class=\"company_main_title\"><h4><span>收件箱</span></h4></div><div id=\"message_div\">";
+            $("#listcou").append(html);
+            $("#message_div").loadUrl("__APP__/"+defaulttemplet+"/type/ajaxcall",{},function(){
+        		$("#message_div").find("[layoutH]").layoutH();});
+            $(".gridScroller").css("height","auto");
+        }else{
+            $("#listcou").loadUrl("__APP__/"+defaulttemplet,{},function(){
+        		$("#listcou").find("[layoutH]").layoutH();});
+        }
+    });
+</script>
+<div class="xypanel company clearfix">
+	<div class="company_sub">
+		<ul>
+			<volist id="subop" name="isopWorkbench">
+				<li>
+					<a href="javascript:;" onclick="opworkbenchChange({$subop['pantent']['id']});">{$subop['pantent']['title']}</a>
+					<div id="workbench{$subop['pantent']['id']}"  <if condition="$opworkbenchoption eq $subop['pantent']['id']">style="display:block;"<else/>style="display:none;"</if>>
+                        <ul>
+                            <volist name="subop['this']" id="vosub">
+                              <li <if condition="$subopworkbenchoption eq $vosub['id']">class="cu"</if>><a href="javascript:;" url="__APP__/{$vosub['url']}" onclick="subworkbenchChange(this,{$vosub['id']});">{$vosub['title']}</a></li>
+                            </volist>
+                        </ul>
+                    </div>
+				</li>
+			</volist>
+		</ul>
+	</div>
+	<div class="company_main" id="listcou">
+	</div>
+</div>

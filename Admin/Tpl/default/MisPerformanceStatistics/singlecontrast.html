@@ -1,0 +1,140 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 初始化树
+	var zNodes = {$singlecontrastTree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+	            onClick: singleContrastTreeOnClick
+	        }
+		};
+	$.fn.zTree.init($("#singlecontrastTreeDemo"), setting, zNodes);
+});
+// 树单击函数
+function singleContrastTreeOnClick(event, treeId, treeNode) {
+	if(treeNode.id>0){
+		var box = $("#singlecontrast");
+		box.find("input[name='name']").val(treeNode.title);
+		box.find("input[name='orderno']").val(treeNode.orderno);
+		box.find("input[name='byuser']").val(treeNode.id);
+	}
+}
+function singleContrastOnblurUser($this){
+	var $this = $($this);
+	var val = $this.val();
+	if(val == ""){
+		return false;
+	}
+	val = $.trim(val);
+	$this.val(val);
+	var $name = $this.attr("name");
+	var treeObj = $.fn.zTree.getZTreeObj("singlecontrastTreeDemo");
+	var nodes = treeObj.getNodesByParam($name, val, null);
+	var title = "";
+	var inputname = "";
+	if($name == "name") {
+		title = "人员名称";
+		inputname = "orderno";
+	} else {
+		title = "人员编码";
+		inputname = "name";
+	}
+	if(nodes[0] == undefined){
+		alertMsg.error("当前"+title+"在树中不存在,请重新输入!");
+		return false;
+	}
+    treeObj.selectNode(nodes[0]);
+    var box = $("#singlecontrast");
+	box.find("input[name='"+inputname+"']").val(nodes[0][inputname]);
+	box.find("input[name='byuser']").val(nodes[0].id);
+}
+function singleContrastOnchangePlan($this){
+	var $this = $($this);
+	var planid = $this.val();
+	var box = $("#singlecontrast");
+	box.loadUrl("__URL__/singlecontrast/planid/"+planid,{},function(){
+		box.find("[layoutH]").layoutH();});
+}
+$('#startdateMisPerformanceStatisticsSinglecontrast').focus(function (){
+    WdatePicker({maxDate:"#F{$dp.$D('enddateMisPerformanceStatisticsSinglecontrast')}"});
+});
+$('#enddateMisPerformanceStatisticsSinglecontrast').focus(function () {
+    WdatePicker({minDate:"#F{$dp.$D('startdateMisPerformanceStatisticsSinglecontrast')}"});
+});
+</script>
+<div class="pageContent">
+	<div class="pageHeader">
+		<form onsubmit="return divSearch(this,'singlecontrastdata');" action="__URL__/lookupContrast" method="post">
+			<div class="searchBar">
+				<table>
+					<tbody>
+						<tr>
+							<td><label>考核计划:</label></td>
+							<td>
+								<select onchange="singleContrastOnchangePlan(this)" name="planid" class="combox">
+									<option value=''>请选择考核计划</option>
+									<volist name="pplist" id="ppvo">
+										<option <eq name="ppvo.id" value="$planid" >selected</eq> value={$ppvo.id}> {$ppvo.name}</option>
+									</volist>
+								</select>
+								<input type="hidden" name="type" value="single">
+								<input type="hidden" name="byuser" value="">
+							</td>
+							<td><label>人员编码:</label></td>
+							<td><input name="orderno" onblur="singleContrastOnblurUser(this)" style="width:80px;" /></td>
+							<td><label>人员名称:</label></td>
+							<td><input name="name" onblur="singleContrastOnblurUser(this)" style="width:80px;" /></td>
+							<td><label>日期范围:</label></td>
+							<td>
+                            
+                                
+								<span class="xyInputWithUnit">
+									<input type="text" id="startdateMisPerformanceStatisticsSinglecontrast" value="{$startdate}" name="startdate" class="Wdate" style="width: 65px;" />
+									<span class="tml-icon tml-icon-calendar"></span>
+								</span>
+								<span class="">-</span>
+								<span class="xyInputWithUnit">
+									<input type="text" id="enddateMisPerformanceStatisticsSinglecontrast" value="{$enddate}" name="enddate" class="Wdate" style="width: 65px;"/>
+									<span class="tml-icon tml-icon-calendar"></span>
+								</span>
+							</td>
+							<td><button class="xyicon xyIconStartButton" type="submit">分析</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div>
+		<!-- 树start -->
+		<div class="treeleft">
+			<div class="close">
+				<ul id="singlecontrastTreeDemo" class="ztree" layoutH="74"></ul>
+			</div>
+		</div>
+		<!-- 树end -->
+		<div id="singlecontrastdata">
+			<div class="pageContent">
+				<table class="list" style="width: 400px;">
+					<thead>
+						<tr>
+							<th>计划编号</th>
+							<th>名称</th>
+							<th>成绩</th>
+							<th>等级</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

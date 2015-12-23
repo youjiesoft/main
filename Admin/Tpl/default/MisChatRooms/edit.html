@@ -1,0 +1,37 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required" name="name" value="{$vo.name}" />
+			</div>
+			<div class="unit">
+				<label>{$fields["channel"]}：</label>
+				<input type="text" class="required" name="channel" value="{$vo.channel}" />
+			</div>
+			<div class="unit">
+				<label>{$fields["totalnum"]}：</label>
+				<input type="text" class="required" name="totalnum" value="{$vo.totalnum}" />
+			</div>
+			<div class="unit">
+				<label>{$fields["pass"]}：</label>
+				<input type="text" class="" name="pass" value="{$vo.pass}" />
+			</div>
+			<div class="unit">
+				<label>{$fields["sort"]}：</label>
+				<input type="text" class="" name="sort" value="{$vo.sort}" />
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mischatrooms_update">
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

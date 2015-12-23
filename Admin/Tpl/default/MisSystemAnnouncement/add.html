@@ -1,0 +1,256 @@
+<script>
+//提交按钮 点击事件,5--保存,1--发布  
+function missystemannouncementsave(form,stepobj){
+	
+	var $box=navTab.getCurrentPanel();//找到当前窗体
+	if(stepobj){
+		$box.find("#editstepcommitadd").val(stepobj);
+	}
+	if(stepobj == 5){
+		$box.find("input[name='sendtime']").attr('value','');
+	}
+	var scope=$box.find("#releasescopeadd").val();//判断发布范围
+	if(scope ==1 ){
+		$box.find("#personclear").empty();
+	}else if(scope ==2 ){
+		$box.find("#deptclear").empty();
+	}
+	var starttime=$box.find("[name='starttime']").val();
+	var endtime=$box.find("[name='endtime']").val();
+	if(endtime){
+		//转化生效日期
+		var startstr = starttime.replace(/-/g,'/');
+		var startdate = new Date(startstr);
+		var starttotime = startdate.getTime();
+		//转化截止日期
+		var endstr = endtime.replace(/-/g,'/');
+		var enddate = new Date(endstr);
+		var endtotime = enddate.getTime();
+		if(endtotime-starttotime < 0){
+			alertMsg.error('截止日期必须大于生效日期'); 
+			return false;
+		}
+	}
+	//提交此表单
+	$(form).submit();
+}
+//按照部门发布追加html节点操作函数
+function missystemannouncement_addpeople(id,name){
+	var $strHtml = appendUserHtml('deptclear','deptid',id,name,'deptname');
+	$box=navTab.getCurrentPanel();//取得当前区域,
+	$box.find("#MisSystemDepartment").before($strHtml);
+}
+//department 执行追加节点(html)操作
+function missystemannouncement_selectpeople(){
+	var id;
+	var name;
+	$(".depttbodylist").find("input[type='checkbox']").each(function(){
+		if($(this).attr("checked")=='checked'){
+			id=$(this).attr("deptid");
+			name=$(this).attr("deptname");
+			missystemannouncement_addpeople(id,name);
+		}
+	});
+	$.pdialog.closeCurrent();
+}
+	//公告类型
+	function upbeparadd(obj) {
+		var bepart = $(obj).val();
+		var $ref = $("#bepartidsadd");
+		$.ajax({
+			type : 'POST',
+			dataType : "json",
+			url : "__URL__/lookupcomboxgetBankAccount",
+			cache : false,
+			data : {
+				bepart : bepart
+			},
+			success : function(json) {
+				if (!json) {
+					$("#spanbepartsadd").hide();
+					$("#bepartidsadd").attr("name","");
+					return;
+				}
+				$("#spanbepartsadd").show();
+				$("#bepartidsadd").attr("name","ptype");
+				var html = '';
+				$.each(json, function(i) {
+					if (json[i] && json[i].length > 1) {
+						html += '<option value="'+json[i][0]+'">' + json[i][1]
+								+ '</option>';
+					}
+				});
+				var $refCombox = $ref.parents("div.combox:first");
+				$ref.html(html).insertAfter($refCombox);
+				$refCombox.remove();
+				$ref.trigger("change").combox();
+			},
+			error : DWZ.ajaxError
+		})
+	};
+	//清空
+	function clearreleasescope(number,ulId){
+	    if(number == '1'){
+	        $("#"+ulId).empty();
+	        var $string = '<li class="addresseeText" id="MisSystemDepartment"><input type="text" onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" onfocus="addressee.clearVal(this);" checkfor="MisSystemDepartment" callback="addresseeInput" show="" class="checkByInput addresseeTextInput" inputName="deptid" tabindex="1" autocomplete="off"></li>';
+	    }else{
+	        $("#"+ulId).empty();
+	        var $string = '<li class="addresseeText" id="person"><input type="text" onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" onfocus="addressee.clearVal(this);" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput addresseeTextInput" inputName="personid" tabindex="1" autocomplete="off"></li>';
+	    }
+	    $('#'+ulId).append($string);
+	    $('#'+ulId).find('input').focus();
+	}
+	//发布范围
+function changereleasescopeadd(){
+	var scope=$("#releasescopeadd").val();
+	if(scope == 1){
+		$("#deptreleasescopeadd").show();
+		$("#personreleasescopeadd").hide();
+	}else if(scope == 2){
+		$("#deptreleasescopeadd").hide();
+		$("#personreleasescopeadd").show();
+	}
+}
+	//提示截止日期比生效日期
+function timecompare(){
+	var $box=navTab.getCurrentPanel();//找到当前窗体
+	var endtime=$box.find("[name='endtime']").val();
+	alert(endtime);
+}
+</script>
+<!-- UEditor 初始化 -->
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+    <input type="hidden" name="callbackType" value="closeCurrent">
+    <input type="hidden" name="commit" id="editstepcommitadd">
+    <input type="hidden" name="sendtime" value="{$time}"/>
+    <input type="hidden" name="iseditor" value="1">
+    <input type="hidden" id="editstepannout" name="resultstep" value=""/> 
+    	<div class="pageFormContent applecloth" layoutH="56">
+			<div class="keepContentCenter">
+			<div class="contentTitle contentTitle_center">系统公告</div>
+				<fieldset>
+					<div class="tml-form-row">
+						<label>公告标题：</label>
+						<input type="text" name="title" class="required" />
+					</div>
+					<div class="tml-row">
+					<div class="tml-form-col">
+						<label>类型：</label>
+						<select name='type' class="combox" onchange="upbeparadd(this);">
+							<volist name="list" id="list">
+							<option value="{$list.id}"
+								<if condition="$list.id eq $type">selected="selected"</if>>
+								{$list.name}
+							</option>
+							</volist>
+						</select>
+					</div>
+					<div class="tml-form-col" id="spanbepartsadd" <if condition="!$plist">style="display:none" </if>>
+						<label>子类型：</label>
+						<select name='ptype' class="combox" id="bepartidsadd">
+							<volist name="plist" id="plist">
+							<option value="{$plist.id}"
+								<if condition="$plist.id eq $ptype">selected="selected"</if>>
+								{$plist.name}
+							</option>
+							</volist>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>发布范围：</label>
+						<select id="releasescopeadd" class="combox" onchange="changereleasescopeadd();">
+							<option value="1">按照部门发布</option>
+							<option value="2">按照人员发布</option>
+						</select>
+					</div>
+					</div>
+					<div class="tml-form-row" id="deptreleasescopeadd">
+						<label>选择部门：</label>
+						<ul id="deptclear" name="departments" class="addressee left checkTo" style="border:1px #ccc solid; background-color:white;width:718px;">
+							<li class="addresseeText" id="MisSystemDepartment">
+                            <input type="text" placeholder="为空则默认全体部门" onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);"
+                                       	  onfocus="addressee.clearVal(this);" checkfor="MisSystemDepartment" callback="addresseeInput"  show="" class="checkByInput addresseeTextInput" inputName="deptid" tabindex="1" autocomplete="off">
+                            </li>
+						</ul>
+	                    <a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupdepartment/par/MisSystemDepartment" lookupGroup="org1">查找带回</a>
+						<a href="javascript:;" class="input-addon input-addon-recycle" onclick="clearreleasescope('1','deptclear');"></a>
+					</div>
+					<div class="tml-form-row" style="display:none;" id="personreleasescopeadd">
+						<label>选择人员:</label>
+						<ul id="personclear" class="addressee left"  style="border:1px #ccc solid; background-color:white;width:560px;" name="psersonsid">
+                        	<li class="addresseeText">
+                                <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);"
+                             	  onfocus="addressee.clearVal(this);" placeholder="为空则默认全体人员"
+                                autofocus="autofocus" type="text" checkfor="MisMessage" callback="addresseeInput" 
+                                show="" class="checkByInput addresseeTextInput" inputName="personid" chainname="recipientname" 
+                                emailName="email" tabindex="1" autocomplete="off">
+                            </li>
+						</ul>
+						<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="personclear" data="recipientname,username,text;personid,userid,hidden,1;email,email,hidden">查找带回</a>&nbsp;
+	                	<a href="javascript:;" class="input-addon input-addon-recycle" onclick="clearreleasescope('2','personclear');"></a>
+	                </div>
+	                <div class="tml-row">
+					<div class="tml-form-col">
+						<label>是否置顶：</label>
+                        <select name="top" class="combox" >
+                            {:getSelectByHtml('top')}
+                        </select>
+                    </div>
+                    <div class="tml-form-col">
+						<label>置顶有效期：</label>
+						<div class="tml-input-append">
+						   	<input type="text" class="Wdate js-wdate" value="{$ttime}" name="toptime" />
+						   	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>生效日期：</label>
+						<div class="tml-input-append">
+						   	<input type="text" style="color:black;" id="starttimeMisSystemAnnouncementAdd" format={maxDate:"#F{$dp.$D('endtimeMisSystemAnnouncementAdd')}"} class="Wdate js-wdate required" value="{$time|transtime}" name="starttime"/>
+						   	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>截止日期：</label>
+						<div class="tml-input-append">
+						   	<input type="text" placeholder="为空则不终止" style="color:black;" id="endtimeMisSystemAnnouncementAdd" format={minDate:"#F{$dp.$D('starttimeMisSystemAnnouncementAdd')}"} class="Wdate js-wdate" name="endtime" />
+						   	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+					</div>
+					<div class="tml-form-row">
+						<label>内容：</label>
+						<!-- <script type="text/plain" name="content" id="content"></script> -->
+						<textarea class="ueditor" name="content" style="height:240px;width:785px;"></textarea>
+					</div>
+					<!-- 附件信息 -->
+				{:W('ShowUpload',array("0"=>$uploadarry["fujian"],"1"=>fujian,"2"=>$fields[fujian],"3"=>"","4"=>""))}<div class="display_none {$classNodeSettingArr['fujian']}"></div>
+								
+				</fieldset>
+				<fieldset>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>发布人：</label>
+							<span class="xyInputWithUnit">
+							<input type="hidden" style="color:black;" name="createid" value="{$Think.SESSION.loginUserId}"/>
+					   		<input type="text" class="textInput" readonly="readonly" value="{$Think.SESSION.loginUserName}"/>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>发起时间：</label>
+							<span class="xyInputWithUnit">
+					   		 <input type="text" class="textInput" value="{$time|transtime}" readonly="readonly" />
+					   		 <input type="hidden" value="{$time}" name="createtime"/>
+							</span>
+						</div>
+					</div>
+				</fieldset>
+				{:W('ShowAction')}
+			</div>
+		</div>
+		 
+	</form>
+	</div>
+</div>

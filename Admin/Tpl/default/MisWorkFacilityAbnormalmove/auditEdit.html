@@ -1,0 +1,141 @@
+<div class="page">
+<form method="post" action="__URL__/auditProcess/navTabId/__MODULE__" class="pageForm required-validate" enctype="multipart/form-data" onsubmit="return validateCallback(this, refreshtabsAudit);">
+        <input type="hidden" name="id" value="{$vo['id']}" />
+        <input type="hidden" name="pid" value="{$vo['ptmptid']}">
+        <input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+        <input type="hidden" name="doinfo" />
+
+        <input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+        <input type="hidden" name="refreshtabs[url]" value="__APP__/MisWorkFacilityAbnormalmove/index">
+        <input type="hidden" name="refreshtabs[data]" value="{ ntdata:1}">
+        <input type="hidden" name="refreshtabs[title]" value="办公设备申请">
+        <input type="hidden" name="refreshtabs[type]" value="navtab">
+
+        <input type="hidden" name="backprocess" value="流程回退">
+        <input type="hidden" name="auditprocess" value="流程审核">
+        <input type="hidden" name="endprocess" value="流程结束">
+        <input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+        <input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+        <div class="pageContent">
+            <div class="pageFormContent applecloth" layoutH="56">
+                <div class="keepContentCenter form-affix-content">
+                    <div class="contentTitle contentTitle_center form-affix-title">办公设备异动{:W('ShowAdvices',array('id'=>$vo['id']))}
+                        
+                    </div>
+                    <fieldset class="zlqk_1">
+                    <legend class="zlqk_2">
+                        <b>基本信息</b>
+                    </legend>
+                     <div class="tml-row">
+                     {:W('ShowOrderno',array(1,'mis_work_facility_abnormalmove',$vo['orderno']))}
+	                   <if condition='$fields["movedate"]'>
+                    <div class="tml-form-col"> 
+                        <label>{$fields["movedate"]}：</label>
+                        <span class="xyInputWithUnit">
+                        <input type="text" readonly="readonly" class="tml-border-r0 Wdate" value="{$vo.movedate|transtime}"/>
+                		<span class="input-addon input-addon-calendar"></span>
+                        </span>
+                    </div>
+                    </if>
+                    <if condition='$fields["movedeptid"]'>
+                   <div class="tml-form-col"> 
+                        <label>{$fields["movedeptid"]}：</label>
+                        <input type="text"  readonly="readonly" value="{$vo.movedeptid|getFieldBy='id','name','mis_system_department'}"/>
+                    </div>
+                     </if>
+                    <div class="tml-form-col"> 
+                        <label>{$fields["place"]}：</label>
+                        <input type="text"  readonly="readonly" value="{$vo.place}"/>
+                       </div>
+                   
+                     </div>
+                    <if condition='$fields["remark"]'>
+                    <div class="tml-form-row"> 
+                          <label>{$fields["remark"]}：</label>
+                          <textarea   readonly="readonly" style="height:50px;" class="textInput">{$vo.remark}</textarea>
+                    </div>
+                    </if>
+                    </fieldset>
+                <fieldset>
+                    <legend>
+                        <b>异动明细</b>
+                    </legend>
+                       <div>
+						 <table class="tml-table" width="100%">
+					    <thead>
+					        <tr>
+					       		<th width="40">序号</th>
+								<th width="120">设备编号</th>
+								<th >设备类型</th>
+								<th width="100">设备名称</th>
+								<th>设备型号</th>
+								<th>现存部门</th>
+								<th>申请数量</th>
+								<th width="40">单位</th>
+								<th>可异动数量</th>
+								<th>需异动数量</th>
+							</tr>
+					    </thead>
+					    <tbody>
+					    <if condition="$sublist">
+					    <volist name="sublist" id="subvo" key="i">
+					    <tr>
+					    <td class="_itemIndexmove">{$i}</td>
+					    <td>
+							{$subvo.manageid|getFieldBy='id','orderno','mis_work_facility_manage'}
+						</td>
+					 	<td>{$subvo.manageid|getFieldBy='id','equipmenttype','mis_work_facility_manage'|getFieldBy='id','name','mis_work_facility_type'}</td>
+					  	<td>{$subvo.manageid|getFieldBy='id','equipmentname','mis_work_facility_manage'}</td>
+					   	<td>{$subvo.manageid|getFieldBy='id','version','mis_work_facility_manage'}</td>
+					   	<td>{$subvo.appsubid|getFieldBy='id','masid','mis_work_facility_apply_sub'|getFieldBy='id','applydepartmentid','mis_work_facility_apply_mas'|getFieldBy='id','name','mis_system_department'}</td>
+					    <td>{$subvo.appsubid|getFieldBy='id','appqty','mis_work_facility_apply_sub'|getDigits}</td>
+					    <td>{$subvo.manageid|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}</td>
+					    <td>{$subvo.sumkymove|getDigits}</td>
+					    <td>{$subvo.qty|getDigits}</td>
+					    </tr>
+					    </volist>
+					    </if>
+					    </tbody>
+					</table>
+					</div>
+                </fieldset>
+                <fieldset class="zlqk_1">
+                    <legend class="fieldset_legend_toggle"><b>附件信息</b></legend>   
+                    <if condition="$attarry">
+                        <volist name="attarry" id="att">
+                            <div class="tml-form-col">
+	                            <label>附件{$key+1}</label>
+	                            <a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}">
+	                            <span class="info">{$att['upname']}</span>
+	                            </a>
+	                            <a href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog">
+	                           			<span class="tml-icon tml-icon-file"></span>
+	                           			<span class="tml-icon-text">归档</span>
+		                      	</a>
+	                        </div>
+                        </volist>
+                    </if>
+                </fieldset>
+                <div>
+                 <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>页脚</b>
+                    </legend>
+                   <div class="tml-row"> 
+                   <div class="tml-form-col"> 
+                        <label>制单人：</label>
+                        <input type="text" readonly="readonly" class="textInput" value="{$vo.createid|getFieldBy='id','name','user'}" />
+                    </div>
+                    <div class="tml-form-col"> 
+                        <label>制单时间：</label>
+                        <input  class="textInput" readonly="readonly" value="{$vo.createtime|transTime}" />
+              		</div>
+              		</div>
+              	  </fieldset>
+              </div>
+            </div>
+        </div>
+         {:W('ShowAction')}
+        
+    </form>
+</div>

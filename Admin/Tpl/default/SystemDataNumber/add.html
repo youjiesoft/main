@@ -1,0 +1,80 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>关联表名：</label>
+				<input type="text" class="required" name="id" />
+			</div>
+				<span class="helpInline tml-form-text" style="color:red;">---->输入主表名</span>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>单据名称：</label>
+				<input type="text" class="required" name="rulename" />
+			</div>				
+				<span class="helpInline tml-form-text" style="color:red;">---->单据对象名</span>
+		</div>
+		<div class="tml-row">
+            <div class="tml-form-col">
+				<label>规则定义：</label>
+				<input type="text" class="required lettersonly" minlength="3" maxlength="20" name="rule" />
+			</div>
+				<span class="helpInline tml-form-text" style="color:red;">---->规则组成</span>
+		</div>
+		<div class="tml-row">
+            <div class="tml-form-col">
+				<label>年[year]：</label>
+				<input type="text" min="2000" max="2100" maxlength="4" format="yyyy" name="year" />
+			</div>
+            <div class="tml-form-col">
+				<label>月[moth]：</label>
+				<input type="text"  min="1" max="12" format="MM" name="moth" />
+			</div>
+            <div class="tml-form-col">
+				<label>日[day]：</label>
+				<input type="text" class="" min="1" max="31" format="dd" name="day" />
+			</div>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>流水号[num]：</label>
+				<input type="text" class="required number" name="num" />
+			</div>
+				<span style="color:red;" class="helpInline tml-form-text">---->流水号位数</span>
+		</div>
+		<div class="tml-row">			
+			<div class="tml-form-col">
+				<label>可写：</label>
+				<SELECT name="writable" class="combox">
+					<option value="1">启用</option>
+					<option value="0" selected>禁用</option>
+				</SELECT>
+			</div>
+				<span class="helpInline tml-form-text" style="color:red;">---->自动生成编码是否可修改</span>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>状 态：</label>
+				<SELECT name="status" class="combox">
+					<option value="1">启用</option>
+					<option value="0">禁用</option>
+				</SELECT>
+			</div>
+				<span class="helpInline tml-form-text" style="color:red;">---->自动生成编码是否开启</span>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemconfignumber_insert">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+

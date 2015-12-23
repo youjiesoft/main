@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<title>导入配置</title>
+<script>
+	//全选
+	function allcheck() {
+		var a = document.getElementById('Checkall_duty');
+		var cks = document.getElementsByTagName("input");
+		for ( var i = 0; i < cks.length - 1; i++) {
+			if (cks[i].type == "checkbox") {
+				cks[i].checked = a.checked;
+			}
+		}
+	}
+</script>
+</head>
+<body>
+	<div class="page">
+		<div class="pageContent">
+			<form method="post" action="__URL__/importconfig/" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+				<input type="hidden" name="importconfig" value="1">
+				<input type="hidden" name="id" value="{$MisImportFieldconfigList.id}">
+				<div class="pageFormContent" layoutH="58">
+					<table class="data-table" width="100%" cellspacing="0">
+						<tr>
+							<td>
+								<strong>序列</strong>
+							</td>
+							<td>
+								<strong>导入项</strong>
+							</td>
+							<td>
+								<strong>
+									导入项
+									<input type="checkbox" id="Checkall_duty" style="margin-left: 12px;" value="1" onclick="allcheck()">
+									全选
+								</strong>
+							</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>编码</td>
+							<td>
+								<input type="checkbox" name="A" <if condition="in_array('A',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>名称</td>
+							<td>
+								<input type="checkbox" name="B" <if condition="in_array('B',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>级别</td>
+							<td>
+								<input type="checkbox" name="C" <if condition="in_array('C',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>备注</td>
+							<td>
+								<input type="checkbox" name="D" <if condition="in_array('D',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="formBar">
+					<ul>
+						<if condition="$_SESSION.a eq 1 or $_SESSION.missystemdepartment_importconfig">
+						<li>
+							<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+						</li>
+						</if>
+						<li>
+							<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

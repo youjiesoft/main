@@ -1,0 +1,88 @@
+<script>
+	function subsearchlist(){
+		var val = "0";
+		$(".role_userslist").find("input[type='checkbox']").each(function(){
+			if($(this).attr("checked")=='checked'){
+				val += '_' +$(this).val();
+			}
+		});
+		var oldval = $("input[name='searchlist']").val();
+		$("input[name='searchlist']").val(val+'_'+oldval);
+		$("input[name='searchlist1']").val(val+'_'+oldval);
+	}
+</script>
+<form id="pagerForm" action="__URL__/user/id/{$selectGroupId}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+</form>
+<div class="panelBar">
+	<form onsubmit="return dialogSearch(this);" action="__URL__/user/id/{$selectGroupId}" method="post">
+	<input type="hidden" name="searchlist1" value="{$searchlist}">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>请输入关键字：<input type="text" name="keyword1" value="{$keyword1}" /></td>
+					<td>
+						<select class="combox"  name="searchby1">
+							<volist id="vou" name="searchbylist1">
+								<option  value="{$vou['id']}" <eq name="searchby1" value="$vou['id']">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype1" type="hidden" value="2" />
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div class="page">
+	<div class="pageContent">
+	<form action="__URL__/setUser" method="post" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+		<input type="hidden" name="groupId" VALUE="{$selectGroupId}" />
+		<table class="table" width="100%" layoutH="146">
+			<thead>
+				<tr>
+					<th><input type="checkbox" class="checkboxCtrl" group="groupUserId[]" /></th>
+					<th>序号</th>
+					<th>用户名</th>
+					<th>姓名</th>
+					<th>部门</th>
+					<th>职位</th>
+				</tr>
+			</thead>
+			<tbody class="role_userslist">
+				<volist id="item" name="userList">
+					<tr target="sid_role" rel="{$item['id']}" onclick="onTrClickCheckbox(this,'groupUserId[]')">
+						<td><input type="checkbox" onclick="subsearchlist();" name="groupUserId[]" value="{$key}" <?php echo $item['checked'] ? "checked" : "" ?>/></td>
+						<td>{$item['id']}</td>
+						<td>{$item['account']}</td>
+						<td>{$item['name']}</td>
+						<td>{$item['dept_id']|getFieldBy='id','name','mis_system_department'}</td>
+						<td>{$item['duty_id']|getFieldBy='id','name','duty'}</td>
+					</tr>
+				</volist>
+			</tbody>
+		</table>
+		<div class="panelBar panelPageBar">
+			<div class="pages"><span>共{$totalCount}条</span></div>
+			<div class="pages" style="padding:0px 15px 0px 5px; height:25px; float:right;margin-top:2px;">
+				<ul>
+					<li class="left mr10">
+						<button type="button" class="checkboxCtrl tml-btn tml-btn-primary tml-btn-small" group="groupUserId[]" selectType="invert">{$Think.lang.anti_select}</button>
+					</li>
+					<li class="left">
+						<button class="tml-btn tml-btn-primary tml-btn-small" type="submit">{$Think.lang.save}</button>
+					</li>
+				</ul>
+			</div>
+			<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+		</div>
+	</form>
+	</div>
+</div>
+

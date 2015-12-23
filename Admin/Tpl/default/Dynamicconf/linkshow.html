@@ -1,0 +1,128 @@
+<style>
+	div.datanode{
+		background:url("__PUBLIC__/dwz2/themes/default/images/tree/tree.png") no-repeat scroll 0 0 transparent;
+		background-position:-10px -500px;
+		display: block;
+		float: left;
+		height: 22px;
+		overflow: hidden;
+		width: 12px;
+	}
+</style>
+<div class="pageContent">
+	<form method="post" action="__URL__/linkshow" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<div class="panelBar">
+			<ul class="toolBar">
+				<li><a class="add tml-btn tml_look_btn tml_mp" href="#" ><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li>
+			</ul>
+		</div>
+		<div class="pageFormContent" layoutH="150" style="padding:0px;">
+			<input name="step" value="2" type="hidden" />
+			<input name="iseditor" value="1" type="hidden" />
+			<input name="key" value="{$key}" type="hidden" />
+			<input name="setmodule" value="{$module}" type="hidden" />
+			<input name="issub" value="{$issub}" type="hidden" />
+			<table class="list" width="100%">
+				<thead>
+					<tr>
+						<th width="8%">关联开始字符</th>
+						<th width="8%">关联结束字符</th>
+						<th width="20%">关联操作函数</th>
+						<th width="45%">操作函数参数&nbsp;&nbsp;<span style="color:red;font-weight:normal;">请用'###'代替当前字段</span></th>
+						<th width="14%">操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="defaulttr" rel="0" style="display:none;">
+						<td width="8%"><input type="text" size="15" name="htmlstart"></td>
+						<td width="8%"><input type="text" size="15" name="htmlend"></td>
+						<td width="20%"><input type="text" size="60"  name="funcname"></td>
+						<td width="45%"><input type="text" size="90" name="funcdata"></td>
+						<td width="14%"><a class="btnDel" href="javascript:void(0)">删除</a>
+						&nbsp;<a class="btnAdd" href="javascript:void(0)">添加下级关联</a></td>
+					</tr>
+					<tr class="defaultsubtr" rel="0" style="display:none;">
+						<td width="8%"></td>
+						<td width="8%"></td>
+						<td width="20%"><div class="datanode"></div><input type="text" size="60" name="funcname"></td>
+						<td width="45%"><input type="text" size="90" name="funcdata"></td>
+						<td width="14%"><a class="btnDel" href="javascript:void(0)">删除</a>
+						&nbsp;<a class="btnAdd" href="javascript:void(0)">添加下级关联</a></td>
+					</tr>
+					<volist name='list' id='func' key="keyno">
+						<tr class="defaulttr" rel="{$func['k1']}" >
+							<td width="8%"><if condition="!empty($func['one'])"><input type="text" size="15" value="{$func['htmlstart']}" name="htmlstartnewadd[{$func['num']}][{$func['k1']}]"></if></td>
+							<td width="8%"><if condition="!empty($func['one'])"><input type="text" size="15" value="{$func['htmlend']}" name="htmlendnewadd[{$func['num']}][{$func['k1']}]"></if></td>
+							<td width="10%"><if condition="($func['k1'] gt 0)"><div class="datanode"  style="margin-left:{$func['magrin']}px;"></div></if><input size="60" class="required" type="text" size="{$func['inputsize']}" value="{$func['func']}" name="funcnamenewadd[{$func['num']}][{$func['k1']}]"></td>
+							<td width="45%"><input type="text" size="90" class="required" value="{$func['funcdata']}" name="funcdatanewadd[{$func['num']}][{$func['k1']}]"></td>
+							<td width="14%"><a class="btnDel" href="javascript:void(0)">删除</a>
+							&nbsp;<a class="btnAdd <if condition="$func['haschildren']">haschildren</if>" href="javascript:void(0)" rel="{$keyno-1}">添加下级关联</a></td>
+						</tr>
+					</volist>
+				</tbody>
+			</table>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.duty_linkshow">
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+		<script>
+			var $box= navTab.getCurrentPanel();
+			var $firsttr=$box.find("tr.defaulttr:first");
+			var $firstsubtr=$box.find("tr.defaultsubtr:first");
+			var i={$i};
+			$box.find("a.btnDel").bind('click',function(){
+				var lev=$(this).parents("tr").attr("rel");
+				if(lev > 0){
+					$(this).parents("tr").prev("tr").find("a.btnAdd").removeClass("haschildren");
+				}
+				if($(this).parents("tr").next().attr("rel")==1) $(this).parents("tr").next().remove();
+				if($(this).parents("tr").next().attr("rel")==2) $(this).parents("tr").next().remove();
+				$(this).parents("tr").remove();
+				return false;
+			});
+			$box.find("a.btnAdd").bind('click',function(){
+				if($(this).hasClass("haschildren")){
+					alertMsg.error("已添加下级节点关联函数");
+					return false;
+				}
+				var b=$(this).parents("tr");
+				var n=parseInt(b.attr("rel"))+1;
+				if(n>=3){
+					alertMsg.error("最多只能添加两层关联函数");
+					return false;
+				}
+				var n1=$(this).attr("rel");
+				$firstsubtr.clone(true).insertAfter(b);
+				b.next("tr").find("a.btnAdd").attr("rel",n1);
+				b.next("tr").attr("rel",n).css("display","");
+				b.next("tr").find("div.datanode").css("margin-left",12*(n-1));
+				b.next("tr").find("div.datanode").next("input").attr("size",30-2*n);
+				b.next("tr").find("input").each(function(index){
+					var sn=$(this).attr("name");
+					var snn=sn+"newadd["+n1+"]["+n+"]";
+					$(this).attr("name",snn).addClass("required");
+				});
+				$(this).addClass("haschildren");
+			});
+			$box.find("a.add").bind('click',function(){
+				var s=$firsttr.clone(true);
+				$box.find("table tbody").append(s);
+				$box.find("table tbody tr:last").find("input").each(function(index){
+					var n=$(this).attr("name");
+					var nn=n+"newadd["+i+"][0]";
+					$(this).attr("name",nn).attr("rel",i);
+					if(index==2 || index==3) $(this).addClass("required");
+				});
+				$box.find("table tbody tr:last").find("a.btnAdd").attr("rel",i);
+				i++;
+				$box.find("tr.defaulttr").css("display","");
+				$box.find("tr.defaulttr:first").css("display","none");
+			});
+		</script>
+	</form>
+</div>

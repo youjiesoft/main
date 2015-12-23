@@ -1,0 +1,20 @@
+<volist id="vo" name="list" key="key2">
+	<tr target="sid" rel="{$vo['id']}" dwidth="850" dheight="500"  title="绩效计划-编辑" drel="__MODULE__edit" onclick="onTrClickCheckbox(this,'id')" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$vo[id]}");'>
+		<td style="width:70px;"><input type="checkbox" name="id" value="{$vo['id']}" /></td>
+		<volist id="vo1" name="detailList">
+			<if condition="$vo1[shows] eq 1">
+				<td width="{$vo1[widths]}" field="{$vo1['name']}">
+					<if condition="count($vo1['func']) gt 0">
+						<volist name="vo1.func" id="nam">
+							<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+							<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+						</volist>
+					<else />
+						{$vo[$vo1['name']]}
+					</if>
+				</td>
+			</if>
+		</volist>
+	</tr>
+</volist>

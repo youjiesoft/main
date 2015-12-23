@@ -1,0 +1,89 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this, 'MisSystemDataAccessModelQuoteBOX')" action="__URL__/index" method="post">
+ <input type="hidden" value="jump" name="jump"/>
+ <input type="hidden" name="aname" value="{$aname}">
+</form>
+<div class="pageContent">
+	<div class="panelBar" style="margin-bottom: 3px;">
+		<ul class="toolBar">
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+	</div>
+	<if condition="count($formlist) gt 0">
+	<form method="post" action="__URL__/insert/rel/MisSystemDataAccessModelQuoteBOX" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+        <div class="set_configure pl5" layoutH="90">
+        <input type="hidden" name="aname" value="{$aname}">
+		<input type="hidden" name="jump" value="jump">
+		<div style="width:100%">
+		 <table class="data_table" width="100%" layoutH="190">
+            <tr>
+                <th>控制模块名称</th>
+                <th>对应字段</th>
+            </tr>
+            <volist name="formlist" id="fv" key="i">
+                <volist name="fv['fieldinfo']" id="lv" key="k">
+                    <tr  class="xyz_id" aid ="{$lv.formid}">
+                        <?php
+                         unset($num);
+                         $num=count($fv['fieldinfo']);
+                         if($num>1){
+                         ?>
+                        <if condition="$k eq 1"><td rowspan="{$num}" >{$fv.actiontitle}</td></if>
+                        <td>
+                        {$lv.title}【{$lv.category}】【{$lv.savefield}】&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="field[{$fv.actionname}][]" value="{$lv.fieldname}|{$lv.category}|{$lv.id}|{$lv.formid}|{$fv.tablename}|{$lv.savefield}|{$list[$fv['actionname']]['list'][$lv['fieldname']]['id']}" <if condition = "in_array($lv['fieldname'],$list[$fv['actionname']]['fields'])">checked</if>>
+                        </td>
+                        <?php }else{?>
+                        <td rowspan="{$num}">{$fv.actiontitle}</td>
+                        <td>
+                        {$lv.title}【{$lv.category}】【{$lv.savefield}】&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="field[{$fv.actionname}][]" value="{$lv.fieldname}|{$lv.category}|{$lv.id}|{$lv.formid}|{$fv.tablename}|{$lv.savefield}|{$list[$fv['actionname']]['list'][$lv['fieldname']]['id']}"<if condition = "in_array($lv['fieldname'],$list[$fv['actionname']]['fields'])">checked</if>>
+                        </td>
+                        <?php }?>
+                    </tr>
+                </volist>
+            </volist>
+         </table>
+         </div>
+		<div class="formBar">
+			<ul>
+	            <li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button></li>
+            </ul>
+         </div>
+        </div>
+	</form>
+	<else/>
+        <div class="set_configure pl5" layoutH="40">
+	        <span class="tips_allot"><i class="icon-comments"></i> 温馨提示：没有模块控制，请在左侧的树中选择模块！</span>
+        </div>
+	</if>
+</div>
+<script>
+$(function(){
+	var box = navTab.getCurrentPanel();
+	//add添加aname
+	var aname = '{$aname}';
+	if(aname){
+		var add = $("ul.toolBar li a.add",box);
+		var href = add.attr("href");
+		var index = href.lastIndexOf("/");
+		var newhref = href.substr(0,index+1)+aname;
+		add.attr("href",newhref);
+	}
+	//delete添加id
+	$("table",box).on("click","tr.xyz_id",function(){
+		$("table tr",box).css("background","#fafafa none repeat scroll 0 0");
+		$(this).css("background","#CCFFCC none repeat scroll 0 0");
+		var aid = $(this).attr("aid");
+		var adelete = $("ul.toolBar li a.delete",box);
+		var delhref = adelete.attr("href");
+		var delindex = delhref.lastIndexOf("/");
+		var newdelhref = delhref.substr(0,delindex+1)+aid+"/aname/"+aname;
+		adelete.attr("href",newdelhref);
+	});
+});
+</script>

@@ -1,0 +1,198 @@
+<script>
+//分类区域变量  为快捷定位替换模块
+var thisplankpi = null;
+//添加指标分类
+function insertplankpitype(){
+	//获得分类ID
+	var kpitypeid = $("#KPITypeplanHidden").find("input[name='kpitypeid']").val();
+	//获得权重
+	var kpitypeqz = $("#planeditkpitype_tbody").find("input[name='kpitypeqz["+kpitypeid+"]']").val();
+	//获得分类名称
+	var kpitypename = $("#KPITypeplanHidden").find("input[name='kpitypename']").val();
+	if(!kpitypeid){
+		alertMsg.error('请选择分类！');
+		return false;
+	}
+	if(!kpitypeqz){
+		alertMsg.error('请填写权重！');
+		return false;
+	}
+	if(kpitypeqz==0){
+		alertMsg.error('权重不能为0,请更正！');
+		return false;
+	}
+	  var sumqz=0;
+	  //循环指标分类区域  已有的指标分类需禁用,并且显示权重
+	 $("#planeditkpitype_tbody").find('tr').each(function(){
+		 //选中当前双击指标
+		 var typechecked=$(this).find("input[name='kpitypeid']").attr("checked");
+		 //禁用已有指标
+		 var typedisabled=$(this).find("input[name='kpitypeid']").attr("disabled");
+		 if(typechecked||typedisabled){
+			 //显示已有指标权重
+			 sumqz+=Number($(this).find("input[name^=kpitypeqz]").val());
+		 }
+	 });
+	  if(sumqz>100){
+			alertMsg.error('权重之和必须等于100，请重新分配权重！');
+			return false;
+	  }else{
+		  //构造考核指标html
+	 		var html="<tr>"+
+			     "<td ondblclick='misperformanceplanedit_ondblclickkpitype("+kpitypeid+","+kpitypeqz+",this)' class='MisPerformancePlanedit_tbody_each' >"+
+			     "<input type='hidden' name='planedit_kpitypeid[]'  value='"+kpitypeid+"'/><input type='hidden'  name='plan_kpitypeqz[]' value='"+kpitypeqz+"'/>"+
+		         "<span class='plan_kpitypeqz'>"+kpitypename+"("+kpitypeqz+"%)</span>"+
+		         "</td>" + 
+				 "<td colspan='2' style='padding:0;'>" +
+					"<table class='tml-table-w'>"+
+						"<tr>"+
+							"<td ondblclick='MisPerformanceTemplate_editplankpi("+kpitypeid+",this)' ><span style='color:red'>&nbsp;</span></td>"+
+							"<td style='width: 100px;'></td>"+
+						"</tr>"+
+					"</table>"+
+				"</td>"+
+				"<td><a href='javascript:;' class='btnDel' onclick='MisPerformancePlan_del(this)'></td>"+
+				 "</tr>";
+				 //在#MisPerformancePlan_edit之前加入此html
+				 $("#MisPerformancePlan_editkpitype").before(html).initUI();
+				 $.pdialog.closeCurrent();
+	  }
+}
+//修改考核分类之后隐藏到指定隐藏域
+function planrc(obj){
+	var tr = $(obj).parents('tr');
+	var str = "";
+	var inp = tr.find('.plankpitypeqz');
+	var h = $('#KPITypeplanHidden').find('input');
+	inp.each(function(i ,e){
+		if($(e).is('input')){
+			h[i].value = $(e).val();
+		} else {
+			h[i].value = $(e).html();
+		}
+	});
+}
+//提交修改分类权重
+function changeplankpiqz(){
+	//获得分类ID
+	var kpitypeid = $("#KPITypeplanHidden").find("input[name='kpitypeid']").val();
+	//获得权重
+	var kpitypeqz = $("#planeditkpitype_tbody").find("input[name='kpitypeqz["+kpitypeid+"]']").val();
+	//获得分类名称
+	var kpitypename = $("#KPITypeplanHidden").find("input[name='kpitypename']").val();
+	if(!kpitypeid){
+		alertMsg.error('请选择分类！');
+		return false;
+	}
+	if(!kpitypeqz){
+		alertMsg.error('请填写权重！');
+		return false;
+	}
+	if(kpitypeqz==0){
+		alertMsg.error('权重不能为0,请更正！');
+		return false;
+	}
+	var sumqz=0;
+	//累加权重
+	 $("#planeditkpitype_tbody").find('tr').each(function(){
+		 var typechecked=$(this).find("input[name='kpitypeid']").attr("checked");
+		 var typedisabled=$(this).find("input[name='kpitypeid']").attr("disabled");
+		 if(typechecked||typedisabled){
+		 sumqz+=Number($(this).find("input[name^=kpitypeqz]").val());
+		 }
+	 });
+	//判断权重是否超过100
+	  if(sumqz>100){
+			alertMsg.error('权重之和必须等于100，请重新分配权重！');
+			return false;
+	  }else{
+		  //赋值给指标分类区域 --权重
+		 	$(misperformanceplan_editkpitypetd).find('input[name^=plan_kpitypeqz]').val(kpitypeqz);
+		 	 //赋值给指标分类区域 --分类ID	
+		  $(misperformanceplan_editkpitypetd).find('input[name^=plan_kpitypeid]').val(kpitypeid);
+		 	//组成页面显示内容
+		 	 var kpityhtml=""+kpitypename+"("+kpitypeqz+"%)";
+		 	$(misperformanceplan_editkpitypetd).find('.plan_kpitypeqz').html(kpityhtml);
+		 	$(misperformanceplan_editkpitypetd).attr("ondblclick","misperformanceplanedit_ondblclickkpitype("+kpitypeid+","+kpitypeqz+",this)");
+		 	$(misperformanceplan_editkpitypetd).find('.plan_kpitypeqz');
+		 	//$(misperformanceplan_editkpitypetd).next('td').attr("ondblclick","MisPerformanceTemplate_editplankpi("+kpitypeid+",this)")
+		 	$.pdialog.closeCurrent();
+	  }
+  }
+$(function(){
+	//获取当前选择指标分类ID
+	var result = $("#KPITypeplanHidden").find("input[name='result']").val();
+	//循环指标分类区域
+	$("#MisPerformancePlanedit_tbody").find('.MisPerformancePlanedit_tbody_each').each(function(i,e){
+		//找到指标分类ID
+		var val= $(e).find("input[name^=planedit_kpitypeid]").val();
+		//找到指标分类权重 
+		var qz= $(e).find("input[name^=plan_kpitypeqz]").val();
+		//循环当前页面
+		$("#planeditkpitype_tbody").find('tr').each(function(){
+			//获取到行上的rel
+			var typeid=$(this).attr('rel');
+			//如果当前指标分类ID 等于选中指标分类ID给当前指标分类 权重 赋值 并禁用
+			if(typeid==val){
+				 $(this).find("input[name='kpitypeqz["+typeid+"]']").attr("value",qz);
+				 if(result!=typeid){
+				 	$(this).find("input[name='kpitypeqz["+typeid+"]']").attr("readonly","readonly");
+				 	$(this).find("input[name='kpitypeqz["+typeid+"]']").attr("class","");
+				 	 $(this).find("input[name='kpitypeid']").attr("disabled","disabled");
+				 }
+			 }
+		 });
+	});
+	//最后加载spinner控件
+	$("#planeditkpitype_tbody").find( ".spinner" ).spinner({min:1,max:100});
+});
+</script>
+<div>
+	<div class="xyEmployee" layoutH="32" style="position:relative;">
+	<div class="xyEmployeeBasicInfo">
+		<div class="clear"></div>
+		<span id="KPITypeplanHidden">
+		<input  type="hidden"  name="kpitypeid"  value="{$typeid}" >
+		<input  type="hidden"  name="kpitypename"  value="{$typeid|getFieldBy='id','name','mis_performance_type'}" >
+		<input  type="hidden"  name="kpitypeqz" value="{$kpitypeqz}">
+		<input type="hidden" name="result" value="{$typeid}">
+		</span>
+		<table class="list" width="100%">
+			<thead>
+				<tr>
+					<th style="width: 26px;">选择</th>
+					<th style="width: 150px;">分类名称</th>
+					<th style="width: 150px;">备注</th>
+					<th>权重</th>
+				</tr>
+			</thead>
+		</table>
+		<div layoutH="66" style="position:relative;">
+			<table class="list" width="100%">
+				<tbody id="planeditkpitype_tbody">
+					<volist name="typelist" id="tlist">
+					 <tr  rel="{$tlist.id}" >
+						<td style="width: 26px;"><input class="plankpitypeqz" type="radio"  <if condition="$typeid eq $tlist.id"> checked="checked" onchange="planrc(this)" </if> <if condition="$isedit">disabled="disabled"</if>  name="kpitypeid" onclick="planrc(this)" value="{$tlist.id}" /></td>
+						<td style="width: 150px;"> <span class="plankpitypeqz">{$tlist.name}</span></td>
+						<td style="width: 150px;"> <span>{$tlist.remark}</span></td>
+						<if condition="$isedit"> 
+							<td><input type="text"   name="kpitypeqz[{$tlist.id}]"  maxlength="3"  onchange="planrc(this)"    <if condition="$typeid eq $tlist.id">  value="{$kpitypeqz}" class="plankpitypeqz number spinner" <else/>  readonly="readonly" class="plankpitypeqz number "  </if>  /> </td>
+						<else/>
+							<td><input type="text"   name="kpitypeqz[{$tlist.id}]"  maxlength="3" onchange="planrc(this)"     class="plankpitypeqz number spinner" /> </td>
+						</if>					
+					</tr>
+					 </volist>
+				</tbody>
+			</table>
+		</div>
+		</div>
+	</div>
+	<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformanceplan_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button <if condition="$typeid">onclick="changeplankpiqz()" <else/>onclick="insertplankpitype()"</if>   type="button">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+</div>

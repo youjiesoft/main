@@ -1,0 +1,65 @@
+<div class="tabsContent" style="padding:0px;">
+    <div class="pageContent">
+        <form method="post" action="__URL__/lookupsolve/type/add/navTabId/mistaskinfolookupTraceIdea" class="pageForm required-validate" onsubmit="return validateCallback(this, mistaskinfo_refreshdialog)">
+            <input type="hidden" name="callbackType" value="closeCurrent">
+            <input type="hidden" name="refreshtabs[ntdata]" value="2">
+            <input type="hidden" name="refreshtabs[ids]" value="{$task['id']}">
+            <input type="hidden" name="refreshtabs[closeall]" value="1">
+            <input type="hidden" name="taskid" value="{$task['id']}">
+            <div class="pageFormContent" layoutH="55">
+                <div class="unit">
+                    <label>任务名称：</label>
+                    <span class="fontGray">{$task['title']}</span>
+                </div>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>缺陷信息：</label>
+                    <textarea class="required" cols='42' rows='4' name="remark" style="width:500px;"></textarea>
+                </div>
+                <div class="unit">
+                    <label>加关注：</label>
+                    <input type="radio" name="isattention" value="1">是
+		    <input type="radio" name="isattention" checked value="0">否
+                </div>
+                <div class="unit">
+                    <label>推送系统消息：</label>
+                    <input type="radio" name="ispushmsg" checked value="1">是
+		    <input type="radio" name="ispushmsg"  value="0">否
+                </div>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>{$exename}附件:</label>
+                     <input id="swfupload_MisTaskInformation_solve_edit" type="file" uploader="true" name="swfupload_MisTaskInformation_solve_edit" formData="{ uploadpath:'MisTaskFeedbackInformation' }" />
+                     <input type="image" onclick="$('#swfupload_MisTaskInformation_solve_edit').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                     <dl class="nowrap">
+                        <dt><label>&nbsp;</label></dt>
+                        <dd>
+                            <span id="swfupload_MisTaskInformation_solve_edit-queue" class="info uploadify_queue">
+                                <if condition="$isattarry">
+                                    <volist name="isattarry" id="att">
+                                        <div class="uploadify-queue-item">
+                                            <div class="cancel">
+                                                <a  class="dellink" href="__URL__/lookupdelatt/id/{$att['id']}" rel="{$att['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swfupload_MisTaskInformation_solve_edit-queue" >X</a>
+                                            </div>
+                                            <span class="fileName"><a href="__PUBLIC__/{$att.attached}" target="_blank">{$att['upname']}</a></span>
+                                            <span class="data"> - 已经传</span>
+                                            <div class="uploadify-progress">
+                                            <div class="uploadify-progress-bar" style="width: 100%;"></div>
+                                            </div>
+                                        </div>
+                                    </volist>
+                                </if>
+                            </span>
+                        </dd>
+                    </dl>  
+                </div>
+            </div>
+            <div class="formBar">
+                <ul>
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+                    <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</div>

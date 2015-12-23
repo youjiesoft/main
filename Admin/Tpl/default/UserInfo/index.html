@@ -1,0 +1,354 @@
+<script>
+    function userinfo_picture_edit(file, data, response){
+    	var $box=navTab.getCurrentPanel();
+        var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+        $("#userinfo_picture_edit").attr("src",data);
+        $("#swf_upload_userinfo_edit_save_name").val(s[1]);
+        var id= $box.find("input[name='id']").val();
+        var upload_name=$("#swf_upload_userinfo_edit_save_name").val();
+        
+        if(id){
+        	$.ajax({
+        		type:"POST",
+        		url:"__URL__/index/step/uploadimg",
+        		data:{'id':id,'upload_name':upload_name},
+        		success:function(re){
+        		}
+        	});
+        }
+    }
+	//设置默认工作台
+    function setDefaultWorkbench($this){
+    	var $this = $($this);
+    	var id = $this.val();
+		if(id == "2"){
+			$("#defaultsubworkbench_div").show();
+		}else{
+			$("#defaultsubworkbench_div").hide();
+		}
+    	$.ajax({
+    		type:"POST",
+    		url:"__URL__/index/step/workbench",
+    		data:{'id':id},
+    		success:function(re){
+    		}
+    	});
+    }
+	//设置是否显示提醒信息
+    function setisnewmsg($this){
+    	var $this = $($this);
+    	var isnewmsg = $this.val();
+    	$.ajax({
+    		type:"POST",
+    		url:"__URL__/index/step/setisnewmsg",
+    		data:{'isnewmsg':isnewmsg},
+    		success:function(re){
+    		}
+    	});
+    }
+	
+	
+	//设置操作工作台台默认项
+	function setDefaulsopWorkbench($this){
+    	var $this = $($this);
+    	var opid = $this.val();
+    	$.ajax({
+    		type:"POST",
+    		url:"__URL__/index/step/opwork",
+    		data:{'opid':opid},
+    		success:function(re){
+    		}
+    	});
+    }
+	//设置第三级
+	function setDefaulssubopWorkbench($this,opid){
+		var $this = $($this);
+    	var subopid = $this.val();
+    	$.ajax({
+    		type:"POST",
+    		url:"__URL__/index/step/opwork",
+    		data:{'opid':opid,'subopid':subopid},
+    		success:function(re){
+    			var $pthis = $this.parent().parent().parent().prev();
+    			$pthis.find('input').attr("checked","checked");
+    		}
+    	});
+	}
+</script>
+<style>
+	/*.MyButton {*/
+		/*background:-moz-linear-gradient(#ffffff, #C3DAF5);*/
+		/*background:-webkit-linear-gradient(#ffffff, #C3DAF5);*/
+		/*background:-o-linear-gradient(#ffffff, #C3DAF5);*/
+		/*background:-ms-linear-gradient(#ffffff, #C3DAF5);*/
+		/*background:linear-gradient(#ffffff, #C3DAF5);*/
+	    /*border: #7b9ebd 1px solid;*/
+		/*cursor:pointer;*/
+	    /*filter: progid:DXImageTransform.Microsoft.Gradient(GradientType=0, StartColorStr=#ffffff, EndColorStr=#C3DAF5 );*/
+	    /*padding-left: 2px;*/
+	    /*padding-right: 2px;*/
+	    /*background-image: url("__PUBLIC__/Images/abc.jpg") repeat;*/
+	    /*color: black;*/
+	    /*font-size: 12px;*/
+	    /*padding-top: 2px;*/
+	/*}*/
+	/*a:hover {*/
+	    /*text-decoration: none;*/
+	/*}*/
+	/*.center_box{*/
+		/*text-align: center;*/
+	/*}*/
+	/*.center_box .showMoreInformation_div{*/
+		/*width: auto;*/
+	/*}*/
+	/* //系统编号 */
+	/*.showMoreInformation_div .contentTitle .auto_code {*/
+		/**/
+		/*display: inline-block;*/
+		/*color: #9b0000;*/
+		/*background-color: transparent;*/
+		/*float:right;*/
+		/*font-weight: normal;*/
+		/*#position: absolute; *//* IE8 */
+		/*#margin-left:120px; *//* IE8 */
+		/**/
+	/*}*/
+	/* 图片信息 右浮动 */
+	/*.center_box .showMoreInformation_div .rightShowPicture{*/
+		/*margin-top:50px;*/
+		/*margin-right:10px;*/
+		/*float:right;*/
+		/*padding:2px;*/
+	/*}*/
+	/* 信息数据样式 左浮动 */
+	/*.center_box .showMoreInformation_div .leftShowDetail{*/
+		/*float:left;*/
+		/*width: 525px;*/
+	/*}*/
+	/* 标题底线 */
+	/*.center_box .showMoreInformation_div .leftShowDetail .contentTitle_center{*/
+		/*background: none;*/
+		/*-webkit-box-shadow: none;*/
+		/*box-shadow: none;*/
+		/*font-size: 14px;*/
+		/*margin-left: 75px;*/
+		/*text-align: left;*/
+		/*border-bottom: 2px solid #9c9c9c;*/
+		/*font-weight: bold;*/
+	/*}*/
+	/* 添除label背影 */
+	/*.center_box .showMoreInformation_div label{*/
+		/*background-position: -1000px -10000px;*/
+		/*width:88px;*/
+		/*text-align: left;*/
+	/*}*/
+	/* 备注信息 占满 */
+	/*.center_box .showMoreInformation_div .bottomFieldset{*/
+		/*border: 1px solid #d1d1d1;*/
+		/*width: 610px;*/
+		/*height:auto;*/
+		/*background-color: white;*/
+	/*}*/
+	/*.center_box .showMoreInformation_div .bottomFieldset div{*/
+		/*color:#868686;*/
+		/*margin-bottom: 2px;*/
+		/*padding: 2px;*/
+		/*width:605px;*/
+		/*height:auto;*/
+		/*border: 1px solid #eaeaea;*/
+	/*}*/
+	/*.center_box .showMoreInformation_div fieldset{*/
+		/*border: 1px solid #d1d1d1;*/
+		/*height:auto;*/
+		/*background-color: white;*/
+	/*}*/
+	/* 小旗 */
+	/*.center_box .showMoreInformation_div fieldset legend{*/
+		/*color: #990000;*/
+		/*border-top: 1px solid #d1d1d1;*/
+		/*border-left: 1px solid #d1d1d1;*/
+		/*border-right: 1px solid #d1d1d1;*/
+		/*border-bottom: 1px solid #ededed;*/
+		/*background-color: #fafafa;*/
+	/*}*/
+	/*.center_box .showMoreInformation_div fieldset div{*/
+		/*color: #868686;*/
+		/*border: 1px solid #eaeaea;*/
+		/*width:205px;*/
+		/*float:left;*/
+		/*height:auto;*/
+		/*margin-bottom: 1px;*/
+		/*margin-right:1px;*/
+	/*}*/
+	/*.center_box .showMoreInformation_div .longFieldset div{*/
+		/*color: #868686;*/
+		/*border: 1px solid #eaeaea;*/
+		/*width:515px;*/
+		/*float:left;*/
+		/*height:auto;*/
+		/*margin-bottom: 1px;*/
+		/*margin-right:1px;*/
+	/*}*/
+	/* 字体不居中 */
+	/*.center_box .showMoreInformation_div fieldset div span{*/
+		/*display:inline-block;*/
+ 		/*padding-top:5px;*/
+ 		/*text-align: left;*/
+ 		/*float:left;*/
+	/*}*/
+
+	/*.bottomShowDetail{*/
+		/*clear: both;*/
+	/*}*/
+	/*.center_box .showMoreInformation_div .rightShowPicture .shortFieldset{*/
+		/*border:0;*/
+		/*background-color:transparent;*/
+	/*}*/
+	/*.center_box .showMoreInformation_div .rightShowPicture .shortFieldset a{*/
+		/*display: inline-block;*/
+		/*text-align:left;*/
+		/*margin-bottom:1px solid gray;*/
+		/*padding:5px;*/
+		/*margin-bottom: 5px;*/
+	/*}*/
+    .pc_user_pic{
+        /*border:1px solid #d8d8d8;*/
+        padding: 2px 4px;
+        background: #fff;
+        border-radius: 8px;
+        /*box-shadow: 0px 4px 6px 0 rgba(0,0,0,0.048);*/
+    }
+    .pc_set_btn_group{
+        position: absolute;
+        right:20px;
+        top: 90px;
+    }
+    .pc_set_btn_group li{
+        margin-bottom: 10px;
+    }
+    .pc_set_btn_group li a{
+        font-size: 15px;
+        padding: 0px 12px;
+        height: 30px;
+        display: block;
+        border: 1px solid #d8d8d8;
+        line-height: 28px;
+        border-radius: 40px;
+        background: #fff;
+        color: #4285f4;
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,0.048);
+    }
+    .pc_set_btn_group li a:hover{
+        border: 1px solid #4285f4;
+    }
+    .pc_user_table_wrap{
+        min-height: 450px;
+    }
+    /*.pc_info_lay{*/
+        /*padding: 25px 25px;*/
+    /*}*/
+    /*.user_picture{*/
+        /*width: 150px;*/
+    /*}*/
+    .pc_user_table_wrap{
+        width: 95%;
+        margin: 0 auto;
+        /*background: #f00;*/
+    }
+    .pc_user_info_table{
+        width: 100%;
+        line-height: 32px;
+        text-align: center;
+        font-size: 15px;
+    }
+    .pc_user_info_table td{
+        border: 1px solid #d8d8d8;
+    }
+    .pc_user_info_table td input{
+        border: none;
+        background: none;
+    }
+</style>
+<div class="pageContent applecloth" layoutH="40">
+	<div class="pageFormContent">
+    	<div class="center_box keepContentCenter clearfix form-affix-content">
+				<div class="contentTitle contentTitle_center form-affix-title">员工信息</div>
+				<div>
+					<form onsubmit="return navTabSearch(this);" action="__URL__/index" method="post">
+						<input type="hidden"  name="id" value="{$misHrPersonnelPersonInfoVo['id']}" />
+						<input type="hidden" name="stype" value="1" />
+						<input type="hidden"  name="rel" value="departmentmodel" />
+						<input type="hidden"  name="ajax" value="1" />
+						<input type="hidden"  name="refreshtabs[ntdata]" value="0" />
+						<input type="hidden"  name="refreshtabs[ids]" value="{$misHrPersonnelPersonInfoVo['id']}" />
+                        <ul class="pc_set_btn_group">
+                            <li><a href="__URL__/lookuppersonpic" target="dialog" mask="true" width="800" height= "500">上传头像</a></li>
+                            <li><a href="__URL__/index/step/findpassword" target="dialog" width="700" height="300"  mask="true">设置密保</a></li>
+                            <li><a href="__URL__/index/step/contact" target="dialog" mask="true" width="700">修改资料</a></li>
+                            <li><a href="__URL__/changePwd" target="dialog" mask="true">修改密码</a></li>
+                            <li><a href="__URL__/lookupmishrpm/id/{$vo['employeid']}" target="navTab"  rel="MisHrPersonnelManage">员工综合信息</a></li>
+                            <!--<li><a href="__URL__/signature/" target="dialog" mask="true">修改图章</button></a></li>-->
+                            <!--<li><a href="__URL__">恢复签章</a></li>-->
+                        </ul>
+						<div class="pc_info_lay">  <!-- showMoreInformation_div -->
+						    <!--<div class="user_picture left">-->
+						    	<!--<if condition="$misHrPersonnelPersonInfoVo['picture'] eq ''">  -->
+							    	<!--<img class="pc_user_pic" width="120" height="120" id="userinfo_picture_edit" src="__PUBLIC__/Images/xyimages/organization/user_male.jpg?{:time()}">-->
+						    	<!--<else /> -->
+						    		<!--<img class="pc_user_pic" width="120" height="120" id="userinfo_picture_edit" src="__PUBLIC__/{$misHrPersonnelPersonInfoVo.picture}?{:time()}">-->
+						    	<!--</if>-->
+						    <!--</div>-->
+							<div class="pc_user_table_wrap">
+                                <table class="pc_user_info_table">
+                                    <tr>
+                                        <td width="12%">工号：</td>
+                                        <td width="21%">No.{$vo['employeid']|getFieldBy='id','orderno','MisHrPersonnelPersonInfo'}</td>
+                                        <td width="12%">姓名：</td>
+                                        <td width="21%">{$vo.name}</td>
+                                        <td width="12%">账号：</td>
+                                        <td width="21%">{$vo.account}</td>
+                                        <td rowspan="4">
+                                            <if condition="$misHrPersonnelPersonInfoVo['picture'] eq ''">
+                                                <img class="pc_user_pic" width="120" height="120" id="userinfo_picture_edit" src="__PUBLIC__/Images/xyimages/organization/user_male.jpg}">
+                                            <else />
+                                                <img class="pc_user_pic" width="120" height="120" id="userinfo_picture_edit" src="__PUBLIC__/Uploads/{$misHrPersonnelPersonInfoVo.picture}">
+                                            </if>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>所属部门：</td>
+                                        <td>{$vo.id|getHrinfo='deptid'|getFieldBy='id','name','mis_system_department'}</td>
+                                        <td>岗位：</td>
+                                        <td>{$vo.id|getHrinfo='dutyid'|getFieldBy='id','name','mis_system_duty'}</td>
+                                        <td>入职日期：</td>
+                                        <td>{$misHrPersonnelPersonInfoVo['indate']|transTime}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>联系电话：</td>
+                                        <td>{$misHrPersonnelPersonInfoVo.phone}</td>
+                                        <td>手机短号：</td>
+                                        <td>{$misHrPersonnelPersonInfoVo.shortNumber}</td>
+                                        <td>分机号码：</td>
+                                        <td>{$misHrPersonnelPersonInfoVo.officeNumber}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>个人邮箱：</td>
+                                        <td>{$misHrPersonnelPersonInfoVo.email}</td>
+                                        <td>家属电话：</td>
+                                        <td>{$misHrPersonnelPersonInfoVo.urgentphone}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>户籍地址：</td>
+                                        <td colspan="6">{$misHrPersonnelPersonInfoVo.nativeaddress}</td>
+                                    </tr>
+                                </table>
+							</div>
+						</div>
+					</form>
+					<!---  表单   ---->
+				</div>
+		</div>
+	</div>
+</div>

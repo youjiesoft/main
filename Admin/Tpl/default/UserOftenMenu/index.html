@@ -1,0 +1,57 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+
+<div class="page">
+	<div class="pageContent">
+		<div class="panelBar">
+			<ul class="toolBar">
+				<if condition="$_SESSION.a eq 1 or $_SESSION.UserOftenMenu_add"><li><a class="add tml-btn tml_look_btn tml_mp" height="450" width="700" href="__URL__/add" target="dialog" mask="true"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.UserOftenMenu_delete"><li><a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_user}/navTabId/__MODULE__" target="ajaxTodo" title="你确定要删除吗？" warn="请选择用户"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li></if>
+				<li class="line">line</li>
+				<volist name="toolbarextension" id="toolb">
+					<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+						<li>{$toolb['html']}</li>
+					</if>
+				</volist>
+			</ul>
+		</div>
+                <form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this,dialogAjaxDone);">
+		<table class="list" width="100%" layoutH="62">
+			<thead>
+				<tr>
+					<th>ID</th><!--ID-->
+					<th>名称</th>
+                                        <th>链接</th>
+                                        <th>排序</th>
+                                        <th>状态</th>
+					<th>{$Think.lang.action}</th>
+				</tr>
+			</thead>
+			<tbody>
+			<volist id="vo" name="list">
+				<tr target="sid_user" rel="{$vo['id']}">
+                                    <td>{$vo['id']}<input type="hidden" name="id[]" value="{$vo['id']}" size="30"></td>
+					<td><input type="text" name="name[]" value="{$vo['name']}" size="30"></td>
+					<td><input type="text" name="url[]" value="{$vo['url']}" size="30">(绝对路径,如：http://)</td>
+                                        <td><input type="text" name="sort[]" value="{$vo['sort']}" size="30"></td>
+					<td>{$vo['status']|getStatus}</td>
+					<td>{$vo['status']|showStatus=$vo['id']}</td>
+				</tr>
+			</volist>
+			</tbody>
+		</table>
+                <div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+            </form>
+
+	</div>
+
+</div>
+

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>专家顾问</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/normalize.css" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/main.css" />  
+    </head>
+    <body>
+		<div class="k">
+			<div class="header">
+				<div class="container">
+					<h1 class="logo">
+						<if condition="$Copany_Info['picture']">
+							<img alt="logo" src="__PUBLIC__/Uploads/{$Copany_Info['picture']}" />
+							<else/>
+							<img alt="logo" src="__PUBLIC__/Images/sysAnnouncement/logo.png" />
+						</if>
+					</h1>
+					<h2 class="title">专家顾问</h2>
+					<div class="search header-search">
+						<form action="__URL__/experquestionlist" class="form search-form" method="get">
+							<input class="search-input" type="text" value="{$keywords}" name="keywords" placeholder="请输入专家姓名..."/>
+							<button class="search-btn" type="submit">搜索</button>
+							<div class="header-link"><a class="btn btn-info" href="__URL__/mesetquestion">我要提问</a></div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- end header -->
+	
+			<div class="container clearfix">
+				<div class="main">
+					<div class="">
+						<div class="box2">
+							<div class="box2-header">
+								<div class="box-item">
+									<a class="expert-ask" href="__URL__/expertquestion">返回首页 &gt;&gt;</a>
+								</div>
+								<h2 class="box2-title"><span class="box2-title-txt">问题列表</span></h2>
+							</div>
+								
+							<div class="box2-body">
+								<div class="question-content">
+									<div class="">
+										<ul class="quertion-list">
+											<if condition="$listcount gt 0">
+												<volist name="list" id="vat">
+													<li>
+														<span class="answer-time ml10">{$vat.createtime|date="Y-m-d",###}</span>
+														<span class="answer-num">{$vat.anwsercount}个回答</span>
+														<a class="question-title" href="__URL__/anwserdetail/quesid/{$vat.questionid}">{$vat.title}</a>
+													</li>
+												</volist>
+												<else/>
+													<li>
+														<span class="answer-num">暂无数据,尽情期待</span>
+													</li>
+											</if>	
+										</ul>
+									</div>
+								</div><!-- end question-content -->
+								<div class="pagination">
+								{$show}
+									<!--
+										<span>共3页/57条</span>
+										<a class="pagination-prev" href="#">上一页</a>
+										<a href="#">1</a>
+										<span class="pagination-active">2</span>
+										<a href="#">3</a>
+										<a href="#">4</a>
+										<a href="#">5</a>
+										<span>&middot;&middot;&middot;</span>
+										<a href="#">18</a>
+										<a class="pagination-next" href="#">下一页</a>
+									  -->
+								</div>
+							</div>
+						</div><!-- end box -->
+					</div>
+				</div><!-- end main -->
+				<div class="sidebar">
+					<div class="box2 box-hot">
+						<div class="box2-header">
+							<h2 class="box2-title"><span class="box2-title-txt">问题分类</span></h2>
+						</div>
+						<div class="box2-body" >
+							<div class="category-list">
+								<if condition="$listarraycount">
+									<volist name="listarray" id="vatdd">
+										<dl>
+											<dt class="category-list-more">
+												<a href="__URL__/experquestionlist/typeid/{$vat['self']['id']}" >{$vatdd['self']['name']}</a>
+											</dt> 
+											<dd>
+												<volist name="vatdd['sonlist']" id="sonty">
+													<a href="__URL__/experquestionlist/typeid/{$sonty.id}/">{$sonty['name']}</a>
+												</volist>
+											</dd>
+										</dl>
+									</volist>
+									<else/>
+										<dl>
+											<dt class="category-list-more"><a href=javascript:;>暂无数据</a></dt>
+											<dd>
+												<a href=javascript:;>敬请期待</a>
+											</dd>
+										</dl>
+								</if>
+									
+							</div>
+						</div>
+					</div>
+					  <!--  增加行政通知公告部分  -->
+                 	 <include file="conrep"/>
+				</div>
+			</div>
+			<!-- end container -->
+	
+			<div class="footer">
+					<p>Copyright © 2014 {:C('COPYRIGHT')}</p>
+			</div>
+		</div>
+<script>
+</script>
+    </body>
+</html>

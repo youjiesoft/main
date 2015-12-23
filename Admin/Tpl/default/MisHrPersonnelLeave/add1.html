@@ -1,0 +1,97 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/rel/mishrprobationemployee_index" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<div class="pageFormContent " layoutH="55">
+				<p>
+					<label> 员工编号： </label>
+					<input type="text" name="orderno" value="{$orderno}" readonly="readonly" class="xycodedata_read" <if condition='$writable eq 0'> readonly="readonly" </if> />
+				</p>
+				<p>
+					<label> 姓名： </label>
+					<input type="text" name="name"  >
+				</p>
+				<p>
+					<label> 性别： </label>
+					<select name="sex" class="combox"  >
+						<option value="">请选择性别</option>
+						<option value="1">男</option>
+						<option value="0">女</option>
+					</select>
+				</p>
+				<p>
+					<label> 年龄： </label>
+					<input type="text" name="age" min="1" maxlength="3" >
+				</p>
+				<p>
+				<label>学历：</label>
+				<select name="education" class="combox">
+						<option value="0" selected>请选择学历</option>
+						<option value="1">小学及以下</option>
+						<option value="2">初中</option>
+						<option value="5">高中</option>
+						<option value="3">中专</option>
+						<option value="4">大专</option>
+						<option value="6">专科</option>
+						<option value="7">本科</option>
+						<option value="8">研究生</option>
+						<option value="9">博士及以上</option>
+					</select>
+				</p>
+				<p>
+					<label> 职位： </label>
+					<select name="dutylevelid" class="combox">
+					<option value="0">请选择职位</option>
+					<volist name="DutyList" id="Duty">
+					<option value="{$key}">{$Duty}</option>
+					</volist>
+					</select>
+				</p>
+				<p>
+					<label>工种类别：</label>
+					<select name="worktype" class="combox">
+						<option value="0" selected>请选择工种类别</option>
+						<option value="1">技术</option>
+						<option value="2">非技</option>
+						<option value="3">实习</option>
+						<option value="4">普工</option>
+					</select>
+				</p>
+				<p>
+					<label>入职日期：</label>
+					<span class="xyInputWithUnit">
+					<input type="text" onfocus="WdatePicker()" class="tml-border-r0 Wdate required" name="leavedate"   />
+					<span class="input-addon input-addon-calendar"></span>
+					</span>
+				</p>	
+				<p>
+				 	<label>身份证：</label>
+					<input name="chinaid" type="text" size="19" class="textInput required isIdCard" />
+				</p>
+				<p style="width: 90%">
+					<label> 备注：</label>
+					<textarea name="remark" style="width: 364px; height: 37px;"></textarea>
+				</p>
+			</div>
+			<div class="formBar">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleave_insert">
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">{$Think.lang.save}</button>
+							</div>
+						</div>
+					</li>
+					</if>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

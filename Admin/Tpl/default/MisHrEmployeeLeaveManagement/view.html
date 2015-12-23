@@ -1,0 +1,76 @@
+<div class="page">
+	<div class="pageContent">
+		<H2 class="contentTitle contentTitle_center">请假申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+			{:W('ShowOrderno',array(0,'mis_hr_personnel_leave_info',$vo['orderno']))}
+		</H2>
+		<div class="pageFormContent xyEmployee" layoutH="105">
+				<fieldset>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+			                <input type="text" class="org.name" size="15" name="name" readonly="readonly" value="{$vo.name}"/>
+						</div>
+						<div class="tml-form-col">	 
+							<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+			                <input type="text" name="deptname" value="{$vo.deptname}" readonly="readonly" />
+						</div>
+						<div class="tml-form-col">
+							<label>职&nbsp;&nbsp;&nbsp;&nbsp;级：</label>
+							<input type="text" name="cname" value="{$vo.cname}" readonly="readonly"/> <!-- 职级编号 -->
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>请假类别：</b></legend>
+					<div class="clearfix" style="margin:0 0 0 72px;">
+						<volist name="typelist" id="tplist">
+							<label style="width: 18%;" ><input type="radio"  readonly="readonly" name="leavetype" disabled="disabled"  <if condition="$vo['leavetype'] eq $key">checked="checked" </if> value="{$key}"/>&nbsp;{$tplist}</label>
+						</volist>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>请假时间：</b></legend>
+					<div class="tml-form-row">
+						<label class="form-label">请假时间：</label>
+						<div class="tml-input-group">
+							<div class="tml-input-append">
+								<input type="text" name="beginleavedate" class="Wdate"  readonly="readonly" value="{$vo.beginleavedate|transTime='Y-m-d H:i'}" />
+						 		<span class="input-addon input-addon-calendar"></span>
+							</div>
+							<span class="tml-form-text">&nbsp;----&nbsp;</span>
+							<div class="tml-input-append">
+								<input type="text" name="endleavedate" class="Wdate" readonly="readonly" value="{$vo.endleavedate|transTime='Y-m-d H:i'}" />
+								<span class="input-addon input-addon-calendar"></span>
+							</div>
+							<span class="tml-form-text">&nbsp;&nbsp;&nbsp;合计&nbsp;</span>
+							<input type="text" class="textInput required" name="hours"  readonly="readonly" value="{$vo.hours}"/>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>请假原因：</b></legend>
+					<div class="tml-form-row">
+		              	<textarea name="remark" class="required" readonly="readonly" >{$vo.remark}</textarea>
+		           </div>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>工作交接：</b></legend>
+					<div class="tml-form-row">
+		              	<textarea name="leaveagency" readonly="readonly" >{$vo.leaveagency}</textarea>
+	              	</div> 
+				</fieldset>
+				<br/>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>申&nbsp;请&nbsp;人：</label>
+						<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}" />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>申请时间：</label>
+						<input type="text" readonly="readonly" value="{$vo.createtime|transTime}"/>
+					</div>
+				</div>
+			</div>
+		 {:W('ShowAction')}
+	</div>
+</div>

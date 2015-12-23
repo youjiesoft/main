@@ -1,0 +1,358 @@
+<script>
+function sqladdtd(obj){
+	var $box=navTab.getCurrentPanel();
+	$box.find("textarea[name='spellsql']").delay(5000);	
+	var val=$box.find("textarea[name='spellsql']").val();
+	var oldformdata = new Array();
+	var table = $("form table tbody",$box);
+	//title 中文字段缓存
+	var querytablesCaches = new Dictionary(); // 做数据缓存。存储方式为：[请求地址_参数] => data
+	$("tr",table).each(function(){
+		var titlearr = new Array();
+		var fieldvalue =$("input[name$='[otherfield]']",this).val();
+		titlearr['title'] = $("input[name$='[title]']",this).val();
+		titlearr['china'] = $("input[name$='[china]']",this).val();
+		titlearr['funname'] = $("input[name$='[funname]']",this).val();
+		titlearr['funfield'] = $("input[name$='[funfield]']",this).val();
+		titlearr['tablename'] = $("input[name$='[tablename]']",this).val();
+		//titlearr['datasort'] = $("input[name$='[datasort]']",this).val();
+		//titlearr['sorttype'] = $("input[name$='[sorttype]']",this).val();
+		if($("input[name$='[isback]']",this).prop('checked')){
+			titlearr['isback']=fieldvalue;
+		}
+		if($("input[name='dataval']",this).prop('checked')){
+			titlearr['dataval']=fieldvalue;
+		}
+		if($("input[name$='[islistshow]']",this).prop('checked')){
+			titlearr['islistshow']=fieldvalue;
+		}
+		if($("input[name='isshow']",this).prop('checked')){
+			titlearr['isshow']=fieldvalue;
+		}
+		if($("input[name$='[funccheck]']",this).prop('checked')){
+			titlearr['funccheck']=fieldvalue;
+		}
+		if($("input[name$='[datasort]']",this).prop('checked')){
+			titlearr['datasort']=fieldvalue;
+			titlearr['sorttype'] = $("input[name$='[sorttype]']",this).val();
+		}
+		if(fieldvalue){
+			querytablesCaches.set(fieldvalue , titlearr);
+		}
+	})
+  console.info(querytablesCaches);
+	$.ajax({
+		type:'POST',
+		url:"__URL__/lookupsubstr",
+		data:{'shepllsql':val},
+		cache:false,
+		global:false,
+		success:function(fielddata){
+			//$(this).logs(fielddata);
+			var $list=DWZ.jsonEval(fielddata);
+			var $html="";
+			//console.log(checkarr['mis_hr_personnel_person_info.orderno']);
+			$.each($list , function(key , val){
+				var field=val['alias']; 
+				var isback = '';
+				var fieldCache=querytablesCaches.get(field);
+				if(fieldCache){
+					if(field==fieldCache['isback']){
+							isback ='checked';
+					}
+					var	dataval='';
+					if(field==fieldCache['dataval']){
+						dataval = 'checked';
+					}
+					var isshow ='';
+					if(field==fieldCache['isshow']){
+					isshow = 'checked';
+					}
+					
+					var islistshow = '';
+					if(fieldCache['islistshow']){
+							islistshow = "checked";
+					}
+					var funccheck = '';
+					if(fieldCache['funccheck']){
+						console.log(fieldCache['funccheck']);
+						funccheck = "checked";
+					}
+					var funname = '';
+					if(fieldCache['funname']){
+						funname = fieldCache['funname'];
+					}
+					var tablename='';
+					if(fieldCache['tablename']){
+						tablename = fieldCache['tablename'];
+					}
+					var funfield = '';
+					if(fieldCache['funfield']){
+							funfield = fieldCache['funfield'];
+					}
+					var thistitle  = '';
+					if(fieldCache['title']){
+						thistitle = fieldCache['title'];
+					}
+					var china='';
+					if(fieldCache['china']){
+						china = fieldCache['china'];
+					}
+					var datasort = '';
+					if(fieldCache['datasort']){
+						datasort ='checked';
+					}
+					var sorttype='asc';
+					if(fieldCache['sorttype']){
+						sorttype =fieldCache['sorttype'];
+					}
+					var sortchina = '升序';
+					if(fieldCache['sorttype'] == 'desc'){
+						sortchina = '降序';
+					}
+				}
+				if(!china){
+					if(val.title){
+						china = val.title;
+					}else{
+						china ="";	
+					}
+				} 
+				if(!thistitle){
+					if(val.title){
+						thistitle = val.title;
+					}else{
+						thistitle ="";
+					}
+				} 
+				if(!funname){
+					funname="";
+				}
+				if(!funfield){
+					funfield="";
+				}
+				if(!tablename){
+					if(val.table){
+						tablename=val.table;
+					}else{
+						tablename="";
+					}
+				}
+				$html += '<tr>';
+				$html += '<td><div class="dragdiv"><a href="javascript:;" class=""><span class="icon-move"></span></a></div></td>';
+				$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][field]' value='"+val.field+"' class='required '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][otherfield]' value='"+val.alias+"' class='required'></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][title]' value='"+thistitle+"'  class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][china]' value='"+china+"'  class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input type='checkbox' name='datatable["+key+"][datatable2][isback]'  "+isback+"  value='1' class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input type='radio' name='dataval' "+dataval+"  value='"+val.alias+"' class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input type='checkbox' name='datatable["+key+"][datatable2][islistshow]' "+islistshow+" value='1' class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input type='radio' name='isshow'  "+isshow+"  value='"+val.alias+"' class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input type='checkbox' name='datatable["+key+"][datatable2][funccheck]'  "+funccheck+"  value='1' class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][funname]' value='"+funname+"' class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][funfield]' value='"+funfield+"'  class=' '></span></td>";
+				$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][tablename]' value='"+tablename+"' class='required '></span></td>";
+				if(datasort){
+					$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][datasort]' type='checkbox' "+datasort+" value='"+val.field+"' onclick='datasortchange(this);' ></span>";
+					$html +=		"<button type='button' class='sorttype' onclick='sorttypechange(this)'>"+sortchina+"</button>";
+					$html +=		"<input type='hidden' class='sorttype' name='datatable["+key+"][datatable2][sorttype]'  value='"+sorttype+"'>";
+					$html +=		"</td>";
+				}else{
+					$html +="<td><span class='xyInputWithUnit'><input name='datatable["+key+"][datatable2][datasort]' type='checkbox' value='"+val.field+"' onclick='datasortchange(this);' ></span>";
+					$html +=		"<button type='button' class='sorttype' style='display:none;' onclick='sorttypechange(this)'>升序</button>";
+					$html +=		"<input type='hidden' class='sorttype' name='datatable["+key+"][datatable2][sorttype]' disabled value='asc'>";
+					$html +=		"</td>";
+				}				
+				$html +="</tr>";
+			});
+				$('table.new_table',$box).find('tbody').html($html);
+			}
+			
+		});   
+	} 
+
+
+	function sorttypechange(obj){
+		var text1 = "升序";
+		var text2 = "降序";
+		var value1 = "asc";
+		var value2 = "desc";
+		if($(obj).text() == text1){
+			$(obj).text(text2);
+			$(obj).closest("td").find("input.sorttype").val(value2);
+		}else{
+			$(obj).text(text1);
+			$(obj).closest("td").find("input.sorttype").val(value1);
+		}
+	};
+	function datasortchange(obj){
+		if($(obj).attr("checked")=="checked"){
+			$(obj).closest("tr").find("button.sorttype").show();
+			$(obj).closest("tr").find("input.sorttype").attr("disabled",false);
+		}else{
+			$(obj).closest("tr").find("button.sorttype").hide();
+			$(obj).closest("tr").find("input.sorttype").attr("disabled",true);
+		}
+	};
+	$(".tml_set_table1 tbody").dragsort({
+		dragSelector : "div.dragdiv",
+		dragBetween : true,
+		dragEnd : saveThOrder
+	});
+	function saveThOrder(){
+		
+	}
+</script>
+
+<link href="__PUBLIC__/Css/tmlstyle/model.css" rel="stylesheet" type="text/css" media="screen" />
+<script src="__TMPL__MisAutoZyr/add.js" type="text/javascript"></script>	
+
+	<style>
+		.tml-form-row label.tmp_label{margin-left:0px;width: 120px;float: none;font: 14px/30px "Microsoft Yahei","微软雅黑",sans-serif;}
+		.tml-form-row label.tmp_label:hover{color:#006699;}
+		table.new_table{}
+		table.new_table .xyInputWithUnit .textInput{width:100px;}
+		
+		</style>
+	<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<!-- 表单组合模式下的关联ID -->
+			<input type="hidden" name="bindid" value="{$_GET['bindid']}" />
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			{:W('HiddenInput')}
+			<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+				<div class="new_version_page">
+					<div class="new_version_page_header pageFormContent">视图表单
+					</div>
+					<div class="new_version_page_content">
+							<!-- text组件 start -->
+								<div class="tml-form-col " >
+									<label>{$fields["name"]}:</label>
+									<input  type="text"  name="name" class="required  lettersonly" value="">
+								</div>
+								<!-- text组件 end -->
+							<!-- text组件 start -->
+							<div class="col_1_3 form_group_lay combox_tree" >
+								<label class="label_new">{$fields["modelname"]}:</label>
+								{:W('ShowSelect',array('',array('  readonly ',array('type'=>'table',array('readonly'=>'1','targevent'=>'','actionName'=>'Node','names'=>'modelname','defaultcheckitem'=>'','defaultval'=>'','defaulttext'=>'','table'=>'node', 'id'=>'name','name'=>'title','conditions'=>'type<>4','parentid'=>'pid','mulit'=>'0','isnextend'=>'1','key'=>'')))))}
+									<span>设置为节点默认</span>
+								<input type="radio" name="isdefault" <if condition="$vo['isdefault'] eq '1'">checked="checked"</if> value="1">是
+								<input type="radio" name="isdefault" <if condition="$vo['isdefault'] eq '0'">checked="checked"</if>  value="0">否
+							</div>
+							<div class="col_1_3 form_group_lay" >
+								<label class="label_new">{$fields["title"]}:</label>
+								<input  type="text"  name="title" class="required  input_new" value="">
+							</div>
+							<!-- text组件 end -->
+							<!-- text组件 start -->
+							<div class="col_1_7 form_group_lay">
+							<label>{$fields["spellsql"]}:</label>
+							<textarea  name="spellsql" class="required text_area"   style="height: 218px;" rows="" cols="">
+							</textarea>
+                                <div class="tips_info_lay tips_dat_mas" style="width:333px;float:left;margin-left: calc(12.5% - 3px);margin-top:5px;">
+                                    <span class="icon-comments" style="margin-right: 5px"></span>
+                                    <span >注：排序字段必须选中为带回字段、请勿填写limit</span>
+                                </div>
+							</div>
+							<!-- text组件 end -->
+							<!-- datatable组件 start -->
+							<div class="tableItem col_1_7 form_group_lay ">
+                                <span  class="icon_span_btn right" onclick="sqladdtd()"><i class="icon-refresh"> 更新</i></span>
+				<table class="new_table tml_set_table1" index="1" style="width: 100%;">
+					<colgroup>
+						<col width="2%"></col>
+						<col width="8%"></col>
+						<col width="6%"></col>
+						<col width="9%"></col>
+						<col width="10%"></col>
+						<col width="5%"></col>
+						<col width="5%"></col>
+						<col width="5%"></col>
+						<col width="5%"></col>
+						<col width="5%"></col>
+						<col width="10%"></col>
+						<col width="10%"></col>
+						<col width="10%"></col>
+						<col width="10%"></col>
+					</colgroup>
+					<thead>
+					<tr>
+						<th></th>
+						<th>字段名称</th>
+						<th>别名</th>
+						<th>标题</th>
+						<th>原中文名</th>
+						<th>带回字段</th>
+						<th>存储字段</th>
+						<th>列显示字段</th>
+						<th>lookup显示</th>
+						<th>是否转换</th>
+						<th>转换函数</th>
+						<th>转换函数参数</th>
+						<th>表名</th>
+						<th>字段排序</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td>
+                    	 	<div class="dragdiv">
+			 					<a href="javascript:;" class="">
+									<span class="icon-move"></span>
+								</a>
+							</div>
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][field]" placeholder="请输入英文名称" autocomplete="off" type="text" class="lettersonly required  nbm_fieldnameonly" />
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][otherfield]"  placeholder="请输入中文标题" autocomplete="off" type="text" class="required nbm_filedtitleonly" />
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][title]"  placeholder="请输入中文标题" autocomplete="off" type="text" class="required nbm_filedtitleonly" />
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][china]"  placeholder="请输入中文标题" autocomplete="off" type="text" class="nbm_filedtitleonly" />
+						</td>
+						<td>
+						<input type="checkbox" name="datatable[1][datatable2][isback]" value="1" />
+						</td>
+						<td>
+						<input type="checkbox" name="dataval"  />
+						</td>
+						<td>
+						<input type="checkbox" name="datatable[1][datatable2][islistshow]" value="1" />
+						</td>
+						<td>
+						<input type="radio" name="isshow" />
+						</td>
+						<td>
+						<input type="checkbox" name="datatable[1][datatable2][funccheck]" />
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][funname]" class="nbm_filedshowonly"   type="text" />
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][funfield]" class="nbm_filedshowonly"   type="text" />
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][tablename]" class="nbm_filedshowonly"   type="text" />
+						</td>
+						<td>
+						<input name="datatable[1][datatable2][datasort]" class="nbm_filedshowonly"   type="checkbox" />
+						</td>
+					</tr>
+					</tbody>
+					<tfoot>
+						</tfoot>
+						</table>
+						</div>
+			{:W('ShowAction')}
+				</div>
+				</div>
+			</div>
+		</form>
+		</div>
+	</div>
+	</div>

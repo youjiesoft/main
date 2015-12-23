@@ -1,0 +1,71 @@
+<div class="pageContent">
+	<form method="post" action="" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+			<H2 class="contentTitle contentTitle_center">调职申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+				{:W('ShowOrderno',array(0,'mis_hr_personnel_train_info',$vo['orderno']))}
+			</H2>
+			<div class="pageFormContent " layoutH="105">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>姓名：</label>
+	                <input type="text" value="{$MisHrBasicEmployeeVO['name']}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>异动类型：</label>
+					 <input type="text" value="{$vo['typeid']|getFieldBy='id','name','mis_hr_typeinfo'}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>入职日期：</label>
+	                <input type="text" value="{$MisHrBasicEmployeeVO['indate']|transTime}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>转正日期：</label>
+	                <input type="text" value="{$MisHrBasicEmployeeVO['transferdate']|transTime}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>调前部门：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$vo.deptid|getFieldBy='id','name','mis_system_department'}" />
+				</div>
+				<div class="tml-form-col">
+					<label>调后部门：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$vo.newdeptid|getFieldBy='id','name','mis_system_department'}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>调前职级：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$vo.dutylevelid|getFieldBy='id','name','duty'}" />
+				</div>
+				<div class="tml-form-col">
+					<label>调后职级：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$vo.newdutylevelid|getFieldBy='id','name','duty'}"/>
+	            </div>
+	            <div class="tml-form-col">
+					<label>调前岗位：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$vo.worktype|getFieldBy='id','name','mis_hr_job_info'}" />
+				</div>
+				<div class="tml-form-col">
+					<label>调后岗位：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$vo.newworktype|getFieldBy='id','name','mis_hr_job_info'}"/>
+	           </div>
+	         </div>
+			<div class="tml-form-row">
+				<label>详细描述：</label>
+				<textarea readonly="readonly">{$vo.transfer}</textarea>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>申&nbsp;请&nbsp;人：</label>
+					<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>申请日期：</label>
+					<input type="text" class="date" name="transferdate" value="{$vo.createtime|transTime}" readonly="readonly" />
+				</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

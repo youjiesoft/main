@@ -1,0 +1,118 @@
+<script>
+$(function(){
+	$("#pppbyusers").find("input[name='byusers[]']").each(function(){
+		var id = $(this).val();
+		$("#lookinuserss").find('tr').each(function(){
+			var rel = $(this).attr('rel');
+			if(id == rel){
+				$(this).addClass("selected");
+				$(this).addClass("checkedbox");
+				$(this).find("input[type='checkbox']:first").attr("checked","checked");
+			}
+		});
+	});
+});
+function addInuserss($this,type){
+	var istrue = false;
+	if(type == 'tr'){
+		$this = $($this);
+		if(!$this.find("input:checkbox").attr("checked")) {
+			istrue = true;
+		}
+	} else {
+		if($($this).attr("checked")) {
+			istrue = true;
+		}
+		$this = $($this).parents("tr:first");
+	}
+	if(istrue){
+		var code = $this.find("td.inuserscode").text();
+		var name = $this.find("td.inusersname").text();
+		var deptname = $this.find("td.inusersdept").text();
+		var dutyname = $this.find("td.inusersduty").text();
+		var html = "<tr><td style='width: 70px;'>";
+		html += "<input type='hidden' name='inusers[]' value='"+$this.attr('rel')+"' />"+code+"</td>";
+		html += "<td style='width: 90px;'>"+name+"</td>";
+		html += "<td style='width: 110px;'>"+deptname+"</td>";
+		html += "<td style='width: 90px;'>"+dutyname+"</td>";
+		html += "<td><a href='javascript:;' onclick='dellookputusers(this,"+$this.attr('rel')+","+'"lookinuserss"'+");' title='删除' class='btnDel'>x</a></td>";
+		html += "</tr>";
+		$("#pppinuserss").append(html).initUI();
+		$("#pppinuserss").parents("table:first").cssTable();
+	} else {
+		var id = $this.attr('rel');
+		$("#pppinuserss").find("input[name='inusers[]']").each(function(){
+			if($(this).val() == id){
+				$(this).parents("tr:first").remove();
+			}
+		});
+	}
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupmanageplan/setscoretype/{$setscoretype}" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'lookupplanBox');" action="__URL__/lookupmanageplan/setscoretype/{$setscoretype}" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<input type="hidden" id="planid" name="planid" value="{$planid}">
+		<div class=" searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div class="unit">
+							请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+					</td>
+					<td>
+						<select class="combox" name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div>
+	<table class="table" width="99%" layoutH="280">
+		<thead>
+			<tr>
+				<th width="20"><input type="checkbox" onclick="groupCheckAllPlanUsers(this,'lookinuserss')"/></th>
+				<th>编号</th>
+				<th>姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+				<th>职务</th>
+			</tr>
+		</thead>
+		<tbody id="lookinuserss" >
+		<volist id="vo" name="list">
+			<tr onclick="addInuserss(this,'tr');" rel="{$vo.id}">
+				<td><input type="checkbox" name="orgmsg" value="{$vo.id}" onclick="addInuserss(this,'td');"/></td>
+				<td class="inuserscode">{$vo['orderno']}</td>
+				<td class="inusersname">{$vo['name']}</td>
+				<td class="inusersdept">{$vo['deptname']}</td>
+				<td class="inusersduty">{$vo['dutyname']}</td>
+				<td>{$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="lookupplanBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

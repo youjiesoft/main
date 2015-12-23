@@ -1,0 +1,57 @@
+<script>
+function deletecrmEployee( json ){
+	if (json.statusCode == DWZ.statusCode.ok){
+		var $box=navTab.getCurrentPanel();
+		var options=null;
+		var op=$.extend({targetType:"navTab",rel:"",data:{pageNum:"",numPerPage:"",orderField:"",orderDirection:""},callback:null},options);
+		var $parent=navTab.getCurrentPanel();
+		$box.find("input").filter("[name='jump']").attr("value",0);
+		var form=_getPagerForm($parent,op.data);
+		var params=$(form).serializeArray();
+		navTab.reload('__URL__/index',{data:params});
+	}
+}
+$(document).ready(function(){
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	var zNodes = {$custmertree};
+	$.fn.zTree.init($("#CrmCustEmployeeTree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("CrmCustEmployeeTree");
+	zTree.selectNode(zTree.getNodes()[0]);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse">
+				<h2></h2><div></div>
+			</div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input class="js-searchZTreeSubmit" class="tree-search-input" type="text" id="CrmCustEmployeeTreeNodeKeys" />
+					<input id="SearchSubmit" class="searchBtn" type="button" onclick="SearchZTreeNode('CrmCustEmployeeTree','CrmCustEmployeeTreeNodeKeys')">
+				</div>
+			</div>
+			<ul id="CrmCustEmployeeTree" class="ztree" layoutH="40"></ul>
+		</div>
+	</div>
+	<div id="CrmCustEmployeeBox" class="custmerBox unitBox treeright">
+		<include file="unitlist" />
+	</div>
+</div>

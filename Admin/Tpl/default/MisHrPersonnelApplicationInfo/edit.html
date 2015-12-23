@@ -1,0 +1,230 @@
+<script>
+function editappendhtmlapplication(){
+	var $box=navTab.getCurrentPanel();
+	var html="<div class='clearfix' style='border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;'><h3>岗位(<span class='_ppendhtmlapplicationeditIndex'>1</span>)</h3> "+
+	"<div class='tml-row'><div class='tml-form-col'>"+
+	"<label >岗位名称:</label>"+
+	"<input type='text' class='textInput required'  name='dutyname[]' />"+
+	"</div>"+
+	"<div class='tml-form-col'>"+
+	"<label >共增补人数:</label>"+
+	"<div class='tml-input-append'> <input type='text'  class='everycount digits required'  name='dutycount[]' onblur=\"totalcountedit()\"/> <span class='input-addon-unit' title='名'>名</span>  </div> </div> </div>"+
+	"<div class='tml-form-row'>"+
+	"<label >岗位职责:</label>"+
+	"<TEXTAREA    name='dutystatement[]' class='required'/></TEXTAREA>"+
+	"</div>"+
+	"<div class='tml-form-row'>"+
+	"<label >任职资格:</label>"+
+	"<TEXTAREA    name='qualification[]' class='required'/></TEXTAREA>"+
+	"</div>"+
+	"<div class='clear'></div><div class='buttonActive left'>"+
+	"<div class='buttonContent'>"+
+	"<button type='button' onclick='editappendhtmlapplication_deletehtmlapplication(this)'>取消</button>"+
+	"</div>"+
+	"</div>"+
+	"</div>";
+	$box.find("#ppendhtmlapplicationedit_div").append(html).initUI();
+	$box.find("._ppendhtmlapplicationeditIndex").each(function(i){
+		 $(this).text(i+1);
+	 });
+}
+function editappendhtmlapplication_deletehtmlapplication(obj){
+	var $box=navTab.getCurrentPanel();
+	$(obj).parent().parent().parent().remove();
+	//重新计算ND
+	$box.find("._ppendhtmlapplicationeditIndex").each(function(i){
+		 $(this).text(i+1);
+	 });
+	totalcountedit();
+}
+//计算共增补人数(所有增补合计)
+function totalcountedit(){
+	var box = navTab.getCurrentPanel();
+	var posi = box.find("#totall");
+	var total = 0;
+	box.find(".everycount").each(function(i){
+		if($(this).val()){
+			total +=  Number($(this).val());
+		}
+		//alert($(this).val());
+	});
+	box.find("#totall").val(total);
+}
+//获取部门总人数
+function getdepartpsedit(obj){
+	var deptid = $(obj).val();
+	$.ajax({
+		type : 'POST',
+		dataType : "json",
+		url : "__URL__/lookupgetdeptpers",
+		cache : false,
+		data : {deptid : deptid},
+		global:false,
+		success : function(re) {
+			$("#deptpeopleedit").val(re);
+		},
+	})
+}
+</script>
+	<div class="page">
+		<div class="pageContent">
+			<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+				<input type="hidden" name="id" value="{$vo['id']}" />
+				<input type="hidden" name="callbackType" value="closeCurrent">
+				<input type="hidden" name="refreshtabs[url]" value="__MODULE__edit">
+				<input type="hidden" name="refreshtabs[data]" value="1">
+				<input type="hidden" name="dotype" value="流程启动" />
+				<input type="hidden" name="ostatus" value="{$vo.ostatus}" />
+				<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+			<div class="keepContentCenter form-affix-content">
+			<div class="contentTitle contentTitle_center form-affix-title">招聘申请{:W('ShowFlow',$vo)}
+											
+			</div>
+		 <fieldset>
+			<legend class="fieldset_legend_toggle"><b>申请信息</b></legend>
+			<div class="tml-row">
+			{:W('ShowOrderno',array(1,'mis_hr_personnel_applicationinfo',$vo['orderno']))}	
+				<div class="tml-form-col">
+					<label>申请部门：</label>
+					<select name="deptid" class="combox" onchange="getdepartpsedit(this)">
+						{$deptidlist}
+					</select>
+				</div>
+				<div class="clear"></div>
+				<div class="tml-form-col">
+					<label> 申请职级：</label>
+					<select name="dutylevelid" class="combox">
+					<option value="0">请选择职级</option>
+					<volist name="DutyList" id="Duty">
+						<option value="{$key}" <if condition="$key eq $vo.dutylevelid">selected</if>>{$Duty}</option>
+					</volist>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>共增补人数：</label>
+					<input type="text" name="sumpeople" class="digits required" value="{$vo['sumpeople']}"  id="totall" readonly="readonly">
+				</div>
+				<div class="tml-form-col">
+					<label>部门现有人数：</label>
+					<input type="text" name="deptpeople" class="digits required" value="{$vo['deptpeople']}" id="deptpeopleedit" readonly="readonly">
+				</div>
+				<div class="tml-form-col">
+					<label>部门编制人数：</label>
+					<input type="text" name="formationpeople" class="digits " value="{$vo['formationpeople']}">
+				</div>
+				<!-- <div class="tml-form-col">
+					<label>申请日期：</label>
+					<div class="tml-input-append">
+					<input type="text" class="Wdate js-wdate" name="applicationdate" value="{$vo.applicationdate|transTime}">
+					<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+					</div>
+				</div> -->
+				<div class="tml-form-col">
+					<label>建议到职日期：</label>
+					<div class="tml-input-append">
+					<input type="text" name="toworkdate" class="Wdate js-wdate" value="{$vo.toworkdate|transTime}">
+					<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+					</div>
+				</div>
+				</div>
+				<div class="tml-form-row">
+					<label>申请类型：</label>
+					<input type="radio" name="applicationtype" <if condition="$vo.applicationtype eq '编制内申请'">checked="checked" </if>  value="编制内申请"/> 编制内申请
+					<input type="radio" name="applicationtype"  <if condition="$vo.applicationtype eq '编制外申请'">checked="checked" </if>  value="编制外申请"/> 编制外申请
+				</div>
+				<div class="tml-form-row">
+					<label>申请原因：</label>
+					<TEXTAREA rows="2" cols="30" name="remark" >{$vo.remark}</TEXTAREA>
+				</div>
+				</fieldset>
+				<!-- {:W('ShowAddResult', array('model'=>'MisHrPersonnelApplicationInfo','data'=>$vo) )} -->
+                {:W('ShowExtendField',$vo)}			
+				 <fieldset>
+					<legend class="fieldset_legend_toggle"><b>岗位信息</b></legend>
+					<div id="ppendhtmlapplicationedit_div" class="clearfix">
+					<if condition="$vo['positiondetails']">
+					<volist name="vo['positiondetails']" id="positiondetailsvo" key="i">
+					<div class='clearfix' style='border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;'>	
+									<h3>岗位(<span class='_ppendhtmlapplicationeditIndex'>{$i}</span>)</h3> 
+									<div class='tml-row'> 
+										<div class='tml-form-col'> 
+											<label>岗位名称：</label> 
+											<input name='dutyname[]' value="{$positiondetailsvo.dutyname}"  type='text' class='textInput required' />
+										</div>
+											<div class='tml-form-col'> 
+											<label>共增补人数：</label> 
+											<div class="tml-input-append">
+											<input name='dutycount[]' class='everycount digits required'  value="{$positiondetailsvo.dutycount}"  type='text' class='textInput'  onblur="totalcountedit()"/>
+											<span class="input-addon-unit" title="名">名</span>
+											</div>
+										</div>
+										</div>
+										<div class='tml-form-row'>
+											<label>岗位职责：</label>
+											<TEXTAREA name='dutystatement[]'   class='textInput required'>
+											{$positiondetailsvo.dutystatement}
+											</TEXTAREA>
+										</div>
+										<div class='tml-form-row'>
+											<label>任职资格：</label>
+											<TEXTAREA name='qualification[]'  class='textInput required'>
+											{$positiondetailsvo.qualification}
+											</TEXTAREA>
+										</div>
+										
+									<div class='clear'></div>
+										<div class='buttonActive left'>
+											<div class='buttonContent'>
+											<button type='button' onclick='editappendhtmlapplication_deletehtmlapplication(this)'>取消</button>
+											</div>
+										</div>
+									</div>
+								</volist>
+					<else/>
+					<div class='clearfix' style='border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;'>	
+									<h3>岗位(<span class='_ppendhtmlapplicationeditIndex'>1</span>)</h3> 
+									<div class='tml-row'> 
+										<div class='tml-form-col'> 
+											<label>岗位名称：</label> 
+											<input name='dutyname[]'  type='text' class='textInput required' />
+										</div>
+											<div class='tml-form-col'> 
+											<label>共增补人数：</label> 
+											<div class="tml-input-append">
+											<input name='dutycount[]' onblur='FormatNumber(this)' type='text' class='textInput' />
+											<span class="input-addon-unit" title="名">名</span>
+											</div>
+										</div>
+										</div>
+										<div class='tml-form-row'>
+											<label>任职资格：</label>
+											<TEXTAREA name='qualification[]'   class='textInput required'>
+											</TEXTAREA>
+										</div>
+											<div class='tml-form-row'>
+											<label>岗位职责：</label>
+											<TEXTAREA name='dutystatement[]'   class='textInput required'>
+											</TEXTAREA>
+										</div>
+									<div class='clear'></div>
+										<div class='buttonActive left'>
+											<div class='buttonContent'>
+											<button type='button' onclick='editappendhtmlapplication_deletehtmlapplication(this)'>取消</button>
+											</div>
+										</div>
+									</div>
+					</if>
+				
+					</div>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="button" onclick="editappendhtmlapplication()">+添加岗位</button>
+						</div>
+					</div>
+				</fieldset>				
+			{:W('ShowAction',array('data'=>$vo))}
+			</div>
+			</div>
+		</form>
+	</div>
+</div>

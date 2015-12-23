@@ -1,0 +1,74 @@
+<script>
+	function missystemcompany_loginpicture_edit(file, data, response) {
+		var $box = navTab.getCurrentPanel();
+		var s = data.split(TP_PUBLIC + "/Uploadstemp/");
+		$("#swf_upload_missystemcompany_edit_savelogin_name").val(s[1]);
+		var upload_name = $("#swf_upload_missystemcompany_edit_savelogin_name").val();
+		$.ajax({
+			type : "POST",
+			url : "__URL__/uploadimg",
+			data : {
+				'upload_name' : upload_name
+			},
+			success : function(re) {
+				 $("#missystemcompany_loginpicture_edit").attr("src","__PUBLIC__/Uploads/"+re);
+				 $("input[name='picture']").val(re);
+			}
+		});
+	}
+</script>
+
+<div class="pageContent">
+	<form method="post" action="__URL__/updateLogoPic" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+		<input type="hidden" name="updatepic" value="1"/>
+		<input type="hidden" name="pickey" value="{$picList['skey']}"/>
+		<input type="hidden" name="namekey" value="{$nameList['skey']}"/>
+		<input type="hidden" name="enamekey" value="{$enameList['skey']}"/>
+		<input type="hidden" name="lastkey" value="{$lastList['skey']}"/>
+		<input type="hidden" name="masid" value="{$masid}" />
+		<input type="hidden" name="picture" value="{$picList['svalue']}"/>
+		<input type="hidden" name="skey" value=""/>
+		<input type="hidden" name="refreshsub" value="1" />
+		<input type="hidden" name="auditstatus" value="{$auditstatus}" />
+		<div class="pageFormContent applecloth " layoutH="58">
+			<p>
+				<label>更改公司登陆LOGO：</label>
+				<if condition="$picList.skey == null"> <img
+					id="missystemcompany_loginpicture_edit"
+					style="border: 2px solid #f1f1f1; width: 45px; height: 45px;"
+					src="__PUBLIC__/Images/ico.png"> <else /> <img
+					id="missystemcompany_loginpicture_edit"
+					style="border: 2px solid #f1f1f1; width: 45px; height: 45px;"
+					src="__PUBLIC__/Uploads/{$picList['svalue']}"> </if>
+				<span style="color: red">请上传40*40比例透明背景(文件后缀为.png)图片</span>
+				<input name="swf_upload_missystemcompany_savelogin_name"
+					id="swf_upload_missystemcompany_edit_savelogin_name" value=""
+					type="hidden" />
+						<input id="swfupload_missystemcompany_edit" onUploadSuccess="missystemcompany_loginpicture_edit" type="file" auto="true" multi="false" uploader="true" fileSizeLimit="2000KB" fileTypeExts="*.png;" fileTypeDesc="*.png;" name="missystemcompany_loginpicture_edit" formData="{ uploadpath:'missystemcompany' }" />
+			</p>
+			<p>
+			<label>请输入公司中文名称：</label>
+			<input type="text" name="companyname" value="{$nameList['svalue']}"  maxlength="25" />
+			</p>
+			<p>
+			<label>请输入公司英文名称：</label>
+			<input type="text" name="companyename" value="{$enameList['svalue']}"  maxlength="25" />
+			</p>
+			<p>
+			<label>请输入登录后缀：</label>
+			<input type="text" name="companylast" value="{$lastList['svalue']}"  maxlength="25" />
+			</p>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="submit">保存</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

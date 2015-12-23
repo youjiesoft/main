@@ -1,0 +1,16 @@
+<style>
+.firm{ padding-left:5px;}
+.firm a{ padding-left:5px;}
+.firm p{ height:10px;}
+</style>
+<div class="firm" style="border:none;">
+    <ul class="companynews">
+    	<volist id="vo" name="list">
+			<if condition="$vo['url'] eq null">
+    			<p><img src="__PUBLIC__/Images/li_img.gif" /><a href="__URL__/appview/id/{$vo.id}" rel="CompanyNews" target="dialog" title="公司新闻">{$vo.title}</a></p>
+    			<else/>
+    			<p><img src="__PUBLIC__/Images/li_img.gif" /><a href="{$vo.url}" rel="CompanyNews" target="_blank" title="公司新闻">{$vo.title}</a></p>
+    		</if>
+    	</volist>
+    </ul>
+</div>

@@ -1,0 +1,38 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#hrpersonneltransfer"), setting, zNodes);
+});
+</script>
+<div class="pageContent" style="border:0px;">
+	<div class="tabs">
+		<div class="tabsContent" style="border:0px; padding:0px;">
+			<div>
+				<div style="float: left; display: block; overflow: auto; width: 200px; border: solid 1px #CCC; line-height: 21px; background: #fff">
+					<div class="clearfix" style="border:0 solid #95B8E7;border-width:1px 0;padding:4px;">
+						<input class="tree-search-input" type="text" id="MisHrPersonnelTransferManageSearchNodeKeys" />
+						<div class="buttonActive"><div class="buttonContent" onclick="SearchZTreeNode('hrpersonneltransfer','MisHrPersonnelTransferManageSearchNodeKeys')"><button>搜索</button></div></div>
+					</div>
+					<ul id="hrpersonneltransfer" class="ztree"  layoutH="48"></ul>
+				</div>
+				<div id="positiveBox" class="positiveBox" style="margin-left: 204px;">
+					<include file="lookupmanagelist" />
+				</div>
+			</div>
+		</div>
+		<div class="tabsFooter">
+			<div class="tabsFooterContent"></div>
+		</div>
+	</div>
+</div>

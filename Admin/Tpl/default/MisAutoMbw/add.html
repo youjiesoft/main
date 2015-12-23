@@ -1,0 +1,133 @@
+<script src="__TMPL__MisAutoMbw/add.js" type="text/javascript"></script><script src="__TMPL__MisAutoMbw/addExtend.js" type="text/javascript"></script>
+	{~$classNodeSettingArr = getModelClassByNodeSetting('MisAutoMbw','add')}
+	{~$appendPageContentArr = getBindTabsContent('MisAutoMbw','','add','',$main)}
+	{~$formautosetting = setFormControllAutoCreate('MisAutoMbw' ,'add' , $main , 'insert',$vo)}
+	{$appendPageContentArr[1]}<div class="page">
+	<div class="pageContent">
+			<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME"> <if condition="!$_REQUEST['bindaname']"> layoutH="40"</if> </if>>
+				<div class="new_version_page ">
+		<form  id="MisAutoMbw_add" {$appendPageContentArr[5]} {$formautosetting[3]} method="post" action="__APP__/MisAutoMbw/{$formautosetting[2]}/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="{$appendPageContentArr[0]}">
+			<!-- 表单组合模式下的关联ID -->
+			<input type="hidden" name="bindid" value="{$_GET['bindid']}" />
+			<input type="hidden" name="relationmodelname" value="{$_GET['bindaname']}" /><a class='xyz_anchornavi_top' name='MisAutoMbw_add_top'></a>
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			{:W('HiddenInput',$vo)}
+			{$formautosetting[1]}
+					<if condition="$_GET['viewtype'] neq 'view'&& !$_GET['main'] ">
+					<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">流程转授</span>
+			{:W('ShowRightToolBar',array('add','MisAutoMbw'))}{:W('ShowAnchorNavi',array('MisAutoMbw' , 'add'))}{$formautosetting[0]}</div>
+					</if>
+					<div class="new_version_page_content">{:W('ShowOrderno',array(4,'mis_auto_guikc',$vo['orderno'],array('contentcls'=>'col_1_1 form_group_lay field_orderno', 'inputcls'=>'class="input_new " ','title'=>$fields["orderno"],'isshow'=>1)))}
+							<!-- lookup组件 start -->
+							<div class="col_1_2 form_group_lay field_zhuanshouren " >
+									<label class="label_new">{$fields["zhuanshouren"]}:</label>
+								
+								{:W('Lookup',array('1',$vo,'10343','1',''))}
+								<div class="display_none {$classNodeSettingArr['zhuanshouren']}">{$vo['zhuanshouren']|getFieldBy='id','name','user'}</div>
+								</div>
+							<!-- lookup组件 end -->
+							<!-- lookup组件 start -->
+							<div class="col_1_2 form_group_lay field_zhuanshougei " >
+									<label class="label_new">{$fields["zhuanshougei"]}:</label>
+								
+								{:W('Lookup',array('1',$vo,'10335','1',''))}
+								<div class="display_none {$classNodeSettingArr['zhuanshougei']}">{$vo['zhuanshougei']|getFieldBy='id','name','user'}</div>
+								</div>
+							<!-- lookup组件 end -->
+							<!-- select组件 start -->
+							<div class="col_1_1 form_group_lay field_zhuanshoufanwei " >
+								<label class="label_new">{$fields["zhuanshoufanwei"]}:</label>
+								
+								{:W('ShowSelect',array($vo['zhuanshoufanwei'],array('  ',array('type'=>'selectlist',array('readonly'=>'1','targevent'=>'change','actionName'=>'MisAutoMbw','names'=>'zhuanshoufanwei','defaultcheckitem'=>'','defaultval'=>'','defaulttext'=>'','table'=>'', 'id'=>'','name'=>'','conditions'=>'','parentid'=>'','mulit'=>'','isnextend'=>'','treeheight'=>'','treewidth'=>'','key'=>'ndzsfw01','isedit'=>'1','showtype'=>'0')))))}<div class="display_none {$classNodeSettingArr['zhuanshoufanwei']}">{$vo['zhuanshoufanwei']|getSelectlistValue='ndzsfw01'}</div>
+								</div>
+							<!-- select组件 end -->
+							<!-- date组件 start -->
+							<div class="col_1_2 form_group_lay field_shengxiaoriqi " >
+								<label class="label_new">{$fields["shengxiaoriqi"]}:</label>
+								
+					<div  class="tml-input-calendar">
+					<input type="text" name="shengxiaoriqi" class="  input_new half_angle_input  Wdate js-wdate input_left " format="{dateFmt:'yyyy-MM-dd HH:mm'}"   value="{$vo['shengxiaoriqi']|transtime='Y-m-d H:i'}"/>
+					<a href="javascript:;" class="icon_elm icon-calendar"></a>
+				</div><div class="display_none {$classNodeSettingArr['shengxiaoriqi']}">{$vo['shengxiaoriqi']|transtime='Y-m-d H:i'}</div>
+								</div>
+							<!-- date组件 end -->
+							<!-- date组件 start -->
+							<div class="col_1_2 form_group_lay field_shixiaoriqi " >
+								<label class="label_new">{$fields["shixiaoriqi"]}:</label>
+								
+					<div  class="tml-input-calendar">
+					<input type="text" name="shixiaoriqi" class="  input_new half_angle_input  Wdate js-wdate input_left " format="{dateFmt:'yyyy-MM-dd HH:mm'}"   value="{$vo['shixiaoriqi']|transtime='Y-m-d H:i'}"/>
+					<a href="javascript:;" class="icon_elm icon-calendar"></a>
+				</div><div class="display_none {$classNodeSettingArr['shixiaoriqi']}">{$vo['shixiaoriqi']|transtime='Y-m-d H:i'}</div>
+								</div>
+							<!-- date组件 end -->
+							<!-- textarea组件 start -->
+							<div class="col_1_7 form_group_lay field_miaoshu " >
+								<label class="label_new">{$fields["miaoshu"]}:</label>
+								<textarea   cols="100" rows="4" class="  text_area  " name="miaoshu"><if condition="$vo['miaoshu']">{$vo['miaoshu']}<else/></if></textarea><div class="display_none {$classNodeSettingArr['miaoshu']}">{$vo['miaoshu']}</div>
+								</div>
+							<!-- textarea组件 end -->
+							<!-- datatable组件 start -->
+							<div class="col_8_0 form_group_lay field_datatable6 " >				
+				
+				<div class="into_table_lay">
+				
+								
+				<if condition="$fields['datatable6']">
+				<div class="into_table_title">{$fields["datatable6"]}</div>
+				</if>
+				<table class="into_table_new nbm_data_table" table_data='{"formModel":"MisAutoMbw","datatableModel":"MisAutoGuikcSubDatatable6","importUrl":"__APP__/MisImportExcel/misimportexceladd"}' id="dt_datatable6xHeGmT_edit" table_type="edit">
+					<thead>
+						<tr class="thead_tr">
+							<th style='width:40px;' template_key="serial" >				序号			</th>
+			<th style="width:px;min-width:px;min-width:px;" template_key="lookup" 
+ 
+ 			template_name="" 
+ 
+		template_data='{"upclass":"title","callback":"lookupDataToCell","param":"lookupchoice=c45e26a9ef4a67bac90a405af311fc64&type=dt&newconditions=","condition":null,"lookupname":"orgzhuanshoumoxing","href":"__URL__\/lookupGenerals","hidden_data":[{"upclass":"name","name":"datatable[#index#][datatable6][zhuanshoumoxing]"}]}'  
+
+			template_class="  required  "  template_controll=zhuanshoumoxing>
+				转授模型
+			</th>
+											<th style='width:90px;' template_data='{"table":"datatable6","post_table":"mis_auto_guikc_sub_datatable6","post_url":"__URL__/onesave","del_url":"__URL__/delsubinfo/delmodel/MisAutoGuikcSubDatatable6"}' template_key="action">操作</th>
+						</tr>
+					</thead>
+					<tbody cellpadding="0" cellspacing="1">
+			{~$key=0;}
+			<volist name="innerTabelObjdatatable6Data" id="item">
+				<tr>
+					<td>
+						<span class="serial_number">
+							{$key+1}
+						</span>
+					</td>
+					<!-- 现有数据 -->
+					
+										<td>
+											<div class='list_group_lay' style='display: none;'><div class="list_public_lay">
+											<input type="text" callback="" class="list_public_input list_lookup_input readonly org{$key}zhuanshoumoxing.title " readonly="readonly" value="{$item.zhuanshoumoxing|getFieldBy='name','title','node'}">
+											<input type="hidden" class="org{$key}zhuanshoumoxing.name  required " disabled="disabled" name="#hide#datatable[#index#][datatable6][zhuanshoumoxing]" value="{$item.zhuanshoumoxing}">
+											<a class="list_icon_elm list_mid_icon_elm icon-plus" param="lookupchoice=c45e26a9ef4a67bac90a405af311fc64&type=dt&newconditions=" href="__URL__/lookupGenerals" lookupgroup="org{$key}zhuanshoumoxing" autocomplete="off"></a>
+											<a title="清空信息" class="list_icon_elm icon-trash" href="javascript:void(0);" onclick="clearOrg('org{$key}zhuanshoumoxing');"></a>
+											</div></div>
+											<span class='datatable_show_val'>{$item.zhuanshoumoxing|getFieldBy='name','title','node'}</span>
+										</td>
+									
+				<td >
+						<input type="hidden" name="datatable[#index#][datatable6][id]" value="{$item.id}" />
+						<button title="删除" type="button" class="into_table_new_trash_tr into_table_btn itb_del" del_url="__URL__/delsubinfo/delmodel/MisAutoGuikcSubDatatable6" del_id="{$item.id}" del_table="mis_auto_guikc_sub_datatable6"  nbmonclick="del_sub_info('MisAutoMbw','mis_auto_guikc_sub_datatable6',{$item.id},this)">
+						<span class="icon-remove"></span></button>
+						<button post_id="{$item.id}" post_url="__URL__/onesave" post_id="{$item.id}" post_table="mis_auto_guikc_sub_datatable6" rel_type="edit" class="save_row_btn" type="button" title="编辑"><span class="icon-pencil"></span></button>
+					</td>
+				</tr>
+				{~$key++}
+			</volist>	</tbody></table></div><div class="display_none {$classNodeSettingArr['datatable6']}"></div>
+								</div>
+							<!-- datatable组件 end -->
+		<if condition="!$appendPageContentArr[4]">{:W('ShowAction',array('data'=>$vo))}</if>
+</div>
+					<div class="clear"><span style="display:none;" class="anchornaviforshow">MisAutoMbw_add</span><a class='xyz_anchornavi_buttom' name='MisAutoMbw_add_bottom'></a></div>
+		</form>{$appendPageContentArr[2]}{$appendPageContentArr[3]}
+				</div>
+			</div>
+	</div></div>

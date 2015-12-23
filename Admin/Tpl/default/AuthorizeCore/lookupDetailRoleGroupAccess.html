@@ -1,0 +1,129 @@
+<script>
+	var $box =$.pdialog.getCurrent();
+    $(function(){
+    	var nodeid = '{$nodeid}';
+    	var $navtab = navTab.getCurrentPanel();
+    	var liulan = $navtab.find("#rel"+nodeid+" input[name='liulan["+nodeid+"]']").val();
+    	var zhidan = $navtab.find("#rel"+nodeid+" input[name='zhidan["+nodeid+"]']").val();
+    	var tesu = $navtab.find("#rel"+nodeid+" input[name='tesu["+nodeid+"]']").val();
+    	var selectkeys = "";
+    	if(liulan && liulan.length>0) selectkeys = liulan;
+    	if(zhidan && zhidan.length>0) selectkeys += ","+zhidan;
+    	if(tesu && tesu.length>0) selectkeys += ","+tesu;
+    	var selectarr = selectkeys.split(",");
+    	$box.find("input.hide").each(function(){
+    		for(var i=0;i<selectarr.length;i++) {
+    			if($(this).val() == selectarr[i]){
+    				$(this).attr("checked","checked");
+    				$(this).next("span").addClass("checkbox-img-checked");
+    			}
+    		}
+    		
+    	});
+    	$box.find("strong.js-cursortitle").click(function(){
+    		var obj = $(this).prev();
+    	    var v=obj.val();
+    	    var r=obj.attr("rel");
+    	    obj.closest("td").siblings().find("input:checkbox").attr("checked",false);
+    	    $box.find("#top"+r).attr("checked",!obj.is(":checked"));
+        	$box.find("input.second_all_"+r+"_"+v).closest("tr").find("span").removeClass('checkbox-img-checked');
+        	$box.find("input.second_all_"+r+"_"+v).attr("checked",!obj.is(":checked"));
+        	if(!obj.is(":checked")){
+        		$box.find("input.second_all_"+r+"_"+v).next("span").addClass("checkbox-img-checked");
+    	    }
+        	obj.attr("checked",!obj.is(":checked"));
+    	});
+    	$box.find("span.js-cursorcheckradio").click(function(){
+    		var obj = $(this).prev();
+    		var r=obj.attr("rel");
+    	    obj.closest("td").siblings().find("span").removeClass('checkbox-img-checked');
+    	    $box.find(".secondall").not(".three").attr("checked",false);
+    	    if(!obj.is(":checked")) {
+    	    	$box.find("#top"+r).attr("checked",!obj.is(":checked"));
+    	    	$(this).addClass("checkbox-img-checked");
+    	    }
+    	    obj.attr("checked",!obj.is(":checked"));
+    	});
+    });
+	function seleteall_user(obj){
+		var r=$(obj).attr("rel");
+	    $box.find(".all"+r).attr("checked",false);
+	    $box.find(".all"+r).filter(".all_child4").closest("tr").find("span").removeClass('checkbox-img-checked');
+	    if($(obj).is(":checked")){
+	    	$box.find(".all"+r).filter(".all_child4").next("span").addClass("checkbox-img-checked");
+	    }
+     	$box.find(".all"+r).filter(".all_child4").attr("checked",$(obj).is(":checked"));
+	}
+</script>
+<form onsubmit="return validateCallback(this, dialogAjaxDone);" action="__URL__/authorizeRoleGroup/rel/{$divrel}" method="post">
+    <input type="hidden" name="rolegroupid" value="{$rolegroupid}">
+    <input type="hidden" name="nodeid" value="{$nodeid}">
+    <div class="pageContent" layoutH="47" style="border-top:1px solid #99bbe8">
+    <?php $arr = array(1=>"全部",2=>"公司",3=>"部门",4=>"个人",5=>"禁用"); ?>
+    <table class="data-table tml-table" style="font-size: 14px;margin:auto;margin-top: 4px;" width="100%">
+		<tbody>
+		    <volist id="v" name="list" key="keytop">
+				<if condition="isset($v['count'])">
+				    <tr style="background-color: #ccc;">
+						<td rowspan="{$v['count']/5+1}" style="text-align: center;background-color: #fff;">
+							<label>
+							<input type="checkbox" class="all" id="top{$keytop}" rel="{$keytop}" onclick="seleteall_user(this);" />
+							<strong style="cursor:pointer;">{$v['title']}</strong>
+							</label>
+						</td>
+						<td></td>
+						<td style="text-align: center;">
+							<input type="checkbox" name="acc[{$ct['nodeid']}]" class="secondall all{$keytop} all_child1 hide" id='{$keytop}_1' rel="{$keytop}" value="1">
+							<strong class="js-cursortitle" style="cursor:pointer;">{$arr[1]}</strong>
+						</td>
+						<td style="text-align: center;">
+							<input type="checkbox" name="acc[{$ct['nodeid']}]" class="secondall all{$keytop} all_child2 hide" id='{$keytop}_2' rel="{$keytop}" value="2">
+							<strong class="js-cursortitle" style="cursor:pointer;">{$arr[2]}</strong>
+						</td>
+						<td style="text-align: center;">
+							<input type="checkbox" name="acc[{$ct['nodeid']}]" class="secondall all{$keytop} all_child3 hide" id='{$keytop}_3' rel="{$keytop}" value="3">
+							<strong class="js-cursortitle" style="cursor:pointer;">{$arr[3]}</strong>
+						</td>
+						<td style="text-align: center;">
+							<input type="checkbox" name="acc[{$ct['nodeid']}]" class="secondall all{$keytop} all_child4 hide" id='{$keytop}_4' rel="{$keytop}" value="4">
+							<strong class="js-cursortitle" style="cursor:pointer;">{$arr[4]}</strong>
+						</td>
+						<td style="text-align: center;">
+							<input type="checkbox" name="acc[{$ct['nodeid']}]" class="secondall all{$keytop} all_child5 hide" id='{$keytop}_5' rel="{$keytop}" value="5">
+							<strong class="js-cursortitle" style="cursor:pointer;">{$arr[5]}</strong>
+						</td>
+						<td style="text-align: center;">
+							<input type="checkbox" name="acc[{$ct['nodeid']}]" class="secondall all{$keytop} all_child0 hide" id='{$keytop}_0' rel="{$keytop}" value="0">
+							<strong class="js-cursortitle" style="cursor:pointer;">删除绑定</strong>
+						</td>
+				    </tr> 
+				    <volist id="cc" name="v.child" key="keythree">
+						<tr>
+						    <?php $s=array();?>
+						    <volist id="cth" name="cc" key="four">
+							<?php $s[]=$cth['id'];?>
+							<if condition="$four eq 1"><td >{$cth['nodetitle']}</td></if>
+								<td style="text-align: center;" class="js-tdcheckradio">
+									<input type="radio" name="role[{$cth['nodeid']}]" class="hide three secondall all{$keytop} all_child{$four} second_all_{$keytop}_{$four} " rel="{$keytop}"  value="{$cth['id']}" />
+									<span style="cursor:pointer;" class="js-cursorcheckradio checkbox-img" >&nbsp;</span>
+								</td>
+						    </volist>
+						    <td style="text-align: center;" class="js-tdcheckradio">
+					    		<input type="radio" name="role[{$cth['nodeid']}]" class="hide three secondall all{$keytop} all_child0 second_all_{$keytop}_0" rel="{$keytop}" value="{:implode(';',$s)}">
+					    		<span style="cursor:pointer;" class="js-cursorcheckradio checkbox-img">&nbsp;</span>
+						    </td>
+						 </tr>
+				    </volist> 
+				</if>
+		    </volist>
+		</tbody>
+	</table>
+    </div>
+    <div class="formBar tml-border-b1">
+		<ul>
+		    <if condition="$_SESSION.a eq 1 or $_SESSION.user_authorizerole">
+				<li><button type="submit" class="tml-btn tml-btn-blue">{$Think.lang.save}</button></li>
+		    </if>
+		</ul>
+	</div>
+</form>

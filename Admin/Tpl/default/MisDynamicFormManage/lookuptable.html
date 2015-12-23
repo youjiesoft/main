@@ -1,0 +1,92 @@
+ <script>
+ $(function() {
+		filedOprate.run();
+		var box = navTab.getCurrentPanel().find('form');
+		
+		$('div.tableItem' , box).find('select').change();
+		$('input.nbm_copy_primary_table' , box).click().attr('disabled',true);
+	});
+ </script>
+ <if condition="$fieldVo"> 
+ <div class="tableItem nbm_copy_primary_table"  ischoise="1">
+	<div class="list_header">
+		<span>表名：</span>
+		<input class="" type="text" name="tablename[]" value="{$fieldVo[0]['masid']|getFieldBy='id','tabletitle','mis_dynamic_database_mas'}"  readonly="readonly" placeholder="请输入表名" />
+		<input type="hidden" name="ischoise[0]" value="1"/>
+		<input type="hidden" name="parimarytablename" value="{$fieldVo[0]['masid']|getFieldBy='id','tablename','mis_dynamic_database_mas'}"/>
+		<input type="hidden" name="isprimary" value="{$fieldVo[0]['masid']|getFieldBy='id','isprimary','mis_dynamic_database_mas'}"/>
+		<span class="right">
+		    <input type="hidden" value="1" name="tableprimary[0]">
+			<input  class="mr10 nbm_primary_table nbm_copy_primary_table" value="1"  type="checkbox"  />
+			<span>是否设置为主表</span>
+		  </span>
+	</div>
+	<table class="new_table" index="0">
+		<tr>
+			<th width="10%">字段名称（英文）</th>
+			<th width="10%">字段标题（中文）</th>
+			<th width="10%">备注</th>
+			<th width="10%">字段类型</th>
+			<th width="10%">字段长度</th>
+			<th width="10%">组件类型</th>
+			<th width="10%">权重</th>
+			<!-- <th width="10%">是否唯一</th> -->
+			<th width="10%">是否显示</th>
+			<th>操作</th>
+		</tr>
+		 <volist name="fieldVo" id="anamevochild" key="k" >
+		<tr >
+			<td>
+			<input name="fieldname[0][]" readonly="readonly" value="{$anamevochild['field']}" placeholder="请输入英文名称" type="text" class="readonly  nbm_fieldnameonly" />
+			<input  name="oldchoiseid[0][]" value="{$anamevochild['id']}"  type="hidden" /> 
+			<input  name="oldfieldname[0][]" value="{$anamevochild['filed']}" class="nbm_oldfieldnameonly" type="hidden" /> 
+			</td>
+			<td>
+			<input name="fieldtitle[0][]"   readonly="readonly" value="{$anamevochild['title']}" placeholder="请输入中文标题" type="text" class="" />
+			<input  name="oldfieldtitle[0][]" value="{$anamevochild['title']}" type="hidden" /> 
+			</td>
+			<td>
+			<input name="fielddesc[0][]"   readonly="readonly" value="{$anamevochild['desc']}" placeholder="请输入中文标题" type="text" class="" />
+			<input  name="oldfielddesc[0][]" value="{$anamevochild['desc']}" type="hidden" /> 
+			</td>						
+			<td>
+			<select  class="select2"  disabled="disabled">
+				 <volist name="fieldtypeList" id="fieldtypeVo">
+				 <option <if condition="$fieldtypeVo.key eq  $anamevochild.type">selected="selected"</if> value="{$fieldtypeVo.key}">{$fieldtypeVo.val}</option>
+				 </volist>
+			</select></td>
+				<input  name="fieldtype[0][]" value="{$anamevochild['type']}" type="hidden" /> 
+				<input  name="oldfieldtype[0][]" value="{$anamevochild['type']}" type="hidden" /> 
+			<td>
+			<input name="fieldlength[0][]" placeholder="请输入字段长度"   readonly="readonly" value="{$anamevochild['length']}" type="text" value="10" />
+			<input  name="oldfieldlength[0][]" value="{$anamevochild['length']}" type="hidden" /> 
+			</td>
+			<td>
+			<select   class="select2  opweight " disabled="disabled">
+				<volist name="comboxOptionList" id="comboxOptionVo">
+					<option <if condition="$comboxOptionVo.name eq  $anamevochild.category"> selected="selected"</if>  weight="{$comboxOptionVo.weight}" value ="{$comboxOptionVo.name}">{$comboxOptionVo.title} </option>
+				</volist>
+			</select>
+			<input name="fieldcategory[0][]"    value="{$anamevochild['category']}" type="hidden"  />
+			<input  name="oldfieldcategory[0][]" value="{$anamevochild['category']}" type="hidden" /> 
+			</td>
+			<td>
+			<input name="fieldweight[0][]" value="{$anamevochild.weight}" placeholder="请输入权重" type="text" class=" disabled"/>
+			<input  name="oldfieldweight[0][]" value="{$anamevochild['weight']}" type="hidden" /> 
+			</td>
+			<!-- <td>
+			 <input name="fieldunique[0][]" value="1" type="checkbox"  style="display: none"/>
+			<input  name="oldfieldfieldunique[0][]"<if condition="$anamevochild.fieldunique"> value="1"</if> type="hidden" /> 
+			</td> -->
+			<td>
+			<input name="fieldshow[0][]" value="1" type="checkbox"  checked="checked" />
+			<input  name="oldfieldshow[0][]"<if condition="$tempList[$tempids][$anamevochild['filed']]"> value="1"</if> type="hidden" /> 
+			</td>
+			<td>
+			<span><a target="navTab" style="color:red;" title="修改" href="__URL__/edit/type/1/aname/{$anamevochild['formid']|getFieldBy='id','actionname','mis_dynamic_form_manage'}/formid/{$anamevochild['formid']}">【{$anamevochild['formid']|getFieldBy='id','actiontitle','mis_dynamic_form_manage'}】</a></span></span>
+			</td>
+		</tr>
+		</volist>
+	</table>
+	</div>
+	</if>

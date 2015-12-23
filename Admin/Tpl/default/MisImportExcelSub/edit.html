@@ -1,0 +1,128 @@
+<script>
+	//var op=$.extend({icon:options.icon,ckbox:options.ckbox,exp:"",coll:"",showSub:false,level:0,options:null,isLast:false},options);
+	//$box=$.pdialog.getCurrent();
+	$("#misimportexcelsubeditpage select.import_tableobj").change(function(){
+		var t=$(this).val();
+		var i=$(this).attr("id");
+		var $ref =$("#field"+i);
+		$.ajax({
+			type:'POST',dataType:"json",url:"__URL__/comboxgetTableField",cache:false,
+			data:{table:t},
+			success:function(json){
+			if(!json)return;
+			var html='';
+			$.each(json,function(i){
+			if(json[i]&&json[i].length>1){
+			html+='<option value="'+json[i][0]+'">'+json[i][1]+'</option>';}});
+			var $refCombox=$ref.parents("div.combox:first");
+			$ref.html(html).insertAfter($refCombox);
+			$refCombox.remove();
+			$ref.trigger("change").combox();},
+			error:DWZ.ajaxError
+		});
+	});
+	function checkimportSelectTableField(form){
+		var $form = $(form);
+		var n=0;
+		$form.find("#misimportexcelsubeditpage select.import_tableobj").each(function(){
+			var t=$(this).val();
+			var i=$(this).attr("id");
+			if( t!="" ){
+				var $ref =$("#field"+i);
+				if( $ref.val()=="" ){
+					n++;
+				}
+			}
+		});
+		if(n>0){
+			alertMsg.warn('选择绑定对象后绑定对象字段不能为空');
+			return false;
+		}
+		return validateCallback($form, dialogAjaxDone);
+	}
+	
+	function misimprotexcelsub_edit_ordernoLinkage(data,obj){
+		var input = $(obj).parent().parent().find("input[name='misimprotexcelsub_edit_twoinput']");
+		input.attr("checkfor",'Exnt_Table_column');
+		input.attr("map","array('table_name'=>"+data.insert+");");
+		
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/MisImportExceledit" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<table class="list" id="misimportexcelsubeditpage" width="100%" layoutH="35">
+				<thead>
+					<tr>
+						<th>字段</th>
+						<th>excel/csv(第一行)标题</th>
+						<th>验证唯一</th>
+						<th>关联查询表</th>
+						<th>关联查询字段</th>
+						<th>选项过滤</th>
+						<th>过滤</th>
+						<th>验证</th>
+					</tr>
+				</thead>
+				<tbody>
+				<volist id="co" name="alreadycols" key="key2">
+					<tr>
+						<td>{$co.fieldname}</td>
+						<td><input type="text" value="{$co.name}" class="required" name="columnstitle[{$co.id}]"/></td>
+						<td><input type="checkbox" <if condition="$co['ifcheckexist'] eq 1">checked="checked"</if> value="1" name="columnscheckexist[{$co.id}]"/></td>
+						<td>
+							<input type="text" callback="misimprotexcelsub_edit_ordernoLinkage" class="combox checkByInput" autocomplete="off" checkfor="Exnt_Tables" insert="TABLE_NAME" show="TABLE_NAME" <if condition="$co['bindtable']">value="{$tables[$co['bindtable']]}"<else/>value="请选择映射对象"</if> />
+							<input type="hidden"  name="subimporttableobj[{$co.id}]" value="{$co['bindtable']}">
+							<!--<select class="combox import_tableobj" id="import_tableobj{$co.id}" name="subimporttableobj[{$co.id}]" >
+								<option value="">请选择映射对象</option>
+								<volist id="vos" name="tables">
+									<option value="{$key}" <if condition="($key eq $co['bindtable'])">selected</if>>{$vos}</option>
+								</volist>
+							</select>-->
+							
+							<!--<select class="combox" id="fieldimport_tableobj{$co.id}" name="subimporttablefieldobj[{$co.id}]" >
+								<if condition="$co['fieldarr']">
+									<volist id="vof" name="co.fieldarr">
+										<option value="{$vof[0]}" <if condition="$co['bindfield'] eq $vof[0]">selected</if> >{$vof[1]}</option>
+									</volist>
+								<else />
+									<option value="">请选择映射对象字段</option>
+								</if>
+							</select>-->
+						</td>
+						<td>
+							<input type="text" name="misimprotexcelsub_edit_twoinput"  class="combox checkByInput"  autocomplete="off" <if condition="$co['bindtable']">map="array('table_name'=>{$co['bindtable']});" checkfor="Exnt_Table_column" value="{$columnstitle['COLUMN_COMMENT']}"<else/> map="" checkfor="" value="请选择映射对象字段"</if> insert="COLUMN_NAME" show="COLUMN_NAME" />
+							<input type="hidden" id="fieldimport_tableobj{$co.id}" name="subimporttablefieldobj[{$co.id}]" value="{$co['bindfield']}">
+						</td>
+						<td>
+							<input type="text" value="{$co.optionsval}" name="optionsval[{$co.id}]"/>
+						</td>
+						<td>
+							<select class="combox" name="funcname[{$co.id}]">
+								<option value="">文本</option>
+								<option value="strtotime" <if condition="$co['bindfunc'] eq 'strtotime'">selected</if> >时间</option>
+							</select>
+						</td>
+						<td>
+							<select class="combox" name="checkfunc[{$co.id}]">
+								<option value="">无需验证</option>
+								<option value="eamil" <if condition="$co['checkfunc'] eq 'eamil'">selected</if> >邮箱</option>
+								<option value="url" <if condition="$co['checkfunc'] eq 'url'">selected</if> >网址</option>
+								<option value="number" <if condition="$co['checkfunc'] eq 'number'">selected</if> >整数</option>
+								<option value="double" <if condition="$co['checkfunc'] eq 'double'">selected</if> >浮点数</option>
+								<option value="english" <if condition="$co['checkfunc'] eq 'english'">selected</if> >字母</option>
+							</select>
+						</td>
+					</tr>
+				</volist>
+				</tbody>
+		</table>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="checkimportSelectTableField(this.form);">{$Think.lang.save}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

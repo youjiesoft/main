@@ -1,0 +1,36 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/MisPerformanceKpiZnodes" onsubmit="return validateCallback(this, dialogAjaxDone)" class="pageForm required-validate">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-form-row">
+				<label class="tml-form-label">指标分类：</label>
+				<select name="typeid" class="combox">
+					<volist name="mptList" id="vos">
+						<option <eq name="type" value="$key">selected</eq> value="{$key}" > {$vos}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="tml-form-row">
+				<label class="tml-form-label">{$fields["code"]}：</label>
+				<input type="text" name="code" readonly="readonly" value="{$code}"/>
+			</div>
+			<div class="tml-form-row">
+				<label class="tml-form-label">{$fields["name"]}：</label>
+				<input type="text" class="required" name="name" />
+			</div>
+			<div class="tml-form-row">
+				<label class="tml-form-label">备&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+				<textarea name="remark" maxlength="200" ></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancekpi_insert">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

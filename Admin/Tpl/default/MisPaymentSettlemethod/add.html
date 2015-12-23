@@ -1,0 +1,32 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="user_id" value="<?php echo $_SESSION[C('USER_AUTH_KEY')] ?>">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<input type="hidden" name="ajax" value="1">
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>{$fields["code"]}：</label>
+				<input type="text" name="code" value="" class="required alphanumeric" maxlength="10"/>
+			</div>
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" name="name" value="" maxlength="25" />
+			</div>
+			<div class="unit" style="width:500px;">
+				<label>{$fields["remark"]}：</label>
+				<textarea  name="remark" maxlength="100" cols="40" rows="2"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mispaymentsettlemethod_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

@@ -1,0 +1,104 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 初始化树
+	var zNodes = {$manycontrastTree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#resultscontrastTreeDemo"), setting, zNodes);
+});
+// 重写检索DIV函数，主要作用是取树里面的用户 
+function divResultsContrastSearch($form){
+	var box = $($form);// 当前表单
+	var treeObj = $.fn.zTree.getZTreeObj("resultscontrastTreeDemo");//当前树
+	var nodes = treeObj.getCheckedNodes(true);//所有被选中的节点
+	var arr = new Array();//创建一个被分析人员数组
+	//循环所有被选中的节点
+	for (i = 0; i < nodes.length; i++) {
+		if(nodes[i].id > 0){
+			arr.push(nodes[i].id);
+		}
+	}
+	// 判断是否含有分析人员
+	if(arr.length < 1) {
+		alertMsg.error('请先选择要分析的人员！');
+		return false;
+	}
+	var byuser = arr.join(",");//字符串化分析人员
+	box.find("input[name='byuser']").val(byuser);
+	return divSearch($form,'resultscontrastdata');
+}
+function resultsContrastOnchangePlan($this){
+	var $this = $($this);
+	var planid = $this.val();
+	var box = $("#resultscontrast");
+	box.loadUrl("__URL__/resultscontrast/planid/"+planid,{},function(){
+		box.find("[layoutH]").layoutH();});
+}
+</script>
+<div class="pageContent">
+	<div class="pageHeader">
+		<form onsubmit="return divResultsContrastSearch(this);" action="__URL__/lookupContrast" method="post">
+			<div class="searchBar">
+				<table>
+					<tbody>
+						<tr>
+							<td><label style="width: 55px;">考核计划:</label></td>
+							<td>
+								<select onchange="resultsContrastOnchangePlan(this)" name="planid" class="combox">
+									<volist name="pplist" id="ppvo">
+										<option <eq name="ppvo.id" value="$planid" >selected</eq> value={$ppvo.id}> {$ppvo.name}</option>
+									</volist>
+								</select>
+								<input type="hidden" name="type" value="results">
+								<input type="hidden" name="byuser" value="">
+							</td>
+							<td>
+								<button class="xyicon xyIconStartButton" type="submit">计算</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div>
+		<!-- 树start -->
+		<div class="treeleft">
+			<div class="close">
+				<ul id="resultscontrastTreeDemo" class="ztree" layoutH="74"></ul>
+			</div>
+		</div>
+		<!-- 树end -->
+		<div id="resultscontrastdata">
+			<div class="pageContent">
+				<table class="list" style="width: 600px;">
+					<thead>
+						<tr>
+							<th>计划编号</th>
+							<th>名称</th>
+							<th>部门</th>
+							<th>职级</th>
+							<th>员工编号</th>
+							<th>姓名</th>
+							<th>成绩</th>
+							<th>等级</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

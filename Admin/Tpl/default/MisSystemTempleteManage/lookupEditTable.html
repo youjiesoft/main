@@ -1,0 +1,216 @@
+<script type="text/javascript">
+function datatableFormul($form){
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			var data=DWZ.jsonEval(json.data);
+			$('#'+data.id).attr("href",data.url);
+			$.pdialog.closeCurrent(); 
+		}
+	});
+}
+function deleteThisRecord(id){
+	$.ajax({
+		type: "POST",
+		url: TP_APP + "/MisSystemTempleteManage/lookupDelete",
+		data:"id="+id,
+		dataType: "json",
+		async:false,
+		global: false,
+		success: function (data){
+			$.pdialog.closeCurrent(); 
+			navTab.reload();
+		},
+	});
+	
+}
+$(function(){
+	var name = '{$_GET["name"]}';
+	var html = '';
+	var showfield='{$showfield}';
+	if(showfield){
+		showfield=$.parseJSON(showfield);
+	}
+	if(name){
+		html+= '<div class="col_1_7 form_group_lay field_weituoshixiang ">';
+		html+='<label class="label_new"><span title="显示字段">显示字段</span>:</label>';
+		var json = $('input[type="hidden"][name="'+name+'"]').val();
+		if(typeof(json)){
+			json = $.parseJSON(json);
+			$.each(json , function(i , v){
+				var checked='';
+				if(showfield[v.name]==1 || !showfield){
+					checked='checked="checked"';
+				}
+				
+				html += '<input id="'+(name+i)+'" type="checkbox" '+checked+' name="showfield['+v.name+']" value="1" class="enterIndex"><label class="tmp_label" for="'+(name+i)+'">'+v.showname+'</label>';
+				
+				
+			});
+		}
+		html+='</div>';
+	}
+	if(html){
+		$('div.field_name').after(html);
+	}
+});
+</script>
+
+
+
+	<div class="pageContent">
+		<form method="post" action="__URL__/lookupEditTable" class="pageForm required-validate" onsubmit="return datatableFormul(this, dialogAjaxDone)">
+			<input type="hidden" name="isedit" value="1">
+			<input type="hidden" name="id" value="{$id}">
+			<input type="hidden" name="showname" value="{$showname}">
+			<input type="hidden" name="name" value="{$name}">
+			<input type="hidden" name="modelname" value="{$modelname}">
+			<input type="hidden" name="modelid" value="{$modelid}">
+			<input type="hidden" name="labelList" value="{$labelList}">
+			<div class="pageFormContent new_version_page_content" layoutH="58">
+			<div class="col_1_7 form_group_lay field_upload3">
+						<div class="tml_search_tips info_tips">
+						    <div class="search_tips_title"><span class="icon-comments" style="margin-right: 5px"></span>友情提示：</div>
+							<p class="search_tips_center">1、除基本标签的运算外，还支持表格下标进行计算，下标为从上向下或从左至右的顺序以0开始计数，例如:([0]+[1])/[1]。</p>
+					    </div>
+				</div>
+				<div class="col_1_3 form_group_lay field_beizhu ">
+					<label class="label_new">显示方式:</label>
+					<select name="showtype"  class=" select2 select_elm">
+						<option <if condition="$formula['showtype'] eq 1">selected=selected</if>  value="1">竖向</option>
+						<option <if condition="$formula['showtype'] eq 0">selected=selected</if>  value="0">横向</option>
+					</select>
+				</div>
+				<div class="col_1_3 form_group_lay field_name ">
+					<label class="label_new ">显示表头:</label>
+					<select name="showtitle" class=" select2 select_elm">
+						<option  <if condition="$formula['showtitle'] eq 0">selected=selected</if>  value="0">否</option>
+						<option   <if condition="$formula['showtitle'] eq 1">selected=selected</if> value="1">是</option>
+					</select>
+				</div> 
+				<div class="col_1_3 form_group_lay field_ziti ">
+					<label class="label_new ">字体:</label>
+					<select name="ziti" class=" select2 select_elm">
+						<option  <if condition="$formula['ziti'] eq 宋体">selected=selected</if>  value="宋体">宋体</option>
+						<option   <if condition="$formula['ziti'] eq 仿宋_gb2312">selected=selected</if> value="仿宋_gb2312">仿宋_gb2312</option>
+						<option   <if condition="$formula['ziti'] eq 黑体">selected=selected</if> value="黑体">黑体</option>
+					</select>
+				</div> 
+				<div class="col_1_3 form_group_lay field_zihao ">
+					<label class="label_new ">字号:</label>
+					<select name="zihao" class=" select2 select_elm">
+						<option  <if condition="$formula['zihao'] eq 42">selected=selected</if>  value="42">初号</option>
+						<option   <if condition="$formula['zihao'] eq 36">selected=selected</if> value="36">小初</option>
+						<option  <if condition="$formula['zihao'] eq 31.5">selected=selected</if>  value="31.5">大一</option>
+						<option   <if condition="$formula['zihao'] eq 28">selected=selected</if> value="28">一号</option>
+						<option  <if condition="$formula['zihao'] eq 21">selected=selected</if>  value="21">二号</option>
+						<option   <if condition="$formula['zihao'] eq 18">selected=selected</if> value="18">小二</option>
+						<option  <if condition="$formula['zihao'] eq 16">selected=selected</if>  value="16">三号</option>
+						<option   <if condition="$formula['zihao'] eq 14">selected=selected</if> value="14">四号</option>
+						<option  <if condition="$formula['zihao'] eq 12">selected=selected</if>  value="12">小四</option>
+						<option   <if condition="$formula['zihao'] eq 10.5">selected=selected</if> value="10.5">五号</option>
+						<option  <if condition="$formula['zihao'] eq 9">selected=selected</if>  value="9">小五</option>
+						<option   <if condition="$formula['zihao'] eq 8">selected=selected</if> value="8">六号</option>
+						<option  <if condition="$formula['zihao'] eq 6.875">selected=selected</if>  value="6.875">小六</option>
+						<option   <if condition="$formula['zihao'] eq 5.25">selected=selected</if> value="5.25">七号</option>
+						<option  <if condition="$formula['zihao'] eq 4.5">selected=selected</if>  value="4.5">八号</option>
+						<!-- 
+						<option  <if condition="$formula['zihao'] eq 5.5">selected=selected</if>  value="5.5">5.5</option>
+						<option   <if condition="$formula['zihao'] eq 6.5">selected=selected</if> value="6.5">6.5</option>
+						<option  <if condition="$formula['zihao'] eq 7.5">selected=selected</if>  value="7.5">7.5</option>
+						<option   <if condition="$formula['zihao'] eq 8">selected=selected</if> value="8">8</option>
+						<option  <if condition="$formula['zihao'] eq 9">selected=selected</if>  value="9">9</option>
+						<option   <if condition="$formula['zihao'] eq 10">selected=selected</if> value="10">10</option>
+						<option  <if condition="$formula['zihao'] eq 10.5">selected=selected</if>  value="10.5">10.5</option>
+						<option   <if condition="$formula['zihao'] eq 11">selected=selected</if> value="11">11</option>
+						<option  <if condition="$formula['zihao'] eq 12">selected=selected</if>  value="12">12</option>
+						<option   <if condition="$formula['zihao'] eq 14">selected=selected</if> value="14">14</option>
+						<option  <if condition="$formula['zihao'] eq 16">selected=selected</if>  value="16">16</option>
+						<option   <if condition="$formula['zihao'] eq 18">selected=selected</if> value="18">18</option>
+						<option  <if condition="$formula['zihao'] eq 20">selected=selected</if>  value="20">20</option>
+						<option   <if condition="$formula['zihao'] eq 22">selected=selected</if> value="22">22</option>
+						<option  <if condition="$formula['zihao'] eq 26">selected=selected</if>  value="26">26</option>
+						<option   <if condition="$formula['zihao'] eq 36">selected=selected</if> value="36">36</option>
+						<option  <if condition="$formula['zihao'] eq 48">selected=selected</if>  value="20">48</option>
+						<option   <if condition="$formula['zihao'] eq 56">selected=selected</if> value="22">56</option>
+						<option  <if condition="$formula['zihao'] eq 72">selected=selected</if>  value="26">72</option> -->
+					</select>
+				</div> 
+				<div class="col_1_3 form_group_lay field_hangjianju ">
+					<label class="label_new ">行间距:</label>
+					<select name="hangjianju" class=" select2 select_elm">
+						<option  <if condition="$formula['hangjianju'] eq 240">selected=selected</if>  value="240">1.0</option>
+						<option   <if condition="$formula['hangjianju'] eq 276">selected=selected</if> value="276">1.15</option>
+						<option  <if condition="$formula['hangjianju'] eq 360">selected=selected</if>  value="360">1.5</option>
+						<option   <if condition="$formula['hangjianju'] eq 480">selected=selected</if> value="480">2.0</option>
+						<option  <if condition="$formula['hangjianju'] eq 600">selected=selected</if>  value="600">2.5</option>
+						<option   <if condition="$formula['hangjianju'] eq 720">selected=selected</if> value="720">3.0</option>
+					</select>
+				</div> 
+				<div class="col_8_0 form_group_lay field_datatable ">				
+							<div class="into_table_lay">
+							<table class="into_table_new nbm_data_table" id="dt_datatable_edit" table_type="edit">
+								<thead>
+									<tr class="thead_tr">
+										<th style='width:40px;' template_key="serial" >序号</th>
+										<th template_key="input" template_name="datatable[#index#][name]"  stats_num=\"2\" template_class=" ">
+											标签名称
+										</th>
+										<th template_key="input" template_name="datatable[#index#][showname]"  stats_num=\"2\" template_class=" ">
+											标签别名
+										</th>
+										<th template_key="input" template_name="datatable[#index#][formula]"  stats_num=\"2\" template_class=" ">
+											运算公式
+										</th>
+										<th style='width:90px;' template_data='{"table":"datatable","post_table":"mis_system_templete_label","post_url":"__URL__/onesave","del_url":"__URL__/delsubinfo"}' template_key="action">操作</th>
+									</tr>
+								</thead>
+								<tbody cellpadding="0" cellspacing="1">
+						{~$key=0;}
+						<volist name="tablelist" id="item">
+							<tr>
+								<td>
+									<span class="serial_number">
+										{$key+1}
+									</span>
+								</td>
+								<!-- 现有数据 -->
+								<td>
+									<div class="list_group_lay" style="display: none;">
+										<input type="text"  class="list_input       " 	    name="datatable[#index#][name]"  value="{$item[name]}" />
+									</div>
+									<span class="datatable_show_val">{$item[name]}</span>
+								</td>	
+								<td>
+									<div class="list_group_lay" style="display: none;">
+										<input type="text"  class="list_input       "  name="datatable[#index#][showname]"  value="{$item[showname]}" />
+									</div>
+									<span class="datatable_show_val">{$item[showname]}</span>
+								</td>							
+								<td>
+										<div class="list_group_lay" style="display: none;">
+											<input type="text"  class="list_input      " name="datatable[#index#][formula]"  value="{$item[formula]|htmlentities}" />
+										</div>
+										<span class="datatable_show_val">{$item[formula]}</span>
+								</td>	
+								<td >
+									<input type="hidden" name="datatable[#index#][id]" value="{$item.id}" />
+									<button type="button" class="into_table_new_trash_tr  tml-btn tml_look_btn tml_mp"  del_id="0"  del_url="__URL__/delsubinfo"  del_table="mis_system_templete_label" >
+									删除</button>
+									<button post_id="{$item.id}" post_url="__URL__/lable" post_id="{$item.id}" post_table="mis_system_templete_label" rel_type="edit" class="save_row_btn" type="button">编辑</button>
+								</td>
+							</tr>
+							{~$key++}
+						</volist>	
+						</tbody>
+				</table>
+			</div>	
+		</div>
+			</div>
+		<div class="formBar">
+		<ul>
+			<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button></li>
+			<li><button onclick="deleteThisRecord({$id});" class="tml_formBar_btn tml_formBar_btn_red enterIndex" type="button">清除配置</button></li>
+		</ul></div>
+		</form>
+	</div>

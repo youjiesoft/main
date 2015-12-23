@@ -1,0 +1,72 @@
+<script>
+function navTabAjaxDoneOnePiceData(json){
+	DWZ.ajaxDone(json);
+	if (json.statusCode == DWZ.statusCode.ok) {
+		var data = json.data;
+		if(data){
+			if(data['data'][tagIndentity]){
+				var obj = containerObj.find('li['+tagIndentity+'="'+data['data'][tagIndentity]+'"]');
+				var html = data['data']['html'];
+				html = $(html).initUI();
+				obj.after(html);
+				obj.remove();
+			}
+		}
+		$.pdialog.closeCurrent();
+	}
+}
+</script>
+
+<div class="pageContent">
+    <form action="__URL__/datasouce/edit/1/id/test"  method="post" onsubmit="return validateCallback(this, navTabAjaxDoneOnePiceData) ">
+	<div class="pageFormContent new_version_page_content" layouth="58" >
+	<if condition="$vo">
+		<volist name="vo" id="item" key="index">
+		<div class="col_2_2 form_group_lay">
+			<label class="label_new">ID</label>
+			<input type="text" class="input_new" name="id[{$index}]" value="{$item['id']}"  />
+		</div>
+		<div class="col_2_2 form_group_lay">
+			<label class="label_new">MASID</label>
+			<input type="text" class="input_new" name="masid[{$index}]" value="{$item['masid']}" />
+		</div>
+		
+		<div class="col_2_2 form_group_lay">
+			<label class="label_new">datasouceid</label>
+			<select class="select2 select_elm" name="datasouceid[{$index}]">
+				<option value="0">--请选择--</option>
+				<volist  name="MisSystemDesingDatasourceList" id="MisSystemDesingDatasourceVo">
+					<option   <if condition=" $item['datasouceid'] eq $key">selected="selected"</if> value={$key}>{$MisSystemDesingDatasourceVo}</option>
+				</volist>
+			</select>
+			
+		</div>
+		</volist>
+	<else/>
+		<div class="col_2_2 form_group_lay">
+			<label class="label_new">ID</label>
+			<input type="text" class="input_new" name="id[0]" value="{$item['id']}"  />
+		</div>
+		<div class="col_2_2 form_group_lay">
+			<label class="label_new">MASID</label>
+			<input type="text" class="input_new" name="masid[0]" value="{$masid}" />
+		</div>
+		<div class="col_2_2 form_group_lay">
+			<label class="label_new">datasouceid</label>
+			<select class="select2 select_elm" name="datasouceid[0]">
+				<option value="0">--请选择--</option>
+				<volist  name="MisSystemDesingDatasourceList" id="MisSystemDesingDatasourceVo">
+					<option   <if condition=" $item['datasouceid'] eq $key">selected="selected"</if> value={$key}>{$MisSystemDesingDatasourceVo}</option>
+				</volist>
+			</select>
+		</div>
+	</if>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">修改</button></li>
+		</ul>
+	</div>
+    </form>
+</div>
+

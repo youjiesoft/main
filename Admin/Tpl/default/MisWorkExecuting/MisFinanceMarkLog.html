@@ -1,0 +1,65 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/md/{$md}/rel/{$rel}" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<input type="hidden" name="refreshtabs[closeall]" value="1" />
+		<a class="btnLook" style="display: none;" id="auditselectoption" rel="lookupSelectAuditOption" href="__URL__/lookupSelectAuditOption/modulename_auditoption/__MODULE__/audittype/dialog" lookupGroup="selectaudituser">选择下一步审核人</a>
+		<div class="pageFormContent " layoutH="56">
+			<h2 class="contentTitle contentTitle_center">盖章申请<if condition="$vo.auditState eq -1">{:W('ShowAdvices',array('id'=>$vo['id']))}</if> 
+				<span class="auto_code" >
+					<b>No.</b>
+					<input type="text"  name="orderno" value="{$vo.orderno}" readonly="readonly" class="xycodedata_read" <if condition='$writable eq 0'> readonly="readonly" </if> />
+			    </span>
+			</h2>
+			<fieldset>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>{$fields["master_mark"]}:</label>
+						<input type="text" readonly="readonly" value="{$vo.master_mark|getfieldby='id','name','MisSealOfRegistration'}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["category"]}:</label>
+						<input type="text" readonly="readonly" value="{$vo.category|getfieldby='id','name','MisSealOfRegistration'}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["unit"]}:</label>
+						<div class="tml-input-append">
+							<input  type="text" name="unit" value="{$vo['unit']}" />
+							<span class="input-addon-unit" title="份">份</span>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["log_time"]}:</label>
+						<input type="text" readonly="readonly" name="log_time" value="{$vo['log_time']|date='Y-m-d',###}">
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["content"]}:</label>
+					<input type="text" name="content" class="required" value="{$vo['content']}" readonly="readonly" />
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["remark"]}:</label>
+					<textarea cols="80" rows="3" readonly="readonly" name="remark">{$vo['remark']}</textarea>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>申请人：</label>
+						<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}" />
+					</div>
+					<div class="tml-form-col">
+						<label>申请时间：</label>
+						<input type="text" readonly="readonly" value="{$vo.createtime|transTime}" />
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<div class="tml-form-row">
+					<label>&nbsp;</label>
+					<span><img alt="正在加载..." src="__PUBLIC__/Images/signature/{$userid}.gif" /></span>
+					<input type="hidden" value="{$userid}" name="sealuserid"/>
+					<input type="hidden" value="{$time}" name="sealtime"/>
+				</div>
+			</fieldset>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

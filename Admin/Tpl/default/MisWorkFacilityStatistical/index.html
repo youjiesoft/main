@@ -1,0 +1,31 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$zNodes};
+		var setting = {
+			view: {selectedMulti: false},
+			data: {simpleData: {enable: true}}
+		};
+		$.fn.zTree.init($("#MisWorkFacilityStatistical"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("MisWorkFacilityStatistical");
+		var valid = '0';
+	    var nodes = zTree.getNodesByParam("id", valid, null);
+	    zTree.selectNode(nodes[0]);
+	});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close" layoutH="33" style="border-top:none;">
+			<ul id="MisWorkFacilityStatistical" class="ztree xyTree" style="height: 45%; overflow: auto;"></ul>
+			<ul id="MisWorkFacilityStatisticalType" class="ztree xyTree" style="height: 45%; overflow: auto;"></ul>
+		</div>
+	</div>
+	<div id="MisWorkFacilityStatisticalindexview" class="unitBox treeright">
+	</div>
+</div>

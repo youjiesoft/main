@@ -1,0 +1,105 @@
+<script>
+function changeworkage(json){
+	setTimeout(function(){
+		var begintime=$("input[name='indate']").val();//从表单中得到入职时间
+        var endtime=$("input[name='leavedate']").val();//从表单中得到用后自己选择的离职时间     
+        if(json){
+        	//判断带回的入职时间是否为空,如果不为空,则将带回的这个入职时间写入到表单中(以带回的时间为准,用户自己设置的时间将会被重置掉)
+        if(json.indate){
+        	var begintime=json.indate;
+        }
+        }
+        $.ajax({
+            type:'POST',
+            url:"__URL__/lookupgetdate",
+            data:{sdate:begintime,edate:endtime},
+            cache:false,
+            success:function(d){
+                $("input[name='workage']").val(d);
+            }
+        });
+    },150);
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,refreshtabsAudit);">
+			<input type="hidden" name="dotype" value="流程新建" />
+			<input type="hidden" name="beforeInsert" value="1" />
+			<input type="hidden" name="refreshtabs[type]" value="dialog" />
+			<input type="hidden" name="refreshtabs[closeall]" value="1" />
+			<div class="contentTitle contentTitle_center">离职申请单{:W('ShowFlow')}
+				<input type="hidden"  name="leavetype" value="{$MisHrBasicEmployeeList.workstatus}">
+				<input type="hidden" name="employeeid" value="{$MisHrBasicEmployeeList.id}">
+			</div>
+			<div class="pageFormContent" layoutH="105">
+			<!-- fix -->
+					<div class="tml-row">
+					{:W('ShowOrderno',array(1,'mis_hr_leave_employee'))}	
+							<div class="tml-form-col">
+									<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+									<div class="tml-input-append">
+									<input type="hidden"  class="selectuser.employeeid" value="{$MisHrBasicEmployeeList.id}" name="employeeid"/>
+									<input type="text" readonly="readonly" callback="changeworkage" class="selectuser.hrname required tml-find-num"  name="hrname" value="{$MisHrBasicEmployeeList.name}"/>
+									 	<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;"   data="selectuser;hrname,username;employeeid,personid;deptname;deptid;dutyid;dutyname;worktypename;worktype;mobile;chinaid;indate;" width="800" height="800">查找带回</a>&nbsp;
+								</div>
+							</div>
+						<!-- fix -->
+							<div class="tml-form-col">
+								<label> 部&nbsp;&nbsp;&nbsp;&nbsp;门： </label>
+								<input type="text" class="selectuser.deptname required" readonly="readonly" value="{$MisHrBasicEmployeeList.deptid|getFieldBy='id','name','mis_system_department'}" />
+								<input type="hidden" class="selectuser.deptid" name="deptid"/>
+							</div>
+							<div class="tml-form-col">
+								<label> 职&nbsp;&nbsp;&nbsp;&nbsp;级： </label>
+								<input type="text"  class="selectuser.dutyname" readonly value="{$MisHrBasicEmployeeList.dutylevelid|getFieldBy='id','name','duty'}">
+								<input type="hidden"  class="selectuser.dutyid" readonly="readonly">
+							</div>
+							<div class="tml-form-col">
+								<label> 岗&nbsp;&nbsp;&nbsp;&nbsp;位： </label>
+								<input type="text" readonly="readonly"   class="selectuser.worktypename" value="{$MisHrBasicEmployeeList['worktype']|getFieldBy='id','name','mis_hr_job_info'}">
+								<input type="hidden" name="worktype"  class="selectuser.worktype" >
+							</div>
+							<div class="tml-form-col">
+								<label>联系方式：</label>
+								<input type="text" name="mobilephone" class="selectuser.mobile" value="{$MisHrBasicEmployeeList.phone}" readonly="readonly" >
+							</div>
+							 <div class="tml-form-col">
+							 	<label>身份证号：</label>
+								<input name="chinaid" type="text"  readonly="readonly" value="{$MisHrBasicEmployeeList.chinaid}" check_key="otherchinaid" class="textInput  selectuser.chinaid" />
+							</div>
+							<div class="tml-form-col">
+								<label> 入职时间： </label>
+								<input type="text"  class="selectuser.indate" name="indate" value="{$MisHrBasicEmployeeList.indate|transTime}"   readonly="readonly">
+							</div>
+							<div class="tml-form-col">
+								<label>预离时间 ： </label>
+								<div class="tml-input-append">
+								<input type="text" class="tml-border-r0 Wdate required" onfocus="WdatePicker()" name="leavedate"  value="{$time|transtime}" onblur="changeworkage()" name="leavedate"  />
+								<span class="input-addon input-addon-calendar"></span>
+								</div>
+							</div>
+							<div class="tml-form-col">
+								<label>工&nbsp;&nbsp;&nbsp;&nbsp;龄：</label>
+								<input type="text" name=workage value="{$workage}" readonly="readonly">
+							</div>
+				</div>		
+				<div class="tml-form-row">
+					<label>离职原因：</label>
+					<textarea name="leavereason" class="required" ></textarea>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>申请人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$Think.SESSION.loginUserName}"/>
+					</div>	
+					<div class="tml-form-col">
+					 	<label>申请时间：</label>
+						<input name="applicationdate" type="text"  readonly="readonly" value="{$time|transTime}"  class="textInput required" />
+					</div>
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

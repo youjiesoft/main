@@ -1,0 +1,52 @@
+<if condition="$groupid">
+	<script>
+	function getNewQuesTions($this,type){
+	    $($this).addClass('active');
+	    $($this).siblings('.active').removeClass('active');
+	    alert(TP_APP+"/MisSystemPanel/expertQuestions/groupid/"+{$groupid}+"/type/"+type);
+	    $("#lookupMyQuestion").loadUrl(TP_APP+"/MisSystemPanel/expertQuestions/groupid/"+{$groupid}+"/type/"+type,{},function(){
+	    $("#lookupMyQuestion").find("[layoutH]").layoutH();});
+	}
+	</script>
+	<li class="xypart">
+	    <input type="hidden" name="panelsort[]" value="{$sort}">
+	    <div class="part_title">
+	        <h3 class="{$color}"><a class="more" target="_blank" rel="MisExpertQuestion" title="{$name}" href="__APP__/MisSystemNoticeMethod/expertlist"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+	    </div>
+	    <div class="part_content">	     	
+	       <div id="lookupMyQuestion">
+	            <include file="MisSystemPanel:inlExpertQuestions" />
+	        </div>
+	    </div>
+	    <div class="part_foot">
+	        <div class="part_footer"></div>
+	    </div>
+	</li>
+<else/>
+	 <li>
+		<div class="tml_new_lay expert_cell"></div>
+		<div class="expert_btn">
+		    <a class="active"  href="javascript:void(0)" onclick="getquestions(this,1)">最新提问</a>&nbsp;&nbsp;
+			<a href="#" onclick="getquestions(this,2)" class="">等我来答</a>&nbsp;&nbsp;
+			<a href="#" onclick="getquestions(this,3)" class="">问题列表</a>&nbsp;&nbsp;
+		    <a href="__APP__/MisSystemNoticeMethod/expertlist" target="_blank">专家问答</a>
+		</div>
+		<if condition="$lastFiveQues">            
+	                <ul class="expert_cell_warp">
+	                    <volist name="lastFiveQues" id="FiveQues" >
+	                    	<li><a rel="MisExpertQuestion" target="_blank" title="专家问题查看" href="__APP__/MisSystemNoticeMethod/anwserdetail/quesid/{$FiveQues['id']}"><span>【{$FiveQues['categoryid']|getFieldBy="id","name","mis_expert_question_type"}】</span>{$FiveQues['title']|missubstr=###,70,true}</a></li>
+	                    </volist>
+	                </ul>           
+	        <else/>
+		        <ul class="expert_cell_warp">
+		           	 没有专家问题
+		        </ul>
+	        </if>
+		    <div class="letter_mb"><a href="__APP__/MisSystemNoticeMethod/expertlist" rel="MisExpertQuestion" target="_blank" class="tml_new_live_link">更多文章</a></div>
+	</li> 
+
+</if>
+ 
+ 
+
+

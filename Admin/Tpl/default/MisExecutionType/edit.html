@@ -1,0 +1,46 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="type" value="{$type}" />
+		<input type="hidden" name="ajax" value="1">
+        <input type="hidden" name="rel" value="misexecutiontype" />
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent" layoutH="58">
+           <div class="unit">
+				<label>{$fields["code"]}：</label>
+                <input type="text"  class="required alphanumeric textInput" <if condition='$writable eq 0'> readonly="readonly" </if>  minlength="2" maxlength="10" value="{$vo.code}" name="code"/>
+			</div>
+            <div class="unit">
+				<label>{$fields["name"]}：</label>
+                <input type="text" class="required textInput" minlength="2" maxlength="25" value="{$vo.name}" name="name"/>
+			</div>
+			<div class="unit">
+			     <label>{$fields["typeid"]}：</label>
+				  <select name="typeid" class="required combox">
+					  <volist id="vot" name="typelist">
+						  <if condition="$vo.typeid eq $vot['type']">
+						  <option selected value="{$vot['type']}">{$vot['typename']}</option>
+						  <else/>
+						  <option value="{$vot['type']}">{$vot['typename']}</option>
+						  </if>
+					  </volist>
+				  </select>
+			</div>
+            <div class="unit" style="width:500px;">
+                 <label>{$fields["remark"]}：</label>
+		         <textarea  name="remark" maxlength="100" cols="40" rows="2">{$vo.remark}</textarea>
+		    </div>
+        </div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misexecutiontype_update">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>

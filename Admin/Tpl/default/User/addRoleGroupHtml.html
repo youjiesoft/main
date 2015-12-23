@@ -1,0 +1,64 @@
+<script>
+function abc($this,$aid) {
+	var $dialog = $.pdialog.getCurrent();
+	var val = $dialog.find("input[name='name']").val();
+	//var $thisSelect = $("#"+$aid).prev().find("select");
+	//var html = $thisSelect.html();
+	//html = html.replace('selected=""',"");
+	//html = html.replace('selected="selected"',"");
+	//html = html.replace('selected',"");
+	return validateCallback($this, function(json){
+		dialogAjaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			//执行成功后，把当前的数据保存进select框中
+			var id = json.data;
+			//html+='<option value="'+id+'" selected="selected" >'+val+'</option>';
+			//var $refCombox = $("#"+$aid).prev();
+			//$thisSelect.html(html).insertAfter($refCombox);
+			//$refCombox.remove();
+			//$thisSelect.trigger("refChange").trigger("change").combox();
+			//执行页面刷新，进行授权 
+			var url=TP_APP+"/Rolegroup/roleGroupAuthorizeD/rolegroupid/"+id;
+			ondblclick_navTab(this,"RolegroupAccess", url,"组授权"); 
+		}
+	});
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__APP__/Rolegroup/insert" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabs_afteradd)">
+		<input type="hidden" name="refreshtabs[type]" value="dialog"/>
+		<input type="hidden" name="refreshtabs[tabid]" value="RolegroupAccess"/>
+		<input type="hidden" name="refreshtabs[data]" value="{ data:{ ntdata:0 }}" />
+		<input type="hidden" name="refreshtabs[url]" value="__URL__/roleGroupAuthorizeD/rolegroupid/"/>
+		<input type="hidden" name="refreshtabs[title]" value="角色授权"/>
+		<div class="pageFormContent" layoutH="58">
+        	<div class="tml-row">
+                <div class="tml-form-col">
+                    <label>名称：</label>
+                    <input type="text" class="required" maxlength="20" name="name">
+                </div> 
+                <div class="tml-form-col">
+                    <label>状态：</label>
+                    <select name="status" class="combox">
+                        <option value="1">启用</option>
+                        <option value="0">禁用</option>
+                    </select>
+                </div>
+                <div class="tml-form-col">
+                    <label>备注：</label>
+                    <textarea name="remark" rows="3"></textarea>
+                </div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+				</li>
+				<li>
+					<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

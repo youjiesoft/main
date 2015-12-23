@@ -1,0 +1,176 @@
+<script type="text/javascript">
+function replyItems(id){
+	var dialog = $("body").data("MisOaItemsedit");
+	if(typeof(dialog)=='object'){
+		$.pdialog.close(dialog);
+	}else{
+		dialog = $('.dialog').eq(0);
+		$.pdialog.close(dialog);
+	}
+	navTab.openTab("MisOaItemsreplyItems", "__URL__/replyItems/id/"+id, { title:"协同回复", fresh:false, data:{} });
+}
+function forwardingItems(id){
+	var dialog = $("body").data("MisOaItemsedit");
+	if(typeof(dialog)=='object'){
+		$.pdialog.close(dialog);
+	}else{
+		dialog = $('.dialog').eq(0);
+		$.pdialog.close(dialog);
+	}
+	navTab.openTab("MisOaItemsforwardingItems", "__URL__/forwardingItems/id/"+id, { title:"协同转发", fresh:false, data:{} });
+}
+</script>
+<div class="pageContent applecloth" layoutH="0" >
+	<div class="keepContentCenter" style="border:none;background:none;">
+		<div style="background: #f9f9f9;border: 1px solid #cac9c9;border-radius: 5px;margin: 10px;overflow: hidden;">
+			<div style="background-color: #ededed; background-image: linear-gradient(to bottom, #f3f3f3, #e9e9e9); border-bottom: 1px solid #d8d9d9; height: 80px; padding-left: 20px;">
+				<div class="right tml-p10">
+					<a class="tml-btn tml-btn-gray tml-btn-small tml-mr5" href="__URL__/lookupFlowsView/id/{$vo['id']}/model/MisOaItems" title="流程查看" width="930" height="540" rel="flowsView" mask="true" target="dialog"> 流程 </a>
+					<button type="button" class="close tml-btn">{$Think.lang.close}</button>
+				</div>
+			<h3 style="line-height: 40px;font-family: '微软雅黑';font-size: 18px;"><small class="tml-c-orange">[标题]&nbsp;{$vo['title']}</small></h3>
+			<div class="tml-c-gray">
+			    <div class="tml-text-l">
+				<span class="tml-mr5">发&nbsp;起&nbsp;人：</span><span class="tml-mr5">{$vo['createid']|getFieldBy='id','name','User'}</span>
+				</div>
+                <div class="tml-text-l">
+                <span class="tml-mr5">发起时间：</span><span class="tml-mr5">{$vo['createtime']|transTime='Y-m-d H:i:s'}</span>
+                </div>
+			</div>
+			</div>
+			<div class="article-body">
+				<div class="article-content"
+					style="font-size: 14px; line-height: 24px; margin: 0 10px 40px;">
+					<div>{$vo['content']}</div>
+				</div>
+			</div>
+			<if condition="$vo['description']">
+			<div >
+				<div>
+					<h3 class="tml-h3">附言</h3>
+				</div>
+				<div class="article-content">{$vo['description']}</div>
+			</div>
+			</if>			
+			<div class="clear"></div>
+			<if condition="count($attarry) gt 0">
+				<div style="border-top:1px solid #cdcdcd;border-bottom:1px solid #cdcdcd;">
+				<p class="tml-c-red" style="font-size:16px;">
+					附件：
+				</p>
+					<volist name="attarry" id="att">
+						<div class="xyMessageAttachItem">
+							<span class="tml-label tml-bg-gray tml-mr5">附件{$key+1}</span> 
+								<a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}">
+								<span>{$att['upname']}</span>
+							</a>
+							<if condition="$att.isplay eq 1"> &nbsp;&nbsp;&nbsp;&nbsp; 
+								<a class="tml-btn tml-btn-small tml-btn-blue tml-mr5" rel="__URL__/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);"> <span class="icon icon-eye-open"></span>在线查看</a> 
+							</if>
+							<a class="tml-btn tml-btn-small tml-btn-blue" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" rel="documentCollateAtta" mask="true" target="dialog"> 
+								<span class="icon icon-file"></span> 归档
+							</a>
+						</div>
+					</volist>
+				</div>
+			</if>
+		</div>	
+		<volist id="instance" name="instancelist">	
+		<div style="background: #f9f9f9;border: 1px solid #cac9c9;border-radius: 5px;margin: 10px;overflow: hidden;">
+			<div style="background-color: #ededed;background-image: linear-gradient(to bottom, #f3f3f3, #e9e9e9);border-bottom: 1px solid #d8d9d9;height: 80px;padding-left: 20px;">
+				<h3 style="line-height: 40px;font-family: '微软雅黑';font-size: 18px;"><small class="tml-c-orange">[进度]{:getSelectByName('instancedostatus',$instance['dostatus'])}</small></h3>
+				<!-- 处理人信息 -->	
+				<div class="tml-c-gray">
+			    <div class="tml-text-l">
+				<span class="tml-mr5">处&nbsp;理&nbsp;人：</span><span class="tml-mr5">{$instance['flowsusername']}（{$instance['flowsuser']|getDeptName}）</span>
+				</div>
+                <div class="tml-text-l">
+                <span class="tml-mr5">处理时间：</span><span class="tml-mr5">{$instance['updatetime']|transTime='Y-m-d H:i:s'}</span>
+                </div>
+			    </div>			
+			</div>	
+                <div class="p5" >
+                    <!-- 审批信息 -->
+                    <div class="article-body">
+			        <div class="article-content" style="font-size: 14px;line-height: 100px;margin: 0 10px 40px;">		
+						{$instance['doinfo']}
+					</div>
+					</div>
+					<!-- 附件信息 -->
+					<if condition="count($instance['attached']) gt 0">
+					<div style="border-top:1px solid #cdcdcd;border-bottom:1px solid #cdcdcd;">
+					<p class="tml-c-red" style="font-size:16px;">
+						附件：
+					</p>
+						<volist name="instance['attached']" id="att2">
+						<div class="xyMessageAttachItem">
+							<span class="tml-label tml-bg-gray tml-mr5">附件{$key+1}</span>
+							<a class="attlink" rel="{$att2['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att2['attached']|base64_encode}/rename/{$att2['upname']}">
+								<span>{$att2['upname']}</span>
+							</a>
+							<if condition="$att2.isplay eq 1"> &nbsp;&nbsp;&nbsp;&nbsp;
+								<a class="tml-btn tml-btn-small tml-btn-blue tml-mr5" rel="__URL__/playSWF/name/{$att2['name']}/filename/{$att2['filename']}" onclick="openNewWindowsDisplayFile(this);">
+								<span class="icon icon-eye-open"></span>在线查看</a>
+							</if>
+							<a class="tml-btn tml-btn-small tml-btn-blue" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att2['id']}" title="文件归档" rel="documentCollateAtta" mask="true" target="dialog">
+								<span class="icon icon-file"></span>
+								归档
+							</a>
+						</div>
+						</volist>
+					</div>
+					</if>
+					<!-- 回复信息 -->
+					<if condition="$instance.reply">
+						<div style="border-bottom:1px solid #cdcdcd;">
+							<p class="tml-c-red" style="font-size:16px;">
+								回复信息：
+							</p>
+							<volist name="instance.reply" id="rep">
+								<div>
+									<div style="width:50px;float:left;" class="tml-c-gray">
+										{$rep.senduserid|getFieldBy='id','name','user'}：
+									</div>
+									<div style="overflow:hidden;">
+										{$rep.content}
+										<span class="tml-c-red">
+											<if condition="$rep.send">
+												<if condition="$rep.replyid">
+													【已回复】
+													<else/>
+													【未回复】
+												</if>
+											</if>
+										</span>
+										<if condition="$rep.send">
+											<a class="tml-btn tml-btn-green tml-btn-small tml-mr5" href="__APP__/MisOaItems/lookupreplyItems/id/{$rep.itemsid}/instanceid/{$rep.instanceid}/step/2/replyid/{$rep.id}" title="回复内容" width="550" height="350" rel="MisOaItemslookupreplyItems" mask="true" target="dialog">回复</a>
+										</if>
+									</div>
+									<div class="xyMessageAttachItems">
+										<volist name="rep['attached']" id="att3">
+											<div class="xyMessageAttachItem" style="padding-left:28px;">
+												<span class="tml-label tml-bg-orange tml-mr5">回复附件{$key+1}</span>
+												<a class="attlink" rel="{$att3['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att3['attached']|base64_encode}/rename/{$att3['upname']}">
+													<span>{$att3['upname']}</span>
+												</a>
+												<if condition="$att3.isplay eq 1"> &nbsp;&nbsp;&nbsp;&nbsp;
+													<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att3['name']}/filename/{$att3['filename']}" onclick="openNewWindowsDisplayFile(this);">
+													<span class="icon icon-eye-open"></span>在线查看</a>
+												</if>
+												<a class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att3['id']}" title="文件归档" rel="documentCollateAtta" mask="true" target="dialog">
+													<span class="icon icon-file"></span>
+													归档
+												</a>
+											</div>
+										</volist>
+									</div>
+								</div>
+							</volist>
+						</div>
+					</if>
+				</div>
+
+		</div>
+		</volist>		
+	</div>
+</div>

@@ -1,0 +1,81 @@
+<form id="pagerForm" action="__URL__/lookupproject" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<form rel="pagerForm" onsubmit="return dialogSearch(this);" action="__URL__/lookupcontract" method="post">
+	<div class="pageHeader">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox"  name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option  value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option  value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.subsearch}</button></div></div></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</form>
+<div class="pageContent">
+	<table class="table" layoutH="118" targetType="dialog" width="100%">
+		<thead>
+		<tr>
+			 <th>合同编号</th>
+			 <th>合同名称</th>
+             <th>客户名称</th>
+             <th>业务员</th>
+             <th>到仓日期</th>
+             <th>交货日期</th>
+             <th>联系人</th>
+             <th>联系电话</th>
+             <th>合同金额</th>
+             <th>折后金额</th>
+             <th>查找带回</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr target="sid_node" rel="{$vo['id']}">
+				<td>{$vo['code']}</td>
+				<td>{$vo['name']}</td>
+				<td>{$vo['customerid']|getFieldBy='id','name','MisSalesCustomer'}</td>
+                <td>{$vo['userid']|getFieldBy='id','name','User'}</td>
+                <td>{$vo['inwaretime']|transTime}</td>
+                <td>{$vo['ddate']|transTime}</td>
+                <td>{$vo['linkman']}</td>
+                <td>{$vo['linktel']}</td>
+                <td>{$vo['camount']|getDigits}</td>
+                <td>{$vo['dctamount']|getDigits}</td>
+                <td><a class="btnSelect" href="javascript:$.bringBack({ sacnoid:'{$vo.id}', sacnocode:'{$vo.code}' ,sacnoname:'{$vo.name}'})" title="查找带回">选择</a></td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

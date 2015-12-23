@@ -1,0 +1,156 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="56">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>姓名：</label><input  type="text" name="name" class="required" value="{$vo['name']}">
+					</div>
+					<div class="tml-form-col">
+						<label>性别：</label>
+						<select name="sex"  class="combox ">
+							<option <if condition="$vo['sex'] eq 1">selected</if> value="1">男</option>
+							<option <if condition="$vo['sex'] eq 0">selected</if> value="0">女</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>年龄：</label><input type="text" name="age" class="number" value="{$vo['age']}">
+					</div>
+					<div class="tml-form-col">
+						<label>联系方式：</label>
+						<input type="text" name="contacttel" class="textInput required phone" value="{$vo['contacttel']}">
+					</div>
+					<div class="tml-form-col">
+						<label>应聘岗位：</label><input type="text" name="interviewposition" class="" value="{$vo['interviewposition']}">
+					</div>
+					<div class="tml-form-col">
+						<label>学历：</label>
+						<select name="education" class="combox ">
+							<volist name="educationlist" id="voeducation">
+								<option value="{$voeducation['id']}" <if condition="$vo['education'] eq $voeducation['id']">selected</if> >{$voeducation['name']}</option>
+							</volist>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>专业：</label>
+						<input  type="text" name="professional" class="textInput" value="{$vo['professional']}">
+					</div>
+					<div class="tml-form-col">
+						<label>工作年限：</label>
+						<input type="text" name="senioritypay" class="textInput" value="{$vo['senioritypay']}">
+					</div>
+					<div class="tml-form-col">
+						<label>籍贯：</label>
+						<input  type="text" name="nativeplace" class="" value="{$vo['nativeplace']}">
+					</div>
+					<div class="tml-form-col">
+						<label>是否到岗：</label>						
+						<select name="isemploye"  class="combox ">
+							<option <if condition="$vo['isemploye'] eq 0">selected</if> value="0">否</option>
+							<option <if condition="$vo['isemploye'] eq 1">selected</if> value="1">是</option>
+						</select>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>招聘方式：</label>
+<!--
+						<select name="introducemethod"  class="combox ">
+							<option <if condition="$vo['introducemethod'] eq 1">selected</if> value="1">网络招骋</option>
+							<option <if condition="$vo['introducemethod'] eq 1">selected</if> value="2">现场招骋</option>
+							<option <if condition="$vo['introducemethod'] eq 1">selected</if> value="3">内部介绍</option>
+							<option <if condition="$vo['introducemethod'] eq 1">selected</if> value="4">校园招骋</option>
+							<option <if condition="$vo['introducemethod'] eq 1">selected</if> value="5">猎头招骋</option>
+							<option <if condition="$vo['introducemethod'] eq 1">selected</if> value="6">其它方式</option>
+						</select>
+-->
+						
+						<select name="introducemethod"  class="combox ">
+							<volist name="introducemethodlist" id="introducemethodlistid">
+								<option value="{$introducemethodlistid['id']}" <if condition="$vo['introducemethod'] eq $introducemethodlistid['id']">selected</if> >{$introducemethodlistid['name']}</option>
+							</volist>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>招聘渠道：</label>
+						<select name="inviteresources"  class="combox ">
+							<volist name="inviteresourceslist" id="voinviteresources">
+								<option value="{$voinviteresources['id']}" <if condition="$vo['inviteresources'] eq $voinviteresources['id']">selected</if> >{$voinviteresources['name']}</option>
+							</volist>
+						</select>
+					</div>
+					</div>
+					<div class="tml-row">
+					<div class="tml-form-col">
+						<label>预约时间：</label>
+						<div class="tml-input-append">
+							<input type="text" class="Wdate js-wdate"  format="{dateFmt:'yyyy-MM-dd HH:mm'}"  name="datetime"    value="{$vo.datetime|transTime='Y-m-d H:i'}" />
+							<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>面试时间：</label>
+						<div class="tml-input-append">
+							<input type="text" class="Wdate js-wdate"  format="{dateFmt:'yyyy-MM-dd HH:mm'}"  name="interviewtime"  value="{$vo.interviewtime|transTime='Y-m-d H:i'}"/>
+							<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+						</div>
+					</div>
+					</div>
+						<div class="tml-row">
+					<div class="tml-form-col">
+						<label>初试官：</label><input  type="text" name="interviewerone" class="textInput" value="{$vo['interviewerone']}" />
+					</div>
+					<div class="tml-form-col">
+						<label>初试结果：</label>
+						<select name="interviewfirst"  class="combox ">
+							<option <if condition="$vo['interviewfirst'] eq 1">selected</if> value="1">合格</option>
+							<option <if condition="$vo['interviewfirst'] eq 0">selected</if> value="0">不合格</option>
+							<option <if condition="$vo['interviewfirst'] eq 2">selected</if> value="2">放入人才库</option>
+							<option <if condition="$vo['interviewfirst'] eq 3">selected</if> value="3">待定</option>
+							<option  <if condition="$vo['interviewfirst'] eq 4">selected</if>  value="4">未面试</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>复试官：</label><input  type="text" name="interviewertwo" class="textInput" value="{$vo['interviewertwo']}" />
+					</div>
+					<div class="tml-form-col">
+						<label>复试结果：</label>
+						<select name="interviewagain"  class="combox ">
+							<option <if condition="$vo['interviewagain'] eq 1">selected</if> value="1">合格</option>
+							<option <if condition="$vo['interviewagain'] eq 0">selected</if> value="0">不合格</option>
+							<option <if condition="$vo['interviewagain'] eq 2">selected</if> value="2">放入人才库</option>
+							<option <if condition="$vo['interviewagain'] eq 3">selected</if> value="3">待定</option>
+								<option  <if condition="$vo['interviewagain'] eq 4">selected</if>  value="4">未面试</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>介绍人：</label>
+						<input  type="text" name="introduceguy" class="" value="{$vo['introduceguy']}">
+					</div>
+					<div class="tml-form-col">
+						<label>待入职时间：</label>
+						<div class="tml-input-append">
+							<input type="text" class="Wdate js-wdate"   name="joinedtime" value="{$vo.joinedtime|transTime}" />
+							<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+						</div>
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>未报到原因：</label>
+					<textarea name="noregister" rows="2" maxlength="200">{$vo['noregister']}</textarea>
+				</div>
+				<div class="tml-form-row">
+					<label>未录用原因：</label>
+					<textarea name="noemploy" rows="2" maxlength="200">{$vo['noemploy']}</textarea>
+				</div>
+				<div class="tml-form-row">
+					<label>备注：</label>
+					<textarea name="remark" rows="2" maxlength="200">{$vo['remark']}</textarea>
+				</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+	</form>
+	</div>
+</div>

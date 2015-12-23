@@ -1,0 +1,119 @@
+<style>
+	.smallFormContent label{
+		font-weight: bold;
+	}
+	.smallFormContent span{
+		display: inline-block;
+		color:#575757;
+		padding-top:5px;
+	}
+	
+	.smallFormContent .unit label{
+		width:100px;
+	}
+	.smallFormContent .unit span{
+		float:left;
+		color:#575757;
+		display: block;
+		margin-left:5px;
+		margin-top:20px;
+		line-height: 20px;
+		text-align: left;
+		margin:0 30px;
+		padding:3px;
+	}
+	.smallFormContent .hrline{
+		border-top: 1px solid #b0b0b0
+	}
+	.smallFormContent .unit{
+		clear:left;
+	}
+	.smallFormContent fieldset ul li{
+		line-height: 20px;
+		float:left;
+		padding:2px;
+		border:1px solid #838383;
+		margin-left:10px;
+	}
+	.smallFormContent fieldset ul li span{
+		display:block;
+		text-align: center;
+	}
+	.smallFormContent fieldset ul li a{
+		color:#187013;
+	}
+	.smallFormContent fieldset ul li a:hover{
+		color:blue;
+	}
+</style>
+<div class="page">
+	<div class="pageContent">
+		<div class="pageFormContent smallFormContent" layoutH="56">
+			<p style="width:500px;">
+				<label>{$fields["name"]}:</label><span>{$vo['name']}</span>
+			</p>
+			<div class="clear"></div>
+			<p >
+				<label>{$fields["report_name"]}:</label>
+				<span>{$vo['report_name']}</span>
+			</p>
+			<p >
+				<label>{$fields["department_name"]}:</label>
+				<span>{$vo['department_name']}</span>
+			</p>
+			<p >
+				<label>{$fields["fix_man"]}:</label><span>{$vo['fix_man']}</span>
+			</p>
+			<p >
+				<label>{$fields["fix_time"]}:</label><span>{$vo['fix_time']|date='Y-m-d H:m',###}</span>
+			</p>
+			<p >
+				<label>{$fields["falut_type"]}:</label>
+				<span><if condition="$vo['falut_type'] eq 1">给排水</if></span>
+				<span><if condition="$vo['falut_type'] eq 2">电路</if></span>
+				<span><if condition="$vo['falut_type'] eq 3">电气设备</if></span>
+				<span><if condition="$vo['falut_type'] eq 4">其它</if></span>
+			</p>
+			<p>
+				<label>{$fields["fixed"]}:</label>
+				<span><if condition="$vo['fixed'] eq 1">修复</if></span> 
+				<span><if condition="$vo['fixed'] eq 2">未修复</if></span>
+				<span><if condition="$vo['fixed'] eq 3">报废</if></span>
+				<span><if condition="$vo['fixed'] eq 4">外修</if></span>
+				<span><if condition="$vo['fixed'] eq 5">其它</if></span>
+			</p>
+			<div class="cls hrline"></div>
+			<p class="unit">
+				<label>{$fields["fault_cause"]}:</label>
+				<span>{$vo['fault_cause']}</span>
+			</p>
+			<p class="unit">
+				<label>{$fields["solution"]}:</label>
+				<span>{$vo['solution']}</span>
+			</p>
+			<p class="unit">
+				<label>{$fields["remark"]}:</label>
+				<span>{$vo['remark']}</span>
+			</p>
+			<div class="clear"></div>
+			<fieldset>
+				<legend class="fieldset_legend_toggle">
+					<b>附件</b>
+				</legend>
+				<if condition="$attarry">
+					<ul>
+					<volist name="attarry" id="att">
+							<li><a href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank"><img src="__PUBLIC__/{$att.attached|isPicture}" width="120" height="90" /><span>{$att['upname']}</span></a>
+							<a href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="tml-icon tml-icon-file"></span><span class="tml-icon-text">归档</span></a>
+							</li>
+					</volist>
+				</if>
+			</fieldset>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+</div>

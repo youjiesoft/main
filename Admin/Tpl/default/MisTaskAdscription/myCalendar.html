@@ -1,0 +1,84 @@
+<script>
+$(document).ready(function () {
+    var $refBox=$("#calendarTask").parents("div.layoutBox:first");
+    var iRefH=$refBox.height();
+    var iLayoutH=parseInt($("#calendarTask").attr("layoutH"));
+    var height=iRefH-iLayoutH>50?iRefH-iLayoutH:50;
+    height = height-66;
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    var calendar = $('#calendarTask').fullCalendar({
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'month,agendaWeek,agendaDay'
+        },
+        height:height,
+        monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        dayNames: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+        dayNamesShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六"],
+        today: ["今天"],
+        firstDay: 1,
+        buttonText: {
+            today: 'today',
+            month: '月',
+            week: '周',
+            day: '日',
+            prev: "<span class='fc-text-arrow'>&lsaquo;</span>",
+            next: "<span class='fc-text-arrow'>&rsaquo;</span>",
+            prevYear: "<span class='fc-text-arrow'>&laquo;</span>",
+            nextYear: "<span class='fc-text-arrow'>&raquo;</span>"
+       },
+       /* 显示任务  */
+       viewDisplay: function (view) {
+            var viewStart = $.fullCalendar.formatDate(view.start, "yyyy-MM-dd HH:mm:ss");
+            var viewEnd = $.fullCalendar.formatDate(view.end, "yyyy-MM-dd HH:mm:ss");
+            $("#calendarTask").fullCalendar('removeEvents');
+            $.post("__URL__/lookupGetdate", { start: viewStart, end: viewEnd }, function (data) {
+               var resultCollection = jQuery.parseJSON(data);
+                $.each(resultCollection, function (index, term) {
+                    $("#calendarTask").fullCalendar('renderEvent', term, true);
+                });
+           }); 
+        },
+        /*查看任务 */
+        eventClick:function( event, jsEvent, view ) {
+            console.log(event);
+            var id = event.id;
+            overall= event;
+            var options={};
+            options.width=744;
+            options.height=530;
+            options.mask=true;
+            if (event.type == 'execute') {
+                $.pdialog.open("__URL__/edit/id/"+id,'edit','执行任务',options);
+            }
+            if (event.type == 'track') {
+                $.pdialog.open("__APP__/MisTaskInformation/trace/identifying/1/id/"+event.taskid +"/teaceindex/1",'edit','跟踪任务',options);
+            }
+        }
+    });
+});
+var aaaa;
+</script>
+<style>
+    .myred{background:red;}
+    .myorange{background:orange;}
+    .myblue{background:green;}
+</style>
+<div style="width:960px;margin:0 auto;">
+<div class="left">
+    <ul>
+        <li class="clearfix" style="padding:60px 0 10px 0;line-height:20px;"><div class="left" style="border-radius:10px;width:20px;height:20px; background:red;"></div>&nbsp;&nbsp;<span>紧急处理</span></li>
+        <li class="clearfix" style="padding:30px 0 10px 0;line-height:20px;"><div class="left" style="border-radius:10px;width:20px;height:20px; background:orange;"></div>&nbsp;&nbsp;<span>优先处理</span></li>
+        <li class="clearfix" style="padding:30px 0 10px 0;line-height:20px;"><div class="left" style="border-radius:10px;width:20px;height:20px; background:green;"></div>&nbsp;&nbsp;<span>一般处理</span></li>
+    </ul>
+
+</div>
+<div class="right" style="width:800px;">
+    <div id='calendarTask' layoutH="0"></div>
+</div>
+</div>

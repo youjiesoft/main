@@ -1,0 +1,303 @@
+<script>
+	//不知道什么用途
+    function refurbishCurrentMsg(){
+		$("#msgindexnewrefurbish").loadUrl(TP_APP + "/MisMessageInbox/lookuprefurbishCurrentMsg/");
+    }
+	// 标记未读或已读
+	function onChageRead(e,$this){
+		if (e && e.stopPropagation) {
+			e.stopPropagation();
+		} else {
+			window.event.cancelBubble = true;
+		}
+		$this = $($this);
+		$id = $this.attr("relid");
+		$readedStatus = $this.attr("readedStatus");
+		$.ajax({
+			type : 'POST',
+			url : "__URL__/lable/id/" + $id + "/readedStatus/" + $readedStatus,
+			async : true,
+			global : false,
+			success : function(response) {
+				var json = DWZ.jsonEval(response);
+				if (json.statusCode == DWZ.statusCode.timeout) {
+					alertMsg.error(json.message || DWZ.msg("sessionTimout"), {
+						okCall : function() {
+							if ($.pdialog)
+								$.pdialog.checkTimeout();
+							if (navTab)
+								navTab.checkTimeout();
+							DWZ.loadLogin();
+						}
+					});
+				}
+				if (json.statusCode == DWZ.statusCode.ok) {
+					if ($readedStatus == 0) {
+						$this.parent().removeClass("Ru");
+						$this.parent().addClass("Kw");
+						$this.attr("readedStatus", "1");
+					} else {
+						$this.parent().removeClass("Kw");
+						$this.parent().addClass("Ru");
+						$this.attr("readedStatus", "0");
+					}
+					refreshEmailCount();
+				}
+			},
+			error : DWZ.ajaxError
+		});
+	}
+	// 标记为重要或取消重要
+	function onChangeImportant(e, $this) {
+		if (e && e.stopPropagation) {
+			e.stopPropagation();
+		} else {
+			window.event.cancelBubble = true;
+		}
+		$this = $($this);
+		$id = $this.attr("relid");
+		$important = $this.attr("important");
+		$.ajax({
+			type : 'POST',
+			url : "__URL__/important/id/" + $id + "/importants/" + $important,
+			async : true,
+			global : false,
+			success : function(response) {
+				var json = DWZ.jsonEval(response);
+				if (json.statusCode == DWZ.statusCode.timeout) {
+					alertMsg.error(json.message || DWZ.msg("sessionTimout"), {
+						okCall : function() {
+							if ($.pdialog)
+								$.pdialog.checkTimeout();
+							if (navTab)
+								navTab.checkTimeout();
+							DWZ.loadLogin();
+						}
+					});
+				}
+				if (json.statusCode == DWZ.statusCode.ok) {
+					if ($important == 1) {
+						$this.find("span").removeClass("xyStarActive");
+						$this.find("span").addClass("xyStar");
+						$this.attr("important", "0");
+					} else {
+						$this.find("span").removeClass("xyStar");
+						$this.find("span").addClass("xyStarActive");
+						$this.attr("important", "1");
+					}
+				}
+			},
+			error : DWZ.ajaxError
+		});
+	}
+	//不知道什么用途
+	$(document).ready(function() {
+		refreshEmailCount();
+		$("#messageTable").find("input[type='checkbox']").click(
+			function(e) {
+				//阻止冒泡,避免行点击事件中,直接选择选框无效
+				e.stopPropagation();
+				if ($(this).attr('checked')) {
+					$(this).parent().parent().addClass('selected');
+				} else {
+					$(this).parent().parent().removeClass('selected');
+				}
+			});
+		var $trs = $('#messageTable').find('tr');
+		$trs.click(function() {
+			$trs.filter('.cu').removeClass('cu');
+			$(this).addClass('cu');
+			var $this = $("#MessageCurrentRead");
+			var messageType = '{$messageType}';
+			var important = '{$important}';
+			var mtypurl = "";
+			if (messageType) {
+				mtypurl = "/messageType/" + messageType;
+			}
+			if (important) {
+				mtypurl = "/important/" + important;
+			}
+			$rel = $(this).attr('rel');
+			$trthis = $(this);
+			$.ajax({
+				type : 'POST',
+				url : "__URL__/lookupreadmessage/id/"+ $rel + mtypurl,
+				async : true,
+				global : false,
+				success : function(response) {
+					var json = DWZ.jsonEval(response);
+					if (json.statusCode == DWZ.statusCode.timeout) {
+						alertMsg.error(json.message|| DWZ.msg("sessionTimout"),{
+								okCall : function() {
+									if ($.pdialog)
+										$.pdialog.checkTimeout();
+									if (navTab)
+										navTab.checkTimeout();
+									DWZ.loadLogin();
+								}
+							});
+					}
+					if (json.statusCode == DWZ.statusCode.error) {
+						if (json.message)
+							alertMsg.error(json.message);
+					} else {
+						if (json.statusCode == DWZ.statusCode.timeout) {
+							$this.html(json.message+ '<div style="display:none;">'+ response+ '</div>').initUI();
+						} else {
+							$this.html(response).initUI();
+						}
+						$("#MessageCurrentRead").find("[layoutH]").layoutH();
+						$readedStatus = $trthis.find("a.readedStatus").attr("readedStatus");
+						if ($readedStatus == 0) {
+							$trthis.find(".readedStatus").parent().removeClass("Ru");
+							$trthis.find(".readedStatus").parent().addClass("Kw");
+							$trthis.find(".readedStatus").attr("readedStatus","1");
+						}
+						refreshEmailCount();
+					}
+				},
+				error : DWZ.ajaxError
+			});
+		});
+	})
+function getmessageinboxdeleteid(id){
+		$("#messageinboxdelete").attr("href","__URL__/delete/id/"+id+"/rel/jbsxBoxMessage");
+		$("#messageinboxdeleter").attr("href","__URL__/delete/id/"+id+"/rel/jbsxBoxMessage/deleter/1");
+		$("#messageinboxsignimportant").attr("href","__URL__/important/id/"+id+"/importants/0/rel/jbsxBoxMessage");
+		$("#messageinboxcancelimportant").attr("href","__URL__/important/id/"+id+"/importants/1/rel/jbsxBoxMessage");
+		$("#messageinboxdeleterread").attr("href","__URL__/lable/id/"+id+"/readedStatus/0/rel/jbsxBoxMessage");
+		$("#messageinboxdelete").attr("href","__URL__/lable/id/"+id+"/readedStatus/1/rel/jbsxBoxMessage");
+	}
+//定义一个全局变量 
+</script>
+<div id="messageinboxindexdiv">
+<div class="pageContent" id="{$rel_id_name}">
+	<form id="pagerForm" action="__URL__/index{$messageTypeUrl}">
+		<input type="hidden" name="pageNum" value="{$pageNum}"/>
+		<input type="hidden" name="important" value="{$important}"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li>
+				<a class="tml-btn tml_mp tml_look_btn" target="ajax" title="完整模式" rel="jbsxBoxMessage"  <if condition="$messageType">href="__URL__/index/messageType/1/frmae/1/fullmodel/1"<elseif condition="$important"/>href="__URL__/index/important/1/frmae/1/fullmodel/1"<else/>href="__URL__/index/frmae/1/fullmodel/1"</if> >
+					<span class="tml_lp icon-tasks"> 完整模式</span>
+				</a>
+			</li>
+			<li>
+				<a class="tml-btn tml_mp tml_look_btn" title="确实要删除这些记录吗?" id="messageinboxdelete" target="ajaxTodo" href="__URL__/delete/id/{$default.muid}/rel/jbsxBoxMessage" class="delete tbmaildel">
+					<span class="tml_lp icon-trash">&nbsp;{$Think.lang.del}</span>
+				</a>
+			</li>
+			<li>
+				<a class="tml-btn tml_mp tml_look_btn" title="删除了就无法恢复,确实要删除这些记录吗?" id="messageinboxdeleter" href="__URL__/delete/id/{$default.muid}/rel/jbsxBoxMessage/deleter/1" target="ajaxTodo" class="delete tbmaildel">
+					<span class="tml_lp icon-inbox"> 彻底{$Think.lang.del}</span>
+				</a>
+			</li>
+		   <!-- <li>
+				<a title="确实标记重要邮件吗?" id="messageinboxsignimportant" target="ajaxTodo" href="__URL__/important/id/{$default.muid}/importants/0/rel/jbsxBoxMessage" class="tbmailair">
+					<span>标记重要</span>
+				</a>
+			</li>
+		   <li>
+				<a title="确实取消重要邮件吗?" id="messageinboxcancelimportant" target="ajaxTodo" href="__URL__/important/id/{$default.muid}/importants/1/rel/jbsxBoxMessage" class="tbmailair">
+					<span>取消重要</span>
+				</a>
+			</li>
+		   <li>
+				<a title="确实标记已读邮件吗?" id="messageinboxdeleterread" target="ajaxTodo" href="__URL__/lable/id/{$default.muid}/readedStatus/0/rel/jbsxBoxMessage" class="tbmailopen">
+					<span>标记已读</span>
+				</a>
+			</li>
+		   <li>
+				<a title="确实标记未读邮件吗?" id="messageinboxcancelread" target="ajaxTodo" href="__URL__/lable/id/{$default.muid}/readedStatus/1/rel/jbsxBoxMessage" class="tbmailopen">
+					<span>标记未读</span>
+				</a>
+			</li> -->
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this,'jbsxBoxMessage');" action="__URL__/index{$messageTypeUrl}" method="post">
+			<input type="hidden" name="messageType" value="{$messageType}"/>
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="searchby">
+								<volist id="vou" name="searchbylist">
+									<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+								</volist>
+							</select>
+						</td>
+                        <td class="tml_select_option_center">
+                            <div><input type="text" placeholder="请输入关键字" name="keyword" value="{$keyword}" /></div>
+                        </td>
+						<td>
+							<input name="searchtype" type="hidden" value="2" />
+						</td>
+						<td class="tml_select_option_right"><button class="xySearch" type="submit"><i class="icon-search"></i></button></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div class="clearfix">
+		<div class="xyMailTable" style="float:left;width:480px;">
+            <div layoutH="110">
+			<table class="xyTable" width="100%" style="line-height: 37px;">
+				<thead>
+					<tr>
+					<th style="width:30px;" class=""><div class="Ru left" title="">&nbsp;</div></th>
+					<th style="width:48px;" class="">发件人</th>
+					<th style="width:160px;" class="">主题</th>
+					<th style="width:160px;" class="">发送时间</th>
+					<th><div class="xyStarActive" title="">&nbsp;&nbsp;</div></th>
+					</tr>
+				</thead>
+            </table>
+                <table class="tml-table-w">
+    				<tbody id="messageTable">
+    					<volist id="vo" name="list">
+    					<tr id="MisMessageInboxrelid" target="sid_node" rel="{$vo.id}" onclick="getmessageinboxdeleteid({$vo.id});"
+    					<if condition="$key eq 0"> class="cu" </if>
+    						dwidth="600" dheight="600" drel="MisMessageInboxView" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/readMessage/id/{$vo.id}/','查看邮件');" >
+    						<!-- <td style="width:20px;" class="tml-text-c"><input type="checkbox" value="{$vo.id}" name="id" ></td> -->
+    						<td style="width:30px;" class="tml-text-c">
+                                <div <if condition="$vo['readedStatus'] eq '0' && $key neq 0">class="Ru left" <else/>class="Kw left"</if>>
+            						<a class="readedStatus" href="javascript:void(0);" readedStatus="{$vo.readedStatus}" relid="{$vo.id}" onclick="onChageRead(event,this);">&nbsp;</a>
+								</div>
+								<if condition="$vo.isattr">
+									<div class="attach left" title="附件">&nbsp;</div>
+								</if>
+                            </td>
+    						<td style="width:48px;"><div class="hellip" style="width:48px;"><if condition="$vo['createid'] eq 0">系统<else/>{$vo.createid|getFieldBy='id','name','User'}</if></div></td>
+    						<td style="width:160px;"><div class="hellip" style="width:160px;"><if condition="$vo['istranspond']"><font style="font-size:15px;">转发：</font></if><if condition="$vo['isreply']"><font style="font-size:15px;">回复：</font></if>{$vo.sendid|getFieldBy='id','title','MisMessage'|missubstr=###,30,true}</div></td>
+    						<td style="width:160px;"><div class="" style="width:160px;">{$vo.createtime|transTime='Y-m-d H:i'}</div></td>
+    						<td>
+    						<a href="javascript:void(0);" important="{$vo.important}" relid="{$vo.id}" onclick="onChangeImportant(event,this);">
+    							<if condition="$vo['important'] eq '1'">
+    								<span class="xyStarActive" title="">&nbsp;&nbsp;</span>
+    							<else/>
+    								<span class="xyStar" title="">&nbsp;&nbsp;</span>
+    							</if>
+    						</a>
+    						</td>
+    					</tr>
+    					</volist>
+    				</tbody>
+    			</table>
+            </div>
+            <div class="panelBar panelPageBar">
+                <div class="pages"><span>共{$totalCount}条</span></div>
+                <div class="pagination" rel="{$rel_id_name}" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+            </div>
+		</div>
+        <if condition="$list">
+		<div class="xyMailRead" id="MessageCurrentRead">
+            <include file="lookupreadmessage" />
+        </div>
+        <else/>
+        <div class="noData" layoutH="83">没有信息</div>
+        </if>
+	</div>
+</div>
+</div>

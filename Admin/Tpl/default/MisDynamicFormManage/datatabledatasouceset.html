@@ -1,0 +1,173 @@
+<link href="__PUBLIC__/Css/tmlstyle/model.css" rel="stylesheet" type="text/css" media="screen" />
+
+<script>
+var id = '{$_GET[id]}';
+var check = '{$_GET[check]}'; 
+function getDtConfig(obj){
+	var $box = $.pdialog.getCurrent();
+	var lookupval=$(obj).val();
+	if(lookupval){
+		 $.ajax({
+	     		type:"POST",
+	     		url:"__URL__/datatabledatasouceset",
+	     		data:{'lookupval':lookupval,'dtstep':1},
+	     		datatype:"json",
+	    		global:false,
+	     		success:function(response){
+	     			 if(response){
+	     				var data=DWZ.jsonEval(response);
+	     				if(data){
+	     				var html="<option value=''>--请选择--</option>";
+	     				//一个lookup 对应一个内嵌表格
+	     				$.each(data,function(ri,rv){
+	     					console.log(rv);
+	     					html+="<option value='"+rv.dtname+"'>"+rv.dttitle+"</option>";
+	     				});
+	     				//html+="<option value='"+data.dtname+"'>"+data.dttitle+"</option>";
+	     				 $box.find("select[name='dtname']").html(html);
+	     				 $box.find("select[name='dtname']").initChosen();
+	     				 $box.find("input[name='lookupname']").val(lookupval);
+	     				 $box.find("input[name='lookupdtname']").val(data.dtname);
+	     				 $box.find("input[name='lookupcom']").val("");
+	     			 	 var itemhtml="<option value='0'>--请选择内嵌表格--</option>";
+	     				 $box.find("select[name='items[]']").html(itemhtml);
+	     				$box.find("select[name='items[]']").initChosen();
+	     				}
+	     			 }
+	     		}
+		 });
+	}
+}
+function getDtList(obj){
+	var $box = $.pdialog.getCurrent();
+	var lookupdt=$(obj).val();
+	var lookupname=$box.find("input[name='lookupname']").val();
+	if(lookupdt){
+		 $.ajax({
+	     		type:"POST",
+	     		url:"__URL__/datatabledatasouceset",
+	     		data:{'lookupval':lookupname,'lookupdt':lookupdt,'dtstep':2},
+	     		datatype:"json",
+	    		global:false,
+	     		success:function(response){
+	     			 if(response){
+	     				var data=DWZ.jsonEval(response);
+	     				
+	     				var html="<option value='0'>--请选择--</option>";
+	     				$.each(data['list'],function(dk,dkval){
+	     					html+="<option value='"+dk+"'>"+dkval.title+"</option>";
+	     				});
+	     				$box.find("select[name='items[]']").html(html);
+	     				 $box.find("select[name='items[]']").initChosen();
+	     			 }
+	     			$box.find("input[name='lookupcom']").val(data.fieldcomname);
+	     		}
+		 });
+	}
+}
+function datatabledatasouce($form){
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			var data=DWZ.jsonEval(json.data);
+			console.log(getTag(getContainer(check) , 'hidden' , id));
+			getTag(getContainer(check) , 'hidden' , id).val(data['fieldrelation']);
+			// 反写org的值。
+			getTag(getContainer(check) , 'hidden' , 'org').val(data['org']);
+			$.pdialog.closeCurrent(); 
+		}
+	});
+	
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/datatabledatasouceset" class="pageForm required-validate" onsubmit="return datatabledatasouce(this)">
+	    <div class="pageFormContent" layoutH="68">
+	   <input type="hidden" name="dtstep" value='3'/>
+	     <input type="hidden" name="lookupname" value='{$lookupval}'/>
+	      <input type="hidden" name="lookupdtname" value='{$dtname}'/>
+	      <input type="hidden" name="propertyid" value="{$propertyid}"/>
+	 	<input type="hidden" name="lookupcom" value="{$datalist[$dtname]['lookupcom']}">
+	 	<input type="hidden" name="formid" value="{$formid}"/>
+	 	<input type="hidden" name="propertyid" value="{$propertyid}"/>
+	 		<input type="hidden" name="check" value="{$check}"/>
+	 	
+	 
+	<div class="tml-form-row">
+	 <label style="width: 130px;">请选择lookup</label>
+		 <select name="lookupobj" class="chosen original_width_select2" onchange="getDtConfig(this)">
+		 <option value="0">--请选择--</option>
+		 <volist name="lookuplist" id="lookupVo">
+		 	<option <if condition="$lookupval eq $key" >selected="selected"</if> value="{$key}">{$lookupVo}</option>
+		 </volist>
+		 
+		 </select>
+	</div>
+	<div class="tml-form-row">
+	 <label style="width: 130px;">请选择内嵌表格</label>
+		 <select name="dtname" class="chosen original_width_select2" onchange="getDtList(this)">
+		<if condition="$dtlist"><option value="0">--请选择--</option><else/><option>--请先选择lookup--</option></if>
+		 <volist name="dtlist" id="dtVo">
+		 <option <if condition="$dtname eq $dtVo.dtname">selected="selected"</if> value="{$dtVo.dtname}">{$dtVo.dttitle}</option>
+		 </volist>
+		 </select>
+	</div>
+<div class="tableItem">
+	<div class="list_header">
+	</div>
+	<table class="new_table" index="1">
+		<colgroup>
+			<col width="50%"></col>
+			<col width="50%"></col>
+		</colgroup>
+		<thead>
+		<tr>
+			<th>字段标题（中文）</th>
+			<th>来源字段</th>
+		</tr>
+		</thead>
+		<tbody id="misdynamicformmanageforfield">
+		<if condition="$misDynamicFormDatatableList">
+		<volist name="misDynamicFormDatatableList" id="misDynamicFormDatatableList">
+		<tr>
+			<td>
+			    <span>{$misDynamicFormDatatableList}
+			   	 <input type="hidden" name="fieldname[]" value="{$key}"/>
+			    </span>
+			</td>
+			<td>
+			<?php $comfield=$datalist[$dtname]['list'][$key];?>
+				<select name="items[]" class="chosen  ">
+				<if condition="$dtfieldlist">
+				<option value="0">--请选择--</option>
+				<else/><option>--请选择内嵌表格--</option></if> 
+				<volist name="dtfieldlist['list']" id="dtfieldVo">
+					<option <if condition="$comfield eq  $key">selected="selected"</if> value="{$key}">{$dtfieldVo.title}</option>
+				</volist>
+			 </select>
+			</td>
+		</tr>
+		</volist>
+		<else/>
+		<tr>
+			<td colspan="2">
+			  请先设置内嵌表格字段
+			</td>
+		</tr>
+		</if>
+		</tbody>
+			</table>
+	</div>
+		</div>
+        <div class="formBar">
+            <ul>
+                <if condition="$_SESSION.a eq 1 or $_SESSION.missystempanel_edit">
+                    <li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+                </if>
+                <!--<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>-->
+            </ul>
+        </div>
+	</form>
+	</div>
+</div>

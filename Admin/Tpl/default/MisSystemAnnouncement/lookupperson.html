@@ -1,0 +1,58 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$departmentTree};
+	var setting = {
+		view: {
+            selectedMulti: false,
+            fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+            onRightClick: zTreeOnRightClick
+        }
+	};
+	$.fn.zTree.init($("#cementdepartmentindex"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("cementdepartmentindex");
+	var valid='1';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+	
+	function zTreeOnRightClick(event, treeId, treeNode) {
+		alert('ssss');
+        if (treeNode && !treeNode.noR) {
+            zTree.selectNode(treeNode);
+            var nodes = zTree.getSelectedNodes();
+            $.nbmMenu({'addonly':treeNode.id?false:true,'left':event.clientX, 'top':event.clientY,
+                addNode:function(obj){
+                    $(obj).attr('url','__APP__/MisPerformanceType/add/type/2/');
+                    addNodes(obj,'misperformancekpitree');
+                },
+                modifyNode:function(t){
+                         $(t).attr('url','__APP__/MisPerformanceType/edit/id/');
+                         editNodes(t,'misperformancekpitree');
+                },
+                deleteNode:function(t){
+                        delNodes('misperformancekpitree','/MisPerformanceType/delete/id/','misperformancelevel_rightcontent');
+                        $(this).log(t);
+                }
+            });
+        }
+    }
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="clearfix p5">
+			<input class="tree-search-input" type="text" id="cementdepartmentNodeKeys" />
+			<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('cementdepartmentindex','cementdepartmentNodeKeys')" type="button">搜索</button>
+		</div>
+		<ul id="cementdepartmentindex" class="ztree" layoutH="44"></ul>
+	</div>
+	<div id="cementdepartmentindexBox" class="positiveBox treeright">
+		<include file="lookuppersonlist" />
+	</div>
+</div>

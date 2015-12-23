@@ -1,0 +1,62 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$typetree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+	        callback: {
+	            onRightClick: zTreeOnRightClick
+	        }
+		};
+	$.fn.zTree.init($("#passauditindextree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("passauditindextree");
+    var valid='-2';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+    
+    function zTreeOnRightClick(event, treeId, treeNode) {
+        if (treeNode && !treeNode.noR) {
+            zTree.selectNode(treeNode);
+            var nodes = zTree.getSelectedNodes();
+            $(this).log(treeNode.id);
+            $.nbmMenu({'addonly':treeNode.id,'left':event.clientX, 'top':event.clientY,
+                addNode:function(obj){
+                    $(obj).attr('url','__URL__/add/typeid/1/');
+                    addNodes(obj,'passauditindextree','id')
+                },
+                modifyNode:function(t){
+                	$(t).attr('url','__URL__/edit/typeid/1/id/');
+                    editNodes(t,'passauditindextree');
+                },
+                deleteNode:function(t){
+                	delNodes('passauditindextree','/MisSystemAnnouncement/delete/typeid/1/id/','__MODULE__');;
+                }
+            });
+        }
+    }
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div>
+			   <ul class="toolBar">
+	            </ul>
+             </div>
+			<ul id="passauditindextree" class="ztree" layoutH="38"></ul>
+		</div>
+	</div>
+	<div id="missystemannouncementbox" class="unitBox treeright">
+		<include file="indexview" />
+	</div>
+</div>

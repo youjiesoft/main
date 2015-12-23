@@ -1,0 +1,112 @@
+<style>
+	.pageFormContent p{display: block;width:auto;text-align: left;	}
+	.pageFormContent label{width:445px;	border:1px solid #f9f9f9;}
+	
+	.pageFormContent .header,.courses,.teacher,.total{border: 1px solid red;border: 1px solid #e0e0e0;line-height: 20px;}
+
+	.pageFormContent .header{width:auto;height:30px;border-top:2px solid #14b447;}
+	.pageFormContent .header .leftA{width:460px;float:left; padding:3px;}
+
+	.pageFormContent .header .rightA{float:left; padding:3px;margin-left:10px;}
+	.pageFormContent .header .rightA span{width:60px;padding:2px; margin-left:5px;width:450px;}
+	
+	.pageFormContent .courses {width:auto;height:190px;}
+	.pageFormContent .courses .leftA{width:30px;height:180px;float:left; padding:3px;line-height:180px;overflow:hidden;}
+	.pageFormContent .courses .rightA{float:left; padding:3px;width:650px;}
+	.pageFormContent .courses .rightA input{margin-left:36px; }
+
+	.pageFormContent .teacher {width:auto;height:190px;}
+	.pageFormContent .teacher .leftA{width:30px;height:180px;float:left; padding:3px; line-height:180px;overflow:hidden; }
+	.pageFormContent .teacher .rightA{float:left; padding:3px;width:650px;}
+	.pageFormContent .teacher .rightA input{margin-left:36px; }
+	
+	.pageFormContent .total {width:auto;height:35px;}
+	.pageFormContent .total .leftA{width:30px;height:30px;float:left; padding:2px; line-height:35px;overflow:hidden;  }
+	.pageFormContent .total .rightA{float:left; padding:3px;width:650px;}
+	.pageFormContent .total .rightA input{margin-left:36px; }
+	.cls{
+		clear:both; 
+	}
+</style>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/commitMessageInsert/" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="trainid" value="{$trainid}">
+			<eq name="hasResult" value="1"><input type="hidden" name="id" value="{$vo['id']}"></eq>
+			<input type="hidden" name="userid" value="{$userid}">
+			<div class="pageFormContent" layoutH="55">
+				<div class="header">
+					<div class="leftA">
+						<span>评估项目</span><span style="margin-left:100px;">具体指标</span>
+					</div>
+					<div class="rightA">
+						<span>非常符合</span><span>较为符合</span><span>一般 </span><span> 不符合</span>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="courses">	
+					<div class="leftA">
+						课程
+					</div>
+					<div class="rightA">
+						<div class="tml-form-row"><span class="left tml-w330">1、课程内容符合我学习需求</span><input type="radio" name="z1" value="1" class="required" <eq name="vo.z1" value="1">checked</eq> > <input type="radio" name="z1" value="2" class="required" <eq name="vo.z1" value="2">checked</eq> > <input type="radio" name="z1" value="3" class="required" <eq name="vo.z1" value="3">checked</eq> > <input type="radio" name="z1" value="4" class="required" <eq name="vo.z1" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">2、课程内容详略分布合理</span><input type="radio" name="z2" value="1" class="required" <eq name="vo.z2" value="1">checked</eq> > <input type="radio" name="z2" value="2" class="required" <eq name="vo.z2" value="2">checked</eq> > <input type="radio" name="z2" value="3" class="required" <eq name="vo.z2" value="3">checked</eq> > <input type="radio" name="z2" value="4" class="required" <eq name="vo.z2" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">3、讲义设计吸引我学习兴趣</span><input type="radio" name="z3" value="1" class="required" <eq name="vo.z3" value="1">checked</eq> > <input type="radio" name="z3" value="2" class="required" <eq name="vo.z3" value="2">checked</eq> > <input type="radio" name="z3" value="3" class="required" <eq name="vo.z3" value="3">checked</eq> > <input type="radio" name="z3" value="4" class="required" <eq name="vo.z3" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">4、课程能举例子且通俗易懂</span><input type="radio" name="z4" value="1" class="required" <eq name="vo.z4" value="1">checked</eq> > <input type="radio" name="z4" value="2" class="required" <eq name="vo.z4" value="2">checked</eq> > <input type="radio" name="z4" value="3" class="required" <eq name="vo.z4" value="3">checked</eq> > <input type="radio" name="z4" value="4" class="required" <eq name="vo.z4" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">5、课程对我的工作有指导性</span><input type="radio" name="z5" value="1" class="required" <eq name="vo.z5" value="1">checked</eq> > <input type="radio" name="z5" value="2" class="required" <eq name="vo.z5" value="2">checked</eq> > <input type="radio" name="z5" value="3" class="required" <eq name="vo.z5" value="3">checked</eq> > <input type="radio" name="z5" value="4" class="required" <eq name="vo.z5" value="4">checked</eq> > </div>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+				<div class="teacher">
+					<div class="leftA">
+						讲师
+					</div>
+					<div class="rightA">
+						<div class="tml-form-row"><span class="left tml-w330">6、讲师有很充分的准备</span><input type="radio" name="z6" value="1" class="required" <eq name="vo.z6" value="1">checked</eq> > <input type="radio" name="z6" value="2" class="required" <eq name="vo.z6" value="2">checked</eq> > <input type="radio" name="z6" value="3" class="required" <eq name="vo.z6" value="3">checked</eq>> <input type="radio" name="z6" value="4" class="required" <eq name="vo.z6" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">7、讲师讲授得清楚明了</span><input type="radio" name="z7" value="1" class="required" <eq name="vo.z7" value="1">checked</eq> > <input type="radio" name="z7" value="2" class="required" <eq name="vo.z7" value="2">checked</eq> > <input type="radio" name="z7" value="3" class="required" <eq name="vo.z7" value="3">checked</eq>> <input type="radio" name="z7" value="4" class="required" <eq name="vo.z7" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">8、我喜欢讲师的授课方式</span><input type="radio" name="z8" value="1" class="required" <eq name="vo.z8" value="1">checked</eq> > <input type="radio" name="z8" value="2" class="required" <eq name="vo.z8" value="2">checked</eq> > <input type="radio" name="z8" value="3" class="required" <eq name="vo.z8" value="3">checked</eq>> <input type="radio" name="z8" value="4" class="required" <eq name="vo.z8" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">9、讲师调动我学习与思考</span><input type="radio" name="z9" value="1" class="required" <eq name="vo.z9" value="1">checked</eq> > <input type="radio" name="z9" value="2" class="required" <eq name="vo.z9" value="2">checked</eq> > <input type="radio" name="z9" value="3" class="required" <eq name="vo.z9" value="3">checked</eq>> <input type="radio" name="z9" value="4" class="required" <eq name="vo.z9" value="4">checked</eq> > </div>
+						<div class="tml-form-row"><span class="left tml-w330">10、内容与课时安排合理</span><input type="radio" name="z10" value="1" class="required" <eq name="vo.z10" value="1">checked</eq> > <input type="radio" name="z10" value="2" class="required" <eq name="vo.z10" value="2">checked</eq> > <input type="radio" name="z10" value="3" class="required" <eq name="vo.z10" value="3">checked</eq>> <input type="radio" name="z10" value="4" class="required" <eq name="vo.z10" value="4">checked</eq> > </div>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="total">
+					<div class="leftA">
+						总计
+					</div>
+					<div class="rightA">
+						<div class="tml-form-row"><span class="left tml-w330">11、我很满意这次培训</span><input type="radio" name="z11" value="1" class="required" <eq name="vo.z11" value="1">checked</eq> > <input type="radio" name="z11" value="2" class="required" <eq name="vo.z11" value="2">checked</eq> > <input type="radio" name="z11" value="3" class="required" <eq name="vo.z11" value="3">checked</eq> > <input type="radio" name="z11" value="4" class="required" <eq name="vo.z11" value="4">checked</eq> > </div>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="clear"></div>
+				<div><label>1、简要谈谈你在这次培训的收获或启发。</label><textarea name="comment1" cols="50" rows="4" style="margin-left:20px;" class="required">{$vo['comment1']}</textarea></div>
+				<div><label>2、你希望本课程重点讲解的内容有哪些。</label><textarea name="comment2" cols="50" rows="4" style="margin-left:20px;" class="required">{$vo['comment2']}</textarea></div>
+				<div><label>3、您对本次培训有哪些建议（培训方式、课程内容、组织安排、对讲师要求？</label><textarea name="comment3" cols="50" rows="4" style="margin-left:20px;" class="required">{$vo['comment1']}</textarea></div>
+
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationtrain_commitmessagedialog">
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">{$Think.lang.save}</button>
+							</div>
+						</div>
+					</li>
+				</if>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

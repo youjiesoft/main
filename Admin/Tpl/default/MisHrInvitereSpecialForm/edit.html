@@ -1,0 +1,163 @@
+<script>
+	//计算出生日期  AJAX请求计算年龄
+	$("#chinaid").blur(function(){
+	var d=new Date();
+	//alert(d.getFullYear);
+	var v=$(this).val();
+	if (v.length == 15) {
+	    var year = "19" + v.substr(6, 2);
+	    var month = v.substr(8, 2);
+	    var day = v.substr(10, 2);
+	    var age=d.getFullYear()-1900-year;
+	} else if (v.length == 18) {
+	    var year = v.substr(6, 4);
+	    var month = v.substr(10, 2);
+	    var day = v.substr(12, 2);
+	    var age=d.getFullYear()-year;
+	} else {
+		$("input:[name='age']").val("");
+		$("input:[name='birthday']").val("");
+	    return "";
+	}
+	$("input:[name='birthday']").val( year+"-"+month+"-"+day );
+	var birthday=year+"-"+month+"-"+day;
+	$.ajax({
+		type : "POST",
+		url : "__URL__/lookupbirthday",
+		data : {
+			'birthday' : birthday,
+			'chinaid':v
+		},
+		success : function(response) {
+			var json=DWZ.jsonEval(response);
+			 if(json){
+			 	$("input[name='age']").val(json.age);
+			 	if(json.result=="1"){
+			 		 alertMsg.info("该员工有离职记录！");
+			 	}
+			 }
+		}
+	});
+});
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent"/>
+			<input type="hidden" name="refreshtabs[data]" value="1" />
+			<input type="hidden"  name="refreshtabs[url]" value="__URL__/add" />
+			<input type="hidden"  name="refreshtabs[tabid]" value="MisHrInvitereSpecialFormAdd" />
+			<input type="hidden"  name="refreshtabs[title]" value="修改特殊人员招聘报名表" />
+			<input type="hidden" name="refreshtabs[type]" value="navtab">
+			<input type="hidden"  name="id" value="{$vo.id}" />
+			<div class="pageFormContent " layoutH="55">
+				<div class="contentTitle contentTitle_center">特殊人员招聘报名表
+					
+				</div>
+				<fieldset>
+					<input type="hidden" name="picture" />
+					{:W('ShowOrderno',array(1,'mis_hr_invitere_special_form',$vo['orderno']))}
+					<div class="tml-form-col">
+						<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+						<input type="text" name="name" class="required" value="{$vo.name}" />
+					</div>
+					<div class="tml-form-col">
+						<label>性&nbsp;&nbsp;&nbsp;&nbsp;别：</label>
+						<select name="sex" class="combox">
+							<option value="1" <if condition="$vo.sex eq '1'">selected="selected"</if>>男</option>
+							<option value="0" <if condition="$vo.sex eq '0'">selected="selected"</if>>女</option>
+						</select>
+					</div>
+					<div class="clear"></div>
+					<div class="tml-form-row">
+						<label>身&nbsp;份&nbsp;证：</label>
+						<input name="chinaid" id="chinaid"  value="{$vo.chinaid}"  type="text" class="textInput required" />
+					</div>
+					<div class="tml-form-col">
+						<label>年&nbsp;&nbsp;&nbsp;&nbsp;龄：</label>
+						<input type="text" name="age" min="1" readonly="readonly"  value="{$vo.age}" maxlength="3" />
+					</div>
+					<div class="tml-form-col">
+						<label>出生年月：</label>
+						<input name="birthday" type="text" yearstart="-40" value="{$vo.birthday}"  yearend="1" class="required" readonly="readonly" />
+					</div>
+					<div class="tml-form-col">
+						<label>应聘岗位：</label>
+						<input type="text" name="interviewposition" value="{$vo.interviewposition}"  class="required" />
+					</div>
+					<div class="tml-form-col">
+						<label>应聘时间：</label>
+						<span class="xyInputWithUnit">
+							<input type="text" class="tml-border-r0 Wdate required" onfocus="WdatePicker()" yearstart="-40" yearend="1" value="{$vo.interviewpositiondate|transtime}" name="interviewpositiondate" />
+							<span class="input-addon input-addon-calendar"></span>
+						</span>
+					</div>
+					<div class="tml-form-col">
+						<label>联系方式：</label>
+						<input type="text" name="mobilephone"  value="{$vo.mobilephone}" class="phone"/>
+					</div>
+					<div class="tml-form-col">
+						<label>现住地址：</label>
+						<input name="address" type="text" value="{$vo.address}"  class="textInput" />
+					</div>
+				</fieldset>
+				<hr />
+				<fieldset>
+				<div class="clearfix">
+					<div class="tml-form-col">
+						<label>办&nbsp;理&nbsp;人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getUserName}" />
+						<input type="hidden" name="createid" value="{$vo.createid}" />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>办理时间：</label>
+						<input type="text" size="19" readonly="readonly" value="{$vo.createtime|transTime}" class="textInput required" />
+						<input type="hidden" name="createtime" value="{$vo.createtime}"/>
+					</div>
+				</div>
+				</fieldset>
+			</div>
+			<div class="formBar">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrinviterespecialform_insert">
+						<li>
+							<div class="buttonActive">
+								<div class="buttonContent">
+									<button type="submit">{$Think.lang.save}</button>
+								</div>
+							</div>
+						</li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrinviterespecialform_startprocess">
+						<if condition="$vo.auditState eq 0 || $vo.auditState eq -1">
+							<li>
+								<div class="buttonActive">
+									<div class="buttonContent">
+										<button type="button"
+											onclick="StartProcess_dialog(this.form,'__MODULE__');">{$Think.lang.startprocess}</button>
+									</div>
+								</div>
+							</li>
+						</if>
+					</if>
+                    <if condition="$_SESSION.a eq 1 or $_SESSION.mishrinviterespecialform_delete">
+                        <li>
+                            <div class="buttonActive">
+                                <div class="buttonContent">
+                                    <button type="button" onclick='deleteRecord(this,"{$vo.id}","MisHrInvitereSpecialForm","dialog")'>{$Think.lang.del}</button>
+                                </div>
+                            </div>
+                        </li>
+                    </if>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

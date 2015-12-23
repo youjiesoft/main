@@ -1,0 +1,115 @@
+<script>
+	function dialogAjaxDone(json) {
+		navTabAjaxDone(json);
+		if (json.statusCode == DWZ.statusCode.ok) {
+			var urls = '__URL__/excellist/';
+			var list = json.data;
+			var sheet_list = json.data.sheet_list;
+			//if (sheet_list.length > 1) {
+				//$("#sheet_list").html(sheet_list.join("<br>"));
+				//$("#sheet_list").show();
+			//} else {
+				$.pdialog.closeCurrent();
+				if(list.sheet_list)
+				{
+					if(!list.isDataTable){
+						navTab.openTab("__MODULE__import_excel_view", urls, {
+							title : '导入数据',
+							fresh : true,
+							data : {
+								list : list
+							}
+						});
+					}else{
+						var dataTable = initTableWNEWOne("#"+list.tableID);
+						var data = list.sheet_list;
+						var row = new Array();
+						for(var k in data){
+							row[k] = new Array();
+							for(var kk in data[k]){
+								row[k][kk]=data[k][kk];
+							}
+						}
+						dataTable.empty();
+// 						dataTable.lookupAddRow(row.slice(0,50));
+// 						dataTable.lookupAddRow(row.slice(51,100));
+						var ajaxbg=$("#background,#progressBar");
+						chunk(row,dataTable,0,ajaxbg);
+					}
+				}
+			//}
+		}
+	}
+	
+	function chunk(array,table,i,ajaxbg){
+		var len = array.length; //这里要注意在执行过程中数组最好是不变的
+		ajaxbg.show();
+		setTimeout(function(){
+			table.lookupAddRow(array.slice(i,i+5)); //循环体要做的操作
+			i+=5;
+			if( i < len ){
+				setTimeout(chunk(array,table,i,ajaxbg),1000)
+			}else{
+				table.st.tableObj.draw();
+				ajaxbg.hide();
+				return true;
+			}
+		},1000);
+	}
+	$(function() {
+		$("#import_file").die("change");
+		$("#import_file").live("change", function() {
+			$("#import_contact_form").submit();
+		});
+	});
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form id="import_contact_form" method="post"
+			action="__URL__/misimportexcelinsert/datatable/{$datatable}"
+			class="pageForm required-validate"
+			onsubmit="return iframeCallback(this,dialogAjaxDone);"
+			enctype="multipart/form-data">
+			<input type="hidden" name="id" value="{$id}"> <input
+				type="hidden" name="model" value="{$model}"> <input
+				type="hidden" name="tableID" value="{$tableID}"> <input
+				type="hidden" name="datatable" value="{$datatable}">
+			<div class="pageFormContent" layoutH="58">
+				<table width="100%" border="0" cellspacing="0">
+					<tr>
+						<td>
+							<div class="unit">
+								<label style="width: auto;"> <input type="hidden"
+									name="step" value="2" /> <input class="required valid"
+									type="file" id="import_file" name="attached" />
+								</label> <span class="info"><a
+									href="__URL__/misimportexceladd/download/1/model/{$model}/datatable/{$datatable}">点此下载
+										示范文件</a></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="unit">
+								<span class="info"> 温馨提示 (为保证数据导入正确请上传后缀为xls/xlsx的文件！) </span>
+							</div>
+						</td>
+
+					</tr>
+				</table>
+
+			</div>
+
+			<div class="formBar">
+				<ul>
+					<li><div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>
+

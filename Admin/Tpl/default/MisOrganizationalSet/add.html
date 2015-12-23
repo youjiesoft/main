@@ -1,0 +1,30 @@
+<div class="pageContent">
+	<form method="post" <if condition="$com">action="__URL__/insert/rel/MisSystemCompanyA"<else/>action="__URL__/insert/navTabId/__MODULE__/rel/misSystemDept_index"</if> class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+		<input type="hidden" name="catgory" value="5"/> <!-- 部门角色 -->
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required" maxlength="32" name="name" />
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["sort"]}：</label>
+				<input type="text" name="sort" />
+			</div>
+			<div class="tml-form-col">
+				<label>状态：</label>
+				<SELECT name="status" class="combox">
+					<option value="1">启用</option>
+					<option value="0">禁用</option>
+				</SELECT>
+			</div>
+		</div>
+			<div class="tml-form-row">
+				<label>{$fields["remark"]}：</label>
+				<textarea name="remark" maxlength="100" style="width:380px;" rows="3" cols="40"></textarea>
+			</div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>
+

@@ -1,0 +1,26 @@
+<div class="tml-text-r tml-pos-abs" style="right: 10px;top: 10px;z-index: 2;">
+	 <a class="tml-btn tml-btn-default"   href="__URL__/lookupuserindex/type/2" target="dialog" rel="__MODULE__add" width="770" height="530" title="常用功能添加">常用<span class="icon icon-plus"></span><span class="tml-badge tml-bg-orange">{$oftenListCount}</span> </a>
+</div>
+<ul class="clearfix xyuseapp tml-m5">
+	<volist id="vo" name="oftenList">
+		<if condition="$vo['rel'] && $vo['title'] && $vo['url'] && $vo['icon']">
+		<li>
+			<a href="__APP__/{$vo['url']}" target="navTab" rel="{$vo['rel']}"  title="{$vo['title']}">
+				<img alt="{$vo['title']}" height="64" src="__PUBLIC__/Images/xyicon/{$vo['icon']}" width="64" />
+				<span>{$vo['title']}</span>
+			</a>
+			<if condition="!$vo.isdefault"><a id="{$vo['id']}" class="delapp" href="#" onclick="delOften(this);" title="删除该功能"></a></if>
+		</li>
+		</if>
+	</volist>
+	<li class="addapp">
+		<a href="__URL__/lookupuserindex/type/2" target="dialog" rel="__MODULE__add" width="770" height="530" title="常用功能添加"></a>
+	</li>
+</ul>
+<script type="text/javascript">
+		/* 常用功能删除按钮显示
+		*/
+$(document).ready(function(){
+	$(".xyuseapp li").hoverClass("hover");
+});
+</script>

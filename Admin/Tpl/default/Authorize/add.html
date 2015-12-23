@@ -1,0 +1,89 @@
+<script>
+<!--
+function checkName(){
+	ThinkAjax.send('__URL__/checkAccount/','ajax=1&account='+$F('account'));
+}
+//-->
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>{$fields["account"]}：</label>
+				<input type="text" class="required alphanumeric" maxlength="64" name="account" value="{$vo.account}" />
+			</div>
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required org1.name" readonly="readonly" name="name"/>
+				<input type="hidden" name="employeid" class="org1.mangid"/>
+				<a class="input-addon-unit" href="__URL__/lookupmanage" lookupGroup="org1">查找带回</a><span class="info">员工</span>
+			</div>
+			<div class="unit">
+				<label>{$fields["sex"]}：</label>
+				<select name="sex" class="combox org1.sex">
+					<option value="1">男</option>
+					<option value="0">女</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>{$fields["orderdisplay"]}：</label>
+				<select name="orderdisplay" class="combox">
+					<option value="2">个人</option>
+					<option value="1">部门</option>
+					<option value="3">部门及子部门</option>
+					<option value="0">全部</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>{$fields["dept_id"]}：</label>
+				<select class="required combox org1.deptid" name="dept_id">
+					<option selected value="">请选择部门</option>
+					{$html}
+				</select>
+				<select class="combox org1.dutylevelid" name="duty_id" id="duty_id">
+					<option value="">请选择职级</option>
+					<volist name="dutylist" id="dtlist">
+						<option value="{$key}">{$dtlist}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="unit">
+				<label>{$fields["work_date"]}：</label>
+                <input type="text"  name="work_date" onfocus="WdatePicker()" class="Wdate required org1.indate"/>
+                <span class="input-addon input-addon-calendar"></span>
+			</div>
+			<div class="unit">
+				<label>{$fields["mobile"]}：</label>
+				<input type="text" name="mobile" class="required phone"/>
+			</div>
+			<div class="unit">
+				<label>{$fields["email"]}：</label>
+				<input type="text" name="email" maxlength="100" class="required email org1.email"/>
+			</div>
+			<div class="unit">
+				<label>采购人员：</label>
+				<input type="checkbox" class="textInput" name="ispur" />
+				<span class="info tml-c-red">&nbsp;&nbsp;&nbsp;(选中则为采购组织中的人员)</span>
+			</div>
+			<div class="unit">
+				<label>{$fields["status"]}：</label>
+				<select name="status" class="required  combox">
+					<option value="1">启用</option>
+					<option value="0">禁用</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>{$fields["remark"]}：</label>
+				<textarea name="remark" rows="2" cols="50"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

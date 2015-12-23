@@ -1,0 +1,34 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<div class="pageFormContent" layoutH="58">
+		   <div class="unit">
+				<label>{$fields["code"]}：</label>
+				<input type="text" name="code" class="required alphanumeric" maxlength="10" value="{$vo.code}" />
+			</div>
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" name="name" class="required" maxlength="25" value="{$vo.name}" />
+			</div>
+			<div class="unit">
+				<label>上级类型</label>
+				<if condition="$vo['parentid'] eq 0 ">顶级节点
+				<else/>
+                {$vo['parentid']|getFieldBy='id','name','mis_construction_team_type'}
+                </if>
+			</div>
+			<div class="unit" style="width:500px;">
+				<label>{$fields["remark"]}：</label>
+				<textarea name="remark" rows="2" maxlength="200" cols="40">{$vo.remark}</textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

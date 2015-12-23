@@ -1,0 +1,147 @@
+<script>
+	function misworkstastement_onbluredit(){
+		var $box=navTab.getCurrentPanel();
+		var d =  $("#misworkstatement_edit_changedate").val();
+		var type = $("#workstatementedittypeid option:selected").attr("cnname");
+		var oldname = "{$username}";
+		var title = "";
+		if(type == "日报"){
+			title = d + '_' + oldname + '_' +type;
+		} else if(type == "周报"){
+			var date = new Date(d.replace("年","-").replace("月","-").replace("日",""));
+			var week = getIso8601Week(date);
+			date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+			title = date.getFullYear() + "年第" + week + "周" + '_' + oldname + '_' +type;
+		} else if(type == "月报"){
+			var date = new Date(d.replace("年","-").replace("月","-").replace("日",""));
+			var month = (date.getMonth()+1);
+			if(month<10) month = "0" + month;
+			title = date.getFullYear() + "年" + month + "月" + '_' + oldname + '_' +type;
+		}
+		$("#misworkstatement_edit_changetitle").text(title);
+		$box.find("input[name='title']").val(title);
+	}
+	function recallworkstastement(form){
+		alertMsg.confirm("您将撤回当前工作报告，请选择确认或取消！", {
+			okCall: function(){
+				var $form = $(form);
+				$form.find("input[name='stepType']").val(2);
+				$form.submit();
+			}
+		});
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="iseditor" value="1">
+			<input type="hidden" name="stepType" value="0">
+			<input type="hidden" name="id" value="{$vo.id}"/>
+			<input type="hidden" name="title" value="{$vo.title}">
+			<div class="pageFormContent applecloth" layoutH="40">
+				<div class="keepContentCenter kkuupp">
+					<div class="contentTitle contentTitle_center">
+                        <span id="misworkstatement_edit_changetitle">{$vo.title}</span>
+                        <!--<span class="no_numBer">{:W('ShowOrderno',array(0,'mis_work_statement'))}</span>-->
+                    </div>
+					<fieldset>
+					<div class="tml-form-row">
+						<label>摘要：</label>
+						<input type="text" name="summary" <eq name="vo.readstatus" value="1">readonly</eq> value="{$vo['summary']}" />
+						<input type="hidden" value="{$vo.code}" name="code"/>
+					</div>
+					<div class="tml-form-row">
+	                    <label>查阅人：</label>
+	                    <ul id="MisWorkStatement_edit" class="addressee left checkTo" style="width:720px;">
+	                    <volist name="userList['sysfields']" id="userVo">
+		                   <input type="hidden" name="valid[sysfields][{$userVo['typeid']}]" value="{$userVo.valid}"/>
+		                   <volist name="userVo['typename']" id="typevo" key="typekey">
+		                     <li>
+								<input type="hidden" value="{$typevo}" name="{$userVo.inputname}[sysfields][]">
+								<span>{$typevo}</span>
+								<input type="hidden"  value="{$userVo['typeval'][$typekey-1]}" name="{$userVo.inputval}[sysfields][]">
+								<a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除">x</a>
+							</li>
+							</volist>
+	                   </volist>
+						<li class="addresseeText">
+							<input class="checkByInput addresseeTextInput textInput" type="text" autocomplete="off" tabindex="1" callback="addresseeInput" chainname="lookpeoplename" inputname="lookpeople" show="" checkfor="MisMessage" autofocus="autofocus" onfocus="addressee.clearVal(this);" onkeydown="addressee.del(this, event);" onclick="addressee.unselect(this);">
+						</li>
+						</ul>
+							<a 
+						class="input-addon input-addon-addon input-addon-userplus checkUser" 
+						href="javascript:;" ulid="MisWorkStatement_edit" 
+						sysUser="sysfields" 
+						data="recipientname,username,text;recipient,userid,hidden,1" 
+						data-group="groupname,title,text;groupid,id,hidden,1"
+						width="800" 
+						height="800">查找带回</a>&nbsp; 
+						<input type="hidden" name="sysselectuser[]" value="sysfields"/>
+						<a class="input-addon input-addon-recycle" title="清空接收用户" onclick="clearreceverMismessage('1','MisWorkStatement_one_edit');" href="javascript:;"></a>
+	                </div>
+					<div class="tml-row">
+					<!-- <div class="tml-form-col">
+					<label>{$fields["createid"]}：</label>
+						<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','User'}" />
+					</div> -->
+					<div class="tml-form-col">
+						<label>{$fields["typeid"]}：</label>
+						<if condition="$vo['readstatus'] eq 1">
+							<input type="text" class="textInput" name="typeid" readonly="readonly" size="10" value="{$vo.typeid|getFieldBy='id','name','mis_order_types'}" />
+						<else/>
+							<select name="typeid" class="combox" id="workstatementedittypeid" onchange="misworkstastement_onbluredit();">
+								<volist name="extypelist" id="elist">
+									<option value="{$elist.id}" cnname="{$elist['name']}" <if condition="$elist.id eq $vo.typeid">selected="selected"</if> >{$elist['name']}</option>
+								</volist>
+							</select>
+						</if>
+					</div>
+					<input type="hidden" name="createid" value="{$vo.createid}"/>
+					<div class="tml-form-col">
+						<label style="width:123px;">{$fields["createtime"]}：</label>
+						<if condition="$vo['sendStatus'] eq 1">
+							<div class="tml-input-append">
+								<input type="text" id="misworkstatement_edit_changedate" size="17" readonly name="createtime" value="{$vo.createtime|transTime='Y年m月d日'}" />
+								<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+							</div>
+						<else/>
+							<span class="xyInputWithUnit">
+								<input type="text" id="misworkstatement_edit_changedate" class="Wdate js-wdate" data="{dateFmt:'yyyy年MM月dd日',onpicked:misworkstastement_onbluredit}" name="createtime" size="17" value="{$vo.createtime|transTime='Y年m月d日'}" />
+                        		<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+							</span>
+						</if>
+					</div>
+					</div>
+					<div class="tml-form-row">
+						<label>内容：</label>
+						<textarea class="ueditor" name="content" style="height:240px;width:790px;">{$vo.content}</textarea>
+					</div>
+					<if condition="$vo['readstatus'] eq 1">
+						<div class="tml-form-row">
+							<label>上传附件：</label>
+							<div class="xyMessageAttachItems" style="padding:0 8px 6px 0px;background-color:#F3F3F3">
+	                       		 <volist name="attarry" id="att">
+		                            <div class="xyMessageAttachItem">
+		                                <span class="tml-label tml-bg-green tml-mr5">附件{$key+1}</span>
+		                                <a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}"><span>{$att['upname']}</span></a>
+										&nbsp;<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);">在线查看</a>
+										<a class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog">
+		                                    <span class="tml-icon tml-icon-file"></span>
+		                                    <span class="tml-icon-text">归档</span>
+		                                </a>
+									</div>
+		                        </volist>
+		                    </div>
+						</div>
+					<else/>
+						<!-- 附件信息 -->
+						{:W('ShowUpload',$attarry)}
+					</if>
+					</fieldset>
+                    {:W('ShowAction',array('data'=>$vo))}
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,38 @@
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="jump" value="jump">
+		<input type="hidden" name="id" value="{$id}">
+		<div class="pageFormContent" layoutH="48">
+			<div class="tml-row">
+                    <input type="hidden" class="" maxlength="50"  name="name" value="{$name}">
+                <div class="tml-form-col">
+                    <label>面板中文名：</label>
+                    <input type="text" class="required" maxlength="25"  name="title" value="">
+                </div>
+                <div class="tml-form-col">
+                    <label>面板类型：</label>
+                    <select class="select2" name="type">
+                    	<option value='1'>面板</option>
+                    	<option value='0'>报表</option>
+                    	<option value='2'>新闻</option>
+                    	
+                    </select>
+                </div>
+                <div class="tml-form-col">
+					<label>首页显示：</label>
+					<select name="isshow" class="select2">
+							<option value='1'>是</option>
+							<option value='0'>否</option>
+						</select>
+				</div>
+			</div>
+			
+		</div>
+			{:W('ShowAction')}
+		
+	</form>
+	</div>
+</div>
+

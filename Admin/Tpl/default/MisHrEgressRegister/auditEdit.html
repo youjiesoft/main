@@ -1,0 +1,87 @@
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/auditProcess" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabs)">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="orderno" value="{$vo['orderno']}" />
+			<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+			<input type="hidden" name="refreshtabs[url]" value="__APP__/MisHrEgressRegister/index/ntdata/1">
+			<input type="hidden" name="refreshtabs[ntdata]" value="1">
+			<input type="hidden" name="refreshtabs[title]" value="外出登记表">
+			<input type="hidden" name="refreshtabs[type]" value="navTab">
+			<input type="hidden" name="pid" value="{$vo['ptmptid']}">
+			<input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+			<input type="hidden" name="backprocess" value="流程回退">
+			<input type="hidden" name="auditprocess" value="流程审核">
+			<input type="hidden" name="endprocess" value="流程结束">
+			<input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+			<input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+				<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+			<div class="keepContentCenter form-affix-content">
+			<div class="contentTitle contentTitle_center form-affix-title">外出申请{:W('ShowAdvices',array('id'=>$vo['id']))}
+			</div>
+			<fieldset>
+				<legend class="fieldset_legend_toggle">
+					<b>基础信息</b>
+				</legend><div class="tml-row">
+				{:W('ShowOrderno',array(1,'mis_hr_egress_register',$vo['orderno']))}
+							<div class="tml-form-col">
+								<label>{$fields["hrname"]}:</label>
+								<input  type="text" name="hrname" readonly="readonly" class="" value="{$vo['hrname']}">
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["deptname"]}:</label>
+								<input  type="text" name="deptname" readonly="readonly"  class="" value="{$vo['deptname']}">
+							</div>
+						<div class="tml-form-col">
+								<label>{$fields["starttime"]}:</label>
+								<span class="xyInputWithUnit">
+								<input type="text" class="Wdate required"  readonly="readonly"    yearstart="-40" yearend="1" name="starttime" value="{$vo.starttime|transTime}" />
+								<span class="input-addon input-addon-calendar"></span>
+							</span>
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["endtime"]}:</label>
+								<span class="xyInputWithUnit">
+								<input type="text" class="Wdate required" readonly="readonly"    yearstart="-40" yearend="1" name="endtime" value="{$vo.endtime|transTime}" />
+								<span class="input-addon input-addon-calendar"></span>
+							</span>
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["returntime"]}:</label>
+								<span class="xyInputWithUnit">
+								<input type="text" class="Wdate required" readonly="readonly"   yearstart="-40" yearend="1" name="returntime" value="{$vo.returntime|transTime}" />
+								<span class="input-addon input-addon-calendar"></span>
+							</span>
+							</div>
+							</div> 
+							<div class="tml-form-row">
+								<label>{$fields["result"]}:</label>
+								<textarea cols="80" rows="2"  readonly="readonly"   name="result">{$vo['result']}</textarea>
+							</div>
+							<div class="tml-form-row">
+								<label>{$fields["remark"]}:</label>
+								<textarea cols="80" rows="2"  readonly="readonly"   name="remark">{$vo['remark']}</textarea>
+								</div>
+							</fieldset>
+								<fieldset>
+				<legend class="fieldset_legend_toggle">
+					<b>制单信息</b>
+				</legend>
+							 <div class="tml-row">
+							<div class="tml-form-col">
+								<label>{$fields["text10"]}:</label>
+								<input  type="text" name="text10" readonly="readonly" class="" value="{$vo['text10']}">
+							</div>
+							<div class="tml-form-col">
+								<label>{$fields["text11"]}:</label>
+								<input  type="text" name="text11" class="" readonly="readonly" value="{$vo['text11']}">
+							</div>
+							</div> 
+							</fieldset>
+					{:W('ShowAction')}
+			</div>
+				</div>
+	</form>
+	</div>
+	</div>

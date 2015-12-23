@@ -1,0 +1,57 @@
+<if condition="$groupid">
+	<input type="hidden" name="groupid" value="{$groupid}">
+  	<if condition="$lastFiveQues">
+            <div class="data">
+                <ul>
+                    <volist name="lastFiveQues" id="FiveQues" >
+                        <li>
+                        	<a class="clearfix" rel="MisExpertQuestion" target="_blank" title="专家问题查看" href="__APP__/MisSystemNoticeMethod/anwserdetail/quesid/{$FiveQues['id']}">
+                        		<span class="hellip" style="width:70%">
+                        			<strong >【{$FiveQues['categoryid']|getFieldBy="id","name","mis_expert_question_type"}】</strong><!-- <if condition="$FiveQues['isrelation']">style="color:#e00000;" </if> -->
+                        			{$FiveQues['title']|missubstr=###,70,true}&nbsp;
+                        		</span>
+                        			<em style="width:22%;padding-right:5px;">
+                        			<if condition="$FiveQues['isrelation'] eq 1">
+                        				<strong class="i-new"></strong>
+                        			<else/>
+                        				<strong>&nbsp;&nbsp;</strong>
+                        			</if>
+                        				&nbsp;{$FiveQues['createtime']|transTime='Y-m-d'}
+                        			</em>
+                        	</a>
+                       </li>
+                    </volist>
+                </ul>
+            </div>
+        <else/>
+	        <div class="noData">
+	           	 没有专家问题
+	        </div>
+    </if>
+<else/>
+	<ul class="expert_cell_warp" id="work">
+		<if condition="$lastFiveQues">            
+	                
+	                    <volist name="lastFiveQues" id="FiveQues" >
+	                    	<li>
+		                    	<a rel="MisExpertQuestion" target="_blank" title="专家问题查看" href="__APP__/MisSystemNotice/anwserdetail/quesid/{$FiveQues['id']}">
+		                    		<span style="font-size:16px;">【{$FiveQues['categoryid']|getFieldBy="id","name","mis_expert_question_type"}】{$FiveQues['title']|missubstr=###,70,true}</span>
+		                    	</a>
+	                    	</li>
+	                    </volist>
+	                          
+	        <else/>	       
+		           	 没有专家问题
+		        
+	        </if>
+	</ul>
+	<div><a href="__APP__/MisSystemNoticeMethod/expertlist" rel="MisExpertQuestion" target="_blank" class="tml_new_live_link">更多文章</a></div>
+	
+
+</if>
+
+  
+  
+  
+  
+ 

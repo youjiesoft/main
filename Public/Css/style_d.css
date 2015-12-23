@@ -1,0 +1,16 @@
+.group_navigation_indexpage{background: url("../../Public/Images/success_bg.gif") repeat scroll 0 0 transparent;}
+.group_navigation_indexpage .group_navigation_indexpage_left{width:70%;text-align:center;}
+.group_navigation_indexpage .group_navigation_indexpage_right{padding-right: 10px;}
+.group_navigation_indexpage .group_navigation_indexpage_left{padding-top:50px;}
+.small_content{ padding-top:10px;}
+.info_head{
+        background:url("../../Public/Images/salesQuotationmas_bg.gif") repeat-x;
+        height:20px;
+        border:1px solid #bad1d7;
+        border-bottom:0px;
+        font-weight:bold;
+        line-height:20px;
+        padding-left:5px;
+}
+.info_content{ background:#e4f1fc; width:250px;border:1px solid #bad1d7;}
+.info_content ul li{ line-height:24px; padding:0 10px;width:105px;overflow:hidden;}

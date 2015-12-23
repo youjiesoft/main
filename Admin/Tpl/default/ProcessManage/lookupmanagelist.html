@@ -1,0 +1,83 @@
+<script>
+function MisHrBecomeEmployee_lookupmanagelist(){
+	var val = "";
+	$(".MisHrBecomeEmployeelist").find("input[type='checkbox']").each(function(){ 
+		if($(this).attr("checked")=='checked'){
+			var result= DWZ.jsonEval($(this).attr('value'));
+			//val += '_' +result.id;
+			val += ","+result.name;
+		}
+	});
+	if(isNullorEmpty(val)){
+		val=val.substring(1);
+		$("#abcde1").text(val);
+		$.pdialog.closeCurrent();
+		
+		//var $box =$.pdialog.getCurrent();
+		//$.pdialog.close($box);
+	}else{
+		alertMsg.error("请选择人员");
+	}
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupgetUser" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'positiveBox');" action="__URL__/lookupgetUser" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<input type="text" placeholder="搜索员工姓名,部门,职位,职级" name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox"  onchange="changeInput(this)"  name="searchby">
+							   <option value="all"   <if condition="$searchby eq 'all'">selected</if> >全部</option>
+								<option value="name"  <if condition="$searchby eq 'name'">selected</if> >姓名</option>
+								<option value="mis_system_department-name"     <if condition="$searchby eq 'mis_system_department-name'">selected</if> >部门</option>
+								<option value="dutyname"   <if condition="$searchby eq 'dutyname'">selected</if> >职级</option>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />			
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+					<td><button class="xyBack" type="button" onclick="MisHrBecomeEmployee_lookupmanagelist(this)" warn="请选择人员">选择带回</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div>
+	<table class="table" width="99%" layoutH="146">
+		<thead>
+			<tr>
+				<th width="10"><input type="checkbox"  class="checkboxCtrl" group="orgId" /></th>
+				<th>员工姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+			</tr>
+		</thead>
+		<tbody  class="MisHrBecomeEmployeelist">
+			<volist id="vo" name="list">
+				<tr>
+					<td><input type="checkbox" name="orgId" value="{ id:'{$vo.id}', name:'{$vo.name}'}"/></td>
+					<td>{$vo['name']}</td>
+					<td>{$vo['dept_id']|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo['duty_id']|getFieldBy='id','name','duty'}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="positiveBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

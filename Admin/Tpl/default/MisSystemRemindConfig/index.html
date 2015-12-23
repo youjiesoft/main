@@ -1,0 +1,39 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$typetree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisSystemRemindConfigTree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("MisSystemRemindConfigTree");
+/* 	var valid = '{$valid}';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]); */
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="close">
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="MisSystemRemindConfigNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('MisSystemRemindConfigTree','MisSystemRemindConfigNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="MisSystemRemindConfigTree" class="ztree" layoutH="100"></ul>
+		</div>
+	</div>
+	<div id="MisSystemRemindConfigBox" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

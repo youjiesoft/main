@@ -1,0 +1,30 @@
+<!-- 文件编辑器代码 -->
+<link rel=stylesheet href="__PUBLIC__/Js/plugs/codeEdit/doc/docs.css">
+<link rel="stylesheet" href="__PUBLIC__/Js/plugs/codeEdit/lib/codemirror.css">
+<script src="__PUBLIC__/Js/plugs/codeEdit/lib/codemirror.js"></script>
+<script src="__PUBLIC__/Js/plugs/codeEdit/addon/mode/loadmode.js"></script>
+<!-- file editer end -->
+
+<h1>需要保存两次才能将数据保存到文件中， 正在解决中......</h1>
+
+<form action="__URL__/savecode" method="post" onsubmit="return validateCallback(this, navTabAjaxDone)">
+<input type="hidden" name="path" value="{$path}" />
+<input type="hidden" name="callbackType" value="dialogCloseCurrent" />
+<textarea rows="7" cols="90" name="content" id="fiel_edit_data">{$vo}</textarea>
+<button type="submit">Save Code</button>
+</form>
+
+
+<script type="text/javascript">
+$(function(){
+	CodeMirror.modeURL = "__PUBLIC__/Js/plugs/codeEdit/mode/%N/%N.js";
+	var areaObj = document.getElementById("fiel_edit_data");
+	var editor = CodeMirror.fromTextArea(areaObj, {
+	  lineNumbers: true
+	});
+
+	editor.setOption("mode", 'php');
+	CodeMirror.autoLoadMode(editor, 'php');
+});
+</script>
+

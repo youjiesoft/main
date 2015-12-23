@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>专家顾问</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/normalize.css" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/main.css" />
+        <script src="__PUBLIC__/Js/jquery-1.7.1.js" type="text/javascript"></script>
+        <script src="__PUBLIC__/dwz2/js/dwz.min.js" type="text/javascript"></script>
+        <script>
+        //评论隐藏显示 文本域
+        	function toggarea(is, obj){
+        	//is用来判断用户是点击的"取消"还是"发布",如果是点击的"取消"就隐藏评论框,如果点击"评论"就展开评论 
+        		$("#comment_box").find("textarea[name='comment']").val('');
+        		//代表点击的评论
+        		if(is==1){
+        			var Dom = $(obj).parent().parent().find("#anchor_ysl");
+        			$("#comment_box").insertAfter(Dom);
+        			$("#comment_box").show();
+        			//代表点击的取消(评论)
+        		}else{
+        			$("#comment_box").hide();
+        		}
+        	}
+        	//提交回答的评论
+        	function putin(obj){
+        		var comment = $(obj).parent().parent().parent().find("textarea[name='comment']").val();
+        		//提交之前检测用户输入字符
+        		if(comment.length < 1){
+        			alert("请输入评论内容!");
+        			return false;
+        		}
+        		//对哪一条回答进行评论,将传入这条回答的id
+        		var parentid = $(obj).parent().parent().parent().parent().parent().parent().find("input[name='parentid']").val();
+        		$.ajax({
+	        		  type:'POST',
+	                  url:"__URL__/addcomment",
+	                  data:{comment:comment,parentid:parentid},
+	        		  success:function(re){
+	        			  eval("data=" +re);
+	        			if(data == -1){
+	        				alert("对不起,提交操作失败,请稍后重试!");
+	        			}else{
+	        				//alert(data);
+	        				var content = data.content;
+	        				var parentid = data.parentid;
+	        				var createid = data.createid;
+	        				var username = data.username;
+	        				var createtime = data.createtime;
+	        				//插入数据
+	        				//$("#list_box").find("a").text(username);
+	        				//$("#list_box").find("span").text(createtime);
+	        				//$("#list_box").find(".comment-content").text(content);
+	        				var shtml = 
+	        					"<li id='list_box'>" +
+			    						"<div class='comment-list-detail'>" +
+				    						"<a>" + username + "</a>" + ":&nbsp;" +
+				    						"<span>" + createtime +"</span>" +
+			    						"</div>" +
+			    					"<div class='comment-content'>" + content + "</div>"
+		    					"</li>" ;
+	        				var posit_area = $(obj).parent().parent().parent().parent().find("#anchor_ysl");
+	        				//$("#list_box").insertAfter(posit_area);//insertAfter方法只能使用一次,连续第二次使用 会覆盖前一次的内容
+	        				posit_area.after(shtml);
+	            			$("#comment_box").hide();
+	        			}	
+	        		}
+	        	});
+        	}
+        	//切换显示回复
+        	function acti(obj){
+        		var authorName;
+        		authorName = $(obj).parent().parent().find(".authorName").val();
+        		//var defw = "{$userName} 回复:"+authorName;
+        		var defw = "回复:"+authorName;//回复谁?
+        		var objx = $(obj).text();
+        		var Dox = $("#editor");
+        		if(objx == '回复'){
+        			$(obj).text("取消回复");
+        			//$(obj).after(Dox);
+        			$(Dox).find("textarea").val('');
+        			$(Dox).find("textarea").val(defw);
+        			$(obj).after(Dox);
+        			//$("#anchor_ysl").insertAfter(Dox);
+        			$(Dox).show();
+        		}else{
+        			$(obj).text("回复");
+        			$(Dox).hide();
+        		}
+        	}
+        	//提交回复
+        	function putcopy(obj){
+        		var comment = $(obj).parent().parent().find("textarea[name='comment']").val();
+        		if(comment.length < 1){
+        			alert("您输入字数过少!");
+        			return false;
+        		}
+        		var parentid = $(obj).parent().parent().parent().parent().parent().parent().parent().parent().find("input[name='parentid']").val();
+        		$.ajax({
+	        		  type:'POST',
+	                  url:"__URL__/addcomment",
+	                  data:{comment:comment,parentid:parentid},
+	        		  success:function(re){
+	        			  eval("data=" +re);
+	        			if(data == -1){
+	        				alert("操作失败,稍后重试!");
+	        			}else{
+	        				var content = data.content;
+	        				var parentid = data.parentid;
+	        				var createid = data.createid;
+	        				var username = data.username;
+	        				var createtime = data.createtime;
+	        				//var Dombox = $(obj).parent().parent().parent().parent().parent().parent().find(".comment-list");
+	        				//找到当前ul下的一个id="anchor_ysl"
+	        				var Dombox = $(obj).parent().parent().parent().parent().parent().parent().find("#anchor_ysl");
+	            			var strhtml = "<li id='list_box'><div class='comment-list-detail'><a>" + username + "</a><span>" + createtime + "</span></div><div class='comment-content'>" + content +  "<input class='authorName' type='hidden' value='" + username + "' />"+ "&nbsp;&nbsp;<span ><a id='recopy' onclick='acti(this);'>回复</a></span></div></li>";
+	            			Dombox.after(strhtml);
+	            			$(obj).parent().parent().hide();//隐藏输入框和按钮
+	            			var aobj = $(obj).parent().parent().parent().find("a");
+	            			$(obj).parent().parent().parent().find("#recopy").text("回复");
+	        			}	
+	        		}
+	        	});
+        	}
+        	function checkval(){
+        		var anws = $("#answerInput").val();
+        		var anwsl = anws.length;
+        		if(anwsl > 1){
+        			$("form:last").submit();
+        		}else{
+        			alert("请输入回答类容!");
+        		}
+        	}
+        </script>
+    </head>
+    <body>
+		<div class="k">
+			<div class="header">
+				<div class="container">
+					<h1 class="logo">
+						<if condition="$Copany_Info['picture']">
+							<img alt="logo" src="__PUBLIC__/Uploads/{$Copany_Info['picture']}" />
+							<else/>
+							<img alt="logo" src="__PUBLIC__/Images/sysAnnouncement/logo.png" />
+						</if>
+					</h1>
+					<h2 class="title">专家顾问</h2>
+					<div class="search header-search">
+						<form action="__URL__/experquestionlist" class="form search-form" method="get">
+							<input class="search-input" type="text" value="{$keywords}" name="keywords" placeholder="请输入时间如 2013-04-12或问题关键字..."/>
+							<button class="search-btn" type="submit">搜索</button>
+							<div class="header-link"><a class="btn btn-info" href="__URL__/mesetquestion">我要提问</a></div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- end header -->
+			<div class="container clearfix">
+				<div class="box2">
+					<div class="box2-header">
+						<div class="box-item">
+									<a class="expert-ask" href="__URL__/expertquestion">返回首页 &gt;&gt;</a>
+						</div>
+						<h2 class="box2-title"><span class="box2-title-txt">我要回答</span></h2>
+					</div>
+					<div class="box2-body article-list-wrap">
+						<div class="ask">
+							<div class="ask-title mb10">
+								<div class="clearfix mb10">
+									<div class="ask-title-intro">
+										<span>{$ques.title}</span>
+									</div>
+								</div>
+								<div>
+									<div class="right">
+										{$ques.createtime|date="Y-m-d h:i:s",###}
+									</div>
+									<a class="a-primary" href=javascript:;>{$ques.createid|getfieldby='id','name','user'}</a> | 分类：{$ques.topid|getfieldby='id','name','mis_expert_question_type'}/{$ques.categoryid|getfieldby='id','name','mis_expert_question_type'} | 游览<span class="text-error">{$ques.count}</span>次
+								</div>
+							</div>
+							<div class="ask-content">
+								<p>{$ques.content}</p>
+							</div>
+							<!-- 附件操作 -->
+							<if condition="$attarry">
+					            <div>
+					                <b><span style="color:black;">附件：</span></b>
+					                <span>
+					                	<ul style="list-style-type:none">
+							                <volist id="att" name="attarry">
+												<li><span style="color:black;">{$att['upname']}</span>&nbsp;<a title="{$att['upname']}" title="" href="__APP__/MisSystemAnnouncement/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank"><span style="color:#FF8000;">下载</span></a></li>
+							                </volist>
+						                </ul>
+					                </span>
+					                <br/><br/>
+					            </div>
+					       </if>
+							<div>
+								<span class="icon i-user"></span>
+								<span class="icon-txt">
+									<span>关于</span>
+									<a class="a-primary" href="__URL__/experquestionlist/typeid/{$ques.categoryid}" target="_black">{$ques.categoryid|getfieldby='id','name','mis_expert_question_type'}</a>
+									<span>的问题</span>
+								</span>
+							</div>
+							
+							<div class="alert-guide">
+								<p>感谢您为他人做出奉献,让我们携起手来,帮助更多的人.</p>
+							</div>
+							<h4><span class="text-muted">我来帮他解答：</span></h4>
+							
+								<form action="__URL__/addanwser" method="post">
+									<input type="hidden" name="quesid" value={$quesid} />
+									<div class="ask-editor">
+										<input type="hidden" name="quesid" value="{$quesid}"/>
+										<textarea class="ask-input" id="answerInput" name="anwser" placeholder="您的回答会被数十乃至数万的网友学习和参考，所以请一定对自己的回答负责，尽可能保障您的回答准确、详细和有效"></textarea>
+									</div>
+									<div class="ask-footer text-right">
+										<span>
+										</span>
+										<if condition="$link">
+											<button class="ask-btn" type="button" onclick="checkval()">提交回答</button>
+											<else/>
+											<span class="ask-btn" type="false">请先登录</span>
+										</if>
+									</div>
+								</form>		
+							<div class="answers">
+								<h3>{$countAnwser}条回答</h3>
+									<if condition="$countAnwser gt 0">
+											<volist name="lassary" id="voanw">
+													<ul class="answers-list">
+														<li>
+															<div class="answers-header">
+																<span class="right">{$voanw['anwser'].createtime|date="Y-m-d h:i:s",###}</span><!-- 1小时前 -->
+																<a class="a-primary" href="">{$voanw['anwser'].createid|getfieldby='id','name','user'}</a>
+																<span> | 回答</span>
+															</div>
+															<div class="answers-body">
+																<div class="answers-content">
+																	<p>{$voanw['anwser'].content}</p>
+																</div>
+																<if condition="$voanw['addques']['content'] neq NULL">
+																	<dl class="answers-reply" >
+																			<dt class="answers-reply-ask">追问</dt>
+																			<dd>{$voanw['addques'].content}</dd>
+																	</dl>
+																</if>
+																<div class="answers-bar clearfix mb10">
+																	<!-- 点击评论按钮展开评论列表及回复框 -->
+																	<if condition="$link">
+																		<a class="a-primary right"  onclick="toggarea(1,this)">评论</a>
+																		<else/>
+																		<a class="a-primary right">登录之后才能评论</a>
+																	</if>
+																</div>
+																<div class="comment">
+																	<div class="comment-area" >
+																		<div class="comment-body">
+																		<!-- 在末尾处追加的节点放在这里 -->
+																			<ul class="comment-list"><!-- 这里是评论循环 -->
+																			<p id="anchor_ysl" style="display:none;"></p>
+																				<if condition="$voanw['comments'] neq null">
+																					<volist name="voanw['comments']" id="coms">
+																						<li>
+																							<div class="comment-list-detail">
+																								<a >{$coms.createid|getfieldby='id','name','user'}</a>:&nbsp;
+																								<span>{$coms.createtime|date="Y-m-d h:i:s",###}</span>
+																							</div>
+																							<div class="comment-content">{$coms.content}
+																								<input class="authorName" type="hidden" value="{$coms.createid|getfieldby='id','name','user'}" />&nbsp;&nbsp;
+																								<span>
+																									<if condition="$link ">
+																										<if condition="$_SESSION[C('USER_AUTH_KEY')] neq $coms['createid']">
+																											<a id="recopy" onclick="acti(this);">回复</a><!-- 是本人评论的,不能自己回复自己的 -->
+																										</if>
+																									</if>
+																								</span>
+																							</div>
+																						</li>
+																					</volist>
+																				</if>
+																			</ul><!-- 评论结束 -->
+																		</div>
+																		<input type="hidden" name="parentid" value="{$voanw['anwser'].id}"/>
+																	</div>
+																</div>
+															</div>
+														</li>
+													</ul>
+										</volist>
+									</if>
+							</div><!-- end answers -->
+						</div><!-- end ask -->
+					</div>
+				</div><!-- end box -->
+			</div>
+			<!-- end container -->
+			<div style="display:none;">
+				<div id="comment_box">
+					<div class="editor-mini"><!--默认隐藏  -->
+						<textarea name="comment"></textarea>
+					</div>
+					<div class="comment-bar clearfix"><!--默认隐藏  -->
+						<div class="right">
+							<a  id="toggcanl" onclick="toggarea(0, this)">取消</a>&nbsp;&nbsp;
+							<a class="comment-btn" onclick="putin(this)">发布</a>
+						</div>
+					</div> 
+				</div>
+			</div>
+			<!-- 评论 -->
+			<div style="display:none;">
+				<li id="list_box">
+					<div class="comment-list-detail">
+						<a></a>
+						<span></span>
+					</div>
+					<div class="comment-content"></div>
+				</li>
+			</div>
+			<!-- 回复 -->
+			<div class="editor-mini" id="editor" style="display:none;"><!--默认隐藏  -->
+				<div>
+					<textarea name="comment" style="border:1px solid black;"></textarea>
+				</div>
+				<div class="right">
+					<a class="comment-btn" onclick="putcopy(this)">发布</a>
+				</div>
+			</div>
+			<div class="footer">
+				<p>Copyright © 2014 {:C('COPYRIGHT')}</p>
+			</div>
+		</div>
+<script>
+</script>
+    </body>
+</html>

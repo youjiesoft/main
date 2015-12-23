@@ -1,0 +1,48 @@
+{~$classNodeSettingArr = getModelClassByNodeSetting('DesingForm','add')}
+{~$appendPageContentArr = getBindTabsContent('DesingForm','','add','',$main)}
+{~$formautosetting = setFormControllAutoCreate('DesingForm' ,'add' , $main , 'insert',$vo)}
+{$appendPageContentArr[1]}
+<div class="page">
+	<div class="pageContent">
+			<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME">layoutH="40"</if>>
+				<div class="new_version_page ">
+					<form  id="DesingForm_add" {$appendPageContentArr[5]} {$formautosetting[3]} method="post" action="__APP__/DesingForm/{$formautosetting[2]}/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="{$appendPageContentArr[0]}">
+						<!-- 表单组合模式下的关联ID -->
+						<input type="hidden" name="bindid" value="{$_GET['bindid']}" />
+						<input type="hidden" name="relationmodelname" value="{$_GET['bindaname']}" /><a name='DesingForm_add_top'></a>
+						<input type="hidden" name="callbackType" value="closeCurrent" />
+						{:W('HiddenInput')}
+						{$formautosetting[1]}
+						<if condition="$_GET['viewtype'] neq 'view'">
+						<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">页面设计</span>
+						{:W('ShowRightToolBar',array('add','DesingForm'))}{:W('ShowAnchorNavi',array('DesingForm' , 'add'))}{$formautosetting[0]}</div>
+						</if>
+						<div class="new_version_page_content">
+								<!-- text组件 start -->
+								<div class="col_1_3 form_group_lay field_title" >
+									<label class="label_new">{$fields["title"]}:</label>
+									<input   type="text"  name="title" class="input_new  input_new  " value="{$vo['title']}">
+									<div class="display_none {$classNodeSettingArr['title']}">{$vo['title']}</div>
+								</div>
+								<!-- text组件 end -->
+								<!-- text组件 start -->
+								<div class="col_1_3 form_group_lay field_actionname ">
+									<label class="label_new">{$fields["actionname"]}:</label>
+									<input   type="text"  name="actionname" class="input_new  input_new  " value="{$vo['actionname']}">
+									<div class="display_none {$classNodeSettingArr['actionname']}">{$vo['actionname']}</div>
+								</div>
+								<!-- text组件 end -->
+								<!-- text组件 start -->
+								<div class="col_1_3 form_group_lay field_path ">
+									<label class="label_new">{$fields["path"]}:</label>
+									<input   type="text"  name="path" class="input_new  input_new  " value="{$vo['path']}">
+									<div class="display_none {$classNodeSettingArr['path']}">{$vo['path']}</div>
+								</div>
+								<!-- text组件 end -->
+								
+								{:W('ShowAction',array('data'=>$vo))}
+						</div>
+						<div class="clear"><span style="display:none;" class="anchornaviforshow">DesingForm_add</span><a name='DesingForm_add_bottom'></a></div>
+					</form>				</div>
+			</div>
+	</div></div>

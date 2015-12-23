@@ -1,0 +1,20 @@
+<form method="post" action="__URL__/lookupRowAccess" class="pageForm required-validate" onsubmit="return dialogSearch(this);">
+	<input type="hidden" name="step" value="2" />
+	<input name="setmodule" value="{$module}" type="hidden" />
+	<input name="issub" value="{$issub}" type="hidden" />
+	 
+	<div class="pageFormContent" layoutH="68">
+		<div class="unit">
+			<label>当前设置对象</label>
+			 <input type="hidden"  name="userid" value="" class="rowaccessOrg1.userid" />
+			<input type="text" size="30" value="" class="textInput  rowaccessOrg1.name" readonly="readonly" />
+			<a class="btnLook" lookupgroup="rowaccessOrg1" href="__URL__/lookupBackendUserList/multi/1">查找带回</a>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.nextstep}</button></li>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</div>
+</form>

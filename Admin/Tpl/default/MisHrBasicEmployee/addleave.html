@@ -1,0 +1,79 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insertleave/rel/mishrprobationemployee" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+				<input type="hidden" name="dotype" value="流程新建" />
+			<input type="hidden" name="beforeInsert" value="1" />
+			<input type="hidden" name="refreshtabs[closeall]" value="1" />  
+				<div class="contentTitle contentTitle_center">代办离职申请单
+				<input type="hidden" name="leavetype" value="4" />
+				</div>
+				<div class="pageFormContent " layoutH="105">
+				<FIELDSET>
+				<div class="tml-row">
+				{:W('ShowOrderno',array(1,'mis_hr_leave_employee'))}
+					<div class="tml-form-col">
+						<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+						<div class="tml-input-append">
+						<input type="hidden" name="employeeid" class="org1.id tml-input-num" value="{$volist.id}" check_key="id" />
+						<input type="text" readonly="readonly" name="name" value="{$volist.name}"   autocomplete="off" class="org1.name checkByInput inputCheckForButton "   >
+						<a class="input-addon input-addon-userplus" href="__URL__/lookupmanage/type/1" lookupGroup="org1">查找带回</a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+						 <input type="text" class="org1.deptname" value="{$volist.deptid|getFieldBy='id','name','mis_system_department'}" readonly="readonly" />
+					</div>
+					<div class="tml-form-col">
+						<label>职&nbsp;&nbsp;&nbsp;&nbsp;位：</label>
+						  <input type="text" class="org1.dutyname" value="{$volist.dutylevelid|getFieldBy='id','name','duty'}"  readonly="readonly" />
+					</div>
+					<div class="tml-form-col">
+						<label>岗&nbsp;&nbsp;&nbsp;&nbsp;位：</label>
+						   <input type="text" class="org1.worktypename" value="{$volist.worktype|getFieldBy='id','name','mis_hr_job_info'}"  readonly="readonly" />
+					</div>
+					<div class="tml-form-col">
+						<label>联系方式：</label>
+						<input type="text" class="textInput org1.phone" readonly="readonly"   check_key="otherphone"  value="{$volist.phone}"  />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>身份证号：</label>
+						<input name="chinaid" type="text"  readonly="readonly" value="{$volist.chinaid}" check_key="otherchinaid" class="textInput  org1.chinaid" />
+					</div>
+						<div class="tml-form-col">
+						<label>离职类型： </label>
+						<select  name="forleavetype"  class="combox">
+						  <volist name="forLeaveList" id="forLeave">
+						  	<option  value="{$key}">{$forLeave}</option>
+						  </volist>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>离职时间 ： </label>
+						<span class="xyInputWithUnit">
+						<input type="text" onfocus="WdatePicker()" name="leavedate"  value="{$now|transtime}" size="15" class="Wdate required"  onblur="changeworkage()" name="leavedate"   />
+						<span class="input-addon input-addon-calendar"></span>
+						</span>
+					</div>
+				</div>
+				</FIELDSET>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>原因描述</b></legend>
+					<div class="tml-form-row">
+					<TEXTAREA  name="leavereason" style="width:435px; height: 60px;" class="required"></TEXTAREA>
+					</div>
+				</fieldset>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>代&nbsp;办&nbsp;人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$Think.SESSION.loginUserName}" />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>代办时间：</label>
+						<input name="applicationdate" type="text" readonly="readonly" value="{$now|transTime}"  class="textInput required" />
+					</div>
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

@@ -1,0 +1,41 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$returnarr};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#missystemextendfieldaddtree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("missystemextendfieldaddtree");
+	var valid='{$model|getFieldBy="name","id","node"}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse" ><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+				<input class="js-searchZTreeSubmit" class="tree-search-input" type="text" id="dynamicconftreeSearchNodeKeys" />
+				<input id="SearchSubmit" class="searchBtn" type="button" onclick="SearchZTreeNode('missystemextendfieldaddtree','dynamicconftreeSearchNodeKeys')">
+				</div>
+			</div>
+			<ul id="missystemextendfieldaddtree" class="ztree" layoutH="45"></ul>
+		</div>
+	</div>
+	 <div id="missystemextendfieldaddBox" class="unitBox treeright">
+		<include file="addview" />
+	</div>
+</div>

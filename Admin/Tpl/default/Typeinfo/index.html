@@ -1,0 +1,50 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$typeTree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#typeinfoBox"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("typeinfoBox");
+	var valid = '所有分类';
+    var nodes = zTree.getNodesByParam("name", valid, null);
+    zTree.selectNode(nodes[0]);
+	
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div>
+        	</div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="typeinfoBoxSearchNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('typeinfoBox','typeinfoBoxSearchNodeKeys')">搜索</button>
+				</div>
+			</div>
+            <ul class="toolBar">
+                <li><a class="add" url="__APP__/Typeinfo/add/typeid/1/" title="分类_新增" onclick="addNodes(this,'typeinfoBox','id');" href="javascript:;" mask="true" width="680" height="280"><span></span></a></li>
+                <li><a class="delete" href="javascript:;" onclick="delNodes('typeinfoBox','/Typeinfo/delete/id/','TypeinfoActionBox');"><span></span></a></li>
+                <li><a class="edit" url="__APP__/Typeinfo/edit/typeid/1/id/" title="分类_编辑" width="680" height="280" onclick="editNodes(this,'typeinfoBox');" href="javascript:;"><span></span></a></li>
+            </ul>
+			<ul id="typeinfoBox" class="ztree" layoutH="43"></ul>
+		</div>
+	</div>
+	<div id="TypeinfoActionBox" class="treeright">
+		<include file="indexview"/>
+	</div>
+</div>

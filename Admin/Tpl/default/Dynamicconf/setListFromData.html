@@ -1,0 +1,105 @@
+<div class="pageContent">
+    <form method="post" action="__URL__/updatelistFromData/rel/dynamicconfBox" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+	<input type="hidden" name="md" value="{$model}"/>	
+		<!-- <table class="table" width="100%" layoutH="148">
+			<thead>
+			<tr>
+				<th>
+					<input type="checkbox" onclick="all_selectquickSearch(this,'quickSearchCss');" />选择
+				</th>
+				<th>字段英文</th>
+				<th>字段中文</th>
+				<th>字段所属表</th>
+				<th>字段类型</th>
+				<th>主键类型</th>
+				<th>允许空值</th>
+				<th>默认值</th>				
+				<th>顺序</th>
+			</tr>
+			</thead>
+			<tbody>
+			<volist id="vo" name="list">
+					<tr name="fields">
+					    <td><input type="checkbox" class="quickSearchCss" name="id[{$key}]" value="1" 
+					    <if condition="$vo['checked'] eq 1">checked</if> /><input type="hidden" name="status[{$key}]" value="{$vo['status']}" /></td>
+						<td>{$vo['name']}<input type="hidden" name="pkeys[{$key}]" value="{$vo['name']}" /></td>
+						<td>{$vo['comment']}<input type="hidden" name="showname[{$key}]" value="{$vo['showname']}" /></td>
+						<td>{$vo['tablename']}<input type="hidden" name="table[{$key}]" value="{$vo['table']}" />
+						                      <input type="hidden" name="field[{$key}]" value="{$vo['field']}" />
+						</td>
+						<td>{$vo['type']}</td>
+						<td>{$vo['primary']}
+						</td>
+						<td>{$vo['nullable']}
+						<input type="hidden" name="conditions[{$key}]" size="8" value="{$vo['conditions']}" />
+						</td>
+						<td>{$vo['default']}
+						
+						</td>						
+						<td><input type="text" name="searchsortnum[{$key}]" value="{$vo['sortnum']}" size="6"/></td>
+					</tr>
+			</volist>
+			</tbody>
+		</table> -->
+        <table class="into_table_new nbm_data_table" table_type="list" table_data='{"searching":true,"addRow":false,"paging":false}'  id="setListFromData" width="100%">
+				<thead>
+				<tr>
+					<th>
+						<input type="checkbox" onclick="all_selectquickSearch(this,'quickSearchCss');" />选择
+					</th>				
+					<th style="font-weight: 700;">字段英文</th>
+					<th style="font-weight: 700;">字段中文</th>
+					<th style="font-weight: 700;">字段帮助</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'setListFromData','into_table_new');" />列显示</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'setListFromData','into_table_new');" />导出</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'setListFromData','into_table_new');" />列排序</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'setListFromData','into_table_new');" />规则</th>
+					<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'setListFromData','into_table_new');" />消息</th>
+					<th style="font-weight: 700;">列宽度</th>
+					<th style="font-weight: 700;">关联列表</th>
+					<th style="font-weight: 700;">关联函数</th>
+					<!-- <th><input type="checkbox" onclick="all_select(this,'indexlist');" />是否搜索</th> -->
+					<th style="font-weight: 700;">排序</th>
+					<th style="font-weight: 700;">状态</th>
+					<th style="font-weight: 700;">操作</th>
+				</tr>
+				</thead>
+				<tbody>
+				<volist id="vo" name="list">
+					<tr name="fields">
+                        <td><input type="checkbox" name="id[{$key}]"      value="1"  class="quickSearchCss" <if condition="$vo['checked'] eq 1">checked</if> /></td>					
+						<td><input type="hidden"   name="name[{$key}]"     value="{$vo['name']}" />{$vo['name']}</td>
+						<td><input type="text"     name="showname[{$key}]"  value="{$vo['showname']}" style="width:80px;color:#868686;"  /></td>
+						<td><input type="text"     name="helpvalue[{$key}]" value="{$vo['helpvalue']}" style="width:80px;color:#868686;"  /></td>
+						<td>
+							<input type="checkbox" name="shows[{$key}]"    value="1" <eq name="vo['shows']" value="1">checked</eq> />
+						</td>
+						<td><input type="checkbox" name="isexport[{$key}]" value="1" <eq name="vo['isexport']" value="1">checked</eq> /></td>
+						<td><input type="checkbox" name="sorts[{$key}]"    value="1" <eq name="vo['sorts']" value="1">checked</eq> /></td>
+						<td><input type="checkbox" name="rules[{$key}]"    value="1" <eq name="vo['rules']" value="1">checked</eq> /></td>
+						<td><input type="checkbox" name="message[{$key}]"  value="1" <eq name="vo['message']" value="1">checked</eq> /></td>
+						<td><input type="text"     name="widths[{$key}]"   value="{$vo['widths']}"  style="color:#868686;"  size="6"  class="digits"  /><span class="info"></span></td>
+						<td><input type="text"     name="models[{$key}]"   value="{$vo['models']}"  style="color:#868686;"  size="15"  /><span class="info"></span></td>
+						<td><input type="text"     name="methods[{$key}]"  value="{$vo['methods']}" style="color:#868686;"  size="15"  /><span class="info"></span></td>
+						<td><input type="text"     name="sortnum[{$key}]"  value="{$vo['sortnum']}" style="color:#868686;"  size="6"/><span class="info"></span></td>
+						<td>
+							<select class="combox" name="status[{$key}]">
+								<option <if condition="$vo['status'] gt -1"> selected </if> value="1"> 启用</option>
+								<option <eq name="vo.status" value="-1"> selected </eq> value="-1">未启用</option>
+							</select>
+						</td>
+						<td><a href="__URL__/linkshow/setmodule/{$model}/key/{$key}"   style="color:#15428B;" target="navTab">关联配置</a>|<a href="__URL__/edit/md/{$model}/key/{$key}" mask="true" style="color:#15428B;" target="dialog" mask="true" width="700" height="520" title="编辑配置文件">编辑</a>|<a href="__URL__/delete/md/{$model}/key/{$key}/rel/dynamicconfBox" style="color:#15428B;" target="ajaxTodo" title="删除配置文件字段">删除</a>
+						 </td>
+					</tr>
+				</volist>
+				</tbody>
+			</table>		
+	<div class="formBar">
+		<ul>
+			<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="reset">{$Think.lang.reset}</button></li>
+				<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+</form>		
+</div>
+

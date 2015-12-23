@@ -1,0 +1,147 @@
+<script type="text/javascript">
+	// 合同类型
+	function ContractTypeCheckedAdd(obj) {
+		var $box=navTab.getCurrentPanel();
+		if (obj == "1") {
+			$box.find(".divdisplay").hide();
+			$box.find(".divdisplay_notime").show();
+		} else {
+			$box.find(".divdisplay").show();
+			$box.find(".divdisplay_notime").hide();
+		}
+	};
+	//合同类型为协议 显示协议类型
+	function protocoltypeisdisplay() {
+		var $box=navTab.getCurrentPanel();
+		var $contracttype = $box.find("#contracttype").val();
+		if ($contracttype == "协议") {
+			$box.find("#protocoltypeptage").show();
+		} else {
+			$box.find("#protocoltypeptage").hide();
+		}
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/mishrbasicemployeecontract" class="pageForm required-validate"onsubmit="return iframeCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent"/>
+			<input type="hidden" name="refreshtabs[data]" value="1" />
+		<input type="hidden" name="refreshtabs[type]" value="navTab" />
+		<div class="pageFormContent" layoutH="40">
+			<div class="keepContentCenter">
+				<div class="contentTitle contentTitle_center">员工合同信息
+				</div>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>基本信息</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+					<div class="tml-row">
+					{:W('ShowOrderno',array(1,'mis_hr_basic_employee_contract'))}
+						<div class="tml-form-col">
+							<if condition="!$vos.id" >
+								<label>姓&nbsp;&nbsp;名：</label>
+								 <div class="tml-input-append">
+								<input type="text" class="required org.name" name="name" readonly="readonly"/>
+								<input type="hidden" name="employeeid" class="org.mangid" />
+								<a class="input-addon input-addon-userplus" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a>
+							</div>	
+							<else/>
+								<label>姓&nbsp;&nbsp;名：</label>
+								<input type="text" name="name" readonly="readonly" value="{$vos['name']}"/>
+								<input type="hidden" name="employeeid" class="org.mangid" value="{$vos['employeeid']}"/>
+							</if>
+						</div>
+						<div class="tml-form-col">
+							<label>性&nbsp;&nbsp;别：</label>
+							 <input type="text" class="org.sex" name="sex"  value="{:getSelectByName('sex',$vos['sex'])}"   readonly="readonly" />
+						</div>
+						<div class="tml-form-col">
+							<label>合同类型：</label>
+							<select class="combox" onchange="protocoltypeisdisplay()" id="contracttype" name="contracttype">
+								{:getSelectByHtml('employeecontracttype','select',$vos['contracttype'])}
+							</select>
+						</div>
+						<div class="clear"></div>
+						<div class="tml-form-col" style="display:none" id="protocoltypeptage">
+							<label>协议类型：</label>
+							<select class="combox"  name="protocoltype">
+								{:getSelectByHtml('agreetypeid','select','','1')}
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label>联系电话：</label>
+						    <input type="text"  name="tel" class="org.tel" value="{$vos['tel']}"/>
+						</div>
+						<div class="tml-form-col">
+							<label>身份证号：</label>
+						    <input type="text"  name="cardid" class="org.chinaid" value="{$vos['cardid']}" readonly="readonly"/>
+						</div>
+						<div class="tml-form-col">
+							<label>户口类型：</label>
+							<input type="text" class="org.accounttypename" readonly="readonly" value="{:getSelectByname('accounttype',$vos.accounttype)}"/>
+							<input type="hidden" class="org.accounttype" name="accounttype" value="{$vos.accounttype}">
+						</div>
+					</div>
+					<div class="tml-form-row">
+						<label>家庭住址：</label>
+					    <input type="text"  name="familyaddress" class="org.address" value="{$vos['familyaddress']}" />
+					</div>
+					<div class="tml-form-row">
+						<label>通迅地址：</label>
+					    <input type="text"  name="newsleaddress" class="org.nativeaddress" value="{$vos['newsleaddress']}" />
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>合同期限</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>期限类型：</label>
+							<input type="radio"  name="limittype" value="固定期" onclick="ContractTypeCheckedAdd('2')" checked="checked"/>&nbsp;固定期
+						    <input type="radio"  name="limittype" value="无固定期" onclick="ContractTypeCheckedAdd('1')" />&nbsp;无固定期&nbsp;&nbsp;
+						</div>
+						<div class="tml-form-col">
+							<label>签订日期：</label>
+							<div class="tml-input-append">
+						    	<input type="text" name="signdate" class="Wdate required" onfocus="WdatePicker()" value="{$time|transTime}"/>
+							    <span class="input-addon input-addon-calendar"></span>
+						    </div>
+						</div>
+						<div class="tml-form-col">
+							<label>开始日期：</label>
+							<div class="tml-input-append">
+						    	<input type="text" name="starttime" class="Wdate required" onfocus="WdatePicker()" value="{$time|transTime}"/>
+							    <span class="input-addon input-addon-calendar"></span>
+						    </div>
+						</div>
+						<div class="divdisplay">
+							<div class="tml-form-col">
+									<label>结束日期：</label>
+									<div class="tml-input-append">
+									    <input type="text" name="endtime" class="Wdate" onfocus="WdatePicker()" style="display: block;"/>
+									    <span class="input-addon input-addon-calendar"></span>
+								    </div>
+							</div>
+						</div>
+						<div class="divdisplay_notime" style="display: none;">
+							<div class="tml-form-col">
+								<label>结束日期：</label>
+								<span class="tml-form-text"><span class="tml-c-darken"><b>待定</b></span></span>
+							</div>
+						</div>
+					</div>
+					
+					<div class="tml-form-row" >
+                          <label>备注：</label>
+                          <textarea name="remark" minlength="0" maxlength="100" class="textInput"></textarea>
+	               </div>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>附件信息</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+					{:W('ShowUpload')}
+				</fieldset>
+	 {:W('ShowAction')}
+            </div>
+        </div>
+	</form>
+
+	</div>
+</div>
+

@@ -1,0 +1,297 @@
+<script>
+	
+	$(function() {
+		var conf = new Object();
+		var data = '{$nodelist}';
+		conf.data = eval("(" + data + ")");//$.parseJSON(data);
+		conf.ids = '#editsubnbm1,#editsubnbm2', conf.tag = 'group,node';
+		conf.pid = 'group_id';
+		conf.tex = 'name';
+		conf.val = 'id';
+		conf.container = navTab.getCurrentPanel();
+		conf.defaultVal = '{$vo.group_id},{$vo.modelid}';
+		$.linkage(conf);
+		changedetail($('#editsubnbm2'));
+		var typeval = $("input[name='type']:checked").val();
+		if (typeval == 1) {
+			$("div.xyz_neibu").show();
+			$("div.xyz_url").hide();
+		} else {
+			$("div.xyz_neibu").hide();
+			$("div.xyz_url").show();
+		}
+	});
+	function panelDeleteRole(obj) {
+		var $box = navTab.getCurrentPanel();
+		$box.find(obj).parents("div.removediv").remove();
+		$box.find("._itemIndex").each(function(i) {
+			$(this).text(i + 1);
+		});
+	}
+	
+	
+	
+	function changedetail(obj) {
+		var showsort = {$showsort};
+		var jsonvo = {$jsonvo};
+		//var checkfieldarr = $.makeArray(jsonvo.checkfield);
+		//var checkfieldlength = checkfieldarr.length;
+		//alert(checkfieldlength);
+		//console.log(checkfieldarr);
+		var $box = navTab.getCurrentPanel();
+		var curmodelid = $("select[name='modelid']",$box).val();
+		if(curmodelid != jsonvo.modelid){
+			jsonvo = {};
+		}
+		var showvoid = $box.find(".showvoid").val();
+		if (!showvoid) {
+			var $id = $(obj).val();
+			$.ajax({
+						type : "POST",
+						url : "__URL__/lookupdetail",
+						global : false,
+						data : {
+							'modelid' : $id,
+							'jsonvo':jsonvo
+						},
+						success : function(response) {
+							$("div.xyz_selectFieldShow").html('');
+							response = DWZ.jsonEval(response);
+							//console.log(response);
+							if(jsonvo.modelid == $id){
+								$("#paneldesignaddresult_edit").loadUrl("__URL__/lookupdetailadd/type/1/modelname/"+ response.modelname,{'akey':'panel',jsonvo:jsonvo},function() { $("#paneldesignaddresult_edit").find("[layoutH]").layoutH();}, false);
+								$("#moredesignaddresult_edit").loadUrl("__URL__/lookupdetailadd/type/1/modelname/" + response.modelname,{'akey':'more',jsonvo:jsonvo,'akey':'more'},function() { $("#moredesignaddresult_edit").find("[layoutH]").layoutH();	}, false);
+							}else{
+								$("#paneldesignaddresult_edit").loadUrl("__URL__/lookupdetailadd/type/1/modelname/"+ response.modelname,{'akey':'panel'},function() { $("#paneldesignaddresult_edit").find("[layoutH]").layoutH();}, false);
+								$("#moredesignaddresult_edit").loadUrl("__URL__/lookupdetailadd/type/1/modelname/" + response.modelname,{'akey':'more'},function() { $("#moredesignaddresult_edit").find("[layoutH]").layoutH();	}, false);
+							}
+							
+							if(response){
+								//$box.find(".input-addon-add").attr("attjson",response);
+								var tbodyhtml = '<div class=" into_table_lay ">';
+								tbodyhtml += '<table class="into_table_new nbm_data_table xyz_move" table_data=\'{"ordering":true,"searching":true,"re_id":1,"search_column":0,"addRow":false,"paging":false,"scrollY":"200px","isYMInfo":false}\' id="accesscarrierdata">';
+								tbodyhtml += '<thead>';
+								tbodyhtml += '<tr>';
+								tbodyhtml += '<th></th>';
+								tbodyhtml += '<th>字段名称</th>';
+								tbodyhtml += '<th>选择</th>';
+								tbodyhtml += '<th>显示宽度%</th>';
+								tbodyhtml += '<th>数据排序</th>';
+								tbodyhtml += '</tr>';
+								tbodyhtml += '</thead>';
+								tbodyhtml += '<tbody>';
+								$.each(response,function(i,v) {	
+									if (v.name) {
+										var cked = '';
+										var voshowwidth = '';
+
+										var datasort = "asc";
+										var displayasc = "none";
+										var displaydesc = "none";
+										var sortcheck = "";
+										//var voshowsort = '';
+										if(curmodelid == jsonvo.modelid){
+											var checkfieldobj = jsonvo.checkfield;
+											$.each(checkfieldobj,function(ci,cv){
+												if(v.name==cv){
+													cked = 'checked="checked"';
+													voshowwidth = jsonvo["showwidth"][v.name]?jsonvo["showwidth"][v.name]:'';
+													//voshowsort = jsonvo["showsort"][v.name];
+												}
+											})
+											if(showsort){
+												if(showsort[v.name]){
+													if(showsort[v.name] == 'asc'){
+														datasort = "asc";
+														displayasc = "inline-block";
+														sortcheck = 'checked="checked"';
+													}else if(showsort[v.name] == 'desc'){
+														datasort = "desc";
+														displaydesc = "inline-block";
+														sortcheck = 'checked="checked"';
+													}
+												}	
+
+											}
+										}
+										
+										tbodyhtml += '<tr>';
+										tbodyhtml += '<td><div class="dragdiv">';
+										tbodyhtml += '<a href="javascript:;" class="">';	
+										tbodyhtml += '<span class="icon-move"></span>';		
+										tbodyhtml += '</a>';	
+										tbodyhtml += '</div></td>';									
+										tbodyhtml += '<td><div class="list_group_lay">'+v.showname+'</div></td>';
+										tbodyhtml += '<td><div class="list_group_lay"><input class="list_input"  type="checkbox" name="checkfield['+v.name+']" value="'+v.name+'" '+cked+'></div></td>';
+										tbodyhtml += '<td><div class="list_group_lay"><input class="list_input"  type="text" name="showwidth['+v.name+']" value="'+voshowwidth+'"></div></td>';
+										tbodyhtml += '<td><div class="list_group_lay">'
+										tbodyhtml += '<input class="list_input"  type="checkbox" name="showsort['+v.name+']" value="'+datasort+'" onchange="datasortchange(this)" '+sortcheck+'>'
+										tbodyhtml += '<button type="button" class="sortstype" sort="asc" style="display:'+displayasc+';"  onclick="sortstypechange(this);" >升序</button>';
+										tbodyhtml += '<button type="button" class="sortstype" sort="desc" style="display:'+displaydesc+';"  onclick="sortstypechange(this);" >降序</button>';
+										tbodyhtml += '</div></td>';
+										tbodyhtml += '</tr>';
+									}
+								});
+								tbodyhtml +=  '</tbody>';
+								tbodyhtml +=  '</table>';
+								tbodyhtml +=  '</div>';	
+								$("div.xyz_selectFieldShow").html(tbodyhtml);
+								datatable= initTableWNEWOne("#xyz_selectFieldShow");
+								$(".xyz_move tbody").dragsort({
+									dragSelector : "div.dragdiv",
+									dragBetween : true,
+									dragEnd : saveThOrder
+								});
+							}
+						}
+					});
+		}
+		$box.find(".showvoid").attr("value", '');
+	}
+
+function saveThOrder(){
+	
+}
+function showfieldorhidden(obj){
+	$(obj).closest('div').find("div.xyz_selectFieldShow").toggle();
+	console.log($(obj));
+	console.log($(obj).closest('div').find("div.xyz_selectFieldShow"));
+}
+</script>
+<style>
+.tml-form-row label.tmp_label {
+	margin-left: 0px;
+	width: 120px;
+	float: none;
+	font: 14px/30px "Microsoft Yahei", "微软雅黑", sans-serif;
+}
+
+.tml-form-row label.tmp_label:hover {
+	color: #006699;
+}
+
+</style>
+
+<div class="page">
+	<div class="pageContent">
+		<form method="post"	action="__URL__/updatesub/rel/MisSystemPanelDesingMasBox" target="ajaxTodo"	class="pageForm required-validate"	onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="id" value="{$id}">
+			<input type="hidden" name="refreshtabs[data]" value="1">
+ 			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<div class="pageFormContent" layoutH="40">
+			<div style="width:90%" class="new_version_page">
+			<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">面板管理修改</span></div>
+			<div class="new_version_page_content">	
+				<div class="tml-row">
+
+					<div class="tml-form-col">
+						<label>面板名称：</label>
+						<input type="text" class="required" name="name" value="{$vo.name}">
+					</div>
+					<div class="tml-form-col">
+						<label>组名称：</label>
+						<select name="group_id" class="select2"  style="width:150px;" id="editsubnbm1">
+							<option>--请选择--</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>所属模块：</label>
+						<select name="modelid" class="select2"  style="width:150px;"
+							onchange="changedetail(this)" id="editsubnbm2">
+							<option>--请选择--</option>
+						</select>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-row ">
+						<label>引用方式：</label>
+						<input  onclick="choisetype(this);" name="type" checked="checked" type="radio" value="1"	<if condition="$vo['type'] eq 1">checked</if>/>系统内部
+						<input onclick="choisetype(this);" name="type" type="radio" value="2"<if condition="$vo['type'] eq 2">checked</if>/>url地址
+					</div>
+					<div class="tml-form-col">
+							<label>显示条数：</label>
+							<input type="text" class="required" name="num" value="{$vo.num}">
+						</div>	
+						<div class="tml-form-col">
+							<label>是否滚动：</label>
+							<select name="issroll" class="select2"  style="width:150px;">
+								{:getSelectByHtml('debit','select',$vo['issroll'])}
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label>显示字段名称：</label>
+							<select name="isbasepanel" class="select2"  style="width:150px;">
+								{:getSelectByHtml('debit','select',$vo['isbasepanel'])}
+							</select>
+						</div> 
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-row xyz_url">
+						<label>外部url地址：</label>
+						<input type="text" name="url" placeholder="外部url请加http://"
+							value="{$vo.url}">
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>链接方式：</label>
+							<select name="target" class="select2"  style="width:150px;">
+								<option value='navTab'
+									<if condition="$vo['target'] eq 'navTab'">selected</if>
+									>框架显示
+								</option>
+								<option value='_blank'
+									<if condition="$vo['target'] eq '_blank'">selected</if>
+									>新开页面
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-row">
+							<label onclick="showfieldorhidden(this);">显示字段：</label>
+							<div class="xyz_selectFieldShow" ></div>
+							
+							
+						</div>
+					</div>
+				<!-- 	<div class="tml-row xyz_neibu">
+						<div class="tml-form-row " id="paneldesignaddresult_edit">
+							<include file="lookupdetailadd" />
+						</div>
+					</div> -->
+					<div class="tml-row ">
+						<div class="tml-form-row">
+							<label>面板条件<span class='_itemIndex'></span>：</label>
+							<div id="paneldesignaddresult_edit">
+							<include file="lookupdetailadd" />
+							</div>
+						</div>
+					</div>
+					<div class="tml-row ">
+						<div class="tml-form-row ">
+							<label title="【更多按钮】条件">【更多按钮】条件<span class='_itemIndex'></span>：</label>
+							<div id="moredesignaddresult_edit">
+								<include file="lookupdetailadd" />
+							</div>
+						</div>
+					</div>
+					<div class="tml-row">
+						
+						
+					</div>
+				</div>
+				<div class="formBar">
+					<ul><li>
+					<button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button>
+					</li>
+					</ul>
+				</div>
+				</div>
+				</div>
+				</div>
+				
+		</form>
+
+	</div>
+</div>
+

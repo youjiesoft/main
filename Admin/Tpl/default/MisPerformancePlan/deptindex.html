@@ -1,0 +1,49 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+    <input type="hidden" name="dwzpageNum" value="1"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+    <input type="hidden" name="numPerPage" value="{$numPerPage}" />
+     <input type="hidden" name="type" value="{$type}">
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformanceplan_add "><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="dialog"  rel="__MODULE__add" mask="true" width="850" height="500" title="绩效计划-新增"><span><span class="icon icon-plus icon_lrp"></span>新增</span></a></li></if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form onSubmit="return  divSearch(this,'misperformanceplan');" action="__URL__" method="post">
+	        <input type="hidden" name="type" value="{$type}">
+	        <div class="searchBar">
+	            <table class="searchContent">
+	                <tr>
+	                    <include file="Public:quickSearchCondition" />
+	                </tr>
+	            </table>
+	        </div>
+	    </form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+				<th><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+				<volist id="vo" name="detailList">
+					<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+				</volist>
+			</tr>
+		</thead>
+		<tbody>
+			<include file="dwzloadindex" />
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="misperformanceplan" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

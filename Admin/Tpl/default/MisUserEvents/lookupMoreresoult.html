@@ -1,0 +1,42 @@
+<style>
+    .wai{padding:10px;margin:0px auto;}
+</style>
+<form method="post" action="__URL__/lookupMoreresoult" class="pageForm required-validate" onsubmit="return iframeCallback(this,dialogAjaxDone);">
+    <div>
+        <table class="table" width="100%"  layoutH="62">
+                <thead>
+                <tr>
+                    <th>主要类容</th>
+                    <th>日程类型</th>
+                    <th>重要程度</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>关联人员</th>
+                </tr>
+                </thead>
+                <tbody>
+                <volist id="voList" name="voList">
+                    <tr>
+                        <td>{$voList['text']|missubstr=###,20,true}</td>
+                        <td>{$voList['scheduletype']|excelTplselected=###,'1:个人日程,2:工作日程'}</td>
+                        <td>{$voList['importancedegree']|excelTplselected=###,'1:一般处理,2:优先处理,3:急需处理'}</td>
+                        <td>{$voList['startdate']|transTime='Y-m-d H:i:s'}</td>
+                        <td>{$voList['enddate']|transTime='Y-m-d H:i:s'}</td>
+                        <td>{$voList['personname']|missubstr=###,40,true}</td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+                        <button type="button" class="close">{$Think.lang.close}</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</form>

@@ -1,0 +1,74 @@
+<script type="text/javascript">
+	function auditProcessFlowsAjaxDone(json){
+		DWZ.ajaxDone(json);
+		if (json.statusCode == DWZ.statusCode.ok) {
+			//by 杨东 刷新根据ID进行
+			if (json.rel) {
+				navTabPageBreak({realnavTab : true}, json.rel);
+			}
+			$.pdialog.closeCurrent();
+			var dialog = $("body").data("MisOaItemsWaitForedit");
+			$.pdialog.close(dialog);
+		}
+	}
+	function stopFlowsProcess(form){
+		alertMsg.confirm("该流程将被终止，您的后续节点将无法收到该流程，是否继续？", {
+			okCall: function(){
+				var $form = $(form);
+				if (!$form.valid()) {
+					return false;
+				}
+				$form.attr("action", "__URL__/stopProcess/rel/misoaitemswaitforview");
+				$.ajax({
+					type : form.method || 'POST',
+					url : $form.attr("action"),
+					data : $form.serializeArray(),
+					dataType : "json",
+					cache : false,
+					success : function(json) {
+						var j = DWZ.jsonEval(json);
+						if (j.checkfield != "") {
+							$form.find("input[name='" + j.checkfield + "']").val(j.data);
+						}
+						DWZ.ajaxDone(json);
+						if (json.statusCode == DWZ.statusCode.ok) {
+							//by 杨东 刷新根据ID进行
+							if (json.rel) {
+								navTabPageBreak({realnavTab : true}, json.rel);
+							}
+							$.pdialog.closeCurrent();
+							var dialog = $("body").data("MisOaItemsWaitForedit");
+							$.pdialog.close(dialog);
+						} else {
+							$form.attr("action","__URL__/auditProcess/rel/misoaitemswaitforview");
+						}
+					},
+					error : DWZ.ajaxError
+				});
+			}
+		});
+		return false;
+	}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/auditProcess/rel/misoaitemswaitforview" class="pageForm required-validate" onsubmit="return validateCallback(this, auditProcessFlowsAjaxDone)">
+	<input type="hidden" name="id" value="{$_REQUEST['instanceid']}" />
+	<input type="hidden" name="itemsid" value="{$_REQUEST['id']}" />
+	<input type="hidden" name="model" value="MisOaItems" />
+	<div class="pageFormContent" layoutH="58">
+		<div class="tml-form-row">
+			<label>处理意见：</label>
+			<textarea class="required" name="doinfo" style="width: 330px;height: 100px;"></textarea>
+		</div>
+		<!-- 附件信息 -->
+		{:W('ShowUpload')}
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button type="submit" class="tml-btn tml-btn-blue">{$Think.lang.save}</button></li>
+			<li><button type="button" class="tml-btn tml-btn-primary" onclick="stopFlowsProcess(this.form)">终止</button></li>
+			<li><button type="button" class="close tml-btn">{$Think.lang.close}</button></li>
+		</ul>
+	</div>
+	</form>
+</div>

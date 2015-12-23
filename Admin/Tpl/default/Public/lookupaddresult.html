@@ -1,0 +1,432 @@
+ <script>
+ var dragTemplate = '';	
+ $("#listorder1, #listorder2").dragsort({ dragSelector: "div", dragBetween: true, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+  function selecttips_over(obj){
+	    $(obj).children("span").css("display","block");
+	    $("#listorder1 .delete").css("display","none");//屏蔽
+	    $("#listorder2 .delete").css("display","none");
+	}
+	function selecttips_out(obj){
+	    $(obj).children("span").css("display","none");
+	}
+	function selectdragTemplate(){
+	   var itemLength = $('#listorder1 .itemlist').length;//有效节点数
+	   var virifyItem = $("#authorcount").val();//验证成功节点数
+	   var virifyItem = $('#listorder1 .itemlist font').length;//有效节点数
+	   //"流程结束、结束"位置不变
+	   var theFirstHtml = '<b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b><div style="cursor: move;" class="b d1 k"><input value="0" name="tid[]" type="hidden">开始</div><div style="cursor: move;" class="process_ico"></div><b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>';
+	   var theLastHtml = '<b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b><div style="cursor: move;" class="b d1 k"><input value="0" name="tid[]" type="hidden">结束</div><b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>';
+	   var itemRight = itemLength+1;//右移一位
+	   if($("#listorder1 li:last-child").html() != theLastHtml){
+	   	$("#listorder1 .start:nth-child("+itemRight+")").insertAfter("#listorder1 li:last-child");
+	    }
+	   if($("#listorder1 li:first-child").html() != theFirstHtml){
+	        $("#listorder1 .start:nth-child(2)").insertBefore("#listorder1 li:first-child");
+	    }
+	}
+ var order = '{$order}';
+ function getreturndata(data){
+	 var fileds = Array();
+	 var show = data.filed[0];
+	 var hiden = data.filed[1];
+	 var index = data.index;
+	 $html='';
+	 var idStr = '';
+	 var item = data.data;
+	 for(var i in item){
+		$html+="<input type='hidden' name='"+data.fieldname+"s[]' value="+item[i][hiden]+"><input type='hidden' name='"+data.fieldname+"stitle[]' value="+item[i][show]+">   "+item[i][show]+",";
+		idStr+=','+item[i][hiden];
+	 }
+	 $("div.lookupselectUser").eq(index).prev().find('a[lookupitems]').attr('lookupitems',idStr);
+	 $("div.lookupselectUser").eq(index).prev().find('a[lookupitems]').attr('lookupkey',hiden);
+	 $("div.lookupselectUser").eq(index).html($html);
+ }
+ function addresultlookupconfiginfo($form) {
+ 	return validateCallback($form, function(json){
+ 		DWZ.ajaxDone(json);
+ 		if(json.statusCode==DWZ.statusCode.ok){
+ 		 	try{
+ 		 		var curData = $.parseJSON(json.data);
+ 		 		var html ="";
+ 		 		if(order == "processcondition_batch"){
+ 		 			html +='<div class="condition_value">'+curData.jsshowmap+'</div>';
+ 	 		 		html +='<input type="hidden" name="processcondition" value="'+curData.showmap+'">';
+ 	 		 		html +='<input type="hidden" name="processrulesinfo" value="'+curData.list+'">';
+ 	 		 		html +='<input type="hidden" name="processrules" value="'+curData.map+'">';
+ 		 		}else{
+ 		 			if("{$multitype}"){
+ 		 				var akey = '{$akey}';
+ 		 				if(akey){
+ 		 					$rulesname="rules["+akey+"]";
+ 	 		 				$rulesinfoname="rulesinfo["+akey+"]";
+ 	 		 				$showrulesname="showrules["+akey+"]";
+ 	 		 				$endsqlname="endsql["+akey+"]";
+ 		 				}else{
+ 		 					$rulesname="rules[]";
+ 	 		 				$rulesinfoname="rulesinfo[]";
+ 	 		 				$showrulesname="showrules[]";
+ 	 		 				$endsqlname="endsql[]";
+ 		 				} 		 				
+ 		 			}else{
+ 		 				$rulesname="rules";
+ 		 				$rulesinfoname="rulesinfo";
+ 		 				$showrulesname="showrules";
+ 		 				$endsqlname="endsql";
+ 		 			}
+ 		 			html +='<div class="condition_value">'+curData.jsshowmap+'</div>';
+ 	 		 		html +='<input type="hidden" name='+$showrulesname+' value="'+curData.showmap+'">';
+ 	 		 		html +='<input type="hidden" name='+$rulesinfoname+' value="'+curData.list+'">';
+ 	 		 		html +='<input type="hidden" name='+$rulesname+' value="'+curData.map+'">';
+ 	 		 		html +='<input type="hidden" name='+$endsqlname+' value="'+curData.endsql+'">';
+ 		 		}
+ 		 		if(order){
+ 		 			$("."+order).html(html.toString());
+ 		 		}
+ 		 		$(".p_addresult"+order).attr("listarr",curData.list);
+ 		 	}catch(e){  
+ 			 	$(this).logs('返回数据异常！'+e.message);
+ 		 	}
+ 			$.pdialog.closeCurrent(); 
+ 		}
+ 	});
+ }
+ //移除select
+ function clearinforpresult(obj){
+	$(obj).closest('span').next("div.lookupselectUser:first").html('');
+	$(obj).prev().attr("lookupitems","");
+ }
+ //添加获取光标选中复选框
+ function checkinput(obj,$name){
+	 if($("."+$name+order).attr("checked")!="checked"){
+		 $("."+$name+order).attr("checked","checked");
+			// console.log($("."+$name+order));
+			 $("."+$name+order).change();
+	 }
+	
+ }
+$(function(){
+	$('div.pcc_left input[type="checkbox"]').change(function(){
+		var box = $.pdialog.getCurrent();
+		// 取得当前显示值
+			var curStr = $(this).closest('div').next().find('label:first').text();
+		 	var val=$(this).val();
+		if($(this).prop('checked')){
+			// 写入新项
+			// 构建可拖动区域
+			var str = '<li class="itemID" keys="'+curStr+'"><div style="cursor: move;" class="process_box"><span>'+curStr+'</span></div><input type="hidden" name="tiprole[]" value="'+val+'"/><input name="centertip['+val+']" type="text"/></li>';
+			// 写入到指定位置。
+			$('#listorder1').append(str);
+			// 构建文本框区域
+			var leftliObj =$('<li>');var rightliObj = $('<li>');
+			var leftiptObj =$('<input>');var rightiptObj = $('<input>');
+			// 写入左侧区域
+			leftiptObj.attr('name','leftipt[]');
+			leftliObj.append(leftiptObj);
+			//$('div.trade_left ul',box).append(leftliObj);
+			$('div.trade_left ul').append(leftliObj);
+			// 写入右侧区域
+			rightiptObj.attr('name','rightipt[]');
+			rightliObj.append(rightiptObj);
+			$('div.trade_right ul').append(rightliObj);
+		}else{
+			// 从列表中移除现有项
+			// 得到当前项在拖动列表中的序号
+			var obj = $('#listorder1').find('li[keys="'+curStr+'"]');
+			var index = obj.index();
+			obj.remove();
+			$('div.trade_left ul',box).find('li').eq(index).remove();
+			$('div.trade_right ul',box).find('li').eq(index).remove();
+		}
+	});
+});
+$(document).ready(function(){
+	var zNodes = {$typeTree};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			onClick: zTreeOnClick
+		},
+		async: {
+			enable: true,
+			url: "__URL__/lookuptreetable",
+			autoParam: ["id","tableinfo"]
+		}
+	};
+	$.fn.zTree.init($("#MisSystemDataControlSqlMas"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("MisSystemDataControlSqlMas");
+	var valid='{$check}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+(function ($) { 
+    $.fn.extend({ 
+        insertAtCaret: function (myValue) { 
+            var $t = $(this)[0]; 
+            if (document.selection) { 
+                this.focus(); 
+                sel = document.selection.createRange(); 
+                sel.text = myValue; 
+                this.focus(); 
+            } else 
+                if ($t.selectionStart || $t.selectionStart == '0')
+{ 
+                    var startPos = $t.selectionStart; 
+                    var endPos = $t.selectionEnd; 
+                    var scrollTop = $t.scrollTop; 
+                    $t.value = $t.value.substring(0, startPos) + myValue + $t.value.substring(endPos,$t.value.length); 
+                    this.focus(); 
+                    $t.selectionStart = startPos + myValue.length;
+                    $t.selectionEnd = startPos + myValue.length; 
+                    $t.scrollTop = scrollTop; 
+                } else { 
+                    this.value += myValue; 
+                    this.focus(); 
+                } 
+        } 
+    }) 
+})(jQuery) ; 
+function zTreeOnClick(e,treeId,treeNode) {
+	var treeObj=$.fn.zTree.getZTreeObj("MisSystemDataControlSqlMas");
+	 nodes = treeObj.getSelectedNodes(true);
+	 $(".sqltxt").insertAtCaret(nodes[0]['tableinfo']);
+}
+function appendtxt(val){
+	 $(".sqltxt").insertAtCaret(val);
+}
+ </script>
+ <style>
+ .trade_lay{width:80%; height:100%; margin:0 auto;}
+ .trade_left,.trade_right {width:30%;height:auto;}
+ .trade_center{width:180px;height:auto;padding-right:10px;}
+ .trade_center input {width: 150px;border: 1px solid #d8d8d8;background:none;border-radius: 4px;line-height:29px;padding:0;}
+ .trade_center ul li .process_box{width:150px;margin:10px 0px 15px;text-align:center;}
+ .trade_left ul li input,.trade_right ul li input{margin:8px 0 50px 0; min-width:100px;border: 1px solid #d8d8d8;background:none;border-radius: 4px;line-height:33px;padding:0px;}
+ </style>
+  <form method="post" action="__URL__/lookupinsertresult" class="pageForm required-validate" onsubmit="return addresultlookupconfiginfo(this)">
+  <input type="hidden" name="order" value="{$order}"/>
+ <div class="pageContent">
+		<div class="pageFormContent applecloth" layoutH="100">
+ 		<div class="tabs" currentIndex="0" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<li><a href="javascript:;"><span>基础设置</span></a></li>
+					<li><a href="javascript:;"><span>高级设置</span></a></li>
+					<li><a href="javascript:;"><span>sql语句</span></a></li>
+					<li><a href="javascript:;"><span>高级sql模式</span></a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent">
+			<div class="tabsContent_result">
+		<input type="hidden"  name="modelname" value="{$_REQUEST['nodename']}"/>
+            <div class="process_condition_lay">
+                <div class="process_condition_header">
+                    <span class="pch_one">条件</span>
+                    <span class="pch_two">字段</span>
+                </div>
+                {~$nbmkey=0;}
+                <volist name='rlistarr' id="rlistVo" key='i'>
+                    <div class="tml-row process_condition_con">
+                        <div  class="tml-form-col pcc_left">
+                            <input type="checkbox" class="{$rlistVo.name}{$order}"  value="{$rlistVo.name}"  <if condition="$listarr[$rlistVo.name]">checked="checked"</if> name="roleexp[]" />
+                            <input type="hidden"  value="{$rlistVo.showname}" name="roleexptitle[{$rlistVo.name}]" />
+                            <Input type="hidden"  name="roleexptype[{$rlistVo.name}]" value="{$rlistVo.isdis}">
+                        </div>
+                        <div class="tml-form-col pcc_right">
+                            <label title="{$rlistVo.showname}">{$rlistVo.showname}</label>
+                            <?php  $symbol=$listarr[$rlistVo['name']][0]['symbol'];?>
+                            <if condition="$rlistVo.isdis eq 'select'">
+                            <?php $showval=explode(',',$listarr[$rlistVo['name']][0]['showval']); $vals=implode(',',$listarr[$rlistVo['name']][0]['val']);  ?>
+                            <select  name="{$rlistVo.name}f"  class="combox" >
+                             {:getSelectByHtml('roletextinexp','select',$symbol,'1,2')}
+                             </select>
+                            <span style="position: relative; top: 7px">
+                                <a lookupitems="{$vals}" lookupkey="{$typearr[$rlistVo['name']]['hidden']}" class="condition_btn condition_add"  title="请选择{$rlistVo.showname}" onclick="checkinput(this,'{$rlistVo.name}')"  width="460" height="500"  mask="true"   lookupgroup="ORG{$i}"  	href="__URL__/lookupSingle"  rel="__MODULE__lookupSingle_asdasdsa"   param="model={$typearr[$rlistVo['name']]['modelname']}&conditions=status,1&showtitle={$rlistVo['showname']}&show={$typearr[$rlistVo['name']]['show']}&hidden={$typearr[$rlistVo['name']]['hidden']}&keywords={$typearr[$rlistVo['name']]['keywords']}&selectlist={$typearr[$rlistVo['name']]['selectlist']}&callback=getreturndata&index={$nbmkey}&name={$rlistVo.name}">添加</a>
+                                <a class="condition_clear condition_btn" onclick="clearinforpresult(this);" href="javascript:;">清除</a>
+                            </span>
+                             <div class="lookupselectUser">
+                             <volist  name="listarr[$rlistVo['name']][0]['val']" id="vals" key='i'>
+                              <input type="hidden" value="{$vals}" name="{$listarr[$rlistVo['name']][0]['name']}s[]" />
+                           	  <input type="hidden" value="{$showval[$i-1]}" name="{$listarr[$rlistVo['name']][0]['name']}stitle[]"/>
+                            {$showval[$i-1]},
+                            </volist>
+                             </div>
+                             {~$nbmkey++;}
+                            </if>
+                            <if condition="$rlistVo.isdis eq 'text'">
+                            <if condition="$rlistVo.fieldtype eq 'int'">
+                             <select name="{$rlistVo['name']}f" class="combox" >
+                                 {:getSelectByHtml('roleinexp','select',$symbols)}
+                            </select>
+                            <else/>
+                            <select  name="{$rlistVo['name']}f" class="combox" >
+                                 {:getSelectByHtml('roletextinexp','select',$symbol,'3,4')}
+                            </select>
+                            </if>
+                            <if condition="$rlistVo.name eq 'auditState'">
+                            	<select name="{$rlistVo['name']}text" onchange="checkinput(this,'auditState')" class="combox" >
+                             		{:getSelectByHtml('auditStateVal','select',$listarr[$rlistVo['name']][0]['val'])}
+                            	</select>
+                            <elseif condition="$rlistVo.name eq 'operateid'"/>
+                            	<select name="{$rlistVo['name']}text" onchange="checkinput(this,'operateid')" class="combox" >
+                             		{:getSelectByHtml('operateidVal','select',$listarr[$rlistVo['name']][0]['val'])}
+                            	</select>
+                            <else/>	 
+                            	<input type="text" class="textInput" onclick="checkinput(this,'{$rlistVo.name}')"  value="{$listarr[$rlistVo['name']][0]['val']}"   name="{$rlistVo['name']}text" size="30" />
+                            </if>
+                            </if>
+                            <?php $symbols=$listarr[$rlistVo['name']][0]['symbols']; $symbole=$listarr[$rlistVo['name']][0]['symbole'];?>
+                            <if condition="$rlistVo.isdis eq 'time'">
+                            <select name="{$rlistVo['name']}sf" class="combox" >
+                                 {:getSelectByHtml('roleinexp','select',$symbols)}
+                            </select>
+                            <div class="tml-input-append">
+                                <input type="text"  onfocus="WdatePicker()" onclick="checkinput(this,'{$rlistVo.name}')"   value="{$listarr[$rlistVo['name']][0]['vals']}" name="{$rlistVo['name']}stime" class="Wdate" />
+                                <span class="input-addon input-addon-calendar"></span>
+                            </div>
+                            <select name="{$rlistVo['name']}ef" class="combox" >
+                                     {:getSelectByHtml('roleinexp','select',$symbole)}
+                                </select>
+                                <div class="tml-input-append">
+                                <input type="text"   onfocus="WdatePicker()"  <if condition="$listarr[$rlistVo['name']][0]['vale']!='' && $listarr[$rlistVo['name']][0]['vale']!='$time'">value="{$listarr[$rlistVo['name']][0]['vale']}" </if>   name="{$rlistVo['name']}etime" class="Wdate" />
+                                <span class="input-addon input-addon-calendar"></span>
+                                <span style="float:left;color:red">*不填为至今</span>
+                            </div>
+                            </if>
+                            <if condition="$rlistVo.isdis eq 'number'">
+                            <select name="{$rlistVo['name']}sf" class="combox" >
+                                  {:getSelectByHtml('roleinexp','select',$symbols)}
+                            </select>
+                                <input type="text" class=" textInput" onclick="checkinput(this,'{$rlistVo.name}')" <if condition="$rlistVo.unitchange">value="{$listarr[$rlistVo['name']][0]['vals']|unitExchange=###,$rlistVo['unitchange'],$rlistVo['unitshow'],2}" <else/>value="{$listarr[$rlistVo['name']][0]['vals']}" </if>   name="{$rlistVo['name']}snum"  />
+                                <span class="icon_elm icon_unit" title="{$rlistVo.unitshow|getFieldBy='danweidaima','danweimingchen','mis_system_unit'}">{$rlistVo.unitshow|getFieldBy='danweidaima','danweimingchen','mis_system_unit'}</span>
+                            <select name="{$rlistVo['name']}ef" class="combox" >
+                                      {:getSelectByHtml('roleinexp','select',$symbole)}
+                            </select>
+                                    <input type="text" class=" textInput"    <if condition="$rlistVo.unitchange">value="{$listarr[$rlistVo['name']][0]['vale']|unitExchange=###,$rlistVo['unitchange'],$rlistVo['unitshow'],2}" <else/>value="{$listarr[$rlistVo['name']][0]['vals']}" </if>   name="{$rlistVo['name']}enum"   />
+                            		<input type="hidden" name="{$rlistVo['name']}unitchange" value="{$rlistVo.unitchange}"/>
+                            		<input type="hidden" name="{$rlistVo['name']}unitshow" value="{$rlistVo.unitshow}"/>
+                            		<span class="icon_elm icon_unit" title="{$rlistVo.unitshow|getFieldBy='danweidaima','danweimingchen','mis_system_unit'}">{$rlistVo.unitshow|getFieldBy='danweidaima','danweimingchen','mis_system_unit'}</span>
+                            </if>
+                        </div>
+                    </div>
+                </volist>
+			</div>
+		</div>
+			<!-- 以下为高级设置 -->
+				<div class="trade_lay"> 
+				 <!-- <ul class="trade_ul" id="listorder1" style="float: left;" data-listidx="0">
+				
+					<li class="">
+						<input type="text" value="">
+						<div class="process_box itemID" style="cursor: move;">
+						<span>11111</span>
+						</div>
+						<input type="text" value="">
+					</li>
+					
+					<li class="">
+						<div class="process_box itemID" style="cursor: move;">
+							<span>2222</span>
+						 </div>
+					</li>
+					<li><input type="text"></li>
+				</ul> --> 
+				
+					<div class="trade_left left">
+						<ul id="trade_left">
+							<volist name="listarr" id="listvo">
+							<if condition="$listvo[0]['name'] neq 'sql' &&   $listvo[0]['name'] neq 'avgsql'  ">
+								<li class="itemID" keys="{$listvo[0]['title']}">
+									<input name="leftipt[]" value="{$listvo[0]['leftipt']}"/>
+								</li>
+							</if>
+							</volist>
+						</ul>
+					</div>
+					<div class="trade_center left">
+						<ul id="listorder1" style="float: left;" data-listidx="0">
+							 <volist name="listarr" id="listvo">
+							<if condition="$listvo[0]['name'] neq 'sql' &&   $listvo[0]['name'] neq 'avgsql'  ">
+								<li class="itemID" keys="{$listvo[0]['title']}"><div style="cursor: move;" class="process_box"><span>{$listvo[0]['title']}</span></div><input type="hidden" name="tiprole[]" value="{$listvo[0]['name']}"/><input name="centertip[{$listvo[0]['name']}]"   value="{$listvo[0]['centertip']}"/></li>
+							</if>
+							</volist> 
+						</ul>
+					</div>
+					<div class="trade_right left">
+						<ul id="trade_right">
+							<volist name="listarr" id="listvo">
+							<if condition="$listvo[0]['name'] neq 'sql' &&   $listvo[0]['name'] neq 'avgsql'  ">
+								<li>
+								<input name="rightipt[]" value="{$listvo[0]['rightipt']}"/>
+								</li>
+								</if>
+							</volist>
+						</ul>
+					</div>
+				</div>
+				<div>
+					<textarea name="mapsql" placeholder="testtesttesttesttesttest"  style="font-size:15px;width:750px;height:335px;border-radius: 4px;margin: 10px 0 10px 20px;">
+					 {$listarr['mapsql'][0]['sql']}
+					</textarea>
+					 <span class="tips_allot" style="padding: 2px 8px;margin-left: 20px;"><i class="icon-comments"></i> 注：请勿写入执行关键词 update、add、delete....</span>
+				
+				</div>
+				<div>
+			<!-- sql语句 -->
+				<div class="treeleft add_result_left">
+				    <div class="close">
+				        <div class="clearfix p5">
+				            <div class="member_searcher">
+				                <input class="add_key left" id="MisSystemDataControlSqlMasSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+				                <button class="btn_member icon-search right" onclick="SearchZTreeNode('MisSystemDataControlSqlMas','MisSystemDataControlSqlMasSearchNodeKeys')" type="button"></button>
+				            </div>
+				        </div>
+				        <ul id="MisSystemDataControlSqlMas" class="ztree" layoutH="118"></ul>
+				    </div>
+				</div>
+				<div id="MisSystemIntercalateMasBox" class="unitBox treeright arc_right">
+			    <div class="add_result_center">
+			        <ul class="add_result_ul">
+			            <li><span onclick="appendtxt('+')"> + </span></li>
+			            <li><span onclick="appendtxt('-')"> - </span></li>
+			            <li><span onclick="appendtxt('*')"> * </span></li>
+			            <li><span onclick="appendtxt('/')"> / </span></li>
+			            <li><span onclick="appendtxt('()')"> ()</span></li>
+			            <li><span onclick="appendtxt('===')"> = </span></li>
+			            <li><span onclick="appendtxt('&&')"> && </span></li>
+			            <li><span onclick="appendtxt('||')">||</span></li>
+			            <li><span onclick="appendtxt('>')"> > </span></li>
+			            <li><span onclick="appendtxt('>=')"> >= </span></li>
+			            <li><span onclick="appendtxt('<')"> < </span></li>
+			            <li><span onclick="appendtxt('<=')"> <= </span></li>
+			            <li><span onclick="appendtxt('<>')"> <> </span></li>
+			             <li><span onclick="appendtxt('<eval></eval>')">eva</span></li>
+			        </ul>
+			    </div>
+			    <div class="add_result_right">
+			    <!-- {$info} -->
+			        <textarea  class="sqltxt" name="avgsql" ><if condition="$listarr['avgsql']">{$listarr['avgsql'][0]['avgsql']}<else/></if></textarea>
+			    </div>
+			</div>
+				<div class="clear"></div>
+               </div>
+				 
+		</div>
+			</div>
+		</div>
+		</form>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+</div>

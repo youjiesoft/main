@@ -1,0 +1,159 @@
+
+<style>
+.tml-form-row label.tmp_label {
+	margin-left:0px;
+	width: 120px;
+	float: none;
+	font: 14px/30px "Microsoft Yahei", "微软雅黑", sans-serif;
+}
+.tml-form-row label.tmp_label:hover {
+	color:#006699;
+}
+.intoss_table{
+    width: 95%;
+    height: auto;
+    margin: 0 auto;
+    line-height: 30px;
+    font-size: 15px;
+}
+.intoss_table th,
+.intoss_table td{
+    border: 1px solid #d8d8d8;
+    text-align: center;
+}
+.intoss_table th{
+    background: #fafafa;
+    box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.1);
+    line-height: 40px;
+}
+.intoss_table tfoot tr{
+    line-height: 40px;
+}
+.intoss_table td{
+    padding-left: 3px;
+}
+.intoss_table tr td span{
+    margin: 0 auto;
+    display: inline-block;
+}
+.intoss_table tr td input{
+    border: 1px solid #e8e8e8;
+    font-family: "Microsoft Yahei";
+    border-radius: 4px;
+    font-size: 15px;
+    padding-left: 3px;
+}
+.intoss_table_trash_tr,.add_col_btn{
+    padding: 3px 8px;
+    background: #e1455e;
+    color: #fff;
+    border-radius: 4px;
+    margin-top: -1px;
+    font-size: 12px;
+}
+.add_col_btn{
+    background: #0099e6;
+    margin-right: 20px;
+}
+.add_col_btn:hover,.intoss_table_trash_tr:hover{
+    background: #446DB2;
+    transition: background 0.8s;
+    color: #fff;
+}
+.add_col_input,.add_col_input.focus{
+    width: 30px;
+    height: 18px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    /*border-right: none;*/
+    margin: 8px 5px 0px 0px;
+    padding-left: 5px;
+}
+</style>
+ <script>
+function callbackRealtion(json){
+	var $box=navTab.getCurrentPanel();
+	$box.find("input[name='viewrelation']").val(json.data.vo);
+	$box.find("span.js-viewrelation-class").html('');
+	$box.find(".js-viewrelation-class").text(json.data.show);
+	//$box.find("input[name='showviewrelation']").val(json.data.show);
+	if(json.data.vo==''||json.data.vo==null||json.data.vo=='[]'){
+		$box.find("button.relation_view").hide();
+	}else{
+		$box.find("button.relation_view").show();
+	}
+	
+	$.pdialog.closeCurrent();
+}
+</script>
+<form method="post" action="__URL__/lookupDataInsertViewRoamRaletion/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, callbackRealtion)">
+	<div layoutH="50">
+	<input type="hidden" name="sfjson" value='{$newsfjson}'>
+	<input type="hidden" name="sourcemodel" value="{$sourcemodel}"/>
+	<input type="hidden" name="targetmodel" value="{$targetmodel}"/>
+	<input type="hidden" name="sourcetable" value="{$sourcetable}"/>
+	<volist name="newsf" id="vsf">
+	<div targettable="{$key}" >
+	<!-- 组件遍历完成 -->
+	<div><span class="left">来源表：{$sourceName}</span><span class="right">视图：{$vsf|getFieldBy='name','title','mis_system_dataview_mas'}【视图】</span></div>
+	<php> $k = $key</php>
+	<table class="into_table_new nbm_data_table" table_data='{"scrollY":"200px","searching":false}' table_type="edit">
+		<thead>
+			<tr>
+				<th template_key="serial" template_name="data[nd][]">序号	</th>
+				<th template_key="select" template_name="data[sourcefield][{$vsf}][]"
+					template_data='{$source_data|json_encode}'
+					template_class="required" style="min-width:170px;width:170px;">来源真实表字段</th>
+				<th template_key="select" template_name="data[viewfield][{$vsf}][]"
+					template_data='{$source_view[$vsf]|json_encode}'
+					template_class="required" style="min-width:170px;width:170px;">视图配置字段</th>
+				<th template_key="action" template_name="data[id][]">操作</th>
+			</tr>
+		</thead>
+		<tbody id="my_guanlianguanxi_edit" class="clearfix">
+							<volist name="viewrelation" id="rv" key="key2">
+							<if condition="$rv['viewtable'] eq $vsf">
+								<tr >
+									<td>
+										<span class="serial_number ">{$key2}</span>										
+									</td>									
+									<td>
+										<div class="list_group_lay">
+											
+												<select class="list_select2" name="data[sourcefield][{$vsf}][]" >
+														<option value=''>请选择</option>
+													<volist name="source_data" id="sour" key="key">
+														<option <if condition="$rv.sfield eq $sour.value">selected</if> value="{$sour.value}">{$sour.name}</option>
+													</volist>
+												</select>
+										
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay">
+												<select name="data[viewfield][{$vsf}][]" class="list_select2 ">
+													<option value=''>请选择</option>
+													<volist name="source_view[$vsf]" id="mym" key="key">
+														<option <if condition="$rv.vfield eq $mym.value">selected</if> value="{$mym.value}">{$mym.name}</option>
+													</volist>
+												</select>
+											
+										</div>
+									</td>
+									<td><button class="into_table_new_trash_tr " del_id="0" del_table="undefined" del_url="undefined" type="button">删除</button><input type="hidden" value="0" name="datatable[1][undefined][id]"><button post_id="undefined" post_table="undefined" post_url="undefined" rel_type="save" class="save_row_btn" type="button" style="display:none;">保存</button></td>								
+								</tr>
+								</if>
+							</volist>
+						</tbody>
+	</table>
+	</div>
+	</volist>
+	<div class="formBar">
+		<ul>
+			<li id="salesprojectsave"><button type="submit"  class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+</div>
+	
+
+</form>

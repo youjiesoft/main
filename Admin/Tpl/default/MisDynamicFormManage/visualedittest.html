@@ -1,0 +1,500 @@
+
+
+<style>
+.dragItemsContainer .dragItems{cursor: move; margin: 5px 5px ; width:150px; height:30px; background-color:#e7eff0;}
+.dragItems:after{ content: attr(title) }
+.dragItems .nbmmove {display:none}
+.dragItemsContainer .dragItems:hover{border:1px red dotted;}
+#nbmDroppable .nbmmove:hover {outline: 1px red dashed;background-color: #8bc5ff;}
+#nbmDroppable .nbmmove:hover a.nnbm_delete_plain_ctl:after{ content:'✗'; font-size:1.5em; cursor: pointer; color: red; margin: 10px 0 0 8px}
+
+
+#nbmDroppable{width: 100%; min-height: 760px; margin-left:10px; }
+#nbmDroppable li{ width: 48%; float: left;}
+#nbmDroppable .nbmmove{outline: 1px #8bc5ff dashed; }
+#nbmDroppable .divider-content{height: 25px;}
+/*#nbmDroppable div.tml-row {outline: 1px #8bc5ff dashed; margin-top:10px;}
+#nbmDroppable div.tml-row  div.tml-row{ outline: 2px red dashed; margin-top:10px; }
+*/
+#nbmDroppable .line{ width: 100%}
+#nbmDroppable .noline{ width: 48%;}
+.nbm_highlight{outline: 1px #8bc5ff dashed ;background-color: #8bc5ff;min-height: 32px;padding-bottom: 10px;}
+.rightToggleCollapse{background-color: #e7eff0; border-style: solid;border-width: 1px 1px 0;display: block;height: 32px;overflow: hidden;}
+</style>
+<script>
+
+
+
+function DynamicnavTabDone(json){
+    DWZ.ajaxDone(json);
+    if(json.statusCode==DWZ.statusCode.ok){
+        
+        navTabAjaxDone(json);
+        navTab.closeCurrentTab();
+    }
+}
+
+var tagIndetity = 'checkorder';
+var containerIndetity = 'nbmDroppable';
+var tagIndex=0;
+var reservedField={$reservedField};//系统保留字段名称
+var allowType=['select','radio','checkbox'];//允许配置默认选项数据标签 
+var containerObj = $('#'+containerIndetity);
+
+/**
+ * 获取组件属性值对象  
+ */
+ function getTag(container , type , name){
+	return $(container).find('input[type="'+type+'"][name^="'+name+'"]');
+}
+/**
+ * 为右侧prop属性赋值 
+ */
+function setProp(obj) {
+	$('#hidObj').val($(obj).attr(tagIndetity));
+	$('#fields').val(getTag(obj, 'hidden', 'fields').val());
+	$('#title').val(getTag(obj, 'hidden', 'title').val());
+	$('#checkfunc').val(getTag(obj, 'hidden', 'checkfunc').val());
+	$('#searchlist').attr('checked', (getTag(obj, 'hidden', 'searchlist').val() > 0 ? true: false));
+	$('#columnscheckexist').attr('checked', (getTag(obj, 'hidden', 'columnscheckexist').val() > 0 ? true: false));
+	$('#tabletype').val(getTag(obj, 'hidden', 'tabletype').val());
+	$('#defaultval').val(getTag(obj, 'hidden', 'defaultval').val());
+	$('#length').val(getTag(obj, 'hidden', 'length').val());
+	$('#showoption').val(getTag(obj, 'hidden', 'showoption').val());
+	
+	/* ***************************************************
+     *                   关联查询初初始化
+     ***************************************************** */
+	// 临时保存值
+	var temp1 = getTag(obj, 'hidden', 'subimporttableobj').val();
+	var temp2 = getTag(obj, 'hidden', 'subimporttablefieldobj').val();
+	var temp3 = getTag(obj, 'hidden', 'subimporttablefield2obj').val();
+
+	$('#subimporttableobj').val(temp1);
+	$("#subimporttablefieldobj").val(temp2);
+	$("#subimporttablefield2obj").val(temp3);
+		// end 
+     if($('#subimporttableobj option').length <= 1){
+         $.ajax({
+         	url:'__URL__/getTables',
+         	type:'post',
+         	dataType:'json',
+         	success:function(data){
+					
+         		if(data){
+         			var opt= '<option value="">请选择映射表</option>';
+         			$.each(data ,function(k,v){
+         				opt += '<option value="'+k+'">'+v+'</option>';
+         			});
+         			$('#subimporttableobj').html(opt);
+         			$('#subimporttableobj').val(getTag(obj, 'hidden', 'subimporttableobj').val());
+         			if(temp2){
+         	        	$.ajax({
+         	                url:'__URL__/comboxgetTableField',
+         	                type:'post',
+         	                data:{table:temp1},
+         	                dataType:'json',
+         	                success:function(data) {
+         	                    if(data) {
+         	                        var opt;
+         	                        $.each(data ,function(k,v){
+         	                            opt += '<option value="'+v[0]+'">'+v[1]+'</option>';
+         	                        });
+
+         	                        
+         	                        $('#subimporttablefieldobj').html(opt);
+         	                        $('#subimporttablefield2obj').html(opt);
+
+         	                        
+         	                        var subimporttablefieldobjVal = '';
+         	                        subimporttablefieldobjVal = isNullorEmpty(getTag(obj, 'hidden', 'subimporttablefieldobj').val())?getTag(obj, 'hidden', 'subimporttablefieldobj').val():'';
+         	                        $("#subimporttablefieldobj").val(subimporttablefieldobjVal);
+         	                        
+         	                        var subimporttablefield2objVal = '';
+         	                        subimporttablefield2objVal = isNullorEmpty(getTag(obj, 'hidden', 'subimporttablefield2obj').val())?getTag(obj, 'hidden', 'subimporttablefield2obj').val():'';
+         	                        $("#subimporttablefield2obj").val(subimporttablefield2objVal);
+         	                    }
+         	                }
+         	            });
+         	        }
+         	        
+         		}
+         	}
+         });
+     }else{
+    	 var subimporttableobjVal = '';
+         if(isNullorEmpty(getTag(obj,'hidden','subimporttableobj').val())){
+        	 subimporttableobjVal = getTag(obj,'hidden','subimporttableobj').val();
+         }
+        $("#subimporttableobj").val(subimporttableobjVal);
+        if(temp2){
+        	$.ajax({
+                url:'__URL__/comboxgetTableField',
+                type:'post',
+                data:{table:temp1},
+                dataType:'json',
+                success:function(data) {
+                    if(data) {
+                        var opt;
+                        $.each(data ,function(k,v){
+                            opt += '<option value="'+v[0]+'">'+v[1]+'</option>';
+                        });
+                        
+                        $('#subimporttablefieldobj').html(opt);
+                        $('#subimporttablefield2obj').html(opt);
+                        
+                        var subimporttablefieldobjVal = '';
+                        subimporttablefieldobjVal = isNullorEmpty(getTag(obj, 'hidden', 'subimporttablefieldobj').val())?getTag(obj, 'hidden', 'subimporttablefieldobj').val():'';
+                        $("#subimporttablefieldobj").val(subimporttablefieldobjVal);
+                        
+                        var subimporttablefield2objVal = '';
+                        subimporttablefield2objVal = isNullorEmpty(getTag(obj, 'hidden', 'subimporttablefield2obj').val())?getTag(obj, 'hidden', 'subimporttablefield2obj').val():'';
+                        $("#subimporttablefield2obj").val(subimporttablefield2objVal);
+                    }
+                }
+            });
+        }
+//     	getTag(obj, 'hidden', 'subimporttablefieldobj').val(temp2);
+ //    	getTag(obj, 'hidden', 'subimporttablefield2obj').val(temp3);
+     	
+        //$('#subimporttableobj').val(getTag(obj, 'hidden', 'subimporttableobj').val());
+      	//$('#subimporttablefieldobj').val(getTag(obj, 'hidden', 'subimporttablefieldobj').val());
+      	//$('#subimporttablefield2obj').val(getTag(obj, 'hidden', 'subimporttablefield2obj').val());
+     }
+     /* ***************************************************
+      *                   关联查询初初始化 end
+      ***************************************************** */
+      
+ 	setTag();
+}
+/**
+ * 给组件属性赋值 
+ */
+function setTag() {
+	var orderObj = $('#hidObj').val();
+	if (orderObj) {
+		var container = $('#' + containerIndetity + ' li[' + tagIndetity + '="' + orderObj + '"]');
+		$('#fields').unbind('blur');
+		$('#fields').blur(function() {
+			var check = $('#hidObj').val();
+			var curAllNames = new Array();
+			$('input[type="hidden"][name^="fields"]', container).each(function(k, v) {
+				if (check != $(this).parent().attr(tagIndetity)) {
+					curAllNames.push($(this).val())
+				}
+			});
+			if ($.inArray($(this).val(), reservedField) > -1) {
+				alert('当前输入：' + $(this).val() + ' 为系统保留使用 ！请更换');
+				$(this).focus();
+				$(this).val(check);
+				return
+			}
+			if ($.inArray($(this).val(), curAllNames) > -1) {
+				alert('当前输入：' + $(this).val() + ' 已存在，请更换');
+				$(this).focus();
+				$(this).val(check);
+				return
+			}
+			if (isNullorEmpty(check)) {
+				var curObj = container;
+				curObj.attr('names', $(this).val());
+				var tagName = $(this).val();
+				$('input[type="hidden"]', curObj).each(function(k, v) {
+					var cname = $(this).attr('name');
+                    var temp = cname.split('[');
+                    $(this).attr('name',temp[0]+'['+tagName+']');
+                    if($(this).attr('name').indexOf('fields') > -1){
+                        $(this).val(tagName);
+                    }
+				})
+			}
+		});
+		
+		$('#title').unbind('blur');
+		$('#title').blur(function() {
+			getTag(container, 'hidden', 'title').val($(this).val());
+			$('li[checkorder="' + orderObj + '"]').find('label:first').text($(this).val())
+		});
+		$('#checkfunc').unbind('change');
+		$('#checkfunc').change(function() {
+			getTag(container, 'hidden', 'checkfunc').val($(this).val())
+		});
+		$('#searchlist').unbind('click');
+		$('#searchlist').click(function() {
+			getTag(container, 'hidden', 'searchlist').val($(this).attr('checked') ? '1': '0')
+		});
+		$('#columnscheckexist').unbind('click');
+		$('#columnscheckexist').click(function() {
+			getTag(container, 'hidden', 'columnscheckexist').val($(this).attr('checked') ? '1': '0')
+		});
+		$('#tabletype').unbind('change');
+		$('#tabletype').change(function() {
+			getTag(container, 'hidden', 'tabletype').val($(this).val())
+		});
+		$('#defaultval').unbind('blur');
+		$('#defaultval').blur(function() {
+			getTag(container, 'hidden', 'defaultval').val($(this).val())
+		});
+		$('#length').unbind('blur');
+		$('#length').blur(function() {
+			getTag(container, 'hidden', 'length').val($(this).val())
+		});
+		$('#showoption').unbind('blur');
+		$('#showoption').blur(function() {
+			getTag(container, 'hidden', 'showoption').val($(this).val())
+		});
+		/*$('#subimporttableobj').unbind('blur');
+		$('#subimporttableobj').blur(function() {
+			getTag(container, 'hidden', 'subimporttableobj').val($(this).val())
+		});
+		$('#subimporttablefieldobj').unbind('blur');
+		$('#subimporttablefieldobj').blur(function() {
+			getTag(container, 'hidden', 'subimporttablefieldobj').val($(this).val())
+		});
+		$('#subimporttablefield2obj').unbind('blur');
+		$('#subimporttablefield2obj').blur(function() {
+			getTag(container, 'hidden', 'subimporttablefield2obj').val($(this).val())
+		});*/
+		/* ********************************************
+	    *               绑定表 
+	    ********************************************** */
+	    $("#subimporttableobj").unbind('change');
+	    $('#subimporttableobj').change(function(){
+	    	getTag(container, 'hidden', 'subimporttableobj').val($(this).val());
+	    	
+	         var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+	         if(isNullorEmpty(check)){
+	                 getTag(container, 'hidden', 'subimporttableobj').val($(this).val());
+	                 getTag(container, 'hidden', 'subimporttablefieldobj').val('');
+					 getTag(container, 'hidden', 'subimporttablefield2obj').val('');
+					 
+					 if(!isNullorEmpty($(this).val())){
+						 var opt ='<option value="">请选择映射字段</option>';
+						 $('#subimporttablefieldobj').html(opt);
+						 $('#subimporttablefield2obj').html(opt);
+						 return;
+					}
+	                 $.ajax({
+	                     url:'__URL__/comboxgetTableField',
+	                     type:'post',
+	                     data:{table:$(this).val()},
+	                     dataType:'json',
+	                     success:function(data) {
+	                         if(data) {
+	                             var opt;
+	                             $.each(data ,function(k,v){
+	                                 opt += '<option value="'+v[0]+'">'+v[1]+'</option>';
+	                             });
+	                             
+	                             $('#subimporttablefieldobj').html(opt);
+	                             $('#subimporttablefield2obj').html(opt);
+	                             
+	                             var subimporttablefieldobjVal = '';
+	                             subimporttablefieldobjVal = isNullorEmpty(getTag(container, 'hidden', 'subimporttablefieldobj').val())?getTag(container, 'hidden', 'subimporttablefieldobj').val():'';
+	                             $("#subimporttablefieldobj").val(subimporttablefieldobjVal);
+	                             
+	                             var subimporttablefield2objVal = '';
+	                             subimporttablefield2objVal = isNullorEmpty(getTag(container, 'hidden', 'subimporttablefield2obj').val())?getTag(container, 'hidden', 'subimporttablefield2obj').val():'';
+	                             $("#subimporttablefield2obj").val(subimporttablefield2objVal);
+	                         }
+	                     }
+	                 });
+	         }
+	    });
+	    $("#subimporttablefieldobj").unbind('change');
+	    $('#subimporttablefieldobj').change(function(){
+	    	getTag(container, 'hidden', 'subimporttablefieldobj').val($(this).val())
+	    });
+	    $("#subimporttablefield2obj").unbind('change');
+	    $('#subimporttablefield2obj').change(function(){
+	    	getTag(container, 'hidden', 'subimporttablefield2obj').val($(this).val())
+	    });
+    /* ********************************************
+    *               绑定表  end
+    ********************************************** */
+	}
+}
+
+function creaHidden(order , c){
+	return order;
+}
+$(function(){
+	var tagIndex = containerObj.children().length;
+	$('#nbmDroppable').sortable({
+		revert:false,
+		opacity: 0.6 ,
+		helper:'clone',
+		placeholder:'noline nbm_highlight',
+		start:function(e,u){
+		 if(u.item.attr('class').indexOf('dragItems')>-1){
+			 var c = u.item.children();
+			 c.removeClass('nbmmove');
+			 u.item.removeClass();
+			 u.item.removeAttr('title');
+			 u.item.removeAttr('style');
+			 u.item.attr('data',c.attr('data'));
+			 u.item.addClass('nbmmove');
+			 if(u.item.children() && u.item.children().attr('class').indexOf('tml-form-col')>-1){
+				 u.item.addClass('noline');
+			 }else{
+				 u.item.addClass('line');
+			 }
+			 u.item.append($('<input type="hidden" name="catalog" value="'+c.attr('data')+'" />'));
+			 u.item.append($('<input type="hidden" name="sort" value="" />'));
+			 u.item.append($('<input type="hidden" name="fields" value="" />'));
+			 u.item.append($('<input type="hidden" name="ids" value="" />'));
+			 u.item.append($('<input type="hidden" name="title" value="" />'));
+			 u.item.append($('<input type="hidden" name="checkfunc" value="" />'));
+			 u.item.append($('<input type="hidden" name="issearchlist" value="" />'));
+			 u.item.append($('<input type="hidden" name="columnscheckexist" value="" />'));
+			 u.item.append($('<input type="hidden" name="defaultval" value="" />'));
+			if(c.attr('data')=='textarea'){
+				u.item.append($('<input type="hidden" name="tabletype" value="TEXT" />'));
+				u.item.append($('<input type="hidden" name="length" value="255" />'));
+			}else if(c.attr('data')=='radio' || c.attr('data')=='select'){
+				u.item.append($('<input type="hidden" name="tabletype" value="INT" />'));
+				u.item.append($('<input type="hidden" name="length" value="10" />'));
+		    }else if(c.attr('data')=='checkbox'){
+		    	u.item.append($('<input type="hidden" name="tabletype" value="VARCHAR" />'));
+		    	u.item.append($('<input type="hidden" name="length" value="50" />'));
+			}else{
+				u.item.append($('<input type="hidden" name="length" value="50" />'));
+				u.item.append($('<input type="hidden" name="tabletype" value="VARCHAR" />'));
+			}
+			u.item.append($('<input type="hidden" name="showoption" value="" />'));
+			u.item.append($('<input type="hidden" name="subimporttableobj" value="" />'));
+			u.item.append($('<input type="hidden" name="subimporttablefieldobj" value="" />'));
+			u.item.append($('<input type="hidden" name="subimporttablefield2obj" value="" />'));
+
+			 
+			 u.item.attr('onclick','setProp(this)');
+		 }
+		 /** 更改当当前点位符的样式  **/
+		 if(u.item.attr('class')== 'line'){
+             $(u.placeholder).removeClass();
+             $(u.placeholder).addClass('line nbm_highlight');
+         }else{
+        	 $(u.placeholder).removeClass();
+             $(u.placeholder).addClass('noline nbm_highlight');
+            
+         }
+         
+		//生成编号 
+         if(u.item.attr('checkOrder')==undefined){
+             // 保证不重复 
+             while(containerObj.find('li[names="'+u.item.children().attr('data')+tagIndex+'"]').length > 0){
+            	 tagIndex ++;
+             }
+			u.item.find('label:first').text(u.item.find('label:first').text()+'__'+tagIndex);
+			u.item.attr('checkOrder',u.item.children().attr('data')+tagIndex);
+			u.item.find('input[type="hidden"]').each(function(){
+			$(this).attr('name', $(this).attr('name')+'['+u.item.attr('data')+tagIndex+']');
+				if($(this).attr('name').indexOf('fields[') > -1){
+					$(this).val(u.item.attr('data')+tagIndex);	
+				}
+				if($(this).attr('name').indexOf('title') > -1){
+					$(this).val(u.item.find('label:first').text());
+				}
+			});
+			tagIndex++;
+        }
+        return u;
+		},
+		deactivate:function(e,u){
+			var allItem = containerObj.find('.nbmmove');
+            allItem.each(function(k,v){
+           	 $(v).find('input[type="hidden"][name^="sort"]').val(k);
+            });
+		}
+		
+	}).disableSelection();
+	$('#toolBarPanel li').draggable({
+		helper:'clone',
+		addClasses:false,
+		start:function(e , u){
+		$("#nbmDroppable").css({'background-color': '#ccc',height:$("#nbmDroppable").height()+70});
+			// 在从左侧拖取时显示组件效果 
+        	var item = $(u.helper);
+            u.item= item;
+            var c = u.item.children();
+            u.item.removeClass();
+            u.item.html(c.html());
+            u.item.attr('data',c.attr('data'));
+            u.item.addClass('nbm_highlight');
+            /*if(c.attr('class').indexOf('tml-form-row') >-1){
+                $(this).draggable('option', 'placeholder', 'line nbm_highlight');
+            }else{
+                $(this).draggable('option', 'placeholder', 'noline nbm_highlight');
+            }*/
+           // return u;
+       	},
+       	stop:function(e,u){
+        	$("#nbmDroppable").removeAttr('style');//不清空样式，不然无法拖入组件
+        },
+		connectToSortable:'#nbmDroppable'
+	});
+	 $("#rightToolbar").toggle(function () {
+       	$('#rightToolbar_c').animate({ width: 'toggle', opacity: 'toggle' }, "slow");
+       }, function () {
+       	$('#rightToolbar_c').animate({ width: 'toggle', opacity: 'toggle' }, "slow");
+    });
+ $("#formName").unbind('blur');
+    $('#formName').blur(function(){
+        $('h2.form-affix-title').text($(this).val());
+    });
+});
+</script>
+<div class="page">
+    <div class="pageContent">
+    <form id="nbmForm" method="post" action="<if condition="$vo.actiontitle">__URL__/visualmodify<else/>__URL__/visualadd</if>" class="pageForm required-validate" onsubmit="return iframeCallback(this,DynamicnavTabDone);" >
+        <div class="pageFormContent" layoutH="58">
+             <!-- 编辑区预览 -->
+             <div class="pageContent">
+                 <div class="pageFormContent applecloth anchorsToolBarParent" layoutH="56">
+                     <div class="keepContentCenter form-affix-content">
+                        <!-- 标题 -->
+                        <H2 class="contentTitle contentTitle_center form-affix-title">
+                        <if condition="$vo.actiontitle">
+                            {$vo.actiontitle}
+                            <input type="hidden" name="excelsource" value="{$vo.tpl}" />
+                            <input type="hidden" name="dynamicformid" value="{$vo.id}" />
+                            
+                        <else/>
+                                                                        请在属性中设置表单属性
+                        </if>
+                            <span class="auto_code">
+                                <b>No.</b>
+                                <span class="xyNextButtonDisable"></span>
+                            </span>
+                        </H2>
+							<!-- 列表 -->
+							<ul id="nbmDroppable">
+							{$html}
+							</ul>
+							<!-- 列表end -->
+						</div>
+					</div>
+				</div>
+				<!-- 编辑区预览 end-->
+			</div>
+			<!-- 工具框 -->
+			<div class="" style="position: fixed; top:150px;">
+			<include file="./Tpl/default/MisDynamicFormManage/leftMenu.html"/>
+        	</div>
+			<!-- 工具框end -->
+			<!-- 属性框 -->
+			<div class="" style="position: fixed;right:20px; top:150px;">
+				<include file="./Tpl/default/MisDynamicFormManage/rightMenu.html"/>
+			</div>
+			<!-- 属性框end -->
+				<div class="formBar">
+            <ul>
+            <if condition="$_SESSION.a eq 1 or $_SESSION.misdynamicformmanage_insert">
+                <li><button class="tml-btn tml-btn-primary" type="submit"><if condition="$step eq 1">{$Think.lang.nextstep}<else />{$Think.lang.save}</if></button></li>
+            </if>
+                <li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+            </ul>
+        </div>
+    </form>
+    </div>
+</div>

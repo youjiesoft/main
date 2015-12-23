@@ -1,0 +1,42 @@
+<form class="pageForm required-validate"  onsubmit="return validateCallback(this);" action="__URL__/saveSetPanelRoleUser/" method="post" novalidate="novalidate">
+    <input type="hidden" name="id" value="{$rolelist['id']}">
+	<input type="hidden" name="partid" value="{$partid}">
+    <input type="hidden" name="type" value="{$type}">
+    <div class="pageContent tml-bg-white" style="border-right:1px #99BBE8 solid">
+	<div class="panelBar">
+		<ul class="toolBar">
+		    <li class="">
+			<a class="edit" href="#">
+			    <span>系统面板</span>
+			</a>
+		    </li>
+		</ul>
+	</div>
+	<div class="pageFormContent" layoutH="132">
+	 <if condition="$aBasepanel">
+		<fieldset>
+		    <legend class="fieldset_legend_toggle"><b>动态面板</b></legend>
+		    <volist name="panellist" id="basevo">
+			<div class="tml-checkbox left tml-w250 tml-m10">
+			    <label style="width:200px;">
+				<input type="checkbox" name="panlerole[]" value="{$basevo.id}" <if condition="$basevo.isrole">checked</if> >
+				{$basevo.name}&nbsp; 
+			    </label>
+			</div>
+		    </volist>
+		</fieldset>
+	    </if> 
+
+	    
+	</div>
+	<div class="panelBar panelPageBar" style="padding-right:20px;">
+
+		<if condition="$partid">
+		    <if condition="$_SESSION.a eq 1 or $_SESSION.missystemreportrole_savesetpanelroleuser">
+			<button class="tml-btn tml-btn-s1 right" type="submit">{$Think.lang.save}</button>
+		    </if>
+		</if>
+
+	</div>
+    </div>
+</form>

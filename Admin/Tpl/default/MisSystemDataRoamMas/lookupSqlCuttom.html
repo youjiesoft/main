@@ -1,0 +1,160 @@
+<script>
+
+var sqlbox = $.pdialog.getCurrent();
+var navbox = navTab.getCurrentPanel();
+var objname = '{$objname}';
+function callbackSqlCuttom(json){
+	DWZ.ajaxDone(json);
+	if(json.statusCode==DWZ.statusCode.error){
+		return false;
+	}
+	var data = JSON.parse(json.data);
+	var parten = objname.substring(5);
+	var pre = objname.substring(0,5);
+	if(pre=='expdo'){
+		var button = '<button type="button"  class="tml_task_btn nqq_load_btn" onclick="clickchecksql(this,\'expdo\')">查看</button>';
+		button += '<input type="hidden" name="expremark'+parten+'" value="'+data.sqlstr+'">';
+		button += '<input type="hidden" name="sqlcuttomarr'+parten+'" value=\''+data.data+'\'>';
+		//-----开始--【exp和del同步】------
+		var delremarkbutton = '<button type="button" style="background:blue;" class="tml_task_btn nqq_load_btn" onclick="clickchecksql(this,\'deldo\')">查看</button>';
+		delremarkbutton += '<input type="hidden" name="delremark'+parten+'" value="'+data.sqlstr+'">';
+		delremarkbutton += '<input type="hidden" name="delsqlcuttomarr'+parten+'" value=\''+data.data+'\'>';
+		var selecthtml = '<div class="list_group_lay">';
+			selecthtml += '<select name="deldo'+parten+'" value="3"  class="list_select2 " onchange="rechangefun(this);">';
+			selecthtml += '<option value="1">直接替换</option>';
+			selecthtml += '<option value="2">函数处理</option>';
+			selecthtml += '<option value="3">自定义SQL</option>';
+			selecthtml += '<option value="4">人工设置</option> ';
+			selecthtml += '</select>';
+			selecthtml += '</div>';
+		var deltr = $("select[name='"+objname+"']",navbox).closest("tr");
+		deltr.find('td').eq(7).html(selecthtml).find('select').val('3').select2();
+		deltr.find("td").eq(8).html(delremarkbutton);
+		//-----结束--【exp和del同步】------
+	}else if(pre=='deldo'){
+		var button = '<button type="button"  class="tml_task_btn nqq_load_btn" onclick="clickchecksql(this,\'deldo\')">查看</button>';
+		button += '<input type="hidden" name="delremark'+parten+'" value="'+data.sqlstr+'">';
+		button += '<input type="hidden" name="delsqlcuttomarr'+parten+'" value=\''+data.data+'\'>';
+	}
+	var	but = $(button);//.initUI();
+	var inputobj = $("select[name='"+objname+"']",navbox).closest("td").next("td").html(but);
+	
+	$.pdialog.closeCurrent();
+}
+
+$("select[name='sqltable']",sqlbox).change(function(){
+	var table=$(this).val();
+	$.ajax({
+		type:"POST",
+		data:{sourcetable:table},
+		url:"__URL__/changesourcefield",
+		success:function(response){
+			var data=DWZ.jsonEval(response);
+			var html = '';
+			var sqlmatchingfieldhtml = '<select class="select2 list_select2  required" width="150px;" name="sqlmatchingfield">';
+			var sqlbringbackfieldhtml = '<select class="select2 list_select2  required" width="150px;" name="sqlbringbackfield">';
+			html += '';
+			html += '<option value="">请选择</option>';
+			if(data){
+				$.each(data,function(i,v){
+					var show='';
+					if(v.showname&&v.fieldtype){
+						show = v.name+'【'+v.showname+'】【'+v.fieldtype+'】';
+					}else if(v.showname){
+						show = v.name+'【'+v.showname+'】';
+					}else{
+						show = v.name;
+					}
+					html += '<option value="'+v.name+'" china="'+v.showname+'">'+show+'</option>';
+				});	
+			}			
+ 			html += '</select>';
+ 			sqlmatchingfieldhtml = sqlmatchingfieldhtml+html;
+ 			sqlbringbackfieldhtml = sqlbringbackfieldhtml+html;
+ 			//暂时放在隐藏的div里 用于调用
+ 			$("td.sqlmatchingfield",sqlbox).html(sqlmatchingfieldhtml).find("select").select2();
+			$("td.sqlbringbackfield",sqlbox).html(sqlbringbackfieldhtml).find("select").select2();
+		}
+	});
+});
+
+
+</script>
+<div class="page">
+	<div class="pageContent" style="background: #fff;">
+		<form method="post" action="__URL__/lookupSqlCuttomInsert"
+			class="pageForm required-validate"
+			onsubmit="return validateCallback(this,callbackSqlCuttom)">
+			
+			<input type="hidden" name="objname" value="{$objname}">
+			<div class="pageFormContent">
+				<div class="set_configure" layoutH="96">
+					<table class="into_table_new nbm_data_table"
+						table_data='{"searching":false,"re_id":1,"search_column":1,"addRow":false,"paging":false,"isYMInfo":false}'
+						width="100%">
+						<thead ename="{$ename}">
+							<tr>
+								<th style="max-width:200px;width:200px;min-width:200px;">匹配表</th>
+								<th style="max-width:150px;width:150px;min-width:150px;">查找字段</th>
+								<th style="max-width:150px;width:150px;min-width:150px;">返回字段</th>
+								<th width="50%">附加条件</th>
+							</tr>
+						</thead>
+						<tbody>
+						
+							<tr>
+								<td>
+									<div class="list_group_lay">
+										<select name="sqltable" class="select2 list_select2" style="width:200px;">
+											<option value="">请选择</option>
+											<volist name="newTables" id="vn">
+											<option value="{$key}" <if condition="$sqlcuttomarr['sqltable'] eq $key">selected</if>>{$key}【{$vn}】</option>
+											</volist>
+										</select>
+									</div>
+								</td>
+								<td class="sqlmatchingfield" style="width:150px;">
+									 <if condition="$sqlcuttomarr">
+										<select class="select2 list_select2  required" width="150px;" name="sqlmatchingfield">
+										<option value="">请选择</option>
+										<volist name="tablefields" id="vm">
+											<option value="{$vm.name}" <if condition="$vm.name eq $sqlcuttomarr['sqlmatchingfield']">selected</if>>{$vm.name}【{$vm.showname}】</option>
+										</volist>
+										</select>
+									<else/>
+										<label>请先匹配数据表</label>
+									</if>
+								</td>
+								<td class="sqlbringbackfield" style="width:150px;">
+									 <if condition="$sqlcuttomarr">
+										<select class="select2 list_select2  required" width="150px;" name="sqlbringbackfield">
+										<option value="">请选择</option>
+										<volist name="tablefields" id="vb">
+											<option value="{$vb.name}" <if condition="$vb.name eq $sqlcuttomarr['sqlbringbackfield']">selected</if>>{$vb.name}【{$vb.showname}】</option>
+										</volist>
+										</select>									
+									<else/>
+										<label>请先匹配数据表</label>
+									</if>
+								</td>
+								<td>
+									<textarea rows="1" cols="60" name="sqlcondition">
+									{$sqlcuttomarr['sqlcondition']}
+									</textarea>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="formBar">
+						<ul>
+							<li id="salesprojectsave">
+								<button type="submit"
+									class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

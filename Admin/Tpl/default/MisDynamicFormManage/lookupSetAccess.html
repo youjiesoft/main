@@ -1,0 +1,57 @@
+<form method="post" action="__URL__/lookupSetAccess" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+	<input type="hidden" name="actionname" value="{$actionname}" >
+	<input type="hidden" name="actiontitle" value="{$actiontitle}" >
+	<div class="pageContent">
+		<div class="pageFormContent">
+			<table class="tml_set_table" id="indexlist" width="100%" layoutH="58">
+				<thead>
+				<tr>
+					<th>方法名称</th>
+					<th>方法中文名称</th>
+					<th>权限类</th>
+					<th><input type="checkbox"  <if condition="$nodelist">disabled="disabled"<else/>onclick="all_select(this,'indexlist');"  </if> checked="checked" /> 是否加入授权</th>
+				</tr>
+				</thead>
+				<tbody>
+					<volist id="vo" name="class_methods" key="i">
+							<tr >
+								<td>
+									<input type="text"   readonly="readonly" <if condition="!in_array($vo['name'],array_keys($nodelist))"> name="name[{$i}]" </if> value="{$vo['name']}" />
+								</td>
+								<td>
+									<input type="text" name="title[{$i}]" <if condition="in_array($vo['name'],array_keys($nodelist))">readonly="readonly"</if> <if condition="$NodeTitleList[$vo['name']]">value="{$NodeTitleList[$vo['name']]}" <elseif condition="$noaccessList[$vo['name']]['title']"/> value="{$noaccessList[$vo['name']]['title']}"<else/>value="{$vo['title']}"</if>/>
+								</td>
+								<td>
+								<if condition="in_array($vo['name'],array_keys($nodelist))">
+										<input type="text"  readonly="readonly"  value="{$nodelist[$vo['name']]|getFieldBy='id','name','nodecategory'}" />
+								<else/>
+								<select name="category[{$i}]"   class="required combox">
+								<if condition="$noaccessList[$vo['name']]['category']">
+									{:getDataBaseByHtml('nodecategory',array('selected'=>$noaccessList[$vo['name']]['category']))}
+								<else/>
+									{:getDataBaseByHtml('nodecategory',array('selected'=>$vo['category']))}
+								</if>
+								
+								</select>
+								</if>
+								</td>
+								<td>
+								 <input type="checkbox" name="iscreate[{$i}]"  <if condition="in_array($vo['name'],array_keys($nodelist))">disabled="disabled" </if>checked="checked"    value="1"/>
+								</td>
+							</tr>
+					</volist>
+				</tbody>
+			</table>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button type="submit" class="tml_select_btn tml_formBar_btn_blue">{$Think.lang.save}</button>
+				</li>
+				<li>
+					<button type="reset" class="tml_select_btn tml_formBar_btn_blue">{$Think.lang.reset}</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+</form>

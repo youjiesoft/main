@@ -1,0 +1,39 @@
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid;">
+<form id="pagerForm" action="__URL__/edit/type/contract/id/{$id}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+	<table class="table" width="99%" layoutH="60">
+		<thead>
+		<tr>
+			<th width="30">序号</th>
+			<th>合同编号</th>
+			<th>期限类型</th>
+			<th>合同类型</th>
+			<th>开始时间</th>
+			<th>结束时间</th>
+			<th>工作年限</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr title="合同管理-查看" dwidth="880" dheight="530" ondblclick="ondblclick_dialog(this,'__MODULE__edit','__APP__/MisHrBasicEmployeeContract/edit/jump/2/id/{$vo['id']}/employeeid/{$vo.employeeid}');">
+				<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+				<td>{$vo.orderno}</td>
+				<td>{$vo.limittype}</td>
+				<td>{$vo.contracttype}</td>
+				<td>{$vo.starttime|transTime}</td>
+				<td>{$vo.endtime|transTime}</td>
+				<td>{$vo['']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmContractForm" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

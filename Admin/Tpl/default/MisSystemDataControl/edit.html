@@ -1,0 +1,303 @@
+<script type="text/javascript">
+var nbmbind={
+		run : function(){
+			this.add();
+			this.del();
+		},
+		get : function() {
+			var obj = navTab.getCurrentPanel();
+			return obj;
+		},
+		del : function(){
+			// 删除行
+			var _this=this;
+			var box = this.get();
+			var delObj = $('a.nbm_bind_del');
+			delObj.die();
+			delObj.live('click',function(){
+				var trObj = box.find('tbody tr');
+				if(trObj.length >=2){
+					var delinbindaname=$(this).closest('td').find("input[name='delinbindaname']").val(); 
+					var _this=$(this).closest('tr');
+					if(delinbindaname){
+						//判断当前行是否可以移除
+							 $.ajax({
+						         type: 'POST',
+						         url : "__URL__/lookupChangeField",
+						         data: {delinbindaname:delinbindaname,type:2},
+						         global:false,
+						         dataType:'json',
+						         success:function(list){
+						        	 if(list!=-1){
+						        		 alertMsg.error('当前绑定关系存在子级！');
+						        		 return false;
+						        		}else{
+						        			//移除添加至隐藏域
+						        			_this.remove();
+						        		 }
+						        	 }
+						         });
+					}else{
+						//移除添加至隐藏域
+						$(this).closest('tr').remove();
+					}
+				}else{
+					alertMsg.error('只有一行了，不允许删除行');
+				}
+			});
+			//_this.run();
+		},
+		add : function(){
+			var box = this.get();
+			var _this = this;
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			var obj = $('a.nbm_bind_add');
+			obj.die();
+			obj.live("click",function(){
+				var tr = $(this).closest('table').find('tbody:first>tr:last');
+				var index = tr.closest('table').attr('index');
+				try {
+					index = parseInt(index, 10);
+				} catch(e) {
+					index = 0;
+				}
+				tr.find('select').select2("destroy");
+				var cloneTr = tr.clone();
+				cloneTr.find('select').val('');
+				cloneTr.find('select').find("option:first").attr('checked',true);
+				tr.find('select').select2();//.change();
+				//清除克隆体的多余数据				
+				var bindsort=box.find("input[name^='inbindsort']").length;
+				cloneTr.find("input[name^='inbindsort']").val(parseInt(bindsort)+1);
+				cloneTr.find(':input').each(function() {
+					var ids = $(this).attr('name');
+					// 当前组件的name值
+					if ( typeof (ids) == "string") {
+						var curNames = ids.replace(/(\[)+(\d)+(\])/g,  function(va) {
+								var curIndex = va.match(/\d+/g);
+								var i = parseInt(curIndex , 10);
+								var tabIds = '[' + (i + 1)+']';
+								return tabIds;
+							});
+						$(this).attr('name',curNames);
+					}
+					//tr index
+					
+					if ($(this)[0].tagName == "SELECT") {}
+				});
+				cloneTr.find('select').select2().change();
+				tr.after(cloneTr);
+				_this.run();
+				
+				
+				//此处本来目的是执行一次，但实际上执行了很多次，似乎select[name^='objtype[']时出的问题
+				                                  
+				
+			});
+			
+		},
+};
+
+$(function(){
+	//加载
+	nbmbind.run();
+	//
+	//给“选择控制数据”按钮绑上点击事件
+	var box=navTab.getCurrentPanel();
+	box.off("click",".choicetables");
+	box.on("click",".choicetables",function(){
+		var sourcemodel = $("input[name='modelname']",box).val();
+		var tag = $(this).closest("td").find("input.choicetablesval").attr("name");
+		var tables = $(this).closest("td").find("input.treenode").val();
+		var sourcetable = $(this).closest("tr").find("select[name^='objtable']").val();
+		var sqlselectformarr = $(this).closest("tr").find("input[name^='sqlselectformarr']").val();
+		var title = "控制数据选择";
+		var rel = "MisSystemDataControl_choicetable";
+			options = {width:900,height:500,mask:true};
+			options.param={sourcemodel:sourcemodel,tag:tag,tables:tables,sourcetable:sourcetable,sqlselectformarr:sqlselectformarr};
+		var url="__URL__/choicetables";
+		DWZ.debug(url);
+		if(!url.isFinishedTm()){
+		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+		return false;}
+		$.pdialog.open(url,rel,title,options);	
+	});
+});
+
+//触发对象更改 触发条件相应更改
+function changeobjtable(obj){
+	var box = navTab.getCurrentPanel();
+	var tr = $(obj).closest("tr");
+
+	tr.find("input:checked",box).attr("checked",false);
+	tr.find("input[type='hidden']",box).val('');
+	tr.find("input[type='text']",box).val('');
+	tr.find(".showchoicetables",box).html('');
+	var tablename = $(obj).val();
+	var modelname= $("input[name='modelname']",box).val();
+	var controll='';
+	$.ajax({
+		url:'__URL__/getConditionControll',
+		data:{model:modelname,inlinetable:tablename},
+		type:'post',
+		dataType:'html',
+		async:false,
+		success:function(msg){
+			controll = msg;
+		}
+	});
+	$.ajax({
+		url:'__URL__/sqlselectform',
+		data:{model:modelname,inlinetable:tablename},
+		type:'post',
+		dataType:'text',
+		async:false,
+		success:function(res){
+			console.log(res);
+			controll2 = res;
+		}
+	});
+	tr.find('input[name^="sqlselectform["]').val(controll2);
+	tr.find('td.nbm_ceil_form_condtion').find('div.nbm_condition_content').html(controll);
+	var roltd = tr.find("div.MisSystemDataControl_table_role");
+	var tag = tr.find("input.choicetablesval").attr("name");
+	var inputname = tag.replace("choicetables","sql");
+	roltd.loadUrl("__URL__/lookupdetailadd/type/1",{modelname:modelname,data:{},inputname:inputname,sourcetable:tablename},function() { roltd.find("[layoutH]").layoutH();	}, false);
+	var msgtd = tr.find("div.MisSystemDataControl_table_msg"); 
+	var inputname2 = tag.replace("choicetables","msginfo");
+	msgtd.loadUrl("__URL__/lookupdetailadd/type/1",{modelname:modelname,data:{},inputname:inputname2,sourcetable:tablename},function() { roltd.find("[layoutH]").layoutH();	}, false);
+}
+</script>
+<style>
+.grid .gridTbody .changed {
+    background: none repeat scroll 0 0 #F0F8FF;
+}
+</style>
+
+<div class="missystemdataroammas_sourcetable" style="display:none;"></div>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__"  class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent" />
+		<input type="hidden" name="masid" value="{$maslist['id']}" />
+		<div class="pageFormContent" layoutH="40">
+			<div class="new_version_page" style="width:90%">
+				<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">数据控制新增</span></div>
+				<div class="new_version_page_content">
+					<!-- text组件 start -->
+					<div class="col_1_2 form_group_lay field_title" >
+						<label class="label_new">数据控制名称:</label>
+						<input   type="text"  name="name" class=" input_new required  " value="{$maslist['name']}">
+					</div>
+					<!-- text组件 end -->
+					<!-- text组件 start -->
+					<div class="col_1_2 form_group_lay field_sourcemodel">
+						<label class="label_new">控制模型:</label>
+						<input type="text" class="input_new required" value="{$maslist['modelname']|getFieldBy='name','title','node'}" readonly="readonly" />
+						<input type="hidden"  name="modelname" class=" input_new required" value="{$maslist['modelname']}">
+					</div>
+					<!-- text组件 end -->
+					<div class="fieldset_show_box">
+						<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+							<a name="MisAutoWxy_fieldset7"></a><b>数据控制详情</b>
+							<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+						</legend>
+					</div>
+					<div class="fieldsetjs_show_box" >
+						<div class="into_table_lay border_top_none" layoutH="145">
+						<table  class="into_table_new nbm_data_table" table_data='{"searching":false,"paging":false,"isYMInfo":false}' id="MisSystemDataControl_add">
+							<thead>
+								<tr>
+									<th>控制对象</th>
+									<th>控制动作</th>
+									<th>漫游执行</th>
+									<th>控制条件</th>
+									<th>控制数据</th>
+									<th>验证规则</th>
+									<th>提示信息</th>
+									<th>操作</th>
+									
+								</tr>
+								
+							</thead>
+							<tbody>
+							<volist name="sublist" id="sv" key="ki">
+							<php> $k = $ki-1</php>
+								<tr>
+								<!-- 触发对象 -->
+									<td>
+										<div class="list_group_lay">
+											<select class="select2 list_select2" name="objtable[{$k}]" onchange="changeobjtable(this)">
+												<volist name="selftable" id="ov">
+													<option value="{$key}" <if condition="$sv['objtable'] eq $key">selected</if>>{$ov}</option>
+												</volist>
+											</select>
+										</div>	
+									</td>
+									<!-- 触发动作 -->
+									<td>
+									 	<div class="list_group_lay">
+									 		<input type="hidden" name="id[{$k}]" value="{$sv.id}">
+											<input type="checkbox" value="1" name="operation[{$k}][]" <if condition="in_array('1',$sv.operation)">checked</if> >新增
+											<input type="checkbox" value="2" name="operation[{$k}][]" <if condition="in_array('2',$sv.operation)">checked</if> >修改
+											<input type="checkbox" value="3" name="operation[{$k}][]" <if condition="in_array('3',$sv.operation)">checked</if> >删除
+											<input type="checkbox" value="5" name="operation[{$k}][]" <if condition="in_array('5',$sv.operation)">checked</if> >变更
+										</div>	
+									</td>
+									<td>
+										<div class="list_group_lay" >
+											<input type="radio" name="roamtype[{$k}]" value=1 <if condition="$sv['roamtype'] eq 1">checked</if>> 漫游前
+											<input type="radio" name="roamtype[{$k}]" value=2 <if condition="$sv['roamtype'] eq 2">checked</if>> 漫游后
+										</div>
+									</td>
+									<!-- 触发动作条件 -->
+									<td class="nbm_ceil_form_condtion">
+										    <div class="list_group_lay">
+										<div class="tml-row nbm_condition_content" >
+								            {:W('ShowAddResult', array('model'=>$maslist['modelname'],'multitype'=>'multi','data'=>$sv) )}
+								        </div>	
+										</div>
+									</td>
+									<!-- 选择控制数据 -->
+									<td class="nbm_ceil_form_condtion">
+										<button type="button"  class="choicetables tml_task_btn nqq_load_btn">选择控制数据</button>										
+										<input type="hidden" class="treenode" name="treenode[{$k}]" value="{$sv.treenode}">
+										<input type="hidden" class="choicetablesval" name="choicetables[{$k}]" value="{$sv.showchoicetables}">
+										<input type="hidden" name="choicetablesforrole[{$k}]" value="{$sv.choicetablesforrole}">
+										<input type="hidden" name="sqlselectform[{$k}]" value="{$sv.sqlselectform}">
+										<input type="hidden" name="sqlselectformarr[{$k}]" value="{$sv.sqlselectformarr}">
+										<div>
+											<span class="showchoicetables">{$sv.showchoicetables}</span>
+										</div>
+									</td>
+									<!-- 规则 -->
+									<td>
+										<div class="list_group_lay MisSystemDataControl_table_role" >
+											  {:W('ShowSqlResult', array('inputname'=>"sql[".$k."]",'model'=>$maslist['modelname'],'table'=>$sv['choicetablesforrolearr'],'content'=>$sv['sql']) )}
+										</div>
+									</td>
+									<!-- 提示信息 -->
+									<td>
+										<div class="list_group_lay MisSystemDataControl_table_msg" >
+											 {:W('ShowSqlResult', array('inputname'=>"msginfo[".$k."]",'model'=>$maslist['modelname'],'table'=>$sv['choicetablesforrolearr'],'content'=>$sv['msginfo']) )}
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay">
+											<a class="nbm_bind_add" href="javascript:void(0);">添加</a>&nbsp;
+											<a class="nbm_bind_del" href="javascript:void(0);">移除</a>
+										</div>
+									</td>
+								</tr>
+							</volist>
+							</tbody>
+						</table>
+						</div>
+					</div>
+					{:W('ShowAction')}
+				</div>
+			</div>
+		</div>
+        </form>
+	</div>
+</div>

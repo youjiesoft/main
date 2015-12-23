@@ -1,0 +1,27 @@
+<div class="new_version_page_content">
+
+
+<table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+	<tbody>
+		<tr>
+			<td class="cell_left" width="12%">名称:</td>
+			<td class="cell_right" width="21%" >{$vo['name']}</td>
+			<td class="cell_left" width="12%">状态:</td>
+			<td class="cell_right" width="21%" >{$vo['zhuangtai']|getSelectlistValue='StartOrForbidden'}</td>
+			<td class="cell_left" width="12%">模型名称:</td>
+			<td class="cell_right" width="21%" >{$vo['modelname']}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">word:</td>
+			<td class="cell_right" width="21%" colspan="5">
+								{:W('ShowUploadView',array("0"=>$uploadarry["upload3"],"1"=>upload3,"2"=>$fields[upload3],"3"=>"1"))}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">html上传:</td>
+			<td class="cell_right" width="21%" colspan="5">
+								{:W('ShowUploadView',array("0"=>$uploadarry["upload4"],"1"=>upload4,"2"=>$fields[upload4],"3"=>"1"))}</td>
+		</tr>
+	</tbody>
+</table>
+		{:W('ShowAction')}
+</div>

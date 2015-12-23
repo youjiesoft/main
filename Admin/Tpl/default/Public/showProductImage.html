@@ -1,0 +1,15 @@
+<div class="xyuploadgallery clearfix"><!--此处为上传列表-->
+	<span class="info uploadify_queue">
+		<if condition="$piglist">
+			<volist name="piglist" id="att">
+				<div class="uploadify-queue-item">
+					<span class="fileName2">
+						<a class="proimage cboxElement" href="__PUBLIC__/MisProductCode/{$att['url']}?{:time()}{$key}" target="_blank">
+							<img style="height: 60px;width: 60px;" title="{$att['name']}" alt="{$att['name']}" src="__PUBLIC__/MisProductCode/{$att['url']}" />
+						</a>
+					</span>
+				</div>
+			</volist>
+		</if>
+	</span>
+</div>

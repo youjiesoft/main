@@ -1,0 +1,108 @@
+<div class="page">
+    <div class="pageContent">
+            <div class="pageFormContent applecloth" layoutH="56">
+                <div class="keepContentCenter form-affix-content">
+                    <h2 class="contentTitle contentTitle_center form-affix-title">办公设备申请{:W('ShowAdvices',array('id'=>$vo['id']))}
+                        {:W('ShowOrderno',array(0,'mis_work_facility_apply_mas',$vo['orderno']))}
+                    </h2>
+                    <fieldset class="zlqk_1">
+                    <legend class="zlqk_2">
+                        <b>基本信息</b>
+                    </legend>
+                     <div class="tml-row"> 
+                    <if condition='$fields["demanddate"]'>
+                    <div class="tml-form-col"> 
+                        <label>{$fields["demanddate"]}：</label>
+                        <span class="xyInputWithUnit">
+                        <input type="text"  name="demanddate"   readonly="readonly" class="tml-border-r0 Wdate" value="{$vo.demanddate|transtime}"/>
+                		<span class="input-addon input-addon-calendar"></span>
+                        </span>
+                    </div>
+                    </if>
+                    <if condition='$fields["applydepartmentid"]'>
+                   <div class="tml-form-col"> 
+                        <label>{$fields["applydepartmentid"]}：</label>
+                         <input type="text" readonly="readonly" value="{$vo.applydepartmentid|getFieldBy='id','name','mis_system_department'}">
+                    </div>
+                    <div class="tml-form-col"> 
+                        <label>{$fields["place"]}：</label>
+                        <input type="text" name="place" readonly="readonly" value="{$vo.place}"/>
+                       </div>
+                    </if>
+                     </div>
+                    <if condition='$fields["remark"]'>
+                    <div class="tml-form-row"> 
+                          <label>{$fields["remark"]}：</label>
+                          <textarea   name="remark"  readonly="readonly" style="height:50px;" class="textInput  ">{$vo.remark}</textarea>
+                    </div>
+                    </if>
+                </fieldset>
+                    <fieldset>
+                    <legend>
+                        <b>设备明细</b>
+                    </legend>
+                       <div  >
+						<table class="tml-table" width="100%">
+				    <thead>
+				        <tr>
+				       		<th width="40">序号</th>
+							<th width="120">设备编号</th>
+							<th >设备类型</th>
+							<th width="100">设备名称</th>
+							<th>设备型号</th>
+							<th>库存数量</th>
+							<th width="40">单位</th>
+							<th>可用数量</th>
+							<th>需求数量</th>
+						</tr>
+				    </thead>
+				    <tbody>
+				    <if condition="$sublist">
+				    <volist name="sublist" id="subvo" key="i">
+				    <tr>
+				    <td>{$i}</td>
+				    <td>
+						{$subvo.manageid|getFieldBy='id','orderno','mis_work_facility_manage'}
+					</td>
+				 	<td>{$subvo.manageid|getFieldBy='id','equipmenttype','mis_work_facility_manage'|getFieldBy='id','name','mis_work_facility_type'}</td>
+				  	<td>{$subvo.manageid|getFieldBy='id','equipmentname','mis_work_facility_manage'}</td>
+				   	<td>{$subvo.manageid|getFieldBy='id','version','mis_work_facility_manage'}</td>
+				    <td>{$subvo.qty|getDigits}</td>
+				    <td>{$subvo.manageid|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}</td>
+				    <td>{$subvo.kyqty|getDigits}</td>
+				    <td> {$subvo.appqty|getDigits} </td>
+				    </tr>
+				    </volist>
+				    </if>
+				    </tbody>
+				</table>
+					</div>
+               	 </fieldset>
+                    <fieldset class="zlqk_1">
+                        <legend class="fieldset_legend_toggle"><b>附件信息</b></legend>   
+                        <if condition="$attarry">
+                            <volist name="attarry" id="att">
+                                 <div class="tml-form-col"><label>附件{$key+1}</label><a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></div>
+                            </volist>
+                        </if>
+                    </fieldset>
+                   <fieldset>
+	                <legend class="fieldset_legend_toggle">
+	                    <b>页脚</b>
+	                </legend>
+	                 <div class="tml-row">
+	                  <div class="tml-form-col"> 
+	                    <label>制单人：</label>
+	                    <input type="text" readonly="readonly" class="textInput" value="{$vo.createid|getFieldBy='id','name','user'}" />
+	                </div>
+	                 <div class="tml-form-col"> 
+	                    <label>制单时间：</label>
+	                    <input  class="textInput" readonly="readonly" value="{$vo.createtime|transTime}" />
+	                </div>
+                </div>
+            </fieldset>
+            </div>
+        </div>
+      {:W('ShowAction')}
+</div>
+</div>

@@ -1,0 +1,200 @@
+<style>
+    .waybill_left {
+        width: 280px;
+        box-shadow: 0 0 6px 0 rgba(0,0,0,0.4);
+    }
+    .waybill_left_title {
+        position: relative;
+    }
+    .waybill_left_title:before {
+        content: " ";
+        width: 3px;
+        height: 40px;
+        background: rgba(255,255,255,0);
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+    .map_box {
+        background: #fff;
+    }
+    .waybill_left .edit_work_lay {
+        padding-bottom: 10px;
+    }
+    .waybill_left .add_key {
+        font-size: 15px;
+    }
+    .waybill_info_ul li {
+        padding: 0 5%;
+        line-height: 35px;
+        font-size: 14px;
+    }
+    .map_box_con {
+        padding: 0 0 0 3px;
+    }
+</style>
+<script>
+var searchService,map,polyline,markers = [];
+function init() {
+	var myLatlng = new soso.maps.LatLng(29.576236,106.532709);
+	var myOptions = {
+		zoomLevel: 9,
+		center: myLatlng,
+		mapTypeId: soso.maps.MapTypeId.ROADMAP
+	};
+    map = new soso.maps.Map(document.getElementById("map_trace"),myOptions);
+    var navControl = new soso.maps.NavigationControl({
+        align: soso.maps.ALIGN.TOP_LEFT,
+        margin: new soso.maps.Size(5, 15),
+        map: map
+    });
+
+
+    searchService = new soso.maps.SearchService();
+    //
+    var souce = '{$json_maparr}';
+    if(souce){
+    	var path1 = new Array();
+    	souce = $.parseJSON(souce);
+    	$.each(souce , function(key , item){
+    		if(item['latitude'] && item['longitude']){
+    			path1.push(new soso.maps.LatLng(item['latitude'],item['longitude']));
+    		}
+    	});
+    }
+    polyline = new soso.maps.Polyline({
+        path: path1,
+        strokeColor: '#1c29d8',
+        strokeWeight: 5,
+        strokeOpacity: 1,
+        strokeDashStyle:'dash',
+        map: map
+    });
+}
+//清除地图上的marker
+function clearOverlays(overlays){
+    var overlay;
+    while(overlay = overlays.pop()){
+        overlay.setMap(null);
+    }
+}
+/*
+ * 地图检索 
+ */
+function searchKeyword() {
+    var keyword = document.getElementById("keyword").value;
+    var region = document.getElementById("region").value;
+    clearOverlays(markers);
+    var searchRequest = {
+        'keyword': keyword,
+        'region':region
+    };
+    var latlngBounds = new soso.maps.LatLngBounds();
+    searchService.search(searchRequest, function(results, status) {
+        if (status == soso.maps.SearchStatus.OK) {
+            var pois = results.pois;
+            for(var i = 0,l = pois.length;i < l; i++){
+                var poi = pois[i];
+                latlngBounds.extend(poi.latLng);  
+                var marker = new soso.maps.Marker({
+                    map:map,
+                    position: poi.latLng
+                });
+
+                var decor = new soso.maps.MarkerDecoration({
+                    content: i+1,
+                    margin: new soso.maps.Size(0, -4),
+                    align: soso.maps.ALIGN.CENTER,
+                    marker: marker
+                });        
+                markers.push(marker);
+            }
+            map.fitBounds(latlngBounds);
+        } else {
+            alert("检索没有结果，原因: " + status);
+        }
+    });
+}
+init();
+
+function searchFunction(){
+	var $searchkey = $("#searchkey").val();
+	if(isNullorEmpty($searchkey)){
+		$.ajax({
+			type:'post',
+			url:"__URL__/lookupSearch",
+			data:{searchval:$searchkey},
+			cache:false,
+			success:function(response){
+				var souce = $.parseJSON(response);
+				var $html ="";
+				if(souce.isnull == 1){
+					$html+='<li><span>运单号：</span><span>'+souce.orderno+'</span></li>';
+					$html+='<li><span>发布时间：</span><span>'+souce.createtime+'</span></li>';
+					$html+='<li><span>始发：</span><span>'+souce.shifadian+'</span></li>';
+					$html+='<li><span>目的地：</span><span>'+souce.mudedi+'</span></li>';
+					$html+='<li><span>货物名称：</span><span>'+souce.huowumingcheng+'</span></li>';
+					$html+='<li><span>数量：</span><span>'+souce.huowushuliang+'</span></li>';
+					$html+='<li><span>车牌：</span><span>'+souce.cheliangbianhao+'</span></li>';
+					$html+='<li><span>保险号：</span><span>'+souce.baoxiandanhao+'</span></li>';
+					$html+='<li><span>运输公司：</span><span>'+souce.yunshugongsi+'</span></li>';
+					
+					$("#waybill_info_ul_js").html($html);
+					
+					var path1 = new Array();
+					if(souce.json_isnull == 1){
+						var souce1 = souce.json_maparr;
+					    if(souce1){
+					    	$.each(souce1 , function(key , item){
+					    		if(item['latitude'] && item['longitude']){
+					    			path1.push(new soso.maps.LatLng(item['latitude'],item['longitude']));
+					    		}
+					    	});
+					    }
+					    polyline.setPath(path1);
+					    map.moveTo(new soso.maps.LatLng(souce1[0]['latitude'], souce1[0]['longitude']));
+					    map.zoomTo(souce.level);
+					}else{
+						polyline.setPath(path1);
+						map.zoomTo(souce.level);
+						map.moveTo(new soso.maps.LatLng(29.576236,106.532709));
+					}
+				}else{
+					$html+='<li><span>无结果</span></li>';
+					$("#waybill_info_ul_js").html($html);
+				}
+			},
+			error:DWZ.ajaxError
+		});
+	}else{
+		
+	}
+};
+</script>
+<div class="page">
+    <div class="pageContent">
+        <div class="treeleft waybill_left">
+            <div class="work_statement">运单查询</div>
+            <div class="edit_work_lay">
+                <div class="member_searcher">
+                    <input class="add_key left" type="text" id="searchkey" placeholder="请输入运单号">
+                    <button class="btn_member icon-search right" onclick="searchFunction();" type="button"></button>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="tml_divider"></div>
+            <div class="tml_bar_nav" layouth="160">
+                 <ul class="waybill_info_ul" id="waybill_info_ul_js">
+                    <li>
+                        <span>无：</span>
+                        <span></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="unitBox treeright map_box">
+            <div class="work_shortcut_top lookup_top_header waybill_left_title">路线展示</div>
+            <div class="map_box_con" id="map_trace" layoutH="40"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/myfileManagerBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$vo.id}"><!-- 隐藏当前内容的ID值 -->			<input type="hidden" name="pid" value="{$vo.id}"><!-- 隐藏父节点ID -->
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>名称：</label>
+					<input type="text" style="width:300px" class="required" maxlength="30" size="40" value="{$vo.name}" name="filename">
+					<if condition="$vo['type'] neq 1">
+					<input type="hidden" value="{$vo.ext}" name="ext"> <!-- 隐藏文件夹后缀名 -->
+					</if>
+				</div>
+			</div>
+			<if condition="$vo['type'] eq 0">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文档编号：</label>
+					<input type="text" style="width:300px"  maxlength="30" size="40" value="{$vo.orderno}" name="orderno">
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文档位置：</label>
+					<input type="text" style="width:300px"  maxlength="30" size="40" value="{$vo.position}" name="position">
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文档页数：</label>
+					<input type="text" style="width:300px"  maxlength="30" size="40" value="{$vo.page}" name="page">
+				</div>
+			</div>
+			</if>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>备注：</label>
+					<textarea name="remark" style="width:300px;height:120px;" class="textInput enterIndex valid">{$vo.remark}</textarea>
+				</div>
+				<!--<div class="tml-form-col">
+					<if condition="$_SESSION.a eq 1 && $vo['category'] neq 1">
+						<label>所有人可见</label>
+						<select name="allsee" class="combox">
+							<option value="1" <eq name="vo['allsee']" value="1">selected</eq> >是</option>
+							<option value="0" <eq name="vo['allsee']" value="0">selected</eq>>否</option>
+						</select>
+					</if>
+				</div>-->
+			</div>
+			
+			<!-- <if condition="$vo.category eq 4">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label >关联项目:</label>
+							<div class="tml-input-append2">
+								<input type="text" class="ORG3.orderno temp_css" autocomplete="off" readonly="readonly"   value="{$vo.projectid|getFieldBy='id','orderno','mis_auto_kimpu'}"  />
+								<input type="hidden" class="ORG3.id" name="projectid" value="{$vo.projectid}"  />
+								<a class="input-addon input-addon-addon input-addon-add" param="field=id,orderno&model=MisAutoEbm&conditions=status,1" href="__URL__/lookupGeneral" lookupGroup="ORG3" ></a>
+								<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearOrg('ORG3');"></a>
+							</div>
+					</div>
+				</div>
+			</if> -->
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

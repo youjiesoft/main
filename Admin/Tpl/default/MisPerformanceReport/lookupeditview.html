@@ -1,0 +1,140 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 合并行
+	var kpitype = "";
+	var kpitypetd = null;
+	var rowspan = 1;
+	var $box=navTab.getCurrentPanel();
+	$box.find(".plankpitype").each(function(){
+		var val = $(this).text();
+		if(val != kpitype){
+			kpitype = val;
+			kpitypetd = $(this);
+			rowspan = 1;
+			$(this).attr("rowspan",rowspan);
+		} else {
+			rowspan = rowspan+1;
+			kpitypetd.attr("rowspan",rowspan);
+			$(this).remove();
+		}
+	});
+	//打分快捷按钮 上下按钮
+	var spinner = $box.find( ".spinner" ).spinner({min:1,max:100});
+});
+function countUserScore($userid,$this){
+	var $this = $($this);
+	var tbody = $this.parents("tbody:first");
+	var input = $this.parents("tr:first").find("input:first");
+	if(Number($this.val()) > Number(input.val())){
+		$this.addClass("error");
+		if($this.next().length > 0){
+			$this.next().show();
+		} else {
+			var html = '<span class="error" for="'+$this.attr("name")+'" generated="true" title="当前数字大于指标分值">当前数字大于指标分值</span>';
+			$this.after(html);
+		}
+	}
+	var count = 0;
+	tbody.find(".inuser"+$userid).each(function(){
+		if(!$(this).hasClass("error")){
+			count += Number($(this).val());
+		}
+	});
+	tbody.find(".countinuser"+$userid).val(count);
+}
+function sunbmitPerformanceReport($form){
+	var len = $($form).find("input.error").length;
+	if(len > 0){
+		alertMsg.error("提交数据不完整，"+len+"个字段有错误，请改正后再提交!");
+		return false;
+	}
+	return validateCallback($form,navTabAjaxDone);
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupeditview/planid/{$planid}/id/{$byuser}" method="post">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+    <input type="hidden" name="numPerPage" value="{$numPerPage}" />
+</form>
+<div class="pageContent tml-bg-white" layoutH="0">
+	<form method="post" action="__URL__/update/rel/MisPerformanceReportEdit" class="pageForm required-validate"  onsubmit="return sunbmitPerformanceReport(this);"  >
+	<input type="hidden" name="planid" value="{$planid}" />
+	<input type="hidden" name="byuser" value="{$byuser}" />
+	<div class="panelBar">
+		<div class="tml-mt3">
+			<if condition="$prlist"><button class="xyicon xyIconSaveButton" type="submit">保存</button></if>
+		</div>
+	</div>
+	<table class="tml-table tml-table-w" id="misperformancereport_table">
+		<thead>
+			<tr>
+				<th <if condition="$_SESSION.a eq '1'"> rowspan="2"</if> style="width: 120px;">考核分类名称</th>
+				<th <if condition="$_SESSION.a eq '1'"> rowspan="2" </if> style="width: 200px;">考核项目名称</th>
+				<th <if condition="$_SESSION.a eq '1'"> rowspan="2"</if> style="width: 80px;">分数</th>
+				<if condition="$_SESSION.a eq '1'">
+				<volist id="stype" name="vo.setscoretype">
+					<th colspan="{:count($vo['inuserstype'][$stype])}" style="text-align: center;">
+						{$stype|getFieldBy=###,'id','name','mis_performance_type'}({$vo['inusersqz'][$stype]}%)
+					</th>
+				</volist>
+				<else/>
+					<th>{$Think.SESSION.loginUserName}</th>
+				</if>
+			</tr>
+			<if condition="$_SESSION.a eq '1'">
+			<tr>
+				<volist id="stype" name="vo.setscoretype">
+					<volist id="inuser" name="vo['inuserstype'][$stype]">
+						<th>{$inuser|getFieldBy=###,'id','name','User'}</th>
+					</volist>
+				</volist>
+			</tr>
+			</if>
+		</thead>
+		<?php $countScore = 0;?>
+		<tbody>
+			<volist id="plan" name="planandinusers" key="key1">
+				<tr>
+					<td class="plankpitype">{$plan['kpitypename']}({$plan['kpitypeqz']}%)</td>
+					<td>{$plan['kpiname']}</td>
+					<td>{$plan['kpiscore']}<?php $countScore += $plan['kpiscore'];?><input type="hidden" value="{$plan['kpiscore']}"></td>
+					<if condition="$_SESSION.a eq '1'">
+					<volist id="stype" name="vo.setscoretype">
+						<volist id="inuser" name="vo['inuserstype'][$stype]">
+							<td style="width: 80px;">
+								<if condition="in_array($plan['id'], $prlist[$inuser]['inuserskpi'])">
+									<input class="inuser{$inuser} number spinner" type="text" style="width: 70px;"   onblur="countUserScore({$inuser},this);" name="inuserscore{$plan['id']}[{$inuser}]" value="{$prlist[$inuser]['inuserscore'][$plan['id']]}">
+								</if>
+							</td>
+						</volist>
+					</volist>
+					<else/>
+						<td>
+							<input class="inuser{$_SESSION[C('USER_AUTH_KEY')]} number spinner"   type="text" style="width: 70px;" name="inuserscore{$plan['id']}[{$_SESSION[C('USER_AUTH_KEY')]}]"  onblur="countUserScore({$_SESSION[C('USER_AUTH_KEY')]},this);" value="{$prlist[$_SESSION[C('USER_AUTH_KEY')]]['inuserscore'][$plan['id']]}">
+						</td>
+					</if>
+				</tr>
+			</volist>
+			<tr>
+				<td colspan="2" align="center">总分</td>
+				<td>{$countScore}</td>
+				<if condition="$_SESSION.a eq '1'">
+				<volist id="stype" name="vo.setscoretype">
+					<volist id="inuser" name="vo['inuserstype'][$stype]">
+						<td>
+							<input class="countinuser{$inuser}" type="text" style="width: 70px;" readonly="readonly" value="{$prlist[$inuser]['total']}">
+						</td>
+					</volist>
+				</volist>
+				<else/>
+					<td>
+						<input class="countinuser{$_SESSION[C('USER_AUTH_KEY')]}" type="text" style="width: 70px;" readonly="readonly" value="{$prlist[$_SESSION[C('USER_AUTH_KEY')]]['total']}">
+					</td>
+				</if>
+			</tr>
+		</tbody>
+	</table>
+	</form>
+</div>

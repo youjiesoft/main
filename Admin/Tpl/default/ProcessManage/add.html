@@ -1,0 +1,43 @@
+<div class="wf_explanation">
+    <span class="processgraph_title">自定义流程图</span>
+    <span class="processgraph_tips"><i class="icon-comments"></i> 操作提示：请在流程节点上单击右键进行流程设置</span>
+</div>
+<div class="pageContent temp_page_Content" style="border-left: 2px solid #d8d8d8;">
+	<!-- 默认为新增界面 -->
+	<form method="post" action="__APP__/ProcessManage/insert/rel/ProcessManageBox" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+   		<input type="hidden" name="nodename" value="{$nodename}" />
+   		<input type="hidden" name="callbackType" value="closeCurrent" />
+   		<input type="hidden" name="refreshtabs[data]" value="1" />
+        <div class="process_set_box">
+            <label for="processName">流程名称:</label>
+            <input id="processName" class="process_name required" type="text" name="name" value=""/>
+            <label for="processType">流程类型:</label>
+            <select id="processType" name="catgory" class="select2 process_type">
+                <option value="1">固定流程</option>
+                <option value="2">变更流程</option>
+            </select>
+            <label for="processType">所属分类:</label>
+            <select id="processType" name="typeid" class="required select2 process_type">
+            	<option value="">--请选择--</option>
+            	<volist id="tt" name="typelist">
+            		<option value="{$tt.id}">{$tt.leixingmingchen}</option>
+            	</volist>
+            </select>
+            <label for="processType">标题大概:</label>
+            <select name="title" class="select2">
+            	<option value="">--请选择--</option>
+            	<volist id="dt" name="detailList">
+            		<option value="{$dt.name}">{$dt.showname}</option>
+            	</volist>
+            </select>
+            <label for="processDefault">是否默认:</label>
+            <input id="processDefault" class="process_default" type="checkbox" name="default" checked="checked" value="1"/>
+        </div>
+        <include file="commonFlowWidget" />
+        <div class="formBar" style="margin:0px;padding:5px 5px 0;">
+			<ul>
+				<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}流程</button></li>
+			</ul>
+		</div>
+    </form>
+</div>

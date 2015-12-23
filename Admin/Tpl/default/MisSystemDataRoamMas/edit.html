@@ -1,0 +1,44 @@
+ <script>
+$(document).ready(function(){
+	var zNodes = {$returnarr};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#MisDataWandereditTree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("MisDataWandereditTree");
+	var valid='{$check}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+
+</script> 
+<div class="pageContent">
+<div class="treeleft">
+	<div class="collapse" layoutH="0">
+		<div class="toggleCollapse"><div></div></div>
+	</div>
+	<div class="close">
+		<div class="toggleCollapse" ><h2></h2><div></div></div>
+		<div class="clearfix p5">
+			<div class="xysearcher">
+			<input class="js-searchZTreeSubmit" class="tree-search-input" type="text" id="dynamicconftreeSearchNodeKeys" />
+			<input id="SearchSubmit" class="searchBtn" type="button" onclick="SearchZTreeNode('MisDataWandereditTree','dynamicconftreeSearchNodeKeys')">
+			</div>
+		</div>
+		<ul id="MisDataWandereditTree" class="ztree" layoutH="45"></ul>
+	</div>
+</div>
+ <div id="MisDataWandereditBox" class="unitBox treeright">
+	<include file="editview" />
+</div>
+</div>
+
+

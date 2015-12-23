@@ -1,0 +1,70 @@
+<script type="text/javascript">
+$(function(){
+	var isscroll = '{$isscroll}';
+	if(isscroll==1){
+		$("div.marqueedata").kxbdMarquee({direction:"up",scrollDelay:"70"});
+	}
+	var $box=navTab.getCurrentPanel();
+	$('.nbmaccordion' , $box).nbmaccordion();
+});
+
+</script>
+<style>
+.marqueedata{
+    height: 200px;
+    overflow: hidden;
+    /*margin: 5px 0px;*/
+}
+</style>
+
+<div class="page unitBox general_page">
+	<div class="pageContent">
+		<div class="general_tree_left treeleft">
+			<!-- left accordion -->
+
+            <!--  参数说明：* @parame spread 全关全开控制，默认0：全关 @parame selecter 打开指定项下标。默认-1， @parame open 展开的样式效果 @parame close 关闭样式效果 -->
+			<div class="nbmaccordion"  data-option="close:icon-double-angle-down;open:icon-double-angle-up" layouth="40">
+				<volist name="accessNode" id="v1" key="i">
+						<div title="{$v1.title}">
+							<ul>
+								<volist name="v1['levelthree']" id="v2">
+									<li>
+										<a href="__APP__/{$v2.name}/index" title="{$v2.title}" rel="{$v2.name}" target="navtab">
+											<span>
+												{$v2.title}
+											</span>
+										</a>
+									</li>
+								</volist>
+							</ul>
+						</div>
+				</volist>
+			</div>
+			<!-- left end -->
+		</div>
+
+	<!-- ***************************************************** -->
+			<div id="MisPerformanceTypeRelIndex" class="unitBox treeright">
+				<div class="pageContent"   style="overflow: auto;" layoutH="40">
+					<div class="xypanel xysystem clearfix" id="nvigateToindex">
+						<ul  style="padding: 10px 0px 0px 10px">
+							<volist id="pnnelhtmllistvo" name="pnnelhtmllist">
+					             {$pnnelhtmllistvo}
+					        </volist>
+					        <volist id="runpannellistvo" name="runpannellist">
+					             {$runpannellistvo}
+					        </volist>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+	<!-- end -->
+	</div>
+</div>
+
+
+
+
+
+

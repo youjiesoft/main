@@ -1,0 +1,74 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/linkUserindex" class="pageForm required-validate"  onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="id" value="{$vo.id}" />
+			<input type="hidden" name="custmerid" value="{$vo['customerid']}"/>
+			<div class="pageFormContent applecloth" layoutH="55">
+				<div class="keepContentCenterCondensed clearfix">
+					<div class="tml-row">
+					<if condition='$fields["name"]'>
+					<div class="tml-form-col">
+						<label title="{$fields['name']}">{$fields["name"]}：</label>
+						<input type="text" name="name" class="required" value="{$vo.name}"/>
+					</div>
+					</if>
+					<if condition='$fields["linktel"]'>
+					<div class="tml-form-col">
+						<label title="{$fields['linktel']}">{$fields["linktel"]}：</label>
+						<input type="text"  name="linktel" class="alphanumeric" value="{$vo['linktel']}" />
+					</div>
+					</if>
+					<if condition='$fields["gdlinkman"]'>
+					<div class="tml-form-col">
+						<label title="{$fields['gdlinkman']}">{$fields["gdlinkman"]}：</label>
+						<input type="text" maxlength="30" name="gdlinkman" class=""  value="{$vo['gdlinkman']}" />
+					</div>
+					</if>
+					<if condition='$fields["gdlinktel"]'>
+					<div class="tml-form-col">
+						<label title="{$fields['gdlinktel']}">{$fields["gdlinktel"]}：</label>
+						<input type="text" maxlength="30" name="gdlinktel" class=""  value="{$vo['gdlinktel']}" />
+					</div>
+					</if>
+					<if condition='$fields["telphone"]'>
+					<div class="tml-form-col">
+						<label>{$fields["telphone"]}：</label>
+						<input type="text" maxlength="30" name="telphone" class="" value="{$vo['telphone']}" />
+					</div>
+					</if>
+					<if condition='$fields["fax"]'>
+					<div class="tml-form-col">
+						<label>{$fields["fax"]}：</label>
+						<input type="text" maxlength="20" name="fax" value="{$vo['fax']}" />
+					</div>
+					</if>
+					<if condition='$fields["qq"]'>
+					<div class="tml-form-col">
+						<label>{$fields["qq"]}：</label>
+						<input type="text" maxlength="20" name="qq" value="{$vo['qq']}" />
+					</div>
+					</if>
+					<if condition='$fields["email"]'>
+					<div class="tml-form-col">
+						<label>{$fields["email"]}：</label>
+						<input type="text" maxlength="20" name="email" class="email" value="{$vo['email']}" />
+					</div>
+					</if>
+				</div>
+				<if condition='$fields["remark"]'>
+					<div class="tml-form-row">
+						<label>{$fields["remark"]}：</label>
+						<textarea name="remark" maxlength="200">{$vo['remark']}</textarea>
+					</div>
+				</if>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+					<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

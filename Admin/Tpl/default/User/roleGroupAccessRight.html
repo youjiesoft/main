@@ -1,0 +1,91 @@
+<form onsubmit="return validateCallback(this, navTabAjaxDone);" action="__APP__/Rolegroup/authorizeRole" method="post">
+    <input type="hidden" name="rolegroupid" value="{$rolegroupid}">
+    <input type="hidden" name="nodeid" value="{$nodeid}">
+	<div class="panelBar tml-border-t1">
+		<ul class="toolBar">
+		    <li><a class="edit tml-btn tml_look_btn tml_mp" href="#" ><span><span class="icon icon-hand-right icon_lrp"></span>{$rolegroupid|getFieldBy='id','name','rolegroup'} ——> 组所有授权</span></a></li>
+		</ul>
+	</div>
+	<table class="table" width="100%" layoutH="107" >
+		<thead>
+		<tr>
+		    <th>分类</th>
+		    <th>名称</th>
+		    <th>全部</th>
+		    <th>公司</th>
+		    <th>部门</th>
+		    <th>个人</th>
+		    <th>禁用</th>
+		    <!-- <th>删除绑定</th> -->
+		</tr>
+		</thead>
+		<tbody>
+		    <volist id="v" name="list" key="keytop">
+				<if condition="isset($v['count'])">
+				    <tr>
+						<td rowspan="{$v['count']/4+1}"><input <if condition="$v['already_role_count'] gt 0">checked="checked"</if> type="checkbox" class="all <if condition="$v['already_role_count'] gt 0">selected</if>" id="top{$keytop}" rel="{$keytop}" onclick="seleteall(this);" />{$v['title']}</td>
+						<td class="hover">名称</td>
+						<td class="hover"><input type="checkbox" name="acc[{$ct['nodeid']}]" onclick="seleteall_second(this);" class="secondall all{$keytop} all_child1" id='{$keytop}_1' rel="{$keytop}" value="1">全选</td>
+						<td class="hover"><input type="checkbox" name="acc[{$ct['nodeid']}]" onclick="seleteall_second(this);" class="secondall all{$keytop} all_child2" id='{$keytop}_2' rel="{$keytop}" value="2">全选</td>
+						<td class="hover"><input type="checkbox" name="acc[{$ct['nodeid']}]" onclick="seleteall_second(this);" class="secondall all{$keytop} all_child3" id='{$keytop}_3' rel="{$keytop}" value="3">全选</td>
+						<td class="hover"><input type="checkbox" name="acc[{$ct['nodeid']}]" onclick="seleteall_second(this);" class="secondall all{$keytop} all_child4" id='{$keytop}_4' rel="{$keytop}" value="4">全选</td>
+						<td class="hover"><input type="checkbox" name="acc[{$ct['nodeid']}]" onclick="seleteall_second(this);" class="secondall all{$keytop} all_child5" id='{$keytop}_5' rel="{$keytop}" value="5">全选</td>
+						<!-- <td class="hover"><input type="checkbox" name="acc[{$ct['nodeid']}]" onclick="seleteall_second(this);" class="secondall all{$keytop} all_child0" id='{$keytop}_0' rel="{$keytop}" value="0">全选</td> -->
+				    </tr>
+				    <volist id="cc" name="v.child" key="keythree">
+						<tr>
+						    <?php $s=array();?>
+						    <volist id="cth" name="cc" key="four">
+							<?php $s[]=$cth['id'];?>
+							<if condition="$four eq 1"><td >{$cth['nodetitle']}</td></if>
+							<td ><input <if condition="$cth['already_role'] gt 0">checked="checked"</if> type="radio" name="role[{$cth['nodeid']}]" onclick="seleteall_three(this);" class="<if condition='$cth.already_role gt 0'> selected </if>  three secondall all{$keytop} all_child{$four} second_all_{$keytop}_{$four}" rel="{$keytop}"  value="{$cth['id']}" /></td>
+						    </volist>
+						    <td ><input type="radio" name="role[{$cth['nodeid']}]" onclick="seleteall_three(this);" class="three secondall all{$keytop} all_child0 second_all_{$keytop}_0" rel="{$keytop}" value="{:implode(';',$s)}"></td>
+						 </tr>
+				    </volist> 
+				</if>
+		    </volist>
+		</tbody>
+	</table>
+	<div class="formBar">
+		<ul>
+		    <if condition="$_SESSION.a eq 1 or $_SESSION.user_authorizerole">
+		    	<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}权限</button></li>
+		    </if>
+		</ul>
+	</div>
+</form>
+<script>
+    var $box=navTab.getCurrentPanel();
+	function seleteall(obj){
+	    var h=$(obj).hasClass("selected");
+	    var r=$(obj).attr("rel");
+	    $box.find(".all"+r).attr("checked",false);
+	    if(h){
+	    $(obj).removeClass("selected");
+		$box.find(".all"+r).filter(".all_child0").addClass("selected").attr("checked",true);
+	    }else{
+	    $(obj).addClass("selected");
+		$box.find(".all"+r).filter(".all_child4").addClass("selected").attr("checked",true);
+	    }  
+	}
+	function seleteall_second(obj){
+	    var h=$(obj).hasClass("selected");
+	    var v=$(obj).val();
+	    var r=$(obj).attr("rel");
+	    $box.find(".all"+r).not(obj).removeClass("selected").attr("checked",false);
+	    //$box.find(".second_all_"+r+"_"+v).attr("checked",false);
+	    if(h){
+		$(obj).removeClass("selected");
+		$box.find("#top"+r).removeClass("selected").attr("checked",false);
+	    }else{
+		$(obj).addClass("selected");
+		$box.find("#top"+r).addClass("selected").attr("checked",true);
+		$box.find(".all"+r).filter(".second_all_"+r+"_"+v).attr("checked",true);
+	    }  
+	}
+	function seleteall_three(obj){
+	    var r=$(obj).attr("rel");
+	    $box.find(".secondall").not(".three").removeClass("selected").attr("checked",false);
+	}
+</script>

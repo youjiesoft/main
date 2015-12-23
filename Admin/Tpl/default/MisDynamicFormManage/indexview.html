@@ -1,0 +1,120 @@
+<form id="pagerForm" action="__URL__/index">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	 <input type="hidden" name="deptid" value="{$deptid}" />
+	<input type="hidden" name="parentid" value="{$parentid}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+        <ul class="toolBar">
+            <volist name="toolbarextension" id="toolb">
+                <if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+                    <li>{$toolb['html']}</li>
+                </if>
+            </volist>
+           <!-- <a class="js-add add tml-btn tml_look_btn tml_mp" href="__URL__/dataupdate" target="navTab" rel="MisDynamicFormManageview"  title="数据更新"><span><span class="icon icon-plus icon_lrp"></span>数据更新</span></a>
+         -->
+        </ul>
+    </div>
+    <div class="grid" layoutH="84">
+        <if condition="$MisDynamicFormTemplateList">
+            <table class="model_name_lay">
+                <tr>
+                    <td width="15%" class="model_name_lay_left">是否带审批流：</td>
+                    <td width="85%" class="model_name_lay_right"> <if condition="$formvodata.isaudit eq '1'">是<else/>否</if></td>
+                </tr>
+                <tr>
+                    <td class="model_name_lay_left">模板名称:</td>
+                    <td class="model_name_lay_right">
+                        <volist name="MisDynamicFormTemplateList" id="tempvo" key="i">
+                            <span class="model_name">{$tempvo.tplname}<span>，</span></span>
+                        </volist>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="model_name_lay_left">Action名称:</td>
+                    <td class="model_name_lay_right">
+                            <span class="model_name">{$formvodata.actionname}</span>
+                  		 &nbsp;&nbsp;&nbsp;
+                  			<span><a  target="dialog" rel="__MODULE__lookupSetAccess"  width="630" height="560"  mask="true"  href="__URL__/lookupSetAccess/actionname/{$formvodata.actionname}/actiontitle/{$formvodata.actiontitle}">查看授权</a></span><span style="color:red"><if condition="!$nodelist">(未添加)<else/>(已有节点)</if></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="model_name_lay_left">表单类型:</td>
+                    <td class="model_name_lay_right">
+                            <span class="model_name">{:getSelectByName('AutotypEnum',$formtype)}</span>
+                    </td>
+                </tr>
+            </table>
+        </if>
+	<table class="tml_field_table" width="98%">
+        <tr style="background: #f2f2f2;color: #363636;text-shadow: 0px 0px 1px rgba(0,0,0,0.5);">
+            <td width="10%">表名</td>
+            <td width="18%">字段名称</td>
+            <td width="18%">字段标题</td>
+            <td width="15%">字段类型</td>
+            <td width="8%">字段长度</td>
+            <td width="15%">组件类型</td>
+            <td width="8%">权重</td>
+             <td width="8%">是否唯一</td>
+            <td width="8%">是否显示</td>
+        </tr>
+        <volist name="anameVo" id="anamel" key="i">
+            <?php  $count =count($anamel['list']); if($anamel['isprimay']  =='1'){
+					if($formvodata['isaudit']==1){
+						$count=$count+count($defaultlist['auditField'])+count($defaultlist['defaultField']);
+					}else{
+                         $count=$count+count($defaultlist['defaultField']);
+					}
+            }else{
+                     $count=$count+count($defaultlist['defaultField']);
+            }; ?>
+            <volist name="anamel['list']" id="afiled" key="i">
+                <tr>
+                    <if condition="$i eq 1">
+                        <td style="background: #f2f2f2; text-shadow: 0px 0px 1px rgba(0,0,0,0.5); color: #363636;" rowspan="{$count}+{$count}">{$anamel['tabletitle']}[{$anamel['tablename']}]<if condition="$anamel['isprimary'] eq 1">主表<else/>子表</if></td>
+                    </if>
+                    <td>{$afiled['field']}</td>
+                    <td>{$afiled['title']}</td>
+                    <td><if condition="$comboxOptionList[$afiled['category']]['title'] eq '日期组件'">日期型(date)<else/>{$fieldtypeList[$afiled['type']]['val']}</if></td>
+                    <td>{$afiled['length']}</td>
+                    <td>{$comboxOptionList[$afiled['category']]['title']}</td>
+                    <td>{$afiled['weight']}</td>
+                     <td>{:getSelectByName('positivestatus',$afiled['unique'])}</td>
+                     <?php  $isshow=getFieldBy($afiled['field'],'fieldname','id','mis_dynamic_form_propery','formid',$formid);?>
+                    <td><if condition="$isshow">是<else/>否</if></td>
+                </tr>
+            </volist>
+            <if condition="$anamel['isprimay'] eq 1 && $isaudit ==1 " >
+                <volist name="defaultlist['auditField']"  id="daval">
+            <tr class="system_tr">
+                <td>{$afiled['filed']}</td>
+                <td>{$afiled['title']}</td>
+                <td>{$fieldtypeList[$afiled['type']]['val']}</td>
+                <td>{$afiled['length']}</td>
+                <td>系统自带</td>
+                <td>系统自带</td>
+                <td>系统自带</td>
+                <td>系统自带</td>
+            </tr>
+              </volist>
+            </if>
+            <volist name="defaultlist['defaultField']"  id="dval">
+                <tr class="system_tr">
+                    <td>{$dval['filed']}</td>
+                    <td>{$dval['title']}</td>
+                    <td>{$fieldtypeList[$dval['type']]['val']}</td>
+                    <td>{$dval['length']}</td>
+                    <td>系统自带</td>
+                   	<td>系统自带</td>
+                    <td>系统自带</td>
+                    <td>系统自带</td>
+                </tr>
+            </volist>
+
+        </volist>
+    </table>
+    </div>
+</div>

@@ -1,0 +1,127 @@
+<script>
+var dataTable = $('.uploadTestTable{$rand}').dataTable({
+	"ordering":false,
+	"searching":false,
+	"paging": false,
+	"scrollX":"100%",
+	"scrollY":"300px",
+	"dom": '<"top">rt<"bottom"ip><"clear">',
+	"language" : {
+		"lengthMenu": "每页  _MENU_ 条记录",
+		"ZeroRecords": "抱歉， 没有找到",
+		"info": "当前显示 _START_ 到  _END_ 条   一共 _TOTAL_ 条记录",
+		"infoEmpty": "",
+		"infoFiltered": "(从 _MAX_ 条数据中检索)",
+		"zeroRecords": "没有检索到数据",
+		"search": "搜索",
+		"processing": "正在加载数据...",  
+		"paginate":{
+		"first": "首页",
+		"previous": "上一页",
+		"next": "下一页",
+		"last": "末页"
+		},
+	},
+});
+function onUplodeOk_projectadditemviewtest(file, data, response) {
+	console.log(file,data);
+	var $box = $("{$objId}").parents("td").find(".js_privyIndex");
+	var $val = "{$index}";
+	var s = data.split(TP_PUBLIC + "/Uploadstemp/");
+	var rand = $.rand();
+	var html = '<div class="swf_upload_save_'+rand+'" rel="'+rand+'"><input name="{$name}[]" value="'+s[1]+'###'+file.name+'" type="hidden" /></div>';
+	$('#' + file.id).find(".delfilebtn").attr("rel", rand);
+	$box.append(html);
+	var filename = file.name;
+	var index1=filename.lastIndexOf(".");  
+	var index2=filename.length; 
+	var ext=filename.substring(index1,index2);//后缀名 
+	var filename_0 = filename.substring(0,index1);
+	var td = new Array();
+	td.push('<a target="_blank" title="'+file.name+'" href="'+data+'"><span class="fu_file_name">'+filename_0+'</span><span class="fu_file_attr">'+ext+'</span></a>');
+	td.push('');
+	td.push('');
+	td.push('<span class="txt_yellow">未保存</span>');
+	td.push('<a title="文件删除" rel="'+rand+'" class="delfile_btn" href="javascript:;"><span class="icon-remove"></span></a>');
+	$('#' + file.id).hide(2000);
+	dataTable.fnAddData(td);
+	$(".uploadTestTable{$rand} tbody tr:last").addClass("waiting_save");
+	attached_count();
+	if(!$("{$objId}").hasClass("dt_upload_waiting_save"))$("{$objId}").addClass("dt_upload_waiting_save");
+}
+
+function attached_count(){
+	var $obj = $("{$objId}");
+	$obj.find(".attached_count").html($(".uploadTestTable{$rand} tbody tr").length-$(".uploadTestTable{$rand} tbody tr").find(".dataTables_empty").length);
+}
+
+$('.uploadtest').find(".delfile_btn").die("click");
+$('.uploadtest').find(".delfile_btn").live("click", function() {
+	var $box = $("{$objId}").parents("tr").find(".js_privyIndex");
+	var rel = $(this).attr("rel");
+	$box.find(".swf_upload_save_" + rel).remove();
+	var nRow = $(this).parents('tr')[0];
+	dataTable.fnDeleteRow(nRow);
+	attached_count();
+	if($(".uploadTestTable{$rand} tbody tr.waiting_save").length==0){
+		$("{$objId}").removeClass("dt_upload_waiting_save");
+	}
+});
+
+function uploadtest_upload_del(){
+	var $box = $("{$objId}").parents("tr").find(".js_privyIndex");
+	var rel = $(this).attr("rel");
+	$box.find(".swf_upload_save_" + rel).remove();
+	var nRow = $(this).parents('tr')[0];
+	dataTable.fnDeleteRow(nRow);
+}
+</script>
+<div class="pageContent uploadtest">
+	<div class="pageFormContent">
+		<div class="tml-row">
+			<if condition="$type neq 'view'">
+			<input id="swfupload_MisFileManager{$rand}"
+				onUploadSuccess="onUplodeOk_projectadditemviewtest" type="file"
+				auto="true" uploader="true" name="MisFileManagerfile"
+				formData="{ uploadpath:'MisFileManager' }" fileSizeLimit="10MB" />
+			<div class="clear"></div>
+			</if>
+			<div id="swfupload_MisFileManager_edit-queue{$rand}" class="clearfix uploadify_queue" style="height: 100%;">
+			</div>
+			<div style="width:99%">
+			<table class="uploadTestTable{$rand} nbm_data_table">
+				<thead>
+					<th style="min-width:160px;max-width:160px;width:160px;">文件名</th>
+					<th>上传日期</th>
+					<th>上传人</th>
+					<th>状态</th>
+					<if condition="$type neq 'view'"><th>操作</th></if>
+				</thead>
+				<tbody>
+					<volist name="list" id="recvo1" key="key">
+					<tr class='<if condition="!$recvo1.createid">waiting_save</if>'>
+						<td style="text-align:left; padding-left:8px;"><if condition="$recvo1.createid"><a href="__URL__/misFileManageDownload/path/{$recvo1['name']}/rename/{$recvo1['lookname']}" title="{$recvo1['lookname']}" target="_blank">{$recvo1['filename']}</a><else /><a href="javascript:;" title="{$recvo1['filename_0']}" target="_blank"><span class="fu_file_name">{$recvo1['filename_0']}</span><span class="fu_file_attr">{$recvo1['ext']}</span></a></if></td>
+						<td>{$recvo1['createdate']}</td>
+						<td>{$recvo1['userzhname']}</td>
+						<td><if condition="!$recvo1.createid"><span class="txt_yellow">未保存</span><else /><span class="txt_green">已保存</span></if></td>
+						<if condition="$type neq 'view'">
+						<td>
+						<if condition="$recvo1.createid">
+							<if condition="($_SESSION[C('USER_AUTH_KEY')] eq 1 or $recvo1.createid eq $_SESSION[C('USER_AUTH_KEY')])">
+								<a title="文件删除" class="dellink itb_del" href="__URL__/lookupdelatt/id/{$recvo1['id']}" rel="{$recvo1['id']}" target="ajaxTodo" callback="uploadtest_upload_del"><span class="icon-remove"></span>
+							</a>
+							</if>
+							<a class="btn into_table_btn" mask="true" rel="guidan" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$recvo['id']}" title="文件归档" target="dialog"><span class="icon-mail-reply-all"></span></a>
+						<else />
+							<a title="文件删除" rel="{$recvo1['rand']}" class="delfile_btn itb_del" href="javascript:;"><span class="icon-remove"></span></a>
+						</if>
+						</td>
+						</if>
+					</tr>
+					</volist>
+				</tbody>
+			</table>
+			</div>
+		</div>
+	</div>
+</div>

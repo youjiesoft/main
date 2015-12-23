@@ -1,0 +1,147 @@
+<script>
+function lookupQuickAdd($form) {
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			dialogSearch($("#lookupGeneralForm")[0]);
+		}
+	});
+}
+function ondblclickBringBack($lookupJson){
+	$.bringBack($lookupJson);
+}
+
+function abcd(id){
+	var box = $.pdialog.getCurrent();
+	var jj = $("input[type='checkbox']:checked",box);
+	var astr = '';
+	$.each(jj , function(k ,v){
+		if(k==0){
+			astr=$(this).val();
+		}else{
+			astr+=','+$(this).val();
+		}
+	});
+	if(astr){
+		astr = '['+astr+']';
+		var arr = $.json2arr(astr);
+		console.log(arr);
+		var datatablelookup1 = initTableWNEWOne("#into_table_new8391037");
+		datatablelookup1.lookupAddRow(arr);
+	}
+	$.pdialog.closeCurrent();
+}
+</script>
+<div class="pageContent">
+	<if condition="$tplName">
+	<div class="xyEditForm" style="border-top-width:1px;padding:4px;">
+		<form method="post" action="__URL__/lookupQuickInsert" class="pageForm required-validate" enctype="multipart/form-data" onsubmit="return lookupQuickAdd(this);">
+			<input type="hidden" name="quickInsertModel" value="{$model}" />
+			<fieldset>
+				<legend>快速新增</legend>
+				<include file="$tplName"/>
+				<div class="buttonActive right">
+					<div class="buttonContent">
+						<button type="submit">{$Think.lang.save}</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	</if>
+	<form id="pagerForm" action="__URL__/lookupGeneral" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="field" value="{$field}" />
+		<input type="hidden" name="deptid" value="{$deptid}" />
+		<input type="hidden" name="model" value="{$model}" />
+		<input type="hidden" name="conditions" value="{$conditions}" />
+		<input type="hidden" name="filterfield" value="{$filterfield}" />
+	</form>
+	<div class="panelBar">
+		<form id="lookupGeneralForm" onsubmit="return dialogSearch(this);" rel="pagerForm" action="__URL__/lookupGeneral" method="post">
+			<input type="hidden" name="field" value="{$field}" />
+			<input type="hidden" name="model" value="{$model}" />
+			<input type="hidden" name="deptid" value="{$deptid}" />
+			<input type="hidden" name="conditions" value="{$conditions}" />
+			<input type="hidden" name="filterfield" value="{$filterfield}" />
+			<div class="searchBar">
+                  <table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+								<volist id="qsl" name="quickSearchList">
+									<option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+								</volist>
+							</select>
+							<!-- <input type="hidden" name="ortype" value="{$onetype}" /> -->
+							<input type="hidden" name="time" value="{$time}" />
+						</td>
+						<td class="tml_select_option_center">
+							<volist id="qsl" name="quickSearchList">
+								<if condition="$qsl['quickname'] eq $quicksearchby">
+									<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+										{$qsl['html']}
+									</div>
+								<else/>
+									<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+										{$qsl['html']}
+									</div>
+								</if>
+							</volist>
+						</td>
+						<td class="tml_select_option_right">
+							<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+						</td>
+						<td>
+							<a class="xyAdvancedSearch" href="__APP__/Search/advancedsearch/model/{$model}" rel="__MODULE__advancedsubsearch" width="700" height="500" target="dialog" mask="true">高级检索</a>
+						</td>
+					</tr>
+					
+				</table>
+              </div>
+          </form>
+	</div>
+	<table class="table" layoutH="{$layoutH}" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<th><input type="checkbox"></th>
+				<volist id="vos" name="detailList">
+			    	<if condition="$vos[shows] eq 1"><th <if condition="$vos[widths]">width="{$vos[widths]}"</if><if condition="$vos[sorts]">orderField="{$vos[sortname]}" class="{$sort}"</if>>{$vos[showname]}</th></if>	<!--类型-->
+			    </volist>				
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo2" name="list" key="key2">
+			
+				<tr ondblclick='ondblclickBringBack({$vo2["lookupJson"]});'>
+					<td><input type="checkbox" value='{$vo2["lookupJson"]}'></td>
+					<volist id="vo1" name="detailList">
+						<if condition="$vo1[shows] eq 1">
+							<td width="{$vo1[widths]}">
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+										<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+										{:getConfigFunction($vo2[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+										<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+								{$vo2[$vo1['name']]}
+								</if>
+							</td>
+						</if>
+					</volist>					
+				</tr>
+		    </volist>
+		</tbody>
+	</table>
+	<a class="btnSelect" href='javascript:abcd("{$datatablehtmlid}");'  title="查找带回">选择</a>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}">
+		</div>
+	</div>
+</div>

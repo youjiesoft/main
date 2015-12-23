@@ -1,0 +1,51 @@
+<style>
+.pageFormContent p{
+display:block;
+}
+</style>
+<div class="pageContent">
+	<form method="post" action="__URL__/save" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<div class="pageFormContent" layoutH="56">
+			<div style="float:left;width:380px;">
+				<p>
+					<label><b>数据库备份：</b></label>
+				</p>
+				<p>
+					<label>请选择要备份的表：</label>
+					<input onclick="hide_tables();" name="backup_tables" type="radio" value="all" checked /> 全部表
+					<input onclick="backup_part();" name="backup_tables" type="radio" value="part" /> 部分表
+				</p>
+				<p>
+					<label>请选择要备份的内容：</label>
+					<input name="backup_type" type="radio" value="all" checked /> 结构和数据
+					<input name="backup_type" type="radio" value="struct" /> 只备份结构
+				</p>
+				<p>
+					<label style="width:200px;">分卷文件长度限制(单位：KB)：</label>
+					<input id="sizelimit" type="text" size="10" value="2048" />
+				</p>
+				<p>
+					<label>所属文件夹：</label>
+					<input maxlength="100" id="folder" type="text" size="30" />
+				</p>
+				<p>
+					<label>备注：</label>
+					<input maxlength="100" id="remark" type="text" size="30" />
+				</p>
+				<p>
+					<label style="width:360px;">备份提示：<font id="backup_notic" color="green">暂无。</font></label>
+				</p>
+				<p>
+					<br />
+					<label><input onclick="start_to_backup();" id="start_backup" type="button" value="开始备份" /></label>
+				</p>
+			</div>
+			<div id="part_tables" style="display:none;float:left;width:400px;">
+				<p>
+					<label><b>请选择表：</b></label><input type="checkbox" class="checkboxCtrl" group="table" /> 全选
+					<div style="float:left;margin-top:5px;" id="tables"></div>
+				</p>
+			</div>
+		</div>
+	</form>
+</div>

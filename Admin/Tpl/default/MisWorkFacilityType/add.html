@@ -1,0 +1,42 @@
+<include file="Public:pagerForm" />
+	<div class="page">
+		<div class="pageContent">
+			<form method="post" 
+			<if condition="$pid">
+				action="__URL__/insert/rel/misworkfacilitytype" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<else/>
+			action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			</if>
+				<input type="hidden" name="pid" value="{$pid}">
+				<div class="pageFormContent" layoutH="58">
+					<div class="">
+						<div class="tml-form-row"><label>分类编码：</label><input  type="text" name="orderno" class="required" <if condition='$writable eq 0'> readonly="readonly" </if> value="{$orderno}"></div>
+						<div class="tml-form-row">
+							<label>分类名称：</label>
+							<input  type="text" name="name" class="required" value="">
+							<input type="hidden" name="md" value="MisWorkFacilityType"/>
+						</div>
+						<if condition="$pid">
+						<div class="tml-form-row">
+							<label class="left">父级节点：</label>
+							<select name="pid" class="combox">
+								<option value="0">顶级分类</option>
+						 		<volist name="MisWorkFacilityTypeList" id="t">
+									<option <if condition="$pid eq $key">selected="selected"</if> value="{$key}">{$t}</option>
+								</volist>
+							</select>
+						</div>
+						</if>
+						<div class="tml-form-row">
+							<label>说&nbsp;&nbsp;&nbsp;&nbsp;明：</label>
+							<textarea name="remark"  ></textarea>
+						</div>
+					</div>
+				</div>
+				<div class="formBar">
+					  {:W('ShowAction')}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,67 @@
+<div class="pageContent">
+		<div class="pageFormContent " layoutH="58">
+				<h2 class="contentTitle contentTitle_center">特殊人员招聘报名表{:W('ShowAdvices',array('id'=>$vo['id']))}
+					{:W('ShowOrderno',array(0,'mis_hr_invitere_special_form',$vo['orderno']))}
+				</h2>
+				<fieldset>
+					<input type="hidden" name="picture" />
+					<div class="tml-form-col">
+						<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+						<input type="text" name="name" class="" readonly="readonly" value="{$vo.name}" />
+					</div>
+					<div class="tml-form-col">
+						<label>性&nbsp;&nbsp;&nbsp;&nbsp;别：</label>
+						<input type="text" name="sex"  readonly="readonly"  <if condition="$vo.sex eq '1'">value="男"<else/>value="女"</if> />
+						<input type="hidden" name="sex" value="{$vo.sex}" />
+					</div>
+					<div class="tml-form-row">
+						<label>身&nbsp;份&nbsp;证：</label>
+						<input name="chinaid" value="{$vo.chinaid}" readonly="readonly" type="text" class="textInput " />
+					</div>
+					<div class="tml-form-col">
+						<label>年&nbsp;&nbsp;&nbsp;&nbsp;龄：</label>
+						<input type="text" name="age" min="1" readonly="readonly" =""  value="{$vo.age}" maxlength="3" />
+					</div>
+					<div class="tml-form-col">
+						<label>出生年月：</label>
+						<input name="birthday" type="text" yearstart="-40" value="{$vo.birthday}"  yearend="1" class="" readonly="readonly" />
+					</div>
+					<div class="tml-form-col">
+						<label>应聘岗位：</label>
+						<input type="text" name="interviewposition" readonly="readonly" value="{$vo.interviewposition}"  class="" />
+					</div>
+					<div class="tml-form-col">
+						<label>应聘时间：</label>
+						<input type="text" readonly="readonly" class="textInput" yearstart="-40" yearend="1" value="{$vo.interviewpositiondate|transtime}"   name="interviewpositiondate" />
+					</div>
+					<div class="tml-form-col">
+						<label>联系方式：</label>
+						<input type="text" name="mobilephone" readonly="readonly" value="{$vo.mobilephone}" class="phone" />
+					</div>
+					<div class="tml-form-col">
+						<label>现住地址：</label>
+						<input name="address" type="text" readonly="readonly" value="{$vo.address}" class="textInput" />
+					</div>
+				</fieldset>
+				<hr />
+				<fieldset>
+				<div class="clearfix">
+					<div class="tml-form-col">
+						<label>办&nbsp;理&nbsp;人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getUserName}" />
+						<input type="hidden" name="createid" value="{$vo.createid}" />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>办理时间：</label>
+						<input type="text" size="19" readonly="readonly" value="{$vo.createtime|transTime}"  class="textInput " />
+						<input type="hidden" name="createtime" value="{$vo.createtime}" />
+					</div>
+				</div>
+				</fieldset>
+			</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+</div>

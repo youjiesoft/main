@@ -1,0 +1,40 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" class="pageForm required-validate" action="__URL__/update/rel/MisSystemAnnouncementSetBox"
+	<if condition="!$stepType">	
+	 onsubmit="return validateCallback(this, dialogAjaxDone)">
+	 <else/>
+	 onsubmit="return refreshTreeEdit(this,'name','MisSystemAnnouncementSettree');" >
+	</if>
+	<input type="hidden" name="id" value="{$vo.id}" >
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>编码：</label>
+				<input type="text" name="code"  value="{$vo.code}" maxlength="50"/>
+			</div>
+			<if condition="$typeid eq 2">
+		    <div class="tml-form-col">
+				<label>类型：</label>
+			    <select class="combox" name="pid">
+					<volist name="plist" id="plists">
+						<option <if condition="$vo.pid eq $plists.id">selected</if> value="{$plists.id}">{$plists.name}</option>
+					</volist>
+				</select>
+			</div>
+			</if>
+		   <div class="tml-form-col">
+				<label>名称：</label>
+				<input type="text" name="name"  value="{$vo.name}" maxlength="50"/>
+			</div>
+		</div>
+			<div class="tml-form-row">
+				<label>备注：</label>
+				<TEXTAREA rows="2" style="width:400px;" cols="50" name="remark">{$vo.remark}</TEXTAREA>
+			</div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+		</div>
+		<div style="clear:both;"></div>
+</div>

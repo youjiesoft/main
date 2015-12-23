@@ -1,0 +1,35 @@
+<volist id="vo" name="list" key="key2">
+<tr target="sid_node" rel="{$vo['id']}"
+	onclick="MisHrBasicEmployee_subsearchlist()" dwidth="800" dheight="600"
+	drel="__MODULE__edit" title="试用-员工信息"
+	ondblclick="ondblclick_navTab(this,'__MODULE__view','__URL__/view/id/{$vo['id']}');">
+	<td>
+		<input type="checkbox" name="id"
+		<if condition="$vo.isselected eq '1'">checked="checked"</if>
+		onclick="MisHrBasicEmployee_subsearchlist()" value="{$vo['id']}" />
+	</td>
+	<volist id="vo1" name="detailList">
+	<td field="{$vo1[name]}" width="{$vo1[widths]}">
+		<if condition="count($vo1['func']) gt 0"> <volist name="vo1.func"
+			id="nam"> <if
+			condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}<if
+			condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+		</volist> <else /> {$vo[$vo1['name']]} </if>
+	</td>
+	</volist>
+	<if condition="$_SESSION.a eq 1 || $_SESSION.mishrpersonnelmanagement_adduser">
+	<td>
+		<if condition="$vo.uid neq -1"> <a
+			href="__URL__/lookupuser/uid/{$vo['userid']}/companyid/{$vo['companyid']}" width="468" height="191"
+			mask="true" target="dialog" rel="__MODULE__lookupUser" title="查看账号信息">
+			<span>查看</span>
+		</a> <else /> <a href="__URL__/lookupadduser/id/{$vo['id']}" width="503"
+			height="262" mask="true" target="dialog"
+			rel="__MODULE__lookupadduser" rel="__MODULE__lookupadduser"
+			title="建立后台用户">
+			<span style="color: red">建立</span>
+		</a> </if>
+	</td>
+	</if>
+</tr>
+</volist>

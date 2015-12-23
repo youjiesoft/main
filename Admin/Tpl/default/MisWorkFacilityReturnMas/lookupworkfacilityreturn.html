@@ -1,0 +1,35 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misworkfacilityreturnmastree"), setting, zNodes);
+});
+</script>
+<div class="pageContent" style="border:0px;">
+	<div class="tabs">
+		<div class="tabsContent" style="border:0px; padding:0px;">
+			<div>
+				<div style="float: left; display: block; overflow: auto; width: 200px; border: solid 1px #CCC; line-height: 21px; background: #fff">
+					<div class="clearfix" style="border:0 solid #95B8E7;border-width:1px 0;padding:4px;">
+							<input style="float:left;margin:2px 12px 0 0;width:100px;" type="text" id="MisWorkFacilityApplymastreeSearchNodeKeys" />
+							<div class="buttonActive"><div class="buttonContent" onclick="SearchZTreeNode('misworkfacilityreturnmastree','MisWorkFacilityApplymastreeSearchNodeKeys')"><button>搜索</button></div></div>
+						</div>
+					<ul id="misworkfacilityreturnmastree" class="ztree" layoutH="49" ></ul>
+				</div>
+				<div id="lookupworkfacilityreturnlistli" style="margin-left: 204px;">
+					<include file="lookupworkfacilityreturnlist" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,48 @@
+<volist id="vo" name="list" key="key2">
+<div class="xyqa-main-item">
+	<h2>
+		<span class="xyqa-favoriting" style="color:skyblue;" title="删除">
+			<input type="checkbox" name="id" value="{$vo['id']}" />
+		</span>
+		<span class="xyqa-title">{$vo['text']}</span>
+	</h2>
+	<div class="xyqa-view clearfix">
+		<div class="xyqa-view-main" >
+			<div class="xyqa-view-content" style="text-indent: 2em;Line-height:20px;">{$vo['details']}</div>
+				<div class="clearfix">
+					<span class="xyqa-q-view-avatar-meta">&nbsp;
+					<input type="hidden" value="" name="qa_click">
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misuserevents_edit ">
+						<a class="xyqa-form-light-button xyqa-form-light-button-edit" href="__URL__/edit/id/{$vo.id}" target="dialog" width="760" height="480" rel="__MODULE__edit" title="重要日程修改" mask="true">
+							<span>{$Think.lang.change}</span>
+						</a>&nbsp;
+					</if>
+					<a class="xyqa-form-light-button xyqa-form-light-button-flag" href="__URL__/view/id/{$vo.id}" target="dialog"  width="760" height="480" rel="__MODULE__view" title="{$vo.text}" mask="true">
+						<span>查看</span>
+					</a>&nbsp;&nbsp;
+					<span class="xyqa-q-view-meta">
+						<span class="xyqa-q-view-what">开始时间:</span>
+						<span class="xyqa-q-view-when">
+							<span class="xyqa-q-view-when-data">
+								<span class="xypublished">{$vo['startdate']|transTime=###,'Y-m-d H:i'}</span>
+							</span>
+						</span>&nbsp;&nbsp;
+						<span class="xyqa-q-view-what">结束时间:</span>
+						<span class="xyqa-q-view-when">
+							<span class="xyqa-q-view-when-data">
+								<span class="xypublished">{$vo['enddate']|transTime=###,'Y-m-d H:i'}</span>
+							</span>
+						</span>&nbsp;&nbsp;
+						<span class="xyqa-q-view-what">相关人员:</span>
+						<span class="xyqa-q-view-who">
+							<span class="xyqa-q-view-who-data">
+								<span class="xypublished">{$vo['personname']}</span>
+							</span>
+						</span>&nbsp;&nbsp;
+					</span>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>
+</volist>

@@ -1,0 +1,50 @@
+<form id="pagerForm" action="__URL__/deptDuty" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this,'editXxBox');" action="__URL__/deptDuty" method="post">
+	<input type="hidden" name="userid" value="{$userid}" />
+</form>
+<div class="panelBar">
+	<ul class="toolBar">
+		<li>
+			<a class="add js-add tml-btn tml_look_btn tml_mp" href="__APP__/UserDeptDuty/add/userid/{$userid}/companyid/{$companyid}" mask="true" rel="lookupAddRoleadd" width="660" height="307" title="辅助部门职级_新增" target="dialog" >
+				<span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span>
+			</a>
+		</li>
+		<li>
+			<a class="edit js-edit tml-btn tml_look_btn tml_mp" href="__APP__/UserDeptDuty/edit/id/{sid_node}" mask="true" rel="lookupEditRoleedit" title="辅助部门职级_修改" width="660" height="307"  target="dialog" >
+				<span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.edit}</span>
+			</a>
+		</li>
+		<li>
+			<a class="js-delete delete tml-btn tml_look_btn tml_mp" href="__APP__/UserDeptDuty/delete/id/{sid_node}/rel/editXxBox" target="ajaxTodo" title="你确定要删除吗？" warn="请选择用户">
+				<span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span>
+			</a>
+		</li>
+	</ul>
+	<span class="tml-help-inline">{$userid|getFieldBy='id','name','user'}--->具有以下部门和职级</span>
+</div>
+<table class="table" width="100%" layoutH="72">
+	<thead>
+		<tr>
+		   <th width="24">序号</th>
+		   <th>公司</th>
+		    <th>部门</th>
+		    <th>职级</th>
+		    <th>类型</th>
+		</tr>
+	</thead>
+	<tbody>
+		<volist name="list" id="vo">
+			<tr target="sid_node" rel="{$vo['uddid']}">
+				<td  class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+				<td>{$vo.companyid|getFieldBy='id','name','mis_system_company'}</td>
+				<td>{$vo.deptid|getFieldBy='id','name','mis_system_department'}</td>
+				<td>{$vo.dutyid|getFieldBy='id','name','MisSystemDuty'}</td>
+				<td>{$vo.typeid|excelTplselected='1:主职级,0:辅助职级'}</td>
+		    </tr>
+	    </volist>
+	</tbody>
+</table>

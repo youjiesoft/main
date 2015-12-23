@@ -1,0 +1,92 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+			<input type="hidden" name="dotype" value="流程新建" />
+			<input type="hidden" name="refreshtabs[type]" value="dialog" />
+			<input type="hidden" name="beforeInsert" value="1" />
+			<input type="hidden" name="refreshtabs[closeall]" value="1" />
+			<div class="contentTitle contentTitle_center">转正申请单{:W('ShowFlow')}
+			</div>
+			<div class="pageFormContent " layoutH="105">
+				<fieldset>
+					<div class="tml-row">
+					{:W('ShowOrderno',array(1,'mis_hr_regular_employee'))}	
+						<div class="tml-form-col">
+								<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+								<div class="tml-input-append">
+				                <input type="text" name="employeename" callback="mishrbecomeemployeeisworkage" value="{$basicEmployeeVO.name}" class="org1.name"  readonly="readonly"/>
+								<input type="hidden" name="employeeid"  class="org1.id" value="{$basicEmployeeVO.id}" />
+								<input type="hidden" name="deptid"  class="org1.deptid" value="{$basicEmployeeVO.deptid}" />
+								<a class="input-addon  input-addon-add" href="__URL__/lookupmanage" lookupGroup="org1">查找带回</a>
+							</div>
+						</div>
+						<div class="tml-form-col">		 
+							<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+							<input type="text"  class="org1.deptname" name="deptname"  value="{$depVO.name}" readonly="readonly" />
+							<input type="hidden" value="{$depVO.id}" class="org1.deptid" name="deptid"/>
+						</div>
+						<div class="tml-form-col">
+							<label>职&nbsp;&nbsp;&nbsp;&nbsp;级：</label>
+							<input type="text"  name="coname" class="org1.dutyname" value="{$basicEmployeeVO.dutylevelid|getFieldBy='id','name','duty'}" readonly="readonly"/> <!-- 职级编号 -->
+							<input type="hidden" class="org.dutylevelid"  class="org1.dutylevelid"  value="{$basicEmployeeVO.dutylevelid}" name="dutylevelid"/>
+						</div>
+						<div class="tml-form-col">		 
+							<label>岗&nbsp;&nbsp;&nbsp;&nbsp;位：</label>
+							<input type="text"  class="org1.worktypename" name="worktypename"  value="{$basicEmployeeVO.worktype|getFieldBy='id','name','mis_hr_job_info'}" readonly="readonly" />
+							<input type="hidden" value="{$basicEmployeeVO.worktype}" class="org1.worktype" name="worktype"/>
+						</div>
+						<div class="tml-form-col">	
+							<label>入职日期：</label>
+							<div class="tml-input-append">
+								<input type="text" value="{$basicEmployeeVO.indate|transtime}" class="Wdate org1.indate" name="indate" readonly="readonly"/>
+								<span class="input-addon input-addon-calendar"></span>
+							</div>
+						</div>
+						<div class="tml-form-col">	
+							<label>转正日期：</label>
+							<div class="tml-input-append">
+								<input type="text" name="positivedate" readonly="readonly" class="org1.transferdate" value="{$basicEmployeeVO.transferdate|transtime}" />
+								<span class="input-addon input-addon-calendar"></span>
+							</div>
+						</div>
+						<div class="tml-form-col">
+							<label>试&nbsp;用&nbsp;期：</label>
+							<div class="tml-input-append">
+							<input type="text" name="probation" value="{$pedate}"  readonly="readonly"/> 
+							<span class="input-addon-unit" title="天">天</span>
+							</div>
+						</div>
+						<div class="tml-form-col">
+							<label>已&nbsp;试&nbsp;用：</label>
+							 <div class="tml-input-append">
+							<input type="text" value="{$date}" name="indateregulr" readonly="readonly"/> 
+							<span class="input-addon-unit" title="天">天</span>
+							</div>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset>
+					<div class="tml-form-row">
+						<label>个人总结：</label>
+	              		<textarea name="remark" class="required"></textarea>
+					</div>
+					<div class="tml-form-row">
+						<span class="tml-help-block" style="color:red">* 试用期间工作总结（内容包括对试用期工作的回顾、总结，对公司企业文化的理解；自己在工作中的优点及不足，如何改进存在的不足；对今后工作的设想、建议等）。</span>
+					</div>
+				</fieldset>
+				<div class="divider-content help"><span></span></div>
+				<div class="tml-row">	
+					<div class="tml-form-col">
+						<label>申&nbsp;请&nbsp;人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$Think.SESSION.loginUserName}" />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>申请时间：</label>
+						<input type="text" size="19" readonly="readonly" value="{$time|transTime}" />
+					</div>
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

@@ -1,0 +1,52 @@
+<script>
+$(function(){
+		var confedit = new Object();
+		var dataedit = '{$deptComList}';
+		confedit.data =$.parseJSON(dataedit);
+		confedit.ids = '#userdeptdutycedit,#userdeptdutydedit',
+		confedit.tag = 'compay,dept'; 
+		confedit.pid = 'companyid';
+		confedit.container=$("#userdeptdutyedit");
+		confedit.defaultVal='{$vo.companyid},{$vo.deptid}';
+		confedit.istree=true ; // 是否开启树形数据功能。
+		confedit.islastchoice =true; // 是否开启最下一项可选择功能
+		confedit.tex = 'name'; 
+		confedit.val = 'id';  
+		$.linkage(confedit); 
+	}); 
+</script>
+<div class="pageContent" id="userdeptdutyedit">
+	<form method="post" action="__URL__/update/rel/editXxBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row"> 
+			<div class="tml-form-col">
+					<label>公司：</label>
+					<select  id="userdeptdutycedit" name="companyid" class="combox">
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>部门：</label>
+					<select name="deptid" id="userdeptdutydedit" class="chosen">
+					</select>
+				</div>
+			<div class="tml-form-col">
+				<label>职级：</label>
+				<select name="dutyid" class="combox">
+					{:getDataBaseByHtml('MisSystemDuty',array('selected'=>$vo['dutyid']))}
+				</select>
+			</div>
+			<div class="tml-form-col"  style="width:500px;">
+				<label>备注：</label>
+				<textarea name="remark" rows="2" maxlength="200" cols="40"></textarea>
+			</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

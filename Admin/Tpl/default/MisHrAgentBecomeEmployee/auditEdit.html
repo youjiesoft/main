@@ -1,0 +1,92 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/auditProcess/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<input type="hidden" name="pid" value="{$vo['ptmptid']}">
+		<input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+		
+		<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+		<input type="hidden" name="refreshtabs[url]" value="__APP__/MisHrBecomeEmployee/index">
+		<input type="hidden" name="refreshtabs[data]" value="{ ntdata:1}">
+		<input type="hidden" name="refreshtabs[title]" value="人员转正管理">
+		<input type="hidden" name="refreshtabs[type]" value="dialog">
+		
+		<input type="hidden" name="backprocess" value="流程回退">
+		<input type="hidden" name="auditprocess" value="流程审核">
+		<input type="hidden" name="endprocess" value="流程结束">
+		<input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+		<input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+		
+		<input type="hidden" name="refreshtabs[closeall]" value="1">
+		
+			<div class="pageFormContent " layoutH="58">
+				<h2 class="contentTitle contentTitle_center">转正申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+					{:W('ShowOrderno',array(0,'mis_hr_regular_employee',$vo['orderno']))}
+				</h2>
+				<fieldset>
+					<table class="table" width="100%">
+						<thead>
+							<tr>
+								<th>姓名</th>
+								<th>职务</th>
+								<th>入职日期</th>
+								<th>试用期</th>
+								<th>已试用</th>
+							</tr>
+						</thead>
+						<tbody class="Basicsaleprojectlist">
+						<volist id="void" name="volistid" > 
+							<tr>
+								<td>
+								 <input type="hidden" name="employeeid[]" value="{$void.id}">{$void.name}
+								</td>
+								<td>{$void.dutylevelid|getFieldBy='id','name','duty'}</td>
+								<td>{$void['indate']|transTime}</td>
+								<td>{$void['pedate']}</td>
+								<td>{$void['date']}</td>
+							</tr>
+						</volist>
+					</table>
+				    <p>
+						<label>转正日期：</label>
+						<span class="xyInputWithUnit">
+							<input type="text" name="positivedate" size="15" id="positivedate_e" readonly="readonly" value="{$vo.positivedate|transTime}"/>
+							<span class="input-addon input-addon-calendar"></span>
+						</span>
+					</p>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>个人总结</b></legend>
+					<textarea style="width: 610px; height: 160px;" name="remark" readonly="readonly">{$vo.remark}</textarea>
+					<div class="clear"></div>
+					<span class="tml-help-block" style="color:red">* 试用期间工作总结（内容包括对试用期工作的回顾、总结，对公司企业文化的理解；自己在工作中的优点及不足，如何改进存在的不足；对今后工作的设想、建议等）。</span>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>审核意见</b></legend>
+		            <textarea class="required" style="width: 610px; height: 60px;" name="doinfo"></textarea>
+				</fieldset>
+				<hr/>
+				<p>
+					<label>代&nbsp;办&nbsp;人：</label>
+					<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}" />
+				</p>	
+				<p>
+				 	<label>代办时间：</label>
+					<input type="text" readonly="readonly" value="{$vo.createtime|transTime}"/>
+				</p>
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishragentbecomeemployee_auditprocess">
+					<li><button type="button" class="tml-btn tml-btn-primary" onclick="auditProcess(this.form,'__MODULE__','dialog');">{$Think.lang.auditprocess}</button></li>
+				</if>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishragentbecomeemployee_backprocess">
+					<li><button type="button" class="tml-btn tml-btn-primary" onclick="BackProcess(this.form,'__MODULE__');">{$Think.lang.backprocess}</button></li>
+				</if>
+					<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

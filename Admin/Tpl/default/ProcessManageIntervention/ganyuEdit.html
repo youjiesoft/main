@@ -1,0 +1,46 @@
+<script type="text/javascript">
+<!--
+function ganyuProcess(){
+	//流程收回接受参数
+	var tablename = "{$tablename}";
+	//获取表ID
+	var tableid = "{$tableid}";
+	//变更节点还是普通节点
+	var catgory = "{$catgory}";
+	var ostatus = "{$ostatus}";
+	var options = {};
+	options.param={tablename:tablename,tableid:tableid,ostatus:ostatus,catgory:catgory};
+	options.mask = "true";
+	options.width=700;
+	options.height=400;
+	var url2 = "__URL__/showContent";
+	$.pdialog.open(url2,"_blank", "干预信息",options);
+}
+//-->
+</script>
+<script src="__TMPL__{$tablename}/view.js" type="text/javascript"></script><script src="__TMPL__{$tablename}/viewExtend.js" type="text/javascript"></script>
+	{~$classNodeSettingArr = getModelClassByNodeSetting('$tablename','view')}
+	{~$appendPageContentArr = getBindTabsContent('$tablename',$vo,'view','',$main)}
+	{~$formautosetting = setFormControllAutoCreate('$tablename' ,'view' , $main , 'update',$vo)}
+	{$appendPageContentArr[1]}
+<div class="page">
+	<div class="pageContent">
+		<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME"> <if condition="!$_REQUEST['bindaname']"> layoutH="40"</if> </if>>
+			<div class="new_version_page ">
+			<form id="MisAutoIea_view" {$appendPageContentArr[5]} {$formautosetting[3]}  method="post" action="__URL__/ganyuProcess/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)"><a class='xyz_anchornavi_top' name='MisAutoIea_view_top'></a>
+				{$formautosetting[1]}
+				<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">{$title}</span></div>
+					{$content}
+				<div class="formBar">
+					<ul>
+						<li><button type="button" class="tml_formBar_btn tml_formBar_btn_blue enterIndex" onclick="ganyuProcess(this.form,'MisAutoIea');">干预</button></li>
+					</ul>
+				</div>
+				<div class="clear"><span style="display:none;" class="anchornaviforshow">MisAutoIea_view</span><a class='xyz_anchornavi_buttom' name='MisAutoIea_view_bottom'></a></div>
+			</form>
+{$appendPageContentArr[2]}
+{$appendPageContentArr[3]}
+			</div>
+		</div>
+	</div>
+</div>

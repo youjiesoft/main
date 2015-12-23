@@ -1,0 +1,138 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__"
+		class="pageForm required-validate"
+		onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<div class="pageFormContent applecloth" layoutH="56">
+			<div class="keepContentCenter">
+				<h2 class="contentTitle contentTitle_center">员工培训编辑</h2>
+				<fieldset class="zlqk_1">
+					<legend class="zlqk_2">
+						<b>一、基本信息</b>
+					</legend>
+					<p>
+						<label>培训编号：</label>
+						<input type="text" name="orderno" size="15" value="{$orderno}"
+						<if condition='$writable eq 0'> readonly="readonly" </if>
+						maxlength="25" class="required alphanumeric textInput"/>
+					</p>
+					<p>
+						<label>学员姓名：</label>
+							<div class="tml-input-append" >
+						<input type="text" class="required org.name" size="15" value="{$MisHrBasicEmployeeList.name}" name="name" readonly="readonly" />
+						<input type="hidden" name="personid" class="org.mangid" />
+						<a class="input-addon   input-addon-add" href="__URL__/lookupmanage" value="{$MisHrBasicEmployeeList.id}"  lookupGroup="org">查找带回</a>
+						</div>
+					</p>
+					<p>
+						<label>部门：</label>
+						<input type="text" class="required org.deptname" size="15" value="{$depList.name}"
+							readonly="readonly" />
+						<input type="hidden" name="deptid"  value="{$depList.id}" class="org.deptid" />
+					</p>
+
+					<p>
+						<label>职务：</label>
+						<input type="hidden" name="dutylevelid" class="org.dutylevelid" value="{$MisHrBasicEmployeeList.dutylevelid}" />
+						<input type="text" class="textInput org.dutyname" size="15" value="{$MisHrBasicEmployeeList.dutyname}" name="dutyname" readonly="readonly" />
+					</p>
+
+					<p>
+						<label>入职时间：</label>
+						<input type="text" name="entrytime" size="15" class="org.indate" value="{$MisHrBasicEmployeeList.indate|transtime}" readonly="readonly" />
+					</p>
+				</fieldset>
+				<fieldset>
+					<legend>
+						<b>二、培训信息</b>
+					</legend>
+					<div class="xytable grid">
+						<table class="list nowrap itemDetail" addbutton="添加课程" style="clear: both;">
+							<thead>
+								<tr style="text-align: center;">
+									<th type="lookup" width="65" name="trainid[]"
+										fieldClass="itemsorg.trainid[]" suggesturl="MisHrPersonnelTrainingManage" lookupGroup="itemsorg" lookupUrl="__URL__/lookuptrain"
+										lookupGroup="trainid,orderno,name" size="4">查找</th>
+									<th type="text" width="85" size="9"
+										fieldClass="itemsorg.ordernos[]">课程编号</th>
+									<th type="text" width="80" size="8"
+										fieldClass="itemsorg.traintime[]">培训时间</th>
+									<th type="text" width="72" size="7"
+										fieldClass="itemsorg.types[]">课程类型</th>
+									<th type="text" width="130" size="15"
+										fieldClass="itemsorg.names[]">课程名称</th>
+									<th type="text" width="72" size="7"
+										fieldClass="itemsorg.classsource[]">课程来源</th>
+									<th type="text" width="72" size="7"
+										fieldClass="itemsorg.targetstudent[]">适用对象</th>
+									<th type="text" width="72" size="7"
+										fieldClass="itemsorg.lecturer[]">培训讲师</th>
+									<th type="text" width="72" size="7"
+										fieldClass="itemsorg.traingoal[]">培训目标</th>	
+									<th type="text" width="72" size="7"
+										fieldClass="itemsorg.level[]">讲师等级</th>
+									<th type="text" width="150" size="20"
+										fieldClass="itemsorg.site[]">培训地点</th>
+									<th type="text" width="50" size="5" name="classhours[]"
+										fieldClass="itemsorg.classhour[]">课时</th>
+									<!-- <th type="text" width="85" size="7"
+										fieldClass="itemsorg.trainform[]">培训形式</th>
+									<th type="text" width="90" size="7"
+										fieldClass="itemsorg.assessment[]">考核方式</th>
+									<th type="text" width="50" size="3"
+										fieldClass="itemsorg.traincost[]">费用</th>
+									<th type="text" width="50" size="3"
+										fieldClass="itemsorg.curriculumvalue[]">分值</th> -->
+									<th type="text" size="30" fieldClass="itemsorg.remark[]" width="36">备注</th>
+									<th type="del" width="36">操作</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<if
+					condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonneltrainingmanage_insert">
+				<li>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="submit">{$Think.lang.save}</button>
+						</div>
+					</div>
+				</li>
+				</if>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.cancel}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.xytable').bind('click mouseover', function(e){
+		var $this = $(this);
+		var $trs = $(this).find('tr');
+		var $target = $(e.target);
+		var $tr = $target.parents('tr');
+		if($tr.length > 0){
+			if(e.type == 'click'){
+				$trs.removeClass('selected');
+				$target.parents('tr').addClass('selected');
+			} else if(e.type == 'mouseover'){
+				$trs.removeClass('hover');
+				$target.parents('tr').addClass('hover');
+			}
+		}
+	});
+});
+</script>

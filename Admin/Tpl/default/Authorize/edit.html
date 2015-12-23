@@ -1,0 +1,83 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/abc" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="user_id" value="<?php echo $_SESSION[C('USER_AUTH_KEY')] ?>"/>
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>{$fields["account"]}：</label>
+				<input type="text" class="required"   name="account" value="{$vo.account}">
+			</div>
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required org1.name" readonly="readonly" name="name" value="{$vo.name}" />
+				<input type="hidden" name="employeid" class="org1.mangid" value="{$vo.employeid}"/>
+				<if condition="$vo.linkonecontent eq 0"><a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org1">查找带回</a><span class="info">员工</span></if>
+			</div>
+			<div class="unit">
+				<label>{$fields["sex"]}：</label>
+				<select name="sex" class="required combox">
+					<option <eq name="vo.sex" value="1" >selected</eq> value="1">男</option>
+					<option <eq name="vo.sex" value="0" >selected</eq> value="0">女</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>{$fields["orderdisplay"]}：</label>
+				<select name="orderdisplay" class="combox">
+					<option <eq name="vo.orderdisplay" value="2" >selected</eq> value="2">个人</option>
+					<option <eq name="vo.orderdisplay" value="1" >selected</eq> value="1">部门</option>
+					<option <eq name="vo.orderdisplay" value="3" >selected</eq> value="3">部门及子部门</option>
+					<option <eq name="vo.orderdisplay" value="0" >selected</eq> value="0">全部</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>{$fields["dept_id"]}：</label>
+				<select name="dept_id" class="combox org1.deptid">
+					{$html}
+				</select>
+				<select name="duty_id" class="combox org1.dutylevelid">
+					<option value="">请选择职级</option>
+					<volist name="dutylist" id="dtlist">
+						<option value="{$key}" <if condition="$key eq $vo['duty_id']">selected</if>>{$dtlist}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="unit">
+				<label>{$fields["work_date"]}：</label>
+                <input type="text"  name="work_date" onfocus="WdatePicker()" class="tml-border-r0 Wdate required  org1.indate" value="{$vo.work_date|transTime}"/>
+                <span class="input-addon input-addon-calendar"></span>
+			</div>
+			<div class="unit">
+				<label>{$fields["mobile"]}：</label>
+				<input type="text" name="mobile" class="required phone" value="{$vo.mobile}"/>
+			</div>
+			<div class="unit">
+				<label>{$fields["email"]}：</label>
+				<input type="text" name="email" maxlength="100" class="required email org1.email" value="{$vo.email}"/>
+			</div>
+			<div class="unit">
+				<label>采购人员：</label>
+				<input type="checkbox" class="textInput" <if condition="$vo['ispur'] eq 1">checked="checked"</if> name="ispur"/>
+				<span class="info tml-c-red">&nbsp;&nbsp;&nbsp;(选中则为采购组织中的人员)</span>
+			</div>
+			<div class="unit">
+				<label>{$fields["status"]}：</label>
+				<select class="small bLeft combox"  name="status">
+					<option <eq name="vo.status" value="1" >selected</eq> value="1">启用</option>
+					<option <eq name="vo.status" value="0" >selected</eq> value="0">禁用</option>
+				</select>
+			</div>
+			<div class="unit" style="width:500px;">
+				<label>{$fields["remark"]}：</label>
+				<textarea class="large bLeft"  name="remark" rows="2" cols="40">{$vo.remark}</textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

@@ -1,0 +1,84 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this,refreshtabs)">
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<input type="hidden" name="refreshtabs[tabid]" value="MisProductType">
+		<input type="hidden" name="refreshtabs[url]" value="__APP__/MisProductType/index">
+		<input type="hidden" name="refreshtabs[type]" value="navtab">
+		<input type="hidden" name="refreshtabs[data]" value="{ id:{$vo['linkid']}}">
+		<input type="hidden" name="refreshtabs[title]" value="产品类别">
+		
+		<div class="pageFormContent" layoutH="58">
+			<p>
+				<label>字段名：</label>
+				<input type="text" name="name" value="{$vo['name']}" alt="密度" class="required" />&nbsp;
+				<span class="info" ><input type="checkbox" name="ismust" <if condition="$vo['ismust'] eq 1" >checked</if> value="1" />是否必填</span>     
+			</p>
+			<p>
+				<label>别名：</label><input type="text" alt="density" name="rename" value="{$vo.rename}" class="required lettersonly" />
+			</p>
+			<p class="nowrap">
+				<label>数据验证规则：</label>
+				 <?php $arrcheck =explode(';',$vo['checkreg']); ?>
+				<select name="checkreg[]" multiple="multiple" style="height:64px;">
+					<option value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+					<volist id="vot2" name="typelist">
+						<eq name="vot2.type" value='2'>
+							<option  value="{$vot2['id']}" <if condition="in_array($vot2['id'],$arrcheck)">selected</if>>{$vot2['name']}</option>
+						</eq>
+					</volist>
+				</select><span class="info">可多选</span>
+			</p>
+			<p>
+				<label>类型：</label>
+				<select name="fieldtypeid" class="required combox" id="typeid">
+				  <option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+				  <volist id="vot1" name="typelist">
+					<eq name="vot1.type" value='1'>
+				      <option  value="{$vot1['id']}" <eq name="vot1.id" value="$vo['fieldtypeid']">selected</eq> >{$vot1['name']}</option>
+				      </eq>
+				  </volist>
+			      </select>
+			</p>
+			<p>
+				<label>最小长度：</label>
+				<input type="text" min='0' name="minlength" value="{$vo.minlength}" class="textInput digits" />
+			</p>
+			<p>
+				<label>最大长度：</label>
+				<input type="text" max='500' name="maxlength" value="{$vo.maxlength}" class="textInput digits" />
+			</p>
+			<p>
+				<label>选项：</label><input type="text" name="options" value="{$vo.options}" class="textInput" />
+                                <span class="info">多个选项用;隔开</span>
+			</p>
+			<p>
+				<label>默认值：</label><input type="text" value="{$vo.defaultval}" class="textInput" name="defaultval"  /></label>
+			</p>
+			<p>
+				<label>排序：</label>
+				<input type="text" name="pos" class="textInput" value="{$vo.pos}" />
+			</p>
+			<p>
+				<label>提示信息：</label>
+				<input type="text" name="tips" value="{$vo.tips}" class="textInput" />
+			</p>
+			<dl class="nowrap">
+				<dt><label>备注说明：</label></dt>
+				<dd><textarea  name="remark" cols="60" rows="4">{$vo.remark}</textarea></dd>
+			<dl>
+</table>
+		</div>
+
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemtransport_update">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.cancel}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>

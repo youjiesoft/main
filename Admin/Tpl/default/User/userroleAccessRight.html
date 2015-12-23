@@ -1,0 +1,43 @@
+<div class="panelBar">
+	<ul class="toolBar">
+	    <li><a class="edit tml-btn tml_look_btn tml_mp" href="#" ><span><span class="icon icon-hand-right icon_lrp"></span>{$userid|getFieldBy='id','name','user'} -—— 所有授权</span></a></li>
+	</ul>
+</div>
+<table class="table" width="100%" layoutH="72">
+    <thead>
+		<tr>
+		    <th>分类</th>
+		    <th>名称</th>
+		    <th>全部</th>
+		    <th>公司</th>
+		    <th>部门</th>
+		    <th>个人</th>
+		    <th>禁用</th>
+		</tr>
+    </thead>
+    <tbody>
+		    <volist id="v" name="list" key="keytop">
+			<if condition="isset($v['count'])">
+			    <tr>
+				<td rowspan="{$v['count']/4+1}"><input <if condition="$v['already_role_count'] gt 0">checked="checked"</if> type="checkbox" class="all <if condition="$v['already_role_count'] gt 0">selected</if>" id="top{$keytop}" rel="{$keytop}" onclick="seleteall(this);" />{$v['title']}</td>
+				<td class="hover">名称</td>
+				<td class="hover"></td>
+				<td class="hover"></td>
+				<td class="hover"></td>
+				<td class="hover"></td>
+				<td class="hover"></td>
+			    </tr>
+			    <volist id="cc" name="v.child" key="keythree">
+					<tr>
+					    <?php $s=array();?>
+					    <volist id="cth" name="cc" key="four">
+						<?php $s[]=$cth['id'];?>
+						<if condition="$four eq 1"><td >{$cth['nodetitle']}</td></if>
+						<td ><input <if condition="$cth['already_role'] gt 0">checked="checked"</if> type="radio" name="role[{$cth['nodeid']}]" onclick="seleteall_three(this);" class="<if condition='$cth.already_role gt 0'> selected </if>  three secondall all{$keytop} all_child{$four} second_all_{$keytop}_{$four}" rel="{$keytop}"  value="{$cth['id']}" /></td>
+					    </volist>
+					 </tr>
+			    </volist> 
+			</if>
+		    </volist>
+		</tbody>
+</table>

@@ -1,0 +1,105 @@
+<style>
+.pageContent {
+    padding: 9px 20px 20px;
+    text-align: left;
+}
+.itemtitle h3 {
+float: left;
+margin-right: 20px;
+}
+h3 {
+color: #0099CC;
+font-size: 14px;
+margin-bottom: 10px;
+}
+
+
+.tab1 {
+    clear: both;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.itemtitle ul {
+    float: left;
+    line-height: 18px;
+}
+ 
+.itemtitle .tab1 {
+    clear: none;
+}
+
+
+.stepstat li {
+    color: #CCCCCC;
+    float: left;
+    margin-right: 15px;
+}
+
+.stepstat .current {
+    color: #009900;
+}
+/*table bufen*/
+
+.upgrade table {
+    border-collapse: collapse;
+}
+.upgrade .header, .upgrade .header td, .upgrade .header th {
+    border-top: 1px dotted #DEEFFB;
+    font-weight: 700;
+}
+.upgrade .tb {
+    clear: both;
+    margin-top: 8px;
+    width: 100%;
+}
+
+.tb th, .tb td {
+    height: 25px;
+    padding: 5px !important;
+}
+.tb2 td {
+    border-top: 1px dotted #DEEFFB;
+    padding: 5px 5px 3px 0;
+}
+em, cite, th {
+    font-style: normal;
+}
+/*.files {
+    background: url("../Public/Images/bg_repno.gif") no-repeat scroll -260px -150px transparent;
+    padding: 1px 0 1px 50px;
+}*/
+.bold {
+    font-weight: 700;
+}
+
+
+
+</style>
+<div class="pageContent upgrade" layoutH="36">
+    
+    <div class="itemtitle">
+	<h3>在线升级</h3>
+	<ul style="margin-right:10px" class="tab1"></ul>
+	<ul class="stepstat">
+	    <li id="step1" class="current">1.获取待更新文件列表</li>
+	    <li id="step2">2.下载更新</li>
+	    <li id="step3">3.本地文件比对</li>
+	    <li id="step4">4.正在升级</li>
+	    <li id="step5">5.升级完成</li>
+	</ul>
+	<ul class="tab1"></ul>
+    </div>
+    
+    <table class="tb tb2 ">
+	<tbody>
+	    <tr class="header"><td>待更新文件列表</td></tr>
+	    
+	    <volist name="updatefilelist" id="upg">
+		<tr><td><em class="files bold">{$upg}</em></td></tr>
+	    </volist>
+	    <tr><td><b>文件存放目录:</b> {$uploadfolder}</td></tr>
+	    <tr><td><a href="{$url}" target="navTab" rel="TMLupgrade" title="系统升级_第二步">下载更新</a></td></tr>
+	</tbody>
+    </table>
+</div> 

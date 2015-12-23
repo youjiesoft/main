@@ -1,0 +1,49 @@
+<script>
+function workstateSet_addpeople(id,name,step){
+	if(step=="MisWorkStatementSetone"){
+		var $strHtml = appendUserHtml(step,'leadid',id,name,'leadname');
+	}
+	if(step=="MisWorkStatementSettwo"){
+		var $strHtml = appendUserHtml(step,'staffid',id,name,'staffname');
+	}
+	 $("#"+step).append($strHtml);
+};
+function workstateSet_selectinto(step){
+ 	var id;
+ 	var name;
+ 	$(".tbodylist").find("input[type='checkbox']").each(function(){
+ 		if($(this).attr("checked")=='checked'){
+ 			id = $(this).attr("userid");
+ 			name = $(this).attr("username");
+ 			workstateSet_addpeople(id,name,step);
+ 		}
+ 	});
+ }
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent applecloth" layoutH="56">
+					<div class="clear"></div>
+					<div>
+	                    <label>{$fields["leadname"]}：</label>
+	                    <ul class="addressee left" id="MisWorkStatementSetone" style="border:1px solid #ccc;height:50px;width:320px;"></ul>
+	                    <a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage/step/MisWorkStatementSetone" lookupGroup="org1">查找带回</a>
+	                </div>
+	                <div class="clear" style="height:5px;"></div>	
+	                <div>
+	                    <label>{$fields["staffname"]}：</label>
+	                    <ul class="addressee left" id="MisWorkStatementSettwo" style="border:1px solid #ccc;height:50px;width:320px;"></ul>
+	                    <a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage/step/MisWorkStatementSettwo" lookupGroup="org1">查找带回</a>
+	                </div>
+					<div class="clear"></div>		
+					<div class="unit">
+						<label>{$fields["remark"]}：</label>
+						<TEXTAREA rows="2" cols="50" style="width:325px;" class="textInput" name="remark"></TEXTAREA>
+					</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

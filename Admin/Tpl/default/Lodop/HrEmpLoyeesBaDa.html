@@ -1,0 +1,468 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<script src="__PUBLIC__/Js/jquery-1.7.1.js" type="text/javascript"></script>
+<script>
+function getLodop(oOBJECT,oEMBED){
+        var strHtml1="<br><font color='#FF00FF'>打印控件未安装!点击这里<a href='__TMPL__/Lodop/install_lodop.exe'>执行安装</a>,安装后请刷新页面或关闭浏览器重新进入。</font>";
+        var strHtml2="<br><font color='#FF00FF'>打印控件需要升级!点击这里<a href='__TMPL__/Lodop/install_lodop.exe'>执行升级</a>,升级后请重新进入。</font>";
+        var strHtml3="<br><br><font color='#FF00FF'>注意：<br>1：如曾安装过Lodop旧版附件npActiveXPLugin,请在【工具】->【附加组件】->【扩展】中先卸它;<br>2：如果浏览器表现出停滞不动等异常，建议关闭其“plugin-container”(网上搜关闭方法)功能;</font>";
+        var LODOP=oEMBED;
+	try{
+	     if (navigator.appVersion.indexOf("MSIE")>=0) LODOP=oOBJECT;
+
+	     if ((LODOP==null)||(typeof(LODOP.VERSION)=="undefined")) {
+		 if (navigator.userAgent.indexOf('Firefox')>=0)
+  	         document.documentElement.innerHTML=strHtml3+document.documentElement.innerHTML;
+		 if (navigator.appVersion.indexOf("MSIE")>=0) document.write(strHtml1); else
+		 document.documentElement.innerHTML=strHtml1+document.documentElement.innerHTML;
+		 return LODOP;
+	     } else if (LODOP.VERSION<"6.0.5.6") {
+		 if (navigator.appVersion.indexOf("MSIE")>=0) document.write(strHtml2); else
+		 document.documentElement.innerHTML=strHtml2+document.documentElement.innerHTML;
+		 return LODOP;
+	     }
+	     //*****如下空白位置适合调用统一功能:*********
+
+
+	     //*******************************************
+	     return LODOP;
+	}catch(err){
+	     document.documentElement.innerHTML="Error:"+strHtml1+document.documentElement.innerHTML;
+	     return LODOP;
+	}
+}
+function jiangceditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#jiangchengwo").show();
+}
+function qingjiaeditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#qingjiawo").show();
+}
+function peixuneditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#peixunwo").show();
+}
+function kaopingeditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#kaopingwo").show();
+}
+function tiaoxineditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#tiaoxinwo").show();
+}
+function diaodongeditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#diaodongwo").show();
+}
+function lizhieditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#lizhiwo").show();
+}
+function qitaeditz(){
+	$("tr[id][id$='wo']").hide();
+	$("#qitawo").show();
+}
+$(document).ready(function(){
+	
+	$("tr[id][id$='wo']").hide();
+	$("#jiangchengwo").show();
+});
+</script>
+<object id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>
+	<embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0 pluginspage="__TMPL__/Lodop/install_lodop.exe"></embed>
+</object>
+</head>
+<body  style="overflow-y:scroll; background-color:#FFF; width:89%; position:absolute; left:10%; margin-left:-45px;">
+<div style="text-align:center;right:100px;padding:10px;"><b><a href="javascript:prn_preview5();">打印预览</a></b> | <b><a href="javascript:prn_preview();">直接打印</a></b></div>
+<div id="printcontent">
+<link href="__PUBLIC__/dwz2/themes/default/style.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/dwz2/themes/css/core.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/Css/styles.css" rel="stylesheet" type="text/css" />
+<!--[if IE]>
+<link href="__PUBLIC__/dwz2/themes/css/ieHack.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<style>
+.yl{ text-align:center; margin-bottom:20px;}
+.yl_title{ font-size:20px; padding-top:5px; padding-bottom:5px; border-top:1px solid #CCC; border-left:1px solid  #CCC; border-right:1px solid #CCC; }
+.unit{ font-size:16px; line-height:24px; padding-left:25px;}
+.unit label{ font-size:16px;}
+.xx{ border-bottom:1px solid #CCC; border-right:solid 1px #CCC;}
+.xx_1{ border-bottom:1px solid #CCC;}
+.xx_2{ border-right:1px solid #CCC;}
+.pcxx,.pcxx_1{ float:left;}
+.pcxx_1{font-size:16px; text-align:left; padding-top:5px; padding-bottom:5px; word-wrap:break-word; width:880px; line-height:20px;}
+.pcxx{ padding-top:7px; padding-bottom:5px;}
+
+</style>
+<div>
+	    <h1 class="yl_title">员工简历</h1>
+    	 <table border="1" style="border-collapse: collapse border-top-style:none" width="100%" bordercolor="#99CCFF" cellspacing="0" cellpadding="2">
+	         <tr>
+	            <td height="26" style="border-reght:none;border-top:none" align="center" > 员工工号：</td>
+	            <td style="border-left:none;border-top:none" colspan="5" align="left"> {$vo.gonghao}</td>
+	         </tr>
+	         <tr>
+		          <td width="18%" height="26" align="center"><font color="#0000FF">姓&nbsp;&nbsp;&nbsp;&nbsp;名</font></td>
+		          <td width="25%" valign="middle" height="26"> {$vo.xingming}</td>
+		          <td width="17%" valign="middle" height="26" align="center">性&nbsp;&nbsp;&nbsp;&nbsp;别</td>
+		          <td width="25%" valign="middle">{$vo.xingbie|getFieldBy='id','name','mis_hr_typeinfo'} </td>
+                  <td width="15%" valign="middle" rowspan="6" align="center">
+                       <table>
+                       <volist id="order" name="order">
+		               <tr target="sid" rel="{$vo['id']}">
+		               <img src="__PUBLIC__/Uploads/{$order['attached']}" alt="bla" title="bla bla bla" />
+		               </tr>
+			           </volist>
+			           </table>
+                  </td>
+             </tr>
+             <tr>
+		          <td valign="middle" height="26" align="center"><font color="#0000FF">出生日期</font></td>
+		          <td valign="middle"> {$vo.csriqi|transTime}</td>
+				  <td valign="middle" height="26" align="center"><font color="#0000FF">入职日期</font></td>
+                  <td valign="middle">{$vo.rzriqi|transTime}</td>
+			 </tr>
+             <tr>
+		          <td valign="middle" height="26" align="center">婚姻状况</td>
+		          <td valign="middle">{$vo.hunyin|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+			      <td valign="middle" height="26" align="center">政治面貌</td>
+			      <td valign="middle">{$vo.mianmao|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+            </tr>
+            <tr>
+		          <td valign="middle" height="26" align="center">民&nbsp;&nbsp;&nbsp;&nbsp;族</td>
+		          <td valign="middle">{$vo.minzu|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+			      <td valign="middle" height="26" align="center">籍&nbsp;&nbsp;&nbsp;&nbsp;贯</td>
+			      <td valign="middle">{$vo.jiguan}</td>
+            </tr>
+            <tr>
+		          <td valign="middle" height="26" align="center">学&nbsp;&nbsp;&nbsp;&nbsp;历</td>
+		          <td valign="middle"> {$vo.xueli|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+		          <td valign="middle" height="26" align="center">专&nbsp;&nbsp;&nbsp;&nbsp;业</td>
+		          <td valign="middle">{$vo.zhuanye}</td>
+            </tr>
+            <tr>
+		          <td valign="middle" height="26" align="center">毕业院校</td>
+		          <td valign="middle" colspan="3" align="left">{$vo.yuanxiao}</td>
+            </tr>
+            <tr>
+		          <td valign="middle" height="26" align="center">联系地址</td>
+		          <td valign="middle" colspan="4" align="left">{$vo.dizhi}</td>
+            </tr>
+            <tr>
+		          <td valign="middle" height="26" align="center">联系电话</td>
+		          <td valign="middle">{$vo.dianhua}</td>
+		          <td valign="middle" align="center">电子邮箱</td>
+		          <td valign="middle" colspan="2">{$vo.youxiang}</td>
+            </tr>
+             <tr>
+		          <td valign="middle" height="26" align="center"><font color="#0000FF">基本工资</font></td>
+		          <td valign="middle">{$vo.gongzi}(税前:元/月)</td>
+		          <td valign="middle" height="26" align="center">身份证号</td>
+		          <td valign="middle" colspan="2">{$vo.shenfenzheng}</td>
+            </tr>
+            <tr>
+		          <td valign="middle" height="26" align="center">员工类型</td>
+		          <td valign="middle">{$vo.leixing|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+		          <td valign="middle" height="26" align="center">职位</td>
+			      <td valign="middle"  colspan="2">{$vo.zhiwei|getFieldBy='id','name','duty'}</td>
+		    </tr>
+            <tr>
+			      <td valign="middle" height="26" align="center">在职状态</td>
+			      <td valign="middle"> {$vo.zhuangtai|getFieldBy='id','name','mis_hr_typeinfo'} </td>
+				  <td valign="middle" height="26" align="center" id="lizhiriqis"><font color="#888888">离职日期</font></td>
+			      <td valign="middle" colspan="2" id="lizhiriqisd">{$vo.lzriqi|transTime}</td>
+			</tr>
+            <tr>
+			     <td valign="middle" align="center" height="26">转正日期</td>
+			     <td valign="middle" colspan="4" align="left">{$vo.zzriqi|transTime}</td>
+			</tr>
+            <tr>
+			     <td valign="middle" height="26" align="center"><font color="#0000FF">所属部门</font></td>
+			     <td valign="middle" colspan="4" align="left">{$vo.gongsi|getFieldBy='id','name','mis_system_company'}&nbsp;&nbsp; {$vo.bumen|getFieldBy='id','name','mis_system_department'}</td>
+           </tr>
+           <tr>
+		         <td valign="middle" align="center" height="26">合同期限</td>
+		         <td valign="middle" colspan="5"  style="padding-top: 5px" align="left">{$vo.qixian01|transTime}---{$vo.qixian02|transTime}</td>
+				 </tr>
+		 <tr id="gerenjianli">
+		        <td valign="middle" align="center">个人简历</td>
+		        <td valign="top" colspan="4"><textarea name="jianli" rows=8 cols=70>{$vo.jianli}</textarea></td>
+		 </tr>
+	      <tr id="beizushuoming">
+	                  <td valign="middle" align="center" >备注说明</td>
+				      <td valign="top" colspan="4"><textarea name="shuoming" rows=7 cols=70>{$vo.shuoming}</textarea></td>
+		   </tr>
+		   <tr><td colspan="5">
+         <table border="1" style="border-collapse: collapse" align="center" width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="jiangceditz();"><font color="#0000FF">奖惩信息</font></a></td>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="qingjiaeditz();"><font color="#0000FF">请假信息</font></a></td>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="peixuneditz();"><font color="#0000FF">培训信息</font></a></td>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="kaopingeditz();"><font color="#0000FF">考评信息</font></a></td>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="tiaoxineditz();"><font color="#0000FF">调薪信息</font></a></td>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="diaodongeditz();"><font color="#0000FF">调动信息</font></a></td>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="lizhieditz();"><font color="#0000FF">离职原因</font></a></td>
+                 <td valign="middle" height="26" align="center" style="padding-top: 1px"><a href="#" onclick="qitaeditz();"><font color="#0000FF">其他信息</font></a></td>
+            </tr>
+           </table>
+              </td></tr>
+             <tr id="jiangchengwo">
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center" style="padding-top: 1px">奖惩原因</td>
+                            <td valign="middle" height="26" align="center" style="padding-top: 1px">奖惩类型</td>
+                            <td valign="middle" height="26" align="center" style="padding-top: 1px">奖惩金额</td>
+                            <td valign="middle" height="26" align="center" style="padding-top: 1px">奖惩日期</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="rpment" name="rpment">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$rpment['id']}</td>
+							<td valign="middle" height="26" align="center">{$rpment['yuanyin']}</td>
+							<td valign="middle" height="26" align="center">{$rpment['jiangcheng']|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+							<td valign="middle" height="26" align="center">{$rpment['jine']}</td>
+							<td valign="middle" height="26" align="center">{$rpment['jcriqi']|transTime}</td>
+						</tr>
+			        </volist>
+		          </tbody>
+		          </table>
+                 </td>
+              </tr>
+              
+              
+              
+              <tr id="qingjiawo">
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center">请假事由</td>
+                            <td valign="middle" height="26" align="center">请假类型</td>
+                            <td valign="middle" height="26" align="center">请假时间</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="elve" name="elve">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$elve['id']}</td>
+							<td valign="middle" height="26" align="center">{$elve['shiyou']}</td>
+							<td valign="middle" height="26" align="center">{$elve['qingjia']|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+							<td valign="middle" height="26" align="center">{$elve['qjriqi03']|transTime}</td>
+						</tr>
+			        </volist>
+		          </tbody>
+		           </table>
+                 </td>
+              </tr>
+             
+              
+              
+               
+              <tr id="peixunwo" >
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center">培训内容</td>
+                            <td valign="middle" height="26" align="center">培训金额</td>
+                            <td valign="middle" height="26" align="center">培训日期</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="pting" name="pting">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$pting['id']}</td>
+							<td valign="middle" height="26" align="center">{$pting['neirong']}</td>
+							<td valign="middle" height="26" align="center">{$pting['jine']}</td>
+							<td valign="middle" height="26" align="center">{$pting['pxriqi']|transTime}</td>
+						</tr>
+			        </volist>
+		          </tbody>
+		          </table>
+                 </td>
+              </tr>
+             
+              
+              
+             <tr id="kaopingwo">
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center">考评内容</td>
+                            <td valign="middle" height="26" align="center">考评分数</td>
+                            <td valign="middle" height="26" align="center">考评日期</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="sffsa" name="sffsa">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$sffsa['id']}</td>
+							<td valign="middle" height="26" align="center">{$sffsa['neirong']}</td>
+							<td valign="middle" height="26" align="center">{$sffsa['fenshu']}</td>
+							<td valign="middle" height="26" align="center">{$sffsa['kpriqi']|transTime}</td>
+							</tr>
+			        </volist>
+		          </tbody>
+		          </table>
+                 </td>
+              </tr>
+              
+              
+              
+             <tr id="tiaoxinwo">
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center">调薪原因</td>
+                            <td valign="middle" height="26" align="center">调薪金额</td>
+                            <td valign="middle" height="26" align="center">调薪日期</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="sffrm" name="sffrm">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$sffrm['id']}</td>
+							<td valign="middle" height="26" align="center">{$sffrm['yuanyin']}</td>
+							<td valign="middle" height="26" align="center">{$sffrm['gongzi_new']}</td>
+							<td valign="middle" height="26" align="center">{$sffrm['txriqi']|transTime}</td>
+							</tr>
+			        </volist>
+		          </tbody>
+		         </table>
+                 </td>
+              </tr>
+              
+              
+              <div class="pageContent">
+              <tr id="diaodongwo">
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center">调动原因</td>
+                            <td valign="middle" height="26" align="center">调动部门</td>
+                             <td valign="middle" height="26" align="center">调动职位</td>
+                            <td valign="middle" height="26" align="center">调动日期</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="ptfer" name="ptfer">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$ptfer['id']}</td>
+							<td valign="middle" height="26" align="center">{$ptfer['yuanyin']}</td>
+							<td valign="middle" height="26" align="center">{$ptfer['bumen_new']|getFieldBy='id','name','mis_system_department'}</td>
+							<td valign="middle" height="26" align="center">{$ptfer['zhiwei_new']|getFieldBy='id','name','duty'}</td>
+							<td valign="middle" height="26" align="center">{$ptfer['ddriqi']|transTime}</td>
+						</tr>
+			        </volist>
+		          </tbody>
+		          </table>
+                 </td>
+              </tr>
+              </div>
+              
+              
+              
+              <tr id="lizhiwo">
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center">离职原因</td>
+                            <td valign="middle" height="26" align="center">离职日期</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="etver" name="etver">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$etver['id']}</td>
+							<td valign="middle" height="26" align="center">{$etver['yuanyin']}</td>
+							<td valign="middle" height="26" align="center">{$etver['lzriqi']|transTime}</td>
+							</tr>
+			        </volist>
+		          </tbody>
+		           </table>
+                 </td>
+              </tr>
+              
+              
+             <tr id="qitawo">
+                 <td colspan="8">
+                     <table border="1" style="border-collapse: collapse" width="100%" bordercolor="#3CC" cellspacing="0" cellpadding="2">
+                          <thead>
+                         <tr>
+                            <td valign="middle" height="26" align="center">id</td>
+                            <td valign="middle" height="26" align="center">信息内容</td>
+                            <td valign="middle" height="26" align="center">产生日期</td>
+                           </tr>
+                         </thead>
+                    <tbody>
+		              <volist id="opr" name="opr">
+		               <tr target="sid" rel="{$vo['id']}">
+							<td valign="middle" height="26" align="center">{$opr['id']}</td>
+							<td valign="middle" height="26" align="center">{$opr['neirong']}</td>
+							<td valign="middle" height="26" align="center">{$opr['qtriqi']|transTime}</td>
+							</tr>
+			        </volist>
+		          </tbody>
+		          </table>
+                 </td>
+              </tr>
+             
+	</table>
+	</div>
+
+<script language="javascript" type="text/javascript">
+var LODOP; //声明为全局变量
+function prn_preview5() {
+	CreateOnePage();
+	LODOP.SET_PRINT_MODE("PRINT_PAGE_PERCENT","Auto-Width");
+	LODOP.SET_PRINT_MODE("AUTO_CLOSE_PREWINDOW",1);//打印后自动关闭预览窗口
+	LODOP.SET_PREVIEW_WINDOW(1,0,0,0,0,"");
+	LODOP.PREVIEW();
+};
+function prn_preview() {
+	CreateOnePage();
+	LODOP.SET_PRINT_MODE("PRINT_PAGE_PERCENT","Auto-Width");
+	LODOP.SET_PRINT_MODE("AUTO_CLOSE_PREWINDOW",1);//打印后自动关闭预览窗口
+	LODOP.SET_PREVIEW_WINDOW(1,0,0,0,0,"");
+	LODOP.PRINT();
+};
+function CreateOnePage(){
+	LODOP=getLodop(document.getElementById('LODOP_OB'),document.getElementById('LODOP_EM'));
+	LODOP.PRINT_INIT("打印控件功能演示_Lodop功能_整页缩放打印输出");
+	var hold = $("#printcontent").html();
+	$("input[type='checkbox']").each(function(i){
+		var s=$(this).attr('checked');
+		if(!s){
+			var s1=$(this).parent('th').attr("class");
+			//alert(s1);
+			$("."+s1).remove();
+		}else{
+			$(this).remove();
+		}
+	});
+	var h = $("#printcontent").html();
+	$("#printcontent").html(hold);
+	LODOP.ADD_PRINT_HTM(5,5,"100%","100%","<body leftmargin=0 topmargin=0>"+h+"</body>");
+	LODOP.SET_PREVIEW_WINDOW(0,0,0,0,0,"");
+};
+</script>
+</body>
+</html>

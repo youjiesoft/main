@@ -1,0 +1,101 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html{width: 100%;height: 100%;margin:0;font-family:"微软雅黑";font-size:14px;}
+		#allmap{height:300px;width:100%;}
+		#r-result{width:100%;}
+	</style>
+	<title>根据关键字本地搜索</title>
+</head>  
+<body>
+	<div id="r-result">请输入: <input type="text" id="suggestId" size="20" placeholder="请输入地址" value="" style="width:150px;" />
+		<input type="button" value="查询" onclick="theLocation()" />
+		<input type="button" value="确认" onclick="isQueren()" />
+	</div>
+	
+	<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+	var dizhi='{$address}';
+	var xmap = '{$newcoordinatex}';
+	var ymap = '{$newcoordinatey}';
+	
+	console.log(xmap);
+	
+	if(!isNullorEmpty(xmap) || !isNullorEmpty(ymap)){
+		dizhi = "重庆市";
+		xmap = "106.53";
+		ymap = "29.54";
+	}
+	//百度地图API功能
+	var map = new BMap.Map("allmap");    
+	var point = new BMap.Point(xmap, ymap);
+	map.centerAndZoom(point, 12);
+	map.enableScrollWheelZoom();
+	
+	// 添加带有定位的导航控件
+	var navigationControl = new BMap.NavigationControl({
+	    // 靠左上角位置
+	    anchor: BMAP_ANCHOR_TOP_LEFT,
+	    // LARGE类型
+	    type: BMAP_NAVIGATION_CONTROL_LARGE,
+	    // 启用显示定位
+	    enableGeolocation: true
+	  });
+  	map.addControl(navigationControl);
+	
+  	var marker = new BMap.Marker(point);// 创建标注
+  	map.addOverlay(marker); //将定位坐标标记到地图中 
+  	marker.enableDragging();
+	// 创建地址解析器实例
+	var myGeo = new BMap.Geocoder();
+	marker.addEventListener("dragend", function(e){        
+		var pt = e.point;
+		myGeo.getLocation(pt, function(rs){
+			//获取详细地址
+			var newpoint = rs.point;
+			dizhi = rs.address;
+			xmap = newpoint.lng;
+			ymap = newpoint.lat;
+		});        
+	});
+	function theLocation(){
+		var address = $("#suggestId").val();
+		// 将地址解析结果显示在地图上,并调整地图视野
+		myGeo.getPoint(address, function(point){
+			if (point) {
+				map.centerAndZoom(point, 16);
+				map.addOverlay(new BMap.Marker(point));
+				myGeo.getLocation(point, function(rs){
+					//获取详细地址
+					var newpoint = rs.point;
+					dizhi = rs.address;
+					xmap = newpoint.lng;
+					ymap = newpoint.lat;
+				});
+				
+			}else{
+				alert("您选择地址没有解析到结果!");
+			}
+		}, "重庆市"); 
+	}
+	
+	function isQueren(){
+		if(!isNullorEmpty(dizhi)){
+			alertMsg.error("地址不能为空");
+			return false;
+		}
+		if(!isNullorEmpty(xmap) || !isNullorEmpty(ymap)){
+			alertMsg.error("坐标不能为空");
+			return false;
+		}
+		$("#address_detail_coordinatex").val(xmap);
+		$("#address_detail_coordinatey").val(ymap);
+		$("#address_detail_address").val(dizhi);
+		//成功后，关闭当前dialog
+		$.pdialog.closeCurrent(); 
+	}
+</script>

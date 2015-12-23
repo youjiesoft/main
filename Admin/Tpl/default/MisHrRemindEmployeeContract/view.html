@@ -1,0 +1,47 @@
+<script>
+//左边树形菜单
+$(document).ready(function(){
+	var zNodes = {$becTreemiso};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisHrBasicEmployeeContractZnodes"), setting, zNodes);
+	//默认选中第一个
+	var zTree = $.fn.zTree.getZTreeObj("MisHrBasicEmployeeContractZnodes");
+	var valid='{$vo.id}';
+	var nodes = zTree.getNodesByParam("id", valid, null);
+	zTree.selectNode(nodes[0]);
+});
+// 合同类型
+function ContractTypeCheckedEdit(obj) {
+	var $box=$.pdialog.getCurrent();
+	if (obj == "1") {
+		$box.find(".divdisplay").hide();
+		$box.find(".divdisplay_notime").show();
+	} else {
+		$box.find(".divdisplay").show();
+		$box.find(".divdisplay_notime").hide();
+	}
+};
+</script>
+<div class="pageContent ">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<ul id="MisHrBasicEmployeeContractZnodes" class="ztree" layoutH="10"></ul>
+		</div>
+	</div>
+	<div id="MisHrBasicEmployeeContractRel" class="unitBox treeright">
+		<include file="$url"  />
+	</div>
+</div>

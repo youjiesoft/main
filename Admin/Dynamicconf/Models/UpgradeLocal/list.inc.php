@@ -1,0 +1,151 @@
+<?php 
+return array(
+	'0' => array(
+		'name' => 'id',
+		'showname' => 'ID',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'id',
+		'sortnum' => '1',
+	),
+	'1' => array(
+		'name' => 'code',
+		'showname' => '编码',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'code',
+		'sortnum' => '2',
+	),
+	'2' => array(
+		'name' => 'name',
+		'showname' => '名称',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'name',
+		'sortnum' => '3',
+	),
+	'3' => array(
+		'name' => 'createtime',
+		'showname' => '升级时间',
+		'shows' => '0',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'createtime',
+		'sortnum' => '4',
+	),
+	'5' => array(
+		'name' => 'serialnum',
+		'showname' => '密钥',
+		'shows' => '0',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'serialnum',
+		'sortnum' => '5',
+	),
+	'4' => array(
+		'name' => 'visionnum',
+		'showname' => '版本号',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'visionnum',
+		'sortnum' => '5',
+	),
+	'6' => array(
+		'name' => 'company',
+		'showname' => '公司ID',
+		'shows' => '0',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'company',
+		'sortnum' => '6',
+	),
+	'7' => array(
+		'name' => 'type',
+		'showname' => '升级类型',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'type',
+		'sortnum' => '7',
+	),
+	'8' => array(
+		'name' => 'summary',
+		'showname' => '摘要',
+		'shows' => '0',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'summary',
+		'sortnum' => '8',
+	),
+	'9' => array(
+		'name' => 'status',
+		'showname' => '状态',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'status',
+		'func' => array(
+			'0' => array(
+				'0' => 'getStatus',
+			),
+		),
+		'funcdata' => array(
+			'0' => array(
+				'0' => array(
+					'0' => '###',
+				),
+			),
+		),
+		'sortnum' => '9',
+	),
+	'10' => array(
+		'name' => 'action',
+		'showname' => '操作',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'status',
+		'func' => array(
+			'0' => array(
+				'0' => 'showStatus',
+			),
+			'1' => array(
+				'0' => 'resumeAction',
+			),
+		),
+		'funcdata' => array(
+			'0' => array(
+				'0' => array(
+					'0' => '#status#',
+					'1' => '#id#',
+				),
+			),
+			'1' => array(
+				'0' => array(
+					'0' => '#name#',
+					'1' => '#status#',
+					'2' => '#folder#',
+					'3' => '',
+				),
+			),
+		),
+		'sortnum' => '10',
+	),
+);
+
+?>

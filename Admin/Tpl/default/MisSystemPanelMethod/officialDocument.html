@@ -1,0 +1,17 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3><a class="expand" href="#"></a> <span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <div class="xytag">
+            <a class="active" href="#" onclick="getOfficialDocument(this,1)">发文信息</a> | <a href="#" onclick="getOfficialDocument(this,2)">收文信息</a>
+        </div>
+        <div id="officialDocument">
+        	<include file="MisSystemPanelMethod:officialDocumentindex" />
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

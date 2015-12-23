@@ -1,0 +1,14 @@
+<div class="pageContent" layoutH="0">
+<script>
+    function openeditpage(ids){
+        navTab.openTab('__MODULE__edit',"__URL__/edit/id/"+ids,{title:'编辑', fresh:true, data:{}});
+    }
+    function openimportpage(ids){
+        $.pdialog.open("__URL__/misimportexceladd/id/"+ids,'importexceldata','导入',{mask:true});
+    }
+    function openaddpage(ids){
+        $.pdialog.open("__URL__/add/pid/"+ids,'misimportexceladd','新增',{mask:true});
+    }  
+</script>
+<iframe width="100%" height="100%" id="vissha_map_frame"  frameborder="0" scrolling="yes" src="__URL__/lookuporderimage2/id/{$id}"></iframe>
+</div>

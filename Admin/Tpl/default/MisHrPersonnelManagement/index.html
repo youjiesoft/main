@@ -1,0 +1,151 @@
+<script type="text/javascript">
+<!--
+function chooiseWorkType(obj,$selectid) {
+	var deptid = $(obj).val();
+	var $ref = $("#"+$selectid);
+	$.ajax({
+		type : 'POST',
+		dataType : "json",
+		url : "__URL__/comboxrefreshIntomas",
+		cache : false,
+		global:false,
+		data : {
+			deptid : deptid
+		},
+		success : function(json) {
+			var html = '';
+			html += '<option value="" selected>请选择岗位</option>'; 
+			$.each(json, function(i) {
+				if (json[i] && json[i].length > 1) {
+					html += '<option value="'+json[i][0]+'">&nbsp;&nbsp;' + json[i][1]+ '</option>';
+				}
+			});
+			var $refCombox = $ref.parents("div.combox:first");
+			$ref.html(html).insertAfter($refCombox);
+			$refCombox.remove();
+			$ref.combox();
+		},
+		error : DWZ.ajaxError
+	})
+};
+/**
+ * 单击TR选中Name为$inputname的Checkbox
+ * @param obj 当前TR对象
+ * @param $inputname Checkbox的name
+ * @author 杨东
+ */
+function onTrClickCheckbox(obj,$inputname,$id){
+	var $box=navTab.getCurrentPanel();
+	if($id){
+		$box.find("#customerExport").attr("sid_node","__URL__/customerExport/id/"+$id);
+	}
+	var trdate = $(obj).data('tool');//列上面的操作按钮 
+	if(trdate){
+		var toollength = $(obj).closest('.pageContent').find('.toolBar').find('a').filter(':visible').addClass('disabled');//toolBar上面的操作按钮
+		for(var b=toollength in trdate){
+			toollength.filter('.' + b ).removeClass('disabled');
+		}
+	}
+}
+/**
+ * 导出word特殊处理 
+ */
+function clickcustomerExport(){
+	var $box=navTab.getCurrentPanel();
+	var id = $box.find(".gridTbody .selected").attr("rel");
+	var href = "__URL__/customerExport/id/"+id;
+	if(id){
+		$box.find("#customerExport").attr("href",href);
+		return true;
+	}else{
+		alertMsg.error("请选择合同！");
+	}
+	return false;
+}
+
+function customerPrint(type){
+	var $box=navTab.getCurrentPanel();
+	var id = $box.find(".gridTbody .selected").attr("rel");
+	if(id){
+		$.post("__URL__/printout", { id: id},
+		    function(data){
+		        var LODOP=getLodop(document.getElementById('LODOP_OB'),document.getElementById('LODOP_EM'));
+		    	LODOP.PRINT_INIT("打印控件功能演示_Lodop功能_全页排除按钮");
+		    	var url = data;
+		    	if(!url){
+		    		alertMsg.error("合同模板不存在！");
+		    		return;
+		    	}
+		    	LODOP.ADD_PRINT_URL(0,0,"100%","100%",url);
+		    	if(type==0){
+		    		LODOP.PREVIEW(); 
+		    	}
+		    	else{
+		    		if (LODOP.PRINTA())
+		    			alert("已发出实际打印命令！");
+		    		else
+		    			alert("放弃打印！"); 
+		    	}
+			}
+	    );
+	}else{
+		alertMsg.error("请选择合同！");
+	}
+};
+function getLodop(oOBJECT,oEMBED){
+    var strHtml1="<br><font color='#FF00FF'>打印控件未安装!点击这里<a href='__TMPL__/Lodop/install_lodop.exe'>执行安装</a>,安装后请刷新页面或关闭浏览器重新进入。</font>";
+    var strHtml2="<br><font color='#FF00FF'>打印控件需要升级!点击这里<a href='__TMPL__/Lodop/install_lodop.exe'>执行升级</a>,升级后请重新进入。</font>";
+    var strHtml3="<br><br><font color='#FF00FF'>注意：<br>1：如曾安装过Lodop旧版附件npActiveXPLugin,请在【工具】->【附加组件】->【扩展】中先卸它;<br>2：如果浏览器表现出停滞不动等异常，建议关闭其“plugin-container”(网上搜关闭方法)功能;</font>";
+    var LODOP=oEMBED;
+	try{
+	     if (navigator.appVersion.indexOf("MSIE")>=0) LODOP=oOBJECT;
+	
+	     if ((LODOP==null)||(typeof(LODOP.VERSION)=="undefined")) {
+		 if (navigator.userAgent.indexOf('Firefox')>=0)
+		         document.documentElement.innerHTML=strHtml3+document.documentElement.innerHTML;
+		 if (navigator.appVersion.indexOf("MSIE")>=0) document.write(strHtml1); else
+		 document.documentElement.innerHTML=strHtml1+document.documentElement.innerHTML;
+		 return LODOP;
+	     } else if (LODOP.VERSION<"6.0.5.6") {
+		 if (navigator.appVersion.indexOf("MSIE")>=0) document.write(strHtml2); else
+		 document.documentElement.innerHTML=strHtml2+document.documentElement.innerHTML;
+		 return LODOP;
+	     }
+	     //*****如下空白位置适合调用统一功能:*********
+	
+	
+	     //*******************************************
+	     return LODOP;
+	}catch(err){
+	     document.documentElement.innerHTML="Error:"+strHtml1+document.documentElement.innerHTML;
+	     return LODOP;
+	}
+}
+//-->
+</script>
+<div class="pageContent">
+	<div class="tabs" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+						<li><a href="__URL__/index/type/1" rel="mishrbasicemployee_index" class="j-ajax"><span>正式员工</span></a></li>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_index">
+						<li><a href="__APP__/MisHrBasicEmployee/index" rel="mishrbasicemployee_index" class="j-ajax"><span>试用员工</span></a></li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleave_index">
+						<li><a href="__APP__/MisHrPersonnelLeave/index" rel="mishrpersonnelleave_index" class="j-ajax"><span>离职记录</span></a></li>
+					</if>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent tml-p0">
+				<div id="mishrbasicemployee_index"></div>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_index">
+				<div id="mishrprobationemployee_index"></div>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleave_index">
+				<div id="mishrpersonnelleave_index"></div>
+			</if>
+		</div>
+	</div>
+</div>

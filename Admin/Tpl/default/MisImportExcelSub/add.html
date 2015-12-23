@@ -1,0 +1,44 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" id="pagerForm" action="__URL__/insert/navTabId/MisImportExceledit" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="eid" value="{$eid}" >
+		<table class="table" width="100%" layoutH="58">
+				<thead>
+					<tr>
+						<th><input type="checkbox" group="cols[]" class="checkboxCtrl"></th>
+						<th>字段</th>
+						<th>导入数据列名称</th>
+					</tr>
+				</thead>
+				<tbody>
+				<volist id="co" name="columns">
+					<tr>
+						<td>
+							<if condition="($co['Null'] neq 'YES')">
+								<input class="field mustfield" type="checkbox" style="display:none;" checked="checked" value="{$co.Field}" name="colsmust[]">
+								<input type="checkbox" checked="checked"  disabled="disabled" value="{$co.Field}">
+							<else />
+								<input class="field" type="checkbox" value="{$co.Field}" name="cols[]">
+							</if>
+
+						</td>
+						<td>{$co.Field}</td>
+						<td>
+							<input type="text" value="<if condition="!empty($columnstitle[$co[Field]])">{$columnstitle[$co[Field]]}<else />{$co.Field}</if>" name="columnstitle[{$co.Field}]" />
+							<input type="hidden" <if condition="($co['Null'] eq 'YES')"> value="0" <else /> value='1'</if> name="ifmust[{$co.Field}]" />
+						</td>
+
+					</tr>
+				</volist>
+				</tbody>
+		</table>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

@@ -1,0 +1,44 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/MisSystemFlowForm_left" class="pageForm required-validate" onsubmit="return iframeCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<div class="pageFormContent" layoutH="48">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>{$fields["orderno"]}:</label>
+						<input  type="text" name="orderno" readonly="readonly" class="" value="{$vo['orderno']}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["name"]}:</label>
+						<input  type="text" name="name" class="" readonly="readonly" value="{$vo['name']}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["supcategory"]}:</label>
+						<input  type="text" readonly="readonly" class="" value="{$vo.supcategory|getFieldBy='id','name','mis_system_flow_type'}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["category"]}:</label>
+						<input  type="text" readonly="readonly" class="" value="{$vo.category|getFieldBy='id','name','mis_system_flow_type'}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["days"]}:</label>
+						<div class="tml-input-append">
+							<input  type="text" name="days" readonly="readonly" class="" value="{$vo.days}">
+							<span class="input-addon-unit" title="天">天</span>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["sort"]}:</label>
+						<input  type="text" name="sort" readonly="readonly" class="" value="{$vo.sort}">
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["notes"]}:</label>
+					<textarea cols="80" rows="2" readonly="readonly" name="notes">{$vo.notes}</textarea>
+				</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

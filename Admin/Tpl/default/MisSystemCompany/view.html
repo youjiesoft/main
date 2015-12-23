@@ -1,0 +1,73 @@
+<script>
+	function missystemcompany_picture_add(file, data, response) {
+		var $box =$.pdialog.getCurrent();
+		var s = data.split(TP_PUBLIC + "/Uploadstemp/");
+		//将上传的图片地址加入到图片上面。马上显示出来
+		//$("#missystemcompany_picture_add").attr("src",data);
+		$("#swf_upload_missystemcompany_add_save_name").val(s[1]);
+		var upload_name = $("#swf_upload_missystemcompany_add_save_name").val();
+		$.ajax({
+			type : "POST",
+			url : "__URL__/uploadimg",
+			data : {
+				'upload_name' : upload_name
+			},
+			success : function(re) {
+				 $("#missystemcompany_picture_add").attr("src",data);
+				 $box.find("input[name='picture']").val(re);
+			}
+		});
+	}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<input type="hidden" name="picture"  value="{$vo.picture}"/>
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-form-row">
+				<label>公司名称：</label>
+				<input type="text" name="name" value="{$vo.name}" class="required" style="width:300px;" autocomplete="off" />
+			</div>
+			<div class="tml-form-row">
+				<div clss="tml-form-col">
+					<label>隶属公司：</label>
+					<select name="parentid" class="">
+						<option value="0">顶级为"无"</option>
+						<volist name="companylist" id="cp">
+							<option value="{$key}" <if condition="$key eq $vo['parentid']">selected</if>>{$cp}</option>
+						</volist>
+					</select>
+				</div>
+			</div>
+			<div class="tml-form-row">
+				<label>公司法人：</label>
+                <input type="text" name="juridicalperson" value="{$vo.juridicalperson}" style="width:300px;"/>
+			</div>
+			<div class="tml-form-row">
+				<label>机构代码：</label>
+                <input type="text" name="orgcode" value="{$vo.orgcode}" style="width:300px;" />
+			</div>
+			<div class="tml-form-row">
+				<label>税务证号：</label>
+	            <input type="text" name="dutyregno" value="{$vo.dutyregno}" style="width:300px;"/>
+			</div>
+			<div class="tml-form-row">
+				<label>公司地址：</label>
+	            <input type="text" name="address" value="{$vo.address}" style="width:300px;"/>
+			</div>
+			<div class="tml-form-row">
+				<label>公司网址：</label>
+	            <input type="text" class="url"   name="website" value="{$vo.website}" style="width:300px;"/>
+			</div>			
+			<div class="tml-form-row">
+				<label>Logo上传：</label>
+		    	<img class="left" id="missystemcompany_picture_add" style="border:2px solid #f1f1f1;width:210px; height:50px;" src="__PUBLIC__/Uploads/{$vo.picture}">
+		    	<input name="swf_upload_missystemcompany_add_name" id="swf_upload_missystemcompany_add_save_name" value="" type="hidden" />
+	            <div class="clear"></div>
+	            <input id="swfupload_missystemcompany_add" onUploadSuccess="missystemcompany_picture_add" type="file" auto="true" multi="false" uploader="true" fileSizeLimit="2000KB" fileTypeExts="*.png;" fileTypeDesc="*.png;" name="missystemcompany_add_file" formData="{ uploadpath:'missystemcompany' }" />
+	            <span style="color:red">请上传210*50比例透明背景(文件后缀为.png)图片</span>
+			</div>
+		</div>
+	   {:W('ShowAction')}
+	</form>
+</div>

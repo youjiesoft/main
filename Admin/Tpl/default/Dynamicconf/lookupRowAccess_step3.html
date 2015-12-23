@@ -1,0 +1,21 @@
+<script>
+$(document).ready(function(){
+    var zNodes = {$rowaccesstree};
+    var setting = {view: {selectedMulti: false,fontCss: getFontCss},data: {simpleData: {enable: true}}};
+    $.fn.zTree.init($("#rowaccesstree"), setting, zNodes);
+});
+</script>
+<div class="pageContent tml-p5">
+	<div class="treeleft">
+		<div class="collapse" layoutH="11">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse" ><h2></h2><div></div></div>
+			<ul id="rowaccesstree" class="ztree" layoutH="53"></ul>
+		</div>
+	</div>
+	<div id="right_rowaccess_html" class="unitBox treeright">
+		<include file="lookupUserset" />
+	</div>
+</div>

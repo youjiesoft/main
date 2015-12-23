@@ -1,0 +1,297 @@
+<script type="text/javascript">
+	$(function(){
+		$('#btnDel').click(function(){
+			// 获取所有checkbox 
+			$('.js-addprocess_manage_table input[type="checkbox"]:checked').each(function(){
+				$(this).closest('tr').remove();
+			});
+		});
+	});
+	function btnAddProcess(){
+		var $box =$.pdialog.getCurrent();
+		var container = $('table.js-process_manage');
+		var obj = $('input[type="radio"]:checked' , container);
+		//获取批次顺序
+		var sort = $(".condition_batch_input").val();
+		
+		//获取条件组件随机生成的标记 
+		var order = $box.find(".js_condition_batch input[name='order']").val();
+		//获取显示条件
+		var showrules = $box.find("."+order+" input[name='showrules']").val();
+		if(!isNullorEmpty(showrules)){
+			showrules="";
+		}
+		//获取数组条件
+		var rulesinfo = $box.find("."+order+" input[name='rulesinfo']").val();
+		//获取sql条件
+		var rules = $box.find("."+order+" input[name='rules']").val();
+		
+		var condition_index = parseInt($('input.condition_batch_input').val(),10);
+		var userobjid = obj.val();
+		var userobjidname = obj.attr("rel");
+		if(isNullorEmpty(userobjid)){
+			var userobjname=$("#userobjStr"+userobjid).text(); //获取文本内容
+			var userobj = $("#userobjStr"+userobjid+" input[name='userobjStr']").val(); //获取隐藏域的内容
+			//批次条件
+			var rulename = "";
+			var rule = "";
+			
+			if(userobjname == null || userobjname == ''){
+				alertMsg.error("请选择对象值");
+			}else if(condition_index == 0 ){
+				alertMsg.error("请填写批次号");
+			}else{
+				var html = '<tr><td><input type="checkbox" name="userCheckbox[]"/></td>';
+				    html +='<td><input type="hidden" name="userobjidname[]" value="'+userobjidname+'"/><input type="hidden" name="userobjid[]" value="'+userobjid+'"/>'+userobjidname+'</td>';
+				    html +='<td><input type="hidden" name="userobjname[]" value="'+userobjname+'"/><input type="hidden" name="userobj[]" value="'+userobj+'"/>'+userobjname+'</td>';
+					html +='<td><input type="hidden" name="rulesinfo[]" value="'+rulesinfo+'"/><input type="hidden" name="rulename[]" value="'+showrules+'"/><input type="hidden" name="rule[]" value="'+rules+'"/>'+showrules+'</td>';
+					html +='<td><input type="text" name="bactch[]" value="'+sort+'"/></td></tr>';
+					$("table.js-addprocess_manage_table:first").append(html);
+					$('input.condition_batch_input').val('0');
+			}
+		}else{
+			alertMsg.error("请选择对象值");
+		}
+	}
+	// 保存所选的人
+	function saveSelectUserFlowList(json){
+		var response = json.data;
+		var conditions = json.condition;
+		var connectkey = json.connectkey;
+		// 等待所有script加载完再执行这个代码块
+		pr.fnInit("prcslist",response,conditions,connectkey);
+		$.pdialog.closeCurrent();
+	}
+	//配置数据漫游
+	var box = $.pdialog.getCurrent();
+	
+	$("#issourcemodel").die("change");
+	$("#issourcemodel").on("change",function(){
+		var sourcemodel = $("#issourcemodel").val();
+		var targetmodel = $("#isauditmodel").val();
+		if(!isNullorEmpty(sourcemodel)){
+			return false;
+		}
+		if(!isNullorEmpty(targetmodel)){
+			return false;
+		}
+		$.ajax({
+			type:"POST",
+			data:{targetmodel:targetmodel,sourcemodel:sourcemodel},
+			url:"__URL__/ajaxGetRoam",
+			datatype:"json",
+			success:function(response){
+				var data = JSON.parse(response);
+				var html = '';
+				if(data){
+					html += '<select name="roamid" class="select2">';
+					html += '<option value="">请选择</option>';
+					$.each(data,function(i,v){
+						html += '<option value="'+v.id+'">'+v.title+'</option>';
+					})
+					html += '</select>';
+					var htm = $(html).select2();
+				}else{
+					html += '<span>该模型还未配置数据漫游，请关闭本页面先配置数据漫游!</span>';
+					var htm = $(html).initUI();
+				}
+				$("#lookupaddchildsonflows_roam",$(box)).html(html).initUI();
+			}
+		});
+	});
+	
+	
+	$("#isauditmodel").die("change");
+	$("#isauditmodel").on("change",function(){
+		var targetmodel = $("#isauditmodel").val();
+		var sourcemodel = $("#issourcemodel").val();
+		if(!isNullorEmpty(targetmodel)){
+			return false;
+		}
+		if(!isNullorEmpty(sourcemodel)){
+			return false;
+		}
+		$.ajax({
+			type:"POST",
+			data:{targetmodel:targetmodel,sourcemodel:sourcemodel},
+			url:"__URL__/ajaxGetRoam",
+			datatype:"json",
+			success:function(response){
+				var data = JSON.parse(response);
+				var html = '';
+				if(data){
+					html += '<select name="roamid" class="select2">';
+					html += '<option value="">请选择</option>';
+					$.each(data,function(i,v){
+						html += '<option value="'+v.id+'">'+v.title+'</option>';
+					})
+					html += '</select>';
+					var htm = $(html).select2();
+				}else{
+					html += '<span>该模型还未配置数据漫游，请关闭本页面先配置数据漫游!</span>';
+					var htm = $(html).initUI();
+				}
+				$("#lookupaddchildsonflows_roam",$(box)).html(html).initUI();
+				
+			}
+		});
+	});
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/{$function}/rel/ProcessManageBox" class="pageForm required-validate" onsubmit="return validateCallback(this,saveSelectUserFlowList)">
+		<div class="pageFormContent" layoutH="60">
+			<div class="tml-row pmt_warp">
+				<input type="hidden" name="modelname" value="{$modelname}"/><!-- 当前模型名称 -->
+				<input type="hidden" name="choose" value="3"/><!-- 子流程节点 -->
+				<input type="hidden" name="ids" value="{$ids}"/><!-- 父级节点ID -->
+				<input type="hidden" name="prcsid" value="{$key}"/><!-- 序号 -->
+				<input type="hidden" name="nextId" value="{$nextId}"/><!-- 当前节点的下级节点 -->
+				<input type="hidden" name="nextAll" value="{$nextAll}"/><!-- 当前节点的下级综合所有节点ID -->
+				<input type="hidden" name="nextChoose" value="{$nextChoose}"/><!-- 当前节点的类别 -->
+				
+	            <div class="process_warp_header">节点名称：</div>
+				<input type="text" class="required textInput node_name_input" minlength="2" value="{$row['processname']}" maxlength="25" name="process_relation_name" placeholder="必填，请输入节点名称" size="30" />
+	        	<span style="margin-left: 35px;"><input type="checkbox" <if condition="$row['processaudit']['isauto'] eq 1">checked="checked"</if> value="1" name="isauto"/> 是否自动转子任务</span>
+	        </div>
+	        <if condition="$choose eq 1">
+	        	<div class="tml-row pmt_warp">
+		            <div class="process_warp_header">流程分支条件：</div>
+		            <div class="condition_batch js-processcondition_batch">
+						<div style="display: inline-block;float: left;">
+							<button class="condition_btn condition_add p_addresultprocesscondition_batch " type="button"  rel="{$modelname}_addresult"  order="processcondition_batch" modelname="{$modelname}" listarr="{$row['processrulesinfo']}" onclick="openRule(this);"><span class="icon-plus"></span> 添加</button>
+							<a class="condition_clear condition_btn" onclick="clearAllinforpresult('processcondition_batch');" href="javascript:;"><span class="icon-trash"></span> 清除</a>
+						</div>
+						<if condition="$row.processrules">
+							<div class="processcondition_batch">
+								<div class="condition_value">{$row['processcondition']}</div>
+			 	 		 		<input type="hidden" name="processcondition" value="{$row['processcondition']}">
+			 	 		 		<input type="hidden" name="processrulesinfo" value="{$row['processrulesinfo']}">
+			 	 		 		<input type="hidden" name="processrules" value="{$row['processrules']}">
+							</div>
+							<else/>
+							<div class="processcondition_batch">
+								<input type="text" name="processcondition_batch" readonly="readonly" class="required textInput node_name_input" placeholder="必填，添加分子条件"/>
+							</div>
+						</if>
+		            </div>
+		        </div>
+	        </if>
+	        <div class="pmt_warp">
+	        	<div class="process_warp_header">数据源对象：</div>
+	        	<div class="condition_batch">
+					 <!-- select组件 start -->
+					<div class="col_1_2 form_group_lay field_issourcemodel">
+						<select name="issourcemodel" class="select2" id="issourcemodel">
+							<option value="">请选择</option>
+							{:getControllbyHtml('table',array('table'=>'node','selected'=>$row['issourcemodel'],'id'=>'name','name'=>'title','conditions'=>'level = 3'))}
+						</select>
+					</div>
+					<!-- select组件 end -->
+	            </div>
+	            <div class="process_warp_header">目标对象：</div>
+	            <div class="condition_batch">
+	            	<!-- select组件 start -->
+					<div class="col_1_2 form_group_lay field_issourcemodel">
+					 <select name="isauditmodel" class="select2" id="isauditmodel">
+						<option value="">请选择</option>
+						{:getControllbyHtml('table',array('table'=>'node','selected'=>$row['isauditmodel'],'id'=>'name','name'=>'title','conditions'=>'level = 3'))}
+					</select>
+					</div>
+	            </div>
+	            <div class="process_warp_header">数据漫游：</div>
+	            <div class="condition_batch">
+					 <!-- select组件 start -->
+					<div class="col_1_2 form_group_lay field_shifuyouxiao" id="lookupaddchildsonflows_roam">
+						<select name="roamid" class="select2">
+							<option value="">请选择</option>
+							<volist name="mylist" id="ml">
+								<option value="{$ml.id}" <if condition="$ml.id eq $row.roamid">selected</if>>{$ml.title}</option>
+							</volist>
+						</select>
+					</div>
+					<!-- select组件 end -->
+	            </div>
+	        </div>
+	        <div class="pmt_warp">
+	            <div class="process_warp_header">分支批复人：</div>
+	            <table class="process_manage_table js-process_manage">
+	            	<volist name="userObj" id="uobj">
+	            		<tr>
+		                    <td width="20%">
+		                    	<input id="" type="radio" name="nameas" value="{$uobj.id}" rel="{$uobj.name}"/>
+		                    	<label class="process_radio" for="">{$uobj.name}</label>
+		                    </td>
+		                    <td width="40%">
+		                    	<if condition="$uobj['id'] eq 1">
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetUser/switch/1" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选择用户"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 2"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetDuty/switch/2" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="按职级"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 3"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetRoleGroup/switch/3" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选角色"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 4"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetDeptRole/switch/4" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选组织架构"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 5"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetField/switch/5/modelname/{$modelname}" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选表单字段"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 6"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetField/switch/6/modelname/{$modelname}" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选表单字段"><span class="icon-search"></span>查找</a>
+		                    	</if>
+		                    	<span class="pl5" id="userobjStr{$uobj.id}"></span>
+		                    </td>
+		                </tr>
+	            	</volist>
+	            </table>
+	            <div class="process_warp_header">批次条件：</div>
+	            <div class="condition_batch js_condition_batch">
+	            	{:W('ShowAddResult', array('model'=>$row['modelname'],'data'=>$pInfoVo) )}
+	            	<span class="right"><input class="condition_batch_input" type="text" value="0"/></span>
+	            </div>
+	            <div class="condition_batch_button">
+	            	<span style="line-height: 28px; font-size: 14px; margin-left: 10px;">
+	            		<input type="radio" value="0" <if condition="$row['processaudit']['parallel'] eq 0">checked="checked"</if> name="parallel"/>非并行</span>
+	            	<span style="line-height: 28px; font-size: 14px; margin-left: 10px;">
+		        		<input type="radio" value="1" <if condition="$row['processaudit']['parallel'] eq 1">checked="checked"</if> name="parallel"/>单批次并行
+		        	</span>
+	            	<button type="button" class="right condition_search_btn csb_red" id="btnDel">删除条件</button>
+	            	<button type="button" onclick="btnAddProcess();" class="right condition_search_btn mr5">添加条件</button>
+	            </div>
+	            <table class="process_manage_table js-addprocess_manage_table">
+	                <theader>
+	                    <tr>
+	                        <th width="8%">选中</th>
+	                        <th width="10%">类型</th>
+	                        <th width="20%">名称</th>
+	                        <th width="52%">批次/协办人条件</th>
+	                        <th width="10%">批次</th>
+	                    </tr>
+	                    <volist id="bvo" name="bacharr">
+	                    	<tr>
+	                    		<td><input name="userCheckbox[]" type="checkbox"></td>
+	                    		<td>
+	                    			<input name="userobjidname[]" value="{$bvo['userobjidname']}" type="hidden">
+	                    			<input name="userobjid[]" value="{$bvo['userobjid']}" type="hidden">{$bvo['userobjidname']}
+	                    		</td>
+	                    		<td>
+	                    			<input name="userobjname[]" value="{$bvo['userobjname']}" type="hidden">
+	                    			<input name="userobj[]" value="{$bvo['userobj']}" type="hidden">{$bvo['userobjname']}
+	                    		</td>
+	                    		<td>
+	                    			<input name="rulesinfo[]" value="{$bvo['rulesinfo']}" type="hidden">
+	                    			<input name="rulename[]" value="{$bvo['rulename']}" type="hidden">
+	                    			<input name="rule[]" value="{$bvo['rule']}" type="hidden">
+	                    		</td>
+	                    		<td><input name="bactch[]" value="{$bvo['bactch']}" type="text"></td>
+	                    	</tr>
+	                    </volist>
+	                </theader>
+	        	</table>
+	        </div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

@@ -1,0 +1,132 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="55">
+			<div class="keepContentCenter form-affix-content">
+			<div class="contentTitle contentTitle_center form-affix-title">培训课程
+				
+			</div>
+				<fieldset>
+				{:W('ShowOrderno',array(1,'mis_hr_evaluation_train',$vo['orderno']))}
+				<div class="tml-form-row">
+					<label>课程名称：</label>
+					<input type="text" name="name" value="{$vo['name']}">
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>课程类型：</label>
+							<select name="type" class="combox">
+							<option value="通用素质"  <if condition=" $vo['type'] eq '通用素质'">selected</if>>通用素质</option>
+							<option value="企业文化" <if condition=" $vo['type'] eq '企业文化'">selected</if>>企业文化</option>
+							<option value="专业类" <if condition=" $vo['type'] eq '专业类'">selected</if>>专业类</option>
+							<option value="管理类" <if condition=" $vo['type'] eq '管理类'">selected</if>>管理类</option>
+							<option value="安全生产" <if condition=" $vo['type'] eq '安全生产'">selected</if>>安全生产</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>课程来源：</label>
+						<select name="classsource" class="combox ">
+							<option value="1" <if condition=" $vo['classsource'] eq '1'">selected</if>>公共课程</option>
+							<option value="2" <if condition=" $vo['classsource'] eq '2'">selected</if>>部门课程</option>
+							<option value="3" <if condition=" $vo['classsource'] eq '3'">selected</if>>外派课程</option>
+							<option value="4" <if condition=" $vo['classsource'] eq '4'">selected</if>>项目课程</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>组织部门：</label>
+					    <select name="departmentid" class="combox">
+						    <option value="0" selected >选择部门</option>
+							{$deptlist}
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>适用对象：</label>
+						<input type="text" name="targetstudent" class="double" value="{$vo['targetstudent']}">
+					</div>
+					<div class="tml-form-col">
+						<label>培训讲师：</label>
+						<input type="text" name="lecturer" class="" value="{$vo.lecturer}">
+					</div>
+					<div class="tml-form-col">
+						<label>讲师等级：</label>
+						<select name="level" class="combox ">
+							<option value="无" <if condition=" $vo['level'] eq '无'">selected</if>>无</option>
+							<option value="初级" <if condition=" $vo['level'] eq '初级'">selected</if>>初级</option>
+							<option value="中级" <if condition=" $vo['level'] eq '中级'">selected</if>>中级</option>
+							<option value="高级" <if condition=" $vo['level'] eq '高级'">selected</if>>高级</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>培训目标：</label>
+						<input type="text" name="traingoal" class="" value="{$vo['traingoal']}">
+					</div>
+					<div class="tml-form-col">
+						<label>培训时间：</label>
+						<div class="tml-input-append">
+						<input type="text" format="{dateFmt:'yyyy-MM-dd HH:mm'}" class="Wdate required js-wdate" name="traintime" value="{$vo['traintime']|transTime='Y-m-d H:i'}">
+						<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>培训地点：</label>
+						<input  type="text" name="site" class="" value="{$vo['site']}">
+					</div>
+					<div class="tml-form-col">
+						<label>培训课时：</label>
+						<input type="text" name="classhour" class="number" value="{$vo['classhour']}">
+					</div>
+					<div class="tml-form-col">
+						<label>培训形式：</label>
+						<select name="trainform" class="combox ">
+							<option value="讲座" <if condition=" $vo['trainform'] eq '讲座'">selected</if>>讲座</option>
+							<option value="参观学习" <if condition=" $vo['trainform'] eq '参观学习'">selected</if>>参观学习</option>
+							<option value="视频" <if condition=" $vo['trainform'] eq '视频'">selected</if>>视频</option>
+							<option value="研讨" <if condition=" $vo['trainform'] eq '研讨'">selected</if>>研讨</option>
+							<option value="在岗学习" <if condition=" $vo['trainform'] eq '在岗学习'">selected</if>>在岗学习</option>
+							<option value="其他" <if condition=" $vo['trainform'] eq '其他'">selected</if>>其他</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>考核方式：</label>
+						<select name="assessment" class="combox ">
+							<option value="口试" <if condition=" $vo['assessment'] eq '口试'">selected</if>>口试</option>
+							<option value="笔试" <if condition=" $vo['assessment'] eq '笔试'">selected</if>>笔试</option>
+							<option value="实操演练" <if condition=" $vo['assessment'] eq '实操演练'">selected</if>>实操演练</option>
+							<option value="其他" <if condition=" $vo['assessment'] eq '其他'">selected</if>>其他</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>培训费用：</label>
+						<div class="tml-input-append">
+						<input type="text" name="traincost" size="17"  class="" value="{$vo['traincost']}">
+						<span class="input-addon-unit" title="元">元</span>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>课程分值：</label>
+						<input type="text" name="curriculumvalue" class="double" value="{$vo['curriculumvalue']}">
+					</div>
+				</div>
+					<div class="tml-form-row">
+						<label>课程大纲：</label>
+						<textarea name="syllabus" rows="2" maxlength="200" cols="40">{$vo['syllabus']}</textarea>
+					</div>
+					<div class="tml-form-row">
+						<label>备注：</label>
+						<textarea name="remark" rows="2" maxlength="200" cols="50">{$vo['remark']}</textarea>
+					</div>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle">
+						<b>上传附件</b>
+					</legend>
+					{:W('ShowUpload',$attarry)}
+				</fieldset>
+			</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

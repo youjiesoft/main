@@ -1,0 +1,117 @@
+<script type="text/javascript">
+<!--
+function selectApp_module(groupId, appId){
+	if(appId !== ''){
+		var url = "__URL__/module/groupId/"+ groupId +"/appId/" + appId;
+		$("#moduleSelectBox", $.pdialog.getCurrent()).loadUrl(url);
+	}
+}
+
+function selectApp_action(form$){
+	var $form = $(form$, $.pdialog.getCurrent())
+	var appId = $form.find(":input[name=appId]").val();
+	if(appId !== ''){
+		var groupId = $form.find(":input[name=groupId]").val();
+		var url = "__URL__/action/groupId/"+ groupId +"/appId/" + appId;
+		$("#moduleSelectBox", $.pdialog.getCurrent()).loadUrl(url);
+	}
+}
+function selectModule_action(form$){
+	var $form = $(form$, $.pdialog.getCurrent());
+	var moduleId = $form.find(":input[name=moduleId]").val();
+	if(moduleId !== ''){
+		var groupId = $form.find(":input[name=groupId]").val();
+		var appId = $form.find(":input[name=appId]").val();
+		var url = "__URL__/action/groupId/"+ groupId +"/appId/" + appId + "/moduleId/" + moduleId;
+		$("#actionSelectBox", $.pdialog.getCurrent()).loadUrl(url);
+	}
+}
+
+//add
+function selectMianban_app(form$){
+	var $form = $(form$, $.pdialog.getCurrent());
+	var appId = $form.find(":input[name=appId]").val();
+	if(appId !== ''){
+		var groupId = $form.find(":input[name=groupId]").val();
+		var appId = $form.find(":input[name=appId]").val();
+		var url = "__URL__/myaction/groupId/"+ groupId +"/appId/" + appId;
+		$("#myactionSelectBox", $.pdialog.getCurrent()).loadUrl(url);
+	}	
+}
+function selectMianban_mianban(form$){
+	var $form = $(form$, $.pdialog.getCurrent());
+	var appId = $form.find(":input[name=appId]").val();
+	var mianbanId = $form.find(":input[name=mianbanId]").val();
+	if(mianbanId !== '' && appId !==''){
+		var groupId = $form.find(":input[name=groupId]").val();
+		var appId = $form.find(":input[name=appId]").val();
+		var url = "__URL__/myaction/groupId/"+ groupId +"/appId/" + appId + "/mianbanId/" + mianbanId;
+		$("#myactiontwoSelectBox", $.pdialog.getCurrent()).loadUrl(url);
+	}	
+}
+function selectMianban_module(form$){
+	var $form = $(form$, $.pdialog.getCurrent());
+	var appId = $form.find(":input[name=appId]").val();
+	var mianbanId = $form.find(":input[name=mianbanId]").val();
+	var moduleId = $form.find(":input[name=moduleId]").val();
+	if(mianbanId !== '' && moduleId !=='' && appId !==''){
+		var groupId = $form.find(":input[name=groupId]").val();
+		var appId = $form.find(":input[name=appId]").val();
+		var url = "__URL__/myaction/groupId/"+ groupId +"/appId/" + appId + "/mianbanId/" + mianbanId + "/moduleId/" + moduleId;
+		$("#myactionthreeSelectBox", $.pdialog.getCurrent()).loadUrl(url);
+	}	
+}
+
+//-->
+</script>
+
+<div class="page">
+	<div class="tabs">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<li class="selected"><a href="#"><span>应用授权</span></a></li>
+					<li><a href="__URL__/module/groupId/{$Think.get.groupId}" class="j-ajax"><span>面板授权</span></a></li>
+					<li><a href="__URL__/action/groupId/{$Think.get.groupId}" class="j-ajax"><span>模块授权</span></a></li>
+					<li><a href="__URL__/myaction/groupId/{$Think.get.groupId}" class="j-ajax"><span>操作授权</span></a></li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="tabsContent" >
+			<div>
+				<form method="post" action="__URL__/setApp" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogunclose)">
+					<input type="hidden" name="groupId" VALUE="{$Think.get.groupId}" />
+					<div class="pageFormContent" layoutH="100">
+						<volist id="item" name="appList">
+							<div class="unit">
+								<input <?php echo in_array($key, $groupAppList) ? "checked" : "" ?> type="checkbox" name="groupAppId[]" value="{$key}"/>{$item}
+							</div>
+						</volist>
+					</div>
+					<div class="formBar">
+						<label style="float:left"><input type="checkbox" class="checkboxCtrl" group="groupAppId[]" />{$Think.lang.all_select}</label>
+						<ul>
+							<li><div class="button"><div class="buttonContent"><button type="button" class="checkboxCtrl" group="groupAppId[]" selectType="invert">{$Think.lang.anti_select}</button></div></div></li>
+							<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+							<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+						</ul>
+					</div>
+				</form>
+			</div>
+
+			<div>
+				<!-- <include file="module" /> -->
+			</div>
+			<div>
+				<!-- <include file="action" /> -->
+			</div>
+			<div>
+				<!-- <include file="action" /> -->
+			</div>
+		</div>
+		<div class="tabsFooter">
+			<div class="tabsFooterContent"></div>
+		</div>
+	</div>
+</div>

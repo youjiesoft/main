@@ -1,0 +1,105 @@
+<script type="text/javascript">
+var jump='{$jump}';
+$(document).ready(function() {
+	var $box=navTab.getCurrentPanel();
+	$box.find(".tabs .tabsHeader ul li").click(function(){
+		$box.find(".tabs .tabsHeader ul li").removeClass("selected");
+		$(this).addClass("selected");
+	});
+	/* if(jump == 3){
+		if(!$("#workmonitoringshow").next("ul").is(':visible')){
+    		$("#workmonitoringshow").parent().find("ul").slideUp();
+    		$("#workmonitoringshow").next("ul").slideDown();
+    	}
+		//$("#misworkmonitoring_1").addClass("selected");
+	}
+	if(jump == 4){
+		if(!$("#workexecutingshow").next("ul").is(':visible')){
+    		$("#workexecutingshow").parent().find("ul").slideUp();
+    		$("#workexecutingshow").next("ul").slideDown();
+    	}
+	} */
+	//$("#workmonitoringshow").click();
+    $('.nbmaccordion' , $box).nbmaccordion();
+})
+
+function workexecutingshow(ob,obj){
+	var $box=navTab.getCurrentPanel();
+	$box.find(".nbmaccordion ul li").each(function (e){
+		$ulrel=$(this).find("a").attr("reltype");
+		if($ulrel == obj){
+			$(this).parent().find("ul").slideUp();
+			$(this).parent().find("ul").slideDown();
+			$(this).find("a").click();
+		}
+	});
+}
+
+   function showlimanageworkoa(obj,ob){
+   	var $box=navTab.getCurrentPanel();
+  		$box.find(".tabs .tabsHeader a div").removeClass("active");
+  		$("#"+ob).find("div").addClass("active");
+   	$box.find(".tabs .tabsHeader ul li").each(function (){
+   		$ulrel=$(this).find("a").attr("reltype");
+   		if($ulrel == obj){
+  				if(ob && !$("#"+ob).next("ul").is(':visible')){
+      	    		$("#"+ob).parent().find("ul").slideUp();
+      	    		$("#"+ob).next("ul").slideDown();
+      	    	}
+   			$(this).find("a").click();
+   		}
+   	});
+   }
+    //审批后执行
+    function showlimanageworkexecuting(obj,ob,dotype,md){
+    	var $box=navTab.getCurrentPanel();
+    	$box.find(".tabs .tabsHeader a div").removeClass("active");
+   		$("#"+ob).find("div").addClass("active");
+    	$box.find(".tabs .tabsHeader ul li").each(function (){
+    		$ulrel=$(this).find("a").attr("reltype");
+    		if($ulrel == obj){
+   				if(ob && !$("#"+ob).next("ul").is(':visible')){
+       	    		$("#"+ob).find("ul").slideUp();
+       	    		//$("#"+ob).next("ul").slideDown();
+       	    	}
+    			if(dotype == 1 || dotype == 0){
+    				$(this).find("a").attr("href","__URL__/lookupExecuting/md/"+md+"/dotype/"+dotype+"/rel/"+md+"_1");
+    			}
+    			$(this).find("a").click();
+    		}
+    	});
+    }
+    function shrinkexecuting(obj){
+    	$(obj).siblings("a").find("div").removeClass("active");
+    	$(obj).find("div").addClass("active");
+    	$(obj).siblings("a")
+    	if($(obj).next("ul").is(':visible')){
+    		//$(obj).parent().find("ul").slideUp();
+    	}else{
+    		$(obj).parent().find("ul").slideUp();
+    		$(obj).next("ul").slideDown();
+    	}
+    }
+</script>
+
+
+<div class="pageContent work_centre">
+    <div class="tabs tabh" eventType="click" style="border: none;">
+        <div class="treeleft">
+            <div class="work_statement">下级审核</div>
+            <div class="nbmaccordion"  data-option="<if condition='$md eq MisOaItems'>selecter:0;<elseif condition='$md eq MisWorkMonitoring' />selecter:1;<elseif condition='$jump eq 4' />selecter:2;<elseif condition='$jump eq 6' />selecter:3;</if>close:icon-double-angle-down;open:icon-double-angle-up" layouth="40">
+                <div title="下级审核" id="workmonitoringshow">
+                    <ul>
+                            <li><a href="__URL__/index" rel="MisSystemSuperior" target="navTab" title="下级审核">
+                            <span>返回</span></a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+            <!-- left end -->
+        </div>
+        <div class="treeright unitBox" id="MisSystemSuperiorboxtree">
+            	<include file="indexviewtree" />
+        </div>
+    </div>
+</div>

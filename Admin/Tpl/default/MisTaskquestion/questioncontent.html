@@ -1,0 +1,20 @@
+<div class="page">
+    <div class="pageContent">
+        <div class="pageFormContent" layoutH="95">
+            <div class="unit">
+                <label>问题描述：</label>
+                <div class="tasktextarea-h200">
+                    <div class="tasktextareadiv">{$question['content']}</div>
+                </div>
+            </div>
+            <if condition="$answerquestion">
+                <div class="unit">
+                <label>问题回答：</label>
+                <div class="tasktextarea-h200">
+                    <div class="tasktextareadiv">{$answerquestion['content']}</div>
+                </div>
+            </div>
+            </if>
+        </div>
+    </div>
+</div>

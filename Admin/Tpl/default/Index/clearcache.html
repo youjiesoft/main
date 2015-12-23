@@ -1,0 +1,37 @@
+<div class="pageContent">
+	<form method="post" action="__APP__/Public/clear_cache/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<div class="pageFormContent" layoutH="80">
+		<fieldset>
+			<div class="tml-form-row">
+				<label>清空缓存：</label>
+				<div class="left tml-checkbox tml-w100">
+					<label style="font-family: 'microsoft yahei';font-size: 14px;" >
+						<input type="radio" value="1"name="runtime"/> 清除用户权限缓存
+					</label>
+				</div>
+				<div class="left tml-checkbox tml-w100">
+					<label style="font-family: 'microsoft yahei';font-size: 14px;">
+						<input type="radio" value="2" name="runtime"/> 清除模板文件缓存
+					</label>
+				</div>
+				<div class="left tml-checkbox tml-w100">
+					<label style="font-family: 'microsoft yahei';font-size: 14px;">
+						<input type="radio" value="3" name="runtime"/> 清除数据字典缓存
+					</label>
+				</div>				
+			</div>
+		</fieldset>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button class="confirm_clear_cache_btn tml_clear_cache_btn" type="submit">{$Think.lang.save}</button>
+				</li>
+				<!-- <li>
+					<button class="close_clear_cache_btn close tml_clear_cache_btn" type="button">{$Think.lang.close}</button>
+				</li> -->
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,864 @@
+<script>
+var $box = navTab.getCurrentPanel();
+		
+		//上传图片JS
+		function mishrpersonnelvoview_picture_edit(file, data, response) {
+				var s = data.split(TP_PUBLIC + "/Uploadstemp/");
+				$("#swf_upload_mishrpersonnelvoview_edit_save_name").val(s[1]);
+				var upload_name = $("#swf_upload_mishrpersonnelvoview_edit_save_name").val();
+				$.ajax({
+					type : "POST",
+					url : "__URL__/lookuploadimg",
+					data : {
+						'upload_name' : upload_name
+					},
+					success : function(re) {
+						 $("#mishrpersonnelvoview_picture_edit").attr("src","__PUBLIC__/Uploads/"+re);
+						 $("input[name='picture']").val(re);
+					}
+				});
+			}
+		//计算出生日期  AJAX请求计算年龄
+		$box.find("#chinaid").blur(function(){
+		var d=new Date();
+		//alert(d.getFullYear);
+		var v=$(this).val();
+		if (v.length == 15) {
+		    var year = "19" + v.substr(6, 2);
+		    var month = v.substr(8, 2);
+		    var day = v.substr(10, 2);
+		    var age=d.getFullYear()-1900-year;
+		} else if (v.length == 18) {
+		    var year = v.substr(6, 4);
+		    var month = v.substr(10, 2);
+		    var day = v.substr(12, 2);
+		    var age=d.getFullYear()-year;
+		} else {
+		    return "";
+		}
+		$box.find("input:[name='birthday']").val( year+"-"+month+"-"+day );
+		var birthday=year+"-"+month+"-"+day;
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookupbirthday",
+			data : {
+				'birthday' : birthday,
+				'chinaid':v
+			},
+			success : function(response) {
+				var json=DWZ.jsonEval(response);
+				 if(json){
+				 	$box.find("input[name='age']").val(json.age);
+				 	if(json.result=="1"){
+				 		 alertMsg.info("该员工有离职记录！");
+				 	}
+				 }
+			}
+		});
+	});
+		function addCompany_edit(){
+			var $box=navTab.getCurrentPanel();
+			var companyItem = $('div.companyItem:last', $box);
+			//var firstSelVal = companyItem.find('select:first').val();
+			//$(this).logs(firstSelVal);
+			companyItem.find('select').select2("destroy");
+			var cloneTab = companyItem.clone();
+			companyItem.find('select').select2();
+			// 1.先得到容器 中的每个组件对象
+			var idstr=Array();
+			cloneTab.find("input[name='udid[]']").val("");
+			cloneTab.find('div.buttonContent').find('button').attr('onClick','delCompany_edit(this)');
+			cloneTab.find('select').select2();
+			companyItem.after(cloneTab);
+		}
+		function misHrBasicEmployee_saveAndAdd(form){
+			var $box=navTab.getCurrentPanel();
+			$box.find("input[name='callbackType']").val("");
+		    var $form = $(form);
+			return validateCallback($form, refreshtabs_afteradd);
+		}
+		//添加工作经验
+		function MisHrPersonnelVoView_addExperience(){
+			var $box=navTab.getCurrentPanel();
+			var html="<div class='clearfix' style='border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;'><h3>工作经验(<span class='_itemIndex'>2</span>)</h3><div class='tml-row'><div class='tml-form-col'>"+
+		    "<label title='开始时间'>开始时间：</label> <span class='xyInputWithUnit'> <input type='text' name='startdate[]' yearstart='-40' yearend='1' readonly='readonly' class='date textInput valid required' /> <a class='input-addon input-addon-calendar' href='javascript:;'>选择</a> </span>"+
+			"</div><div class='tml-form-col'><label title='结束时间'>结束时间：</label>"+
+			"<span class='xyInputWithUnit'>"+
+			"<input type='text' name='finishdate[]' yearstart='-40' yearend='1' readonly='readonly' class='date textInput valid required' />"+
+			"<span class='input-addon input-addon-calendar'></span>"+
+			"</span>"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='公司名称'>公司名称：</label>"+
+			"<input type='text' class='required' name='company[]' />"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='担任职务'>担任职务：</label>"+
+			"<input type='text' class='required' name='position[]' />"+
+			"</div></div>"+
+			"<div class='tml-form-row'>"+
+			"<label title='备注'>备注：</label>"+
+			"<input type='text' name='expremark[]' />"+
+			"</div>"+
+			"<div class='clear'></div><div class='buttonActive right'>"+
+			"<div class='buttonContent'>"+
+			"<button type='button' onclick='editExperience_deletemishrpersonnelvoview(this)'>取消</button>"+
+			"</div>"+
+			"</div>"+
+			"</div>";
+			$box.find("#Addexperience_div").append($(html).initUI());
+			setInputKeydown($("#Addexperience_div"));
+			$box.find("._itemIndex").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+		function editExperience_deletemishrpersonnelvoview(obj,$id){
+			var $box=navTab.getCurrentPanel();
+			$name="MisHrPersonnelExperienceInfo";
+			if($id){
+				alertMsg.confirm("您确定移除此项工作经验吗", {
+					okCall: function(){
+						$.ajax({
+							type : "POST",
+							url : "__URL__/lookupdelete",
+							data : {
+								'id' : $id,
+								'name':$name
+							},
+							success : function(re) {
+								$(obj).parent().parent().parent().remove();
+							}
+						});
+					}
+				});	 
+			}else{
+				$(obj).parent().parent().parent().remove();
+			}
+			//重新计算ND
+			$box.find("._itemIndex").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+		//添加教育经历
+		function MisHrPersonnelVoView_addEducation(){
+			var $box=navTab.getCurrentPanel();
+			var html="<div class='clearfix' style='border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;'><h3>教育经历(<span class='_eduIndex'>2</span>)</h3><div class='tml-row'><div class='tml-form-col'>"+
+		    "<label title='开始时间'>开始时间：</label> <span class='xyInputWithUnit'> <input type='text'  name='edustartdate[]' yearstart='-40' yearend='1' readonly='readonly' class='date textInput valid required' /> <a class='input-addon input-addon-calendar' href='javascript:;'>选择</a> </span>"+
+			"</div><div class='tml-form-col'><label title='结束时间'>结束时间</label>"+
+			"<span class='xyInputWithUnit'>"+
+			"<input type='text' name='edufinishdate[]' yearstart='-40' yearend='1' readonly='readonly' class='date textInput valid required' />"+
+			"<span class='input-addon input-addon-calendar'></span>"+
+			"</span>"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='毕业院校/培训机构'>毕业院校/培训机构：</label>"+
+			"<input type='text' class='required' name='newschool[]' />"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='专业/所获证书'>专业/所获证书：</label>"+
+			"<input type='text' name='skillAndCertificate[]'/>"+
+			"</div></div>"+
+			"<div class='clear'></div><div class='buttonActive right'>"+
+			"<div class='buttonContent'>"+
+			"<button type='button' onclick='addEducation_deletemishrpersonnelvoview(this)'>取消</button>"+
+			"</div>"+
+			"</div>"+
+			"</div>";
+			$box.find("#Addeducation_div").append($(html).initUI());
+			setInputKeydown($("#Addeducation_div"));
+			$box.find("._eduIndex").each(function(i){
+				 $(this).text(i+1);
+			});
+		}
+		function addEducation_deletemishrpersonnelvoview(obj,$id){
+			var $box=navTab.getCurrentPanel();
+			$name="MisHrPersonnelEducationInfo";
+			if($id){
+				alertMsg.confirm("您确定移除此项教育经历吗", {
+					okCall: function(){
+						$.ajax({
+							type : "POST",
+							url : "__URL__/lookupdelete",
+							data : {
+								'id' : $id,
+								'name':$name
+							},
+							success : function(re) {
+								$(obj).parent().parent().parent().remove();
+							}
+						});
+					}
+				});	 
+			}else{
+				$(obj).parent().parent().parent().remove();
+			}
+			//重新计算ND
+			$box.find("._eduIndex").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+		//添加家庭成员
+		function MisHrPersonnelVoView_addFamily(){
+			var $box=navTab.getCurrentPanel();
+			var html="<div class='clearfix' style='border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;'><h3>家庭成员(<span class='_familyIndex'>2</span>)</h3> "+
+			"<div class='tml-row'><div class='tml-form-col'>"+
+			"<label title='关系'>关系：</label>"+
+			"<input type='text' class='required' name='relation[]' />"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='名字'>名字：</label>"+
+			"<input type='text' class='required' name='familyname[]' />"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='工作单位'>工作单位：</label>"+
+			"<input type='text' class='required' name='familycompany[]' />"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='联系电话'>联系电话：</label>"+
+			"<input type='text' class='required' name='telephone[]' />"+
+			"</div></div>"+
+			"<div class='clear'></div><div class='buttonActive right'>"+
+			"<div class='buttonContent'>"+
+			"<button type='button' onclick='addFamily_deletemishrpersonnelvoview(this)'>取消</button>"+
+			"</div>"+
+			"</div>"+
+			"</div>";
+			$box.find("#Addfamily_div").append($(html).initUI());
+			setInputKeydown($("#Addfamily_div"));
+			$box.find("._familyIndex").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+		function addFamily_deletemishrpersonnelvoview(obj,$id){
+			var $box=navTab.getCurrentPanel();
+			$name="MisHrEmployeePrivy";
+			if($id){
+				alertMsg.confirm("您确定移除此项家庭成员记录吗", {
+					okCall: function(){
+						$.ajax({
+							type : "POST",
+							url : "__URL__/lookupdelete",
+							data : {
+								'id' : $id,
+								'name':$name
+							},
+							success : function(re) {
+								$(obj).parent().parent().parent().remove();
+							}
+						});
+					}
+				});	 
+			}else{
+				$(obj).parent().parent().parent().remove();
+			}
+			//重新计算ND
+			$box.find("._familyIndex").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+		//添加介绍人信息
+		function MisHrPersonnelVoView_addPrivy(){
+			var $box=navTab.getCurrentPanel();
+			var html="<div class='clearfix' style='border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;'><h3>介绍人(<span class='_privyIndex'>1</span>)</h3> "+
+			"<div class='tml-row'><div class='tml-form-col'>"+
+			"<label title='姓名'>姓名：</label>"+
+			"<input type='hidden'  name='privyemid[]' />"+
+			"<input type='text' class='required' name='privyname[]'/>"+
+			"</div>"+
+			"<div class='tml-form-col'>"+
+			"<label title='关系'>关系：</label>"+
+			"<input type='text' class='required' name='privyrelation[]'/>"+
+			"</div><div class='tml-form-col'>"+
+			"<label title='联系电话'>联系电话：</label>"+
+			"<input type='text' class='required' name='privytelephone[]'/>"+
+			"</div></div>"+
+			"<div class='clear'></div><div class='buttonActive right'>"+
+			"<div class='buttonContent'>"+
+			"<button type='button' onclick='addPrivy_deletemishrpersonnelvoview(this)'>取消</button>"+
+			"</div>"+
+			"</div>"+
+			"</div>";
+			$box.find("#Addprivy_div").append($(html).initUI());
+			setInputKeydown($("#Addprivy_div"));
+			$box.find("._privyIndex").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+		function addPrivy_deletemishrpersonnelvoview(obj,$id){
+			var $box=navTab.getCurrentPanel();
+			$name="MisHrEmployeePrivy";
+			if($id){
+				alertMsg.confirm("您确定移除此项介绍人记录吗", {
+					okCall: function(){
+						$.ajax({
+							type : "POST",
+							url : "__URL__/lookupdelete",
+							data : {
+								'id' : $id,
+								'name':$name
+							},
+							success : function(re) {
+								$(obj).parent().parent().parent().remove();
+							}
+						});
+					}
+				});	 
+			}else{
+				$(obj).parent().parent().parent().remove();
+			}
+			//重新计算ND
+			$box.find("._privyIndex").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+		function changecombox_edit(obj,$type,$sclass){
+			var comboxval=$(obj).val();
+			var $box=navTab.getCurrentPanel();
+			var companyid=$(obj).closest('div.companyItem').find("select:first").val();
+			$.ajax({
+				type : "POST",
+				url : "__URL__/lookupcdw",
+				data : {
+					'val' : comboxval,
+					'type' : $type,
+					'companyid':companyid,
+				},
+				success : function(response) {
+					var nullhtml="<option value=\"\">无数据 </option>"
+					// 先找到组件html结构的顶层
+					var p = $(obj).closest('div.tml-form-col');
+					var nextobj = $(p).next('div.tml-form-col');
+					var nextselobj = $(nextobj).find('select');
+					 if(response != 'null'){
+						 response = $.parseJSON(response);
+						var html = '';
+						if($type == 1){
+							// 点击的是公司， 
+							// 要改变后两个。
+							if(response.dept && response.dept != 'null' ){
+								$.each(response.dept , function(key , val){
+									var dis = '';
+									if(val['nextEnd'] == 0){
+										dis = ' disabled="disabled"';
+									}
+									var lev = '';
+									if(val['level']){
+										lev = ' class="level'+val['level']+'"';
+									}
+									html += '<option value="'+val.id+'" '+dis+lev+'>' + val.name
+									+ '</option>';
+								});
+							}
+							var htmljob='';
+							if(response.job && response.job != 'null' ){
+								$.each(response.job , function(key , val){
+									htmljob += '<option value="'+key+'">' + val
+									+ '</option>';
+								});
+								
+							}else{
+								htmljob=nullhtml;
+							}
+							var secObj = nextobj.next('div.tml-form-col').find('select');
+							secObj.html(htmljob);
+							secObj.change();
+						}else{
+							// 点击的是部门， 
+							// 要改变企业岗位。
+							$.each(response , function(key , val){
+								$(this).logs(key+'__'+val);
+								html += '<option value="'+key+'">' + val
+								+ '</option>';
+							});
+						}
+						nextselobj.html(html);
+					 }else{
+						 nextselobj.html(nullhtml);
+					 }
+					 initChosen();
+				},
+				global : false
+			});
+		}
+		function delCompany_edit(obj,$id,$worktype){
+			var $box=navTab.getCurrentPanel();
+			var companyItem = $('div.companyItem' , $box);
+			if(companyItem.length>1){
+				if($id){
+					//赋值于已取消的多组织id隐藏域
+					var val=$box.find("input[name='delids']").val();
+					$box.find("input[name='delids']").val(val+","+$id);
+					//赋值与已取消的多组织岗位id
+					var worktypeval=$box.find("input[name='delworktypes']").val();
+					$box.find("input[name='delworktypes']").val(worktypeval+","+$worktype);
+				}
+				$(obj).parent().parent().parent().remove();	
+			} 
+		}
+		 
+		</script>
+		<div class="page">
+			<div class="pageContent">
+				<form method="post" action="__URL__/updateGeneral/rel/{$_REQUEST['rel']}" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+					<input type="hidden" name="callbackType" value="closeCurrent"/>
+					<input type="hidden" name="refreshtabs[data]" value="1" />
+					<input type="hidden" name="refreshtabs[type]" value="navtab">
+					<input type="hidden" name="refreshtabs[byid]" value="1">
+					<input type="hidden"  name="checkcompanyid" value="{$_REQUEST['companyid']}"/>
+					<input type="hidden"  name="id" value="{$vo.id}" />
+					<input type="hidden"  name="workstatus" value="{$vo.workstatus}" />
+					<input type="hidden" name="delids" value=""/>
+					<input type="hidden" name="delworktypes" value=""/>
+					<div class="pageFormContent applecloth" layoutH="40">
+						<div class="keepContentCenter">
+						<div class="contentTitle contentTitle_center">员工档案
+							
+						</div>
+						<fieldset>
+							<legend class="fieldset_legend_toggle"><b>基本信息</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+							<input type="hidden" name="picture" value="{$vo.picture}">
+							<div class="tml-row">
+							{:W('ShowOrderno',array(1,'mis_hr_personnel_train_info',$vo['orderno']))}
+								<div class="tml-form-col">
+									<label title="姓名">姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+									<input type="text" name="name" class="required" value="{$vo.name}" />
+								</div>
+								<p class="employeePhoto" style="float:right;">
+									<img id="mishrpersonnelvoview_picture_edit"
+										style="border: 2px solid #f1f1f1;  background-color:#468cda;  width: 80px; height: 80px;"
+										 <if  condition="$vo.picture"> src="__PUBLIC__/Uploads/{$vo.picture}" <else/> src="__PUBLIC__/Images/xyimages/xyheader_image.jpg" </if>>  
+									<input name="picture" id="swf_upload_mishrpersonnelvoview_edit_save_name" value="{$vo.picture}" type="hidden" />
+									<br />
+									 <input id="swfupload_mishrpersonnelvoview_edit" onUploadSuccess="mishrpersonnelvoview_picture_edit" type="file" auto="true" multi="false" type="file" uploader="true" fileSizeLimit="2000KB" fileTypeExts="*.jpg;*.jpeg;*.gif;*.png;"
+															   fileTypeDesc="*.jpg;*.jpeg;*.gif;*.png;" name="mishrpersonnelvoview_edit_file" formData="{ uploadpath:'MisHrInvitereSpecialForm' }" />
+									<span style="color:red">*请上传1寸相片</span>
+								</p>
+								<div class="tml-form-col">
+									<label title="性别">性&nbsp;&nbsp;&nbsp;&nbsp;别：</label>
+									<select name="sex" class="combox">
+										<option <if condition="$vo.sex eq '1'">selected="selected"</if> value="1">男</option>
+										<option  <if condition="$vo.sex eq '0'">selected="selected"</if> value="0">女</option>
+									</select>
+								</div>
+								<div class="tml-form-col">
+									<label title="户籍">户&nbsp;&nbsp;&nbsp;&nbsp;籍：</label>
+									<input name="nativeaddress" type="text" value="{$vo.nativeaddress}" class="textInput" />
+								</div>
+								<div class="tml-form-col">
+									<label title="身份证">身&nbsp;份&nbsp;证：</label>
+									<input name="chinaid" id="chinaid" type="text"  value="{$vo.chinaid}" class="textInput required" />
+								</div>
+									<div class="clear"></div>
+								<div class="tml-form-col">
+									<label title="年龄"> 年&nbsp;&nbsp;&nbsp;&nbsp;龄：</label>
+									<input type="text" name="age" min="1" value="{$vo.age}" readonly="readonly" maxlength="3" />
+								</div>
+								<div class="tml-form-col">
+									<label title="出生年月"> 出生年月： </label>
+									<input name="birthday" type="text" value="{$vo.birthday|transtime}"    yearstart="-40" yearend="1" class="required" readonly="readonly" />
+								</div>
+								</fieldset>
+								<fieldset>
+								<legend class="fieldset_legend_toggle"><b>辅助资料</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+								<div class="tml-row">
+								<div class="tml-form-col">
+								<label title="民族"> 民&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;族：</label>
+								<select name="national" class="combox">
+									<volist name="nationList" id="national">
+									<option  <if  condition="$vo.national eq $key ">selected="selected"</if> value="{$key}">{$national}</option>
+									</volist>
+								</select>
+								</div>
+									<div class="tml-form-col">
+								<label title="学历">学&nbsp;&nbsp;&nbsp;&nbsp;历：</label>
+								<select name="education" class="combox">
+									{:getDataBaseByHtml('MisHrTypeinfo',array('selected'=>$vo['education'],'conditions'=>'pid=44'))}
+								</select>
+								</div>
+								<div class="tml-form-col">
+									<label title="婚姻状况"> 婚姻状况： </label>
+									<select name="ismarry" class="combox">
+										<option value="" selected="selected">请选择</option>
+								        {:getSelectByHtml('ismarry','select',$vo['ismarry'])}
+								    </select>
+								</div>
+								<div class="tml-form-col">
+									<label title="合约性质">合约性质：</label>
+									<select name="agreetypeid"  class="combox">
+									{:getSelectByHtml('agreetypeid','select',$vo['agreetypeid'])} 
+									</select>
+								</div>
+					<!-- fix -->
+								<if condition="$vo.workstatus eq '2'">
+								<div class="tml-form-col">
+									<label title="试用期">试&nbsp;用&nbsp;期：</label>
+									<select name="probationcycle" class="combox">
+										<option selected="selected">请选择</option>
+								        {:getSelectByHtml('probationcycle','select',$vo['probationcycle'])}
+								    </select>
+								</div>
+								</if>
+									<div class="tml-form-col">
+									<label title="户口性质">户口性质：</label>
+									<select name="accounttype" class="combox">
+										<option value="1"<if condition="$vo.accounttype  eq  '1'">selected="selected"</if>>农村</option>
+										<option value="0"<if condition="$vo.accounttype eq  '0'">selected="selected"</if>>城镇</option>
+									</select>
+								</div>
+								<div class="tml-form-col">
+									<label title="入职日期">入职日期：</label>
+									<span class="xyInputWithUnit">
+										<input type="text"   onfocus="WdatePicker()"  class="tml-border-r0 Wdate required" yearstart="-40" yearend="1" value="{$vo.indate|transtime}" name="indate" />
+										<span class="input-addon input-addon-calendar"></span>
+									</span>
+								</div>
+								<if condition="$vo.workstatus eq '1'">
+									<div class="tml-form-col">
+										<label>转正日期：</label>
+										<span class="xyInputWithUnit">
+											<input type="text" class="Wdate required" onfocus="WdatePicker()" yearstart="-40" yearend="1" name="transferdate" value="{$vo.transferdate|transTime}" />
+											<span class="input-addon input-addon-calendar"></span>
+										</span>
+									</div>
+								</if>
+								<if condition="$vo.workstatus eq '0'">
+									<div class="tml-form-col">
+										<label>离职日期：</label>
+										<span class="xyInputWithUnit">
+											<input type="text" class="Wdate required" onfocus="WdatePicker()" yearstart="-40" yearend="1" name="leavedate" value="{$vo.leavedate|transTime}" />
+											<span class="input-addon input-addon-calendar"></span>
+										</span>
+									</div>
+								</if>
+								<!-- <div class="tml-form-col">
+									<label title="入职部门"> 入职部门：</label>
+									<select name="deptid" class="combox" onchange="chooiseWorkType(this,'js-employeeWrokType-edit');">
+										{$deptidlist}
+									</select>
+								</div>
+								<div class="tml-form-col">
+									<label title="企业岗位">企业岗位：</label>
+									<select name="worktype" id="js-employeeWrokType-edit" class="combox required">
+										<option value="0">请选择岗位</option>
+										<volist name="joblist" id="worktypename">
+											<option <if condition="$vo.worktype eq $key">selected="selected"</if> value="{$key}">{$worktypename}</option>
+										</volist>
+									</select>
+								</div> -->
+									<div class="tml-form-col">
+									<label title="联系方式"> 联系方式： </label>
+									<input type="text" name="phone" value="{$vo.phone}" class="phone"/>
+								</div>
+								<div class="tml-form-col">
+									<label title="电子邮箱">电子邮箱：</label>
+									<input name="email" type="text" class="textInput email" value="{$vo.email}"/>
+								</div>
+								<div class="tml-form-col">
+									<label> 公司短号：</label>
+									<input type="text" name="shortNumber"  value="{$vo.shortNumber}"  />
+								</div>
+								<div class="tml-form-col">
+									<label> 分机号：</label>
+									<input type="text" name="officeNumber"   value="{$vo.officeNumber}"   />
+								</div>
+								<div class="tml-form-col">
+									<label title="政治面貌"> 政治面貌： </label>
+									<select class="combox" name="politicsstatus">
+										<option value="">请选择</option>
+										{:getSelectByHtml('politicsstatus','select',$vo['politicsstatus'])}
+									</select>
+								</div>
+								<div class="tml-form-col">
+									<label title="专业技术"> 专业技术：</label>
+									<input type="text" value="{$vo.profession}"  name="profession" >
+								</div>
+								</div>
+								<div class="tml-form-row">
+									<label title="毕业院校">毕业院校：</label>
+									<input name="school" type="text" value="{$vo.school}" class="textInput" />
+								</div>
+								<div class="tml-form-row">
+									<label title="现住地址">现住地址：</label>
+									<input name="address" type="text" value="{$vo.address}" class="textInput" />
+								</div>
+								<div class="tml-form-row">
+									<label>U8编码：</label>
+									<input name="yongyouorderno" type="text" class="textInput" value="{$vo.yongyouorderno}" />
+								</div>
+								</fieldset>
+								<fieldset>
+								<legend class="fieldset_legend_toggle"><b>专业资料</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+								<div class="tml-row">
+									<div class="tml-form-col">
+									<label title="档案号">档&nbsp;案&nbsp;号：</label>
+									<input type="text" name="itemid"  value="{$vo.itemid}" />
+								</div>
+									<div class="tml-form-col">
+									<label title="身高(m)"> 身&nbsp;&nbsp;&nbsp;高(m)： </label>
+									<input type="text" name="employeeheight" value="{$vo.employeeheight}" >
+								</div>
+								<div class="tml-form-col">
+									<label title="体重(Kg)"> 体&nbsp;&nbsp;重(Kg)： </label>
+									<input type="text" name="weight" value="{$vo.weight}" >
+								</div>
+								<div class="tml-form-col">
+									<label title="血型">血&nbsp;&nbsp;&nbsp;&nbsp;型：</label>
+									<input type="text" name="bloodtype" maxlenth="50" value="{$vo.bloodtype}">
+								</div>
+								</div>
+					<!--fix  -->
+							<div class="tml-form-row">
+								<label title="备注">备&nbsp;&nbsp;&nbsp;&nbsp;注:</label>
+								<input type="text" name="remark"  value="{$vo.remark}">
+							</div>
+						</fieldset>
+						<fieldset>
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor"><b>公司信息</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+				
+				<volist  name="UserDeptDutyList" id="UserDeptDutyVo">
+					<div class="clearfix companyItem" style="border-bottom:1px dashed #CCCCCC;margin:0 0 10px;padding:0 0 10px;">
+					<input type="hidden" name="userid" value="{$UserDeptDutyVo.userid}" />
+					<input type="hidden"  value="{$UserDeptDutyVo.id}" class="udidc"  name="udid[]"/>
+					<div class="tml-form-col">
+							<label>所属公司：</label>
+							 <select  name="companyid[]"   class=" select2 list_select2 required mishrpersonnelmanagementadd_company"    onchange="changecombox_edit(this,1,'mishrpersonnelmanagementadd_department')" >
+									 {:getDataBaseByHtml('mis_system_company',array('selected'=>$UserDeptDutyVo['companyid']))} 
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label>入职部门：</label>
+							 <select  name="deptid[]"   class="select2 list_select2 required mishrpersonnelmanagementadd_department"   onchange="changecombox_edit(this,2,'mishrpersonnelmanagementadd_department')"  >
+ 							{:getDataBaseLevelByHtml('mis_system_department',array('selected'=>$UserDeptDutyVo['deptid'],'conditions'=>'status=1 and companyid='.$UserDeptDutyVo['companyid']))} 
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label>企业岗位：</label>
+							 <select  name="worktype[]"   class="select2 list_select2    mishrpersonnelmanagementadd_position"  >
+							  {:getDataBaseByHtml('mis_hr_job_info',array('selected'=>$UserDeptDutyVo['worktype'],'conditions'=>' status=1 and  deptid='.$UserDeptDutyVo['deptid']))} 
+							 </select>
+						</div>
+						<input type="hidden" name="oldworktye[]" value="{$UserDeptDutyVo['worktype']}"/>
+						<div class="tml-form-col">
+							<label> 企业职级：</label>
+							<select name="dutylevelid[]" class="select2 list_select2" >
+							 {:getDataBaseByHtml('mis_system_duty',array('selected'=>$UserDeptDutyVo['dutyid'],'conditions'=>' status=1 '))} 
+						</select>
+						</div>
+						<div class='buttonActive right'>
+						<div class='buttonContent'>
+						<button type='button' onclick="delCompany_edit(this,{$UserDeptDutyVo.id},{$UserDeptDutyVo.worktype|getFieldBy='id','rolegroup_id','mis_hr_job_info'})">取消</button>
+						</div>
+						</div>
+						</div>
+						</volist>
+						<div id="Addexperience_divA" class="clearfix"></div>
+						<button class="tml-btn tml-btn-primary" type="button" onclick="addCompany_edit()">+添加公司</button>
+						</fieldset>
+						<fieldset>
+							<legend class="fieldset_legend_toggle"><b>介绍人</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+							<div id="Addprivy_div" class="clearfix">
+									<volist  name="misHrEmployeePrivyList"  id="misHrEmployeePrivy"  key="i">
+									<div class="clearfix" style="border-bottom: 1px dashed #CCCCCC; margin: 0 0 10px; padding: 0 0 10px;">
+										<h3>
+											介绍人(
+											<span class="_privyIndex">{$i}</span>
+											)
+										</h3>
+										<div class="tml-row">
+											<div class="tml-form-col">
+												<label title="姓名">姓名：</label>
+												<input class="required  textInput" type="text" name="privyname[]" value="{$misHrEmployeePrivy.privyname}">
+											</div>
+											<div class="tml-form-col">
+												<label title="关系">关系：</label>
+												<input type="hidden" name="Privyid[]" value="{$misHrEmployeePrivy.id}" >
+												<input class="required textInput" type="text"  name="privyrelation[]" value="{$misHrEmployeePrivy.relation}">
+											</div>
+											<div class="tml-form-col">
+												<label title="联系电话">联系电话：</label>
+												<input class="required textInput" type="text" name="privytelephone[]" value="{$misHrEmployeePrivy.privytel}">
+											</div>
+										</div>
+										<div class="clear"></div>
+										<div class="buttonActive right">
+											<div class="buttonContent">
+												<button onclick="addPrivy_deletemishrpersonnelvoview(this,'{$misHrEmployeePrivy.id}')"
+													type="button">取消</button>
+											</div>
+										</div>
+									</div>
+									</volist>
+								</div>
+							<div class="buttonActive">
+								<div class="buttonContent">
+										<button type="button" onclick="MisHrPersonnelVoView_addPrivy()">+添加介绍人</button>
+								</div>
+							</div>
+						</fieldset>
+						<!-- 工作经验 -->
+						<fieldset>
+							<legend class="fieldset_legend_toggle"><b>工作经验</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+							<div id="Addexperience_div" class="clearfix">
+										<volist name="misHrPersonnelExperienceInfoList"  id="misHrPersonnelExperienceInfo"  key="i">
+										<div class="clearfix" style="border-bottom: 1px dashed #CCCCCC; margin: 0 0 10px; padding: 0 0 10px;">
+											<input type="hidden" name="Experienceid[]"  value="{$misHrPersonnelExperienceInfo.id}" >
+											<h3>
+												工作经验(
+												<span class="_itemIndex">{$i}</span>
+												)
+											</h3>
+											<div class="tml-row">
+												<div class="tml-form-col">
+													<label title="开始时间">开始时间：</label>
+													<span class="xyInputWithUnit">
+														<input class="date textInput valid required readonly" type="text" readonly="readonly" yearend="1" yearstart="-40" name="startdate[]" value="{$misHrPersonnelExperienceInfo.startdate|transtime}">
+														<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+													</span>
+												</div>
+												<div class="tml-form-col">
+													<label title="结束时间">结束时间：</label>
+													<span class="xyInputWithUnit">
+														<input class="date textInput valid required readonly" type="text" readonly="readonly" yearend="1" yearstart="-40" name="finishdate[]" value="{$misHrPersonnelExperienceInfo.finishdate|transtime}">
+														<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+													</span>
+												</div>
+												<div class="tml-form-col">
+													<label title="公司名称">公司名称：</label>
+													<input class="required textInput" type="text" name="company[]"  value="{$misHrPersonnelExperienceInfo.company}">
+												</div>
+												<div class="tml-form-col">
+													<label title="担任职务">担任职务：</label>
+													<input class="required textInput" type="text" name="position[]" value="{$misHrPersonnelExperienceInfo.position}">
+												</div>
+											</div>
+												<div class="tml-form-row">
+													<label title="备注">备注：</label>
+													<input class="textInput" type="text" name="expremark[]" value="{$misHrPersonnelExperienceInfo.remark}" >
+												</div>
+											<div class="clear"></div>
+											<div class="buttonActive right">
+												<div class="buttonContent">
+													<button onclick="editExperience_deletemishrpersonnelvoview(this,'{$misHrPersonnelExperienceInfo.id}')"
+														type="button">取消</button>
+												</div>
+											</div>
+							</div>
+							</volist>
+							</div>
+							<div class="buttonActive">
+								<div class="buttonContent">
+									<button type="button" onclick="MisHrPersonnelVoView_addExperience()">+添加工作经验</button>
+								</div>
+							</div>
+						</fieldset>
+						<!-- 教育经历 -->
+						<fieldset>
+							<legend class="fieldset_legend_toggle"><b>教育经历</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+								<div id="Addeducation_div" class="clearfix">
+									<volist  name="misHrPersonnelEducationInfoList"  id="misHrPersonnelEducationInfo"  key="i">
+									<div class="clearfix"
+										style="border-bottom: 1px dashed #CCCCCC; margin: 0 0 10px; padding: 0 0 10px;">
+										<input type="hidden" name="Educationid[]"  value="{$misHrPersonnelEducationInfo.id}" >
+										<h3>
+											教育经历(
+											<span class="_eduIndex">{$i}</span>
+											)
+										</h3>
+										<div class="tml-row">
+											<div class="tml-form-col">
+												<label title="开始时间">开始时间：</label>
+												<span class="xyInputWithUnit">
+													<input class="date textInput valid required readonly" type="text" readonly="readonly" yearend="1" yearstart="-40" name="edustartdate[]"  value="{$misHrPersonnelEducationInfo.startDate|transtime}">
+													<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+												</span>
+												</div>
+											<div class="tml-form-col">
+												<label title="结束时间">结束时间：</label>
+												<span class="xyInputWithUnit">
+													<input class="date textInput valid required readonly" type="text" readonly="readonly" yearend="1" yearstart="-40" value="{$misHrPersonnelEducationInfo.finishDate|transtime}" name="edufinishdate[]">
+													<a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+												</span>
+											</div>
+											<div class="tml-form-col">
+												<label title="毕业院校/培训机构">毕业院校/培训机构：</label>
+												<input class="required textInput" type="text" name="newschool[]" value="{$misHrPersonnelEducationInfo.school}">
+											</div>
+											<div class="tml-form-col">
+												<label title="专业/所获证书">专业/所获证书：</label>
+												<input class=" textInput" type="text"
+													name="skillAndCertificate[]" value="{$misHrPersonnelEducationInfo.skillAndCertificate}">
+											</div>
+										</div>
+										<div class="clear"></div>
+										<div class="buttonActive right">
+											<div class="buttonContent">
+												<button onclick="addEducation_deletemishrpersonnelvoview(this,'{$misHrPersonnelEducationInfo.id}')"
+													type="button">取消</button>
+											</div>
+										</div>
+									</div>
+									</volist>
+								</div> 
+							<div class="buttonActive">
+								<div class="buttonContent">
+									<button type="button" onclick="MisHrPersonnelVoView_addEducation()">+添加教育经历</button>
+								</div>
+							</div>
+						</fieldset>
+						<!-- 家庭成员 -->
+						<fieldset>
+							<legend class="fieldset_legend_toggle"><b>家庭成员</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+								<div id="Addfamily_div" class="clearfix">
+								<volist  name="familyList"  id="family"  key="i">
+									<div class="clearfix"
+										style="border-bottom: 1px dashed #CCCCCC; margin: 0 0 10px; padding: 0 0 10px;">
+										<h3>
+											家庭成员(
+											<span class="_familyIndex">{$i}</span>
+											)
+										</h3>
+										<div class="tml-row">
+											<div class="tml-form-col">
+												<label title="关系">关系：</label>
+												<input type="hidden" name="familyid[]" value="{$family.id}" />
+			 									<input class="required textInput" type="text" name="relation[]" value="{$family.relation}">
+											</div>
+											<div class="tml-form-col">
+												<label title="名字">名字：</label>
+												<input class="required textInput" type="text" name="familyname[]" value="{$family.privyname}">
+											</div>
+											<div class="tml-form-col">
+												<label title="工作单位">工作单位：</label>
+												<input class="required textInput" type="text" value="{$family.privycompany}" name="familycompany[]">
+											</div>
+											<div class="tml-form-col">
+												<label title="联系电话">联系电话：</label>
+												<input class="required textInput" type="text" value="{$family.privytel}" name="telephone[]">
+											</div>
+										</div>
+										<div class="clear"></div>
+										<div class="buttonActive right">
+											<div class="buttonContent">
+												<button onclick="addPrivy_deletemishrpersonnelvoview(this,'{$family.id}')"
+													type="button">取消</button>
+											</div>
+										</div>
+									</div>
+									</volist>
+								</div> 
+							<div class="buttonActive">
+								<div class="buttonContent">
+									<button type="button" onclick="MisHrPersonnelVoView_addFamily()">+添加家庭成员</button>
+								</div>
+							</div>
+						</fieldset>
+						<fieldset>
+						<div class="employeeFooter">
+						</div>
+						</fieldset>
+				 {:W('ShowAction')}
+					</div>
+					</div>
+				</form>
+			</div>
+		</div>

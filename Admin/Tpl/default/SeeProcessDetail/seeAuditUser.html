@@ -1,0 +1,29 @@
+<div class="pageContent">
+	<table class="list" width="100%" layoutH="0">
+		<thead>
+			<tr>
+	        	<th>姓名</th>
+	        	<th>公司</th>
+				<th>部门</th>
+				<th>职务</th>
+				<th>电话</th>
+				<th>Email</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr>
+					<td>
+						{$vo['name']}
+						<a title="发送消息" href="__APP__/SendMsg/index/userid/{$vo['userid']}" target="dialog" rel="ADVICE" height="300" width="530" mask="true" class="send">&nbsp;</a>
+					</td>
+					<td>{$vo['companyid']|getFieldBy='id','name','mis_system_company'}</td>
+					<td>{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo['dutyid']|getFieldBy='id','name','mis_system_duty'}</td>
+					<td>{$vo['mobile']}</td>
+					<td>{$vo['email']}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+</div>

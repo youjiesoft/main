@@ -1,0 +1,23 @@
+<ul class="often_list">
+	<volist id="vo" name="oftenList">
+	<li onclick="addOften(this);" tabid="{$vo['name']}" url="__APP__/{$vo['name']}/index" title="{$vo['title']}">
+	   <span class="often_list_sort" href="#">
+	    {$vo['title']}
+		<a href="#" title="{$vo['title']}">
+			<!-- <img alt="{$vo['title']}" height="64" src="__PUBLIC__/Images/xyicon/{$vo['icon']}" width="64" /> -->
+		</a>
+		</span>
+	</li>
+	</volist>
+</ul>
+<!--nqq 新写的结构和样式-->
+<!-- 
+<ul class="often_list">
+    <li><span class="often_list_sort" href="#">借款申请<a href="#"></a></span></li>
+    <li><span class="often_list_sort" href="#">工作报告<a href="#"></a></span></li>
+    <li><span class="often_list_sort" href="#">费用报销<a href="#"></a></span></li>
+    <li><span class="often_list_sort" href="#">采购申请<a href="#"></a></span></li>
+    <li><span class="often_list_sort" href="#">办公设备申领<a href="#"></a></span></li>
+</ul>
+ -->
+<!--end nqq 新写的结构和样式-->

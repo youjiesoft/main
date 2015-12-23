@@ -1,0 +1,114 @@
+<script>
+    function misquestion_isynchronous(obj){
+        //ajax 同步知识库
+        var id = '{$question["id"]}';
+        $.ajax({
+            type : 'POST',
+            url  : '__URL__/lookupYnchronous',
+            data : {id:id},
+            success : function (succ){
+                if (succ == 1) {
+                    $(obj).text('取消同步');
+                    $("#misquestion_isynchronousval").val('已同步');
+                }
+                if (succ == 2) {
+                    $(obj).text('+同步');
+                    $("#misquestion_isynchronousval").val('未同步');
+                }
+            }
+        });
+    }
+    function taskquestion_refreshdialog(json){
+	dialogAjaxDone(json);
+	if(json.statusCode == DWZ.statusCode.ok){
+            var refreshtabs = json.refreshtabs;
+            var tab = refreshtabs.ntdata;
+            var ids = refreshtabs.ids || json.data;
+            var url = "__URL__/edit/zhi/"+tab+"/id/" + ids;
+            ondblclick_dialog("a.isquestion","div#mistaskrefreshtabsid", url);
+	}
+    }
+</script>
+<div class="tabs" currentIndex="{$zhi}" eventType="click">
+    <div class="tabsHeader">
+        <div class="tabsHeaderContent">
+            <ul>
+                <li class="selected"><a href="javascript:;" rel="showquestion" ><span>基本信息</span></a></li>
+                <li><a href="__URL__/edit/id/{$question['id']}/tabs/questioncontent/type/{$type}" rel="questioncondescription"  class="j-ajax"><span>详细描述</span></a></li>
+                <li><a href="__URL__/edit/id/{$question['id']}/tabs/questionattarry/type/{$type}" rel="questionattarry"  class="j-ajax"><span>附件文档</span></a></li>
+                <li <if condition="!$answerquestion">style="display:none;"</if> ><a href="__URL__/edit/id/{$question['id']}/tabs/comment/type/{$type}" rel="comment"  class="j-ajax"><span>评论列表</span></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="tabsContent">
+        <div class="">
+                <div class="page">
+                    <div class="pageContent">
+                        <div class="pageFormContent" layoutH="95">
+                            <div class="unit">
+                                <label>问题标题：</label>
+                                <span class="fontGray">{$question['title']}</span>
+                            </div>
+                            <div class="unit">
+                                <label>隶属任务：</label>
+                                <span class="fontGray">{$question['sourceid']|getFieldBy='id','title','Mistask'}</span>
+                            </div>
+                            <div class="unit">
+                                <label>&nbsp;&nbsp;提问人：</label>
+                                <input type="text" readonly class="" value="{$question['name']}" />
+                            </div>
+                            <div class="unit">
+                                <label>提问时间：</label>
+                                <div class="tml-input-append">
+                                    <input type="text" readonly class="" value="{$question['createtime']|transTime='Y-m-d H:i:s'}" />
+                                    <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+                                </div>
+                            </div>
+                            <div class="unit">
+                                <label>问题分类：</label>
+                                <input type="text" readonly class="" value="{$question['typename']}" />
+                            </div>
+                            <div class="unit">
+                                <label>当前状态：</label>
+                                <input type="text" readonly class="" value="{$question['isover']|excelTplselected='1:已解决,0:未解决'}" />
+                            </div>
+                            <div class="unit">
+                                <label>同步到知识库：</label>
+                                <input type="text" readonly class="" id ="misquestion_isynchronousval" value="{$question['isynchronous']|excelTplselected='1:未同步,0:已同步'}" />
+                                <div class="button"><div class="buttonContent"><button type="button" onclick="misquestion_isynchronous(this);">{$question['isynchronous']|excelTplselected='1:+同步,0:取消同步'}</button></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        <div class="unitBox j-resizeGrid" style=" overflow: auto; " id="questioncontent"></div>
+        <div class="unitBox j-resizeGrid" style=" overflow: auto; " id="questionattarry"></div>
+        <div class="unitBox j-resizeGrid" style=" overflow: auto; " id="comment"></div>
+    </div>
+    <div class="formBar" style="border: 1px solid #B8D0D6; border-top:none;">
+                <ul>
+                    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskquestion_edit">
+                        <if condition="$isanswer">
+                            <if condition="$question['selchildid'] eq 0">
+                                <li>
+                                    <div class="buttonActive taskmovesuccess">
+                                        <div class="buttonContent">
+                                            <a height="400" width="700" rel="MisTaskquestionreply" mask='true' target="dialog" href="__URL__/reply/sourcetype/1/sourceid/{$question['sourceid']}/id/{$question['id']}">回答</a>
+                                        </div>
+                                    </div>
+                                <li>
+                            <else/>
+                                <li>
+                                    <div class="buttonActive taskmovesuccess">
+                                        <div class="buttonContent">
+                                            <a height="400" width="700" rel="MisTaskquestionreply" mask='true' target="dialog" href="__URL__/reply/sourcetype/1/sourceid/{$question['sourceid']}/id/{$question['id']}">修改答案</a>
+                                        </div>
+                                    </div>
+                                <li>
+                            </if>
+                        </if>
+                    </if>
+                    <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+                </ul>
+            </div>
+</div>

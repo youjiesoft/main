@@ -1,0 +1,19 @@
+<div class="unit">
+    <ul>
+        <volist id="item" name="actionList">
+        <li style="width: 120px;float: left;">
+        <input <if condition="(!in_array($key, $unactionList))"><if condition="(in_array($key, $groupActionList))">checked='checked' </if><else />disabled='disabled'</if> type="checkbox" name="groupActionId[]" value="{$key}"/>{$item}
+        </li>
+        </volist>
+    </ul>
+</div>
+<if condition="!empty($actionList2)"><div class="unit"><span class="info">公共操作授权</span></div></if>
+<div class="unit">
+    <ul>
+        <volist id="item2" name="actionList2">
+        <li style="width: 120px;float: left;">
+        <input <if condition="(in_array($key, $grouppublicActionList))">checked='checked' name='publicgroupActioncheckedId[]'<else /> name='publicgroupActionId[]' </if> type="checkbox" value="{$key}"/>{$item2}
+        </li>
+        </volist>
+    </ul>
+</div>

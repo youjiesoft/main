@@ -1,0 +1,560 @@
+<script type="text/javascript">
+
+var nbmbind={
+		run : function(){
+			this.add();
+			this.del();
+		},
+		get : function() {
+			var obj = navTab.getCurrentPanel();
+			return obj;
+		},
+		del : function(){
+			// 删除行
+			var _this=this;
+			var box = this.get();
+			var delObj = $('a.nbm_bind_del');
+			delObj.die();
+			delObj.live('click',function(){
+				var trObj = box.find('tbody tr');
+				if(trObj.length >=2){
+					var delinbindaname=$(this).closest('td').find("input[name='delinbindaname']").val(); 
+					var _this=$(this).closest('tr');
+					if(delinbindaname){
+						//判断当前行是否可以移除
+							 $.ajax({
+						         type: 'POST',
+						         url : "__URL__/lookupChangeField",
+						         data: {delinbindaname:delinbindaname,type:2},
+						         global:false,
+						         dataType:'json',
+						         success:function(list){
+						        	 if(list!=-1){
+						        		 alertMsg.error('当前绑定关系存在子级！');
+						        		 return false;
+						        		}else{
+						        			//移除添加至隐藏域
+						        			_this.remove();
+						        		 }
+						        	 }
+						         });
+					}else{
+						//移除添加至隐藏域
+						$(this).closest('tr').remove();
+					}
+				}else{
+					alertMsg.error('只有一行了，不允许删除行');
+				}
+			});
+			//_this.run();
+		},
+		add : function(){
+			var box = this.get();
+			var _this = this;
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			var obj = $('a.nbm_bind_add');
+			obj.die();
+			obj.live("click",function(){
+				var tr = $(this).closest('table').find('tbody:first>tr:last');
+				var index = tr.closest('table').attr('index');
+				try {
+					index = parseInt(index, 10);
+				} catch(e) {
+					index = 0;
+				}
+				tr.find('select').select2("destroy");
+				var cloneTr = tr.clone();
+				tr.find('select').select2()//.change();
+				cloneTr.find('input[type="hidden"]').val('');
+				cloneTr.find('input[name^="rules["]').closest("td").find("div.condition_value").html('');
+				cloneTr.find("button.relation_view").hide();
+				var model = '{$sourcemodel}';
+				var controll='';
+				$.ajax({
+					url:'__URL__/getConditionControll',
+					data:{model:model},
+					type:'post',
+					dataType:'html',
+					async:false,
+					success:function(msg){
+						controll = msg;
+					}
+				});
+				cloneTr.find('td.nbm_ceil_form_condtion').find('div.nbm_condition_content').html(controll);				
+				var bindsort=box.find("input[name^='inbindsort']").length;
+				cloneTr.find("input[name^='inbindsort']").val(parseInt(bindsort)+1);
+				cloneTr.find(':input').each(function() {
+					var ids = $(this).attr('name');
+					// 当前组件的name值
+					if ( typeof (ids) == "string") {
+						var curNames = ids.replace(/(\[)+(\d)+(\])/g,  function(va) {
+								var curIndex = va.match(/\d+/g);
+								var i = parseInt(curIndex , 10);
+								var tabIds = '[' + (i + 1)+']';
+								return tabIds;
+							});
+						$(this).attr('name',curNames);
+					}
+					//tr index
+					
+					if ($(this)[0].tagName == "SELECT") {}
+				});
+				cloneTr.find('select').select2().change();
+				tr.after(cloneTr);
+				_this.run();
+				
+				
+				//此处本来目的是执行一次，但实际上执行了很多次，似乎select[name^='objtype[']时出的问题
+				                                  
+				
+			});
+			
+		},
+};
+
+
+/*
+ * 数据对象隐藏与现实 
+ */
+
+function showDuixiangObj(obj){
+	var nexttd = $(obj).closest("td").next("td");
+	var $duixiangobjval = $(obj).val();
+	
+	var names = 'objtype';
+	if($duixiangobjval == 1){
+		names = names+'1';
+		changeSelectStatus(nexttd , names);
+	}else if($duixiangobjval == 2){
+		names = names+'2';
+		changeSelectStatus(nexttd , names);
+	}else if($duixiangobjval == 3){
+		names = names+'3';
+		changeSelectStatus(nexttd , names);
+	}else{
+		names = names+'4';
+		changeSelectStatus(nexttd , names);
+	}
+}
+/**
+ * 更改下拉框的属性
+ */
+function changeSelectStatus(c , cls){
+	c.find('select').attr('disabled' , true);
+	c.find('select').change();
+	c.find('div.list_group_lay').addClass('display_none');
+	$('.'+cls , c).find('select').attr('disabled' , false);
+	$('.'+cls , c).find('select').change();
+	$('.'+cls , c).removeClass('display_none');
+}
+//视图关系 1个或多个
+function getDataControlViewRaletionadd(obj){
+	var box=navTab.getCurrentPanel();
+	//获取当前模型名称
+	var sourcemodel = box.find("input[name='modelname']").val();
+	//获取当前区域的视图规则
+	var viewrelation = $(obj).closest("td").find('input[type="hidden"][name^="viewrelation["]').val();
+	//获取当前对象的第一个td
+	var firsttd = $(obj).closest("tr").find('td').eq(2);
+	var nexttd = $(firsttd).next("td");
+	//获取当前对象的第一个td的值
+	var objtype = firsttd.find('select').val();
+	//获取选择对象
+	var objval = nexttd.find('.objtype3 select').val();
+	var objtag = $(obj).closest('td').find("input[name^='viewrelation[']").attr("name");
+	if(objtype==3 &&　isNullorEmpty(objval)){
+		var title="视图条件配置";
+		var rel="dataControlViewMasRealtion";
+		var options={};
+		options.width="700";
+		options.height="400";
+		options.mask=true;
+		options.param = {viewrelation:viewrelation,sourceview:objval,sourcemodel:sourcemodel,objtag:objtag};
+	    var url="__URL__/lookupDataViewRoamRaletion";
+		DWZ.debug(url);
+		if(!url.isFinishedTm()){
+		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+		return false;}
+		$.pdialog.open(url,rel,title,options);
+	}else{
+		alertMsg.error("对象类型非系统视图验证");
+		return false;
+	}
+}
+function clearViewRaletionadd(obj){
+	alert("qqq");
+	$(obj).closest('td').find("input[type='hidden']").val('');
+	$(obj).closest('td').find("button.relation_view").hide();
+	
+}
+//跨表关系relation
+function getDataControlRaletionadd(obj){
+	var box=navTab.getCurrentPanel();
+	//获取当前模型名称
+	var sourcemodel = box.find("input[name='modelname']").val();
+	//获取当前区域的视图规则
+	var viewrelation = $(obj).closest("td").find('input[type="hidden"][name^="relation["]').val();
+	//获取当前对象的第一个td
+	var firsttd = $(obj).closest("tr").find('td').eq(2);
+	var nexttd = $(firsttd).next("td");
+	//获取当前对象的第一个td的值
+	var objtype = firsttd.find('select').val();
+	//获取选择对象
+	var objval = nexttd.find('.objtype2 select').val();
+	var objtag = $(obj).closest('td').find("input[name^='relation[']").attr("name");
+	if(objtype!=1 &&　objval){
+		var title="跨表条件配置";
+		var rel="dataControlViewMasRealtion";
+		var options={};
+		options.width="700";
+		options.height="400";
+		options.mask=true;
+		options.param = {relation:viewrelation,targetmodel:objval,sourcemodel:sourcemodel,objtag:objtag};
+	    var url="__URL__/lookupDataRoamRaletion";
+		DWZ.debug(url);
+		if(!url.isFinishedTm()){
+		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+		return false;}
+		$.pdialog.open(url,rel,title,options);
+	}else{
+		alertMsg.error("先选择对象");
+		return false;
+	}
+}
+function clearViewRaletionadd(obj){
+	$(obj).closest('td').find("input[type='hidden']").val('');
+	$(obj).closest('td').find("button.relation_view").hide();
+	
+}
+
+/* //选择对象更改验证内容属性
+$("select[name^='objval[']").die("change");
+$("select[name^='objval[']").live("change",function(){
+	alert(2);
+	var tr = $(this).closest("tr");
+	var thisvalue = $(this).val();
+	var model = '{$sourcemodel}';
+	var sourcetable = '{$sourcetable}';
+	var inlinetable = '';
+	if(thisvalue.indexOf("_")>-1){
+		if(thisvalue != sourcetable){
+			 inlinetable = thisvalue;
+		}
+	}else{
+		model = thisvalue;
+	}
+    var sourcemodel = '{$sourcemodel}';
+	var conmodel = $(this).val();
+	var controll='';
+	$.ajax({
+		url:'__URL__/getConditionControll',
+		data:{model:model,inlinetable:inlinetable},
+		type:'post',
+		dataType:'html',
+		async:false,
+		success:function(msg){
+			controll = msg;
+		}
+	});
+	tr.find('td.xyz_ceil_form_condtion').find('div.xyz_condition_content').html(controll);	
+})
+
+
+*/
+$(function(){
+	nbmbind.run();
+	//$("select[name^='objtype[']").change();
+}); 
+</script>
+<style>
+.grid .gridTbody .changed {
+    background: none repeat scroll 0 0 #F0F8FF;
+}
+</style>
+<div class="missystemdataroammas_sourcetable" style="display:none;"></div>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__"  class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent" />
+		<div class="pageFormContent" layoutH="40">
+			<div class="new_version_page" style="width:90%">
+				<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">数据控制新增</span></div>
+				<div class="new_version_page_content">
+					<!-- text组件 start -->
+					<div class="col_1_2 form_group_lay field_title" >
+						<label class="label_new">数据控制名称:</label>
+						<input   type="text"  name="name" class=" input_new required  " value="{$maslist['name']}">
+					</div>
+					<!-- text组件 end -->
+					<!-- text组件 start -->
+					<div class="col_1_2 form_group_lay field_sourcemodel">
+						<label class="label_new">来源模型:</label>
+						<input type="text" class="input_new required" value="{$maslist['modelname']|getFieldBy='name','title','node'}" readonly="readonly" />
+						<input type="hidden"  name="modelname" class=" input_new required" value="{$maslist['modelname']}">
+					</div>
+					<!-- text组件 end -->
+					<div class="fieldset_show_box">
+						<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+							<a name="MisAutoWxy_fieldset7"></a><b>数据控制详情</b>
+							<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+						</legend>
+					</div>
+					<div class="fieldsetjs_show_box" >
+						<div class="into_table_lay border_top_none" layoutH="145">
+						<table  class="nbm_data_table" table_data='{"searching":false,"paging":false,"isYMInfo":false}'>
+							<thead>
+								<tr>
+									<th colspan="2" style="min-width:120px;max-width:120px;">动作及触发规则</th>
+									<th colspan="5">数据对象</th>
+									
+									<th colspan="2" style="min-width:120px;max-width:120px;">验证及提醒</th>
+									<th rowspan="2">操作</th>
+								</tr>
+								<tr>
+									<th style="min-width:150px;max-width:150px;">动作</th>
+									<th>触发规则</th>
+									
+									<th style="border-left: none;">对象类型</th>
+									<th>选择对象</th>
+									<th>选择子对象</th>
+									<th>视图关联关系</th>
+									<th>跨表关联关系</th>
+									<th>验证内容</th>
+									<th>提醒消息</th>
+								</tr>
+							</thead>
+							<tbody>
+							<volist name="sublist" id="vo">
+								<tr >
+									<!-- 动作 -->
+									<td>
+									{$vo|print_r}
+										<input type="checkbox" value="1" name="operation[0][]" <if condition="in_array(1,$vo.operation)">checked</if>>新增
+										<input type="checkbox" value="2" name="operation[0][]" <if condition="in_array(2,$vo.operation)">checked</if>>修改
+										<input type="checkbox" value="3" name="operation[0][]" <if condition="in_array(3,$vo.operation)">checked</if>>删除
+										<input type="checkbox" value="4" name="operation[0][]" <if condition="in_array(4,$vo.operation)">checked</if>>变更
+									</td>
+									<!-- 触发规则 -->
+									<!-- <td>
+										<div class="list_group_lay">
+										    <div class="tml-row">
+									          {:W('ShowAddResult', array('model'=>$sourcemodel,'multitype'=>'multi','data'=>$MisAutoBindSettableVo))}
+									        </div>
+										</div>
+									</td> -->
+									<td class="nbm_ceil_form_condtion">
+										    <div class="list_group_lay">
+										<div class="tml-row nbm_condition_content" >
+												<php>
+												$resulesvo = array();
+												$resulesvo['rules'] = $vo['strickrules'];
+												$resulesvo['rulesinfo'] = $vo['strickrulesinfo'];
+												$resulesvo['showrules'] = $vo['strickshowrules']; 
+											</php>
+								            {:W('ShowAddResult', array('model'=>$sourcemodel,'multitype'=>'multi',$resulesvo ))}
+								        </div>	
+										</div>
+									</td>
+									<!-- 对象类型 -->
+									<td>
+										<div class="list_group_lay">
+											<div class="tml-row" style="display: inline-block;">
+												<select name="objtype[0]" class="select2 select_elm" onchange="showDuixiangObj(this);"> 
+													<option value="1" <if condition="$vo.objtype eq 1">selected</if> >本模型验证</option>
+													<option value="2" <if condition="$vo.objtype eq 2">selected</if>>跨模型验证</option>
+													<option value="3" <if condition="$vo.objtype eq 3">selected</if>>系统视图验证</option>
+													<option value="4" <if condition="$vo.objtype eq 4">selected</if>>自定义视图验证</option>
+												</select>
+											</div>
+										</div>
+									</td>
+									<!-- 选择对象 -->
+									<td>
+										<?php 
+											unset($disabled);
+											unset($display);
+											if($vo['objtype'] == 1){
+												echo "这个是本模型验证";
+												$disabled="";
+												$display = "";
+											}else{
+												$disabled="disabled='disabled'";
+												$dispaly = " display_none ";
+											} 
+											
+											?>
+										<div class="list_group_lay objtype1 {$dispaly}">
+											<div class="tml-row" style="display: inline-block;">
+												<select name="objval[0]" class="select2 list_select2" style="width:120px;" {$disabled}>
+													<option value="">--请选择--</option>
+													<volist name="selftable" id="self">
+														<option value="{$key}" title="{$self}" <if condition="$vo.objtype eq 1 and $vo.objval eq $key">selected</if>>{$key}【{$self}】</option>
+													</volist>
+												</select>
+											</div>
+										</div>
+										<?php 
+											unset($disabled);
+											unset($display);
+											if($vo['objtype'] == 2){
+												echo "这个是跨表验证";
+												$disabled="";
+												$display = "";
+											}else{
+												$disabled="disabled='disabled'";
+												$dispaly = " display_none ";
+											} 
+											
+											?>
+										<div class="list_group_lay objtype2 {$dispaly}">
+											<div class="tml-row" style="display: inline-block;">
+												<select class="select2 select_elm " name="objval[0]" {$disabled}>
+													<option value="">--请选择--</option>
+													<volist name="targetmodels" id="tarvo">
+														<option value="{$tarvo.modelname}" title="{$tarvo.modeltitle}" <if condition="$vo.objtype eq 2 and $vo.objval eq $tarvo.modelname">selected</if>>{$tarvo.modeltitle}</option>
+													</volist>
+												</select>
+											</div>
+										</div>
+										<?php 
+											unset($disabled);
+											unset($display);
+											if($vo['objtype'] == 3){
+												echo "这个是视图验证";
+												$disabled="";
+												$display = "";
+											}else{
+												$disabled="disabled='disabled'";
+												$dispaly = " display_none ";
+											} 
+											
+											?>
+										<div class="list_group_lay objtype3 {$dispaly}">
+											<div class="tml-row" style="display: inline-block;">
+												<select name="objval[0]" class="select2 list_select2"  style="width:120px;" {$disabled}>
+													<option value="">--请选择--</option>
+													<volist name="MisDynamicDatabaseMasList" id="cyclemv">
+														<option value="{$key}" <if condition="$vo.objtype eq 1 and $vo.objval eq $key">selected</if>>{$cyclemv}</option>
+													</volist>
+												</select>
+											</div>
+										</div>
+										<?php 
+											unset($disabled);
+											unset($display);
+											if($vo['objtype'] == 4){
+												$disabled="";
+												$display = "";
+											}else{
+												$disabled="disabled='disabled'";
+												$dispaly = " display_none ";
+											} 
+											
+											?>
+										<div class="list_group_lay objtype4 {$dispaly}">
+											<div class="tml-row" style="display: inline-block;">
+												<select name="objval[0]" class="select2 list_select2" style="width:120px;" {$disabled}>
+													<option value="">--请选择--</option>
+												</select>
+											</div>
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay subobjval">
+										{$vo['table']|print_r}
+											<select name="subobjval[0]" class="select2 list_select2" style="width:120px;">
+												<option value="">请选择</option>
+												<if condition="$vo['table']">
+												<volist name="$vo['table']" id="stable">
+												<option value=""></option>
+												</volist>
+												</if>
+											</select>
+										</div>
+									</td>
+									<!-- 视图关联关系 -->
+									<td>
+										<div class="list_group_lay">
+										    <div class="tml-row" style="display: inline-block;">
+										    	<div class="add_del_btn_viewgroup">
+													<button class="condition_btn condition_add" onclick="getDataControlViewRaletionadd(this);" id="viewandresult" type="button">
+														<span class="icon-plus"></span>添加
+													</button>
+													<a class="condition_clear condition_btn" href="javascript:;" onclick="clearViewRaletionadd(this);">
+														<span class="icon-trash"></span>清除
+													</a>
+												</div>
+												<php>$display = $vo['viewrelation']?"block":"none";</php>
+												<button class="condition_btn condition_add see_only_btn relation_view"  style="display: {$display};" onclick="getDataControlViewRaletionadd(this);" id="viewandresult" type="button">
+													<span class="icon-eye-open"></span>查看
+												</button>
+												<input type="hidden" name="viewrelation[0]" value='{$vo.viewrelation}' />
+												<input type="hidden" name="showviewrelation[0]" value='{$vo.showviewrelation}' />
+									        </div>
+										</div>
+									</td>
+									<!-- 跨表关联关系 -->
+									<td>
+										<div class="list_group_lay">
+										    <div class="tml-row" style="display: inline-block;">
+										    	<div class="add_del_btn_group">
+													<button class="condition_btn condition_add" onclick="getDataControlRaletionadd(this);" id="viewandresult" type="button">
+														<span class="icon-plus"></span>添加
+													</button>
+													<a class="condition_clear condition_btn" href="javascript:;" onclick="clearViewRaletionadd(this);">
+														<span class="icon-trash"></span>清除
+													</a>
+												</div>
+												<php>$rdisplay = $vo['relation']?"block":"none";</php>
+												<button class="condition_btn condition_add see_only_btn relation_view"  style="display: {$rdisplay};" onclick="getDataControlRaletionadd(this);" id="viewandresult" type="button">
+													<span class="icon-eye-open"></span>查看
+												</button>
+												<input type="hidden" name="relation[0]" value='{$vo.relation}' />
+												<input type="hidden" name="showrelation[0]" value='{$vo.showrelation}' />
+									        </div>
+										</div>
+									</td>
+									
+									<td class="xyz_ceil_form_condtion">
+										    <div class="list_group_lay">
+										<div class="tml-row xyz_condition_content" >
+											<php>
+												$resulesvo2 = array();
+												$resulesvo2['rules'] = $vo['testingrules'];
+												$resulesvo2['rulesinfo'] = $vo['testingrulesinfo'];
+												$resulesvo2['showrules'] = $vo['testingshowrules']; 
+												if($vo['subobjval']){
+													$inlinetable = $vo['subobjval'];
+												}else{
+													$inlinetable = $vo['objval'];
+												}
+												print_r($inlinetable);
+											</php>
+								            {:W('ShowAddResult', array('model'=>$maslist['modelname'],'multitype'=>'multi','data'=>$resulesvo2,'inlinetable'=>$inlinetable) )}
+								        </div>	
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay">
+											<div class="tml-row" style="display: inline-block;">
+										    	<input type="text" class="input_new" name="message[0]" value="{$vo.message}"/>
+										    </div>
+										</div>
+									</td>
+									<td>
+										<a class="nbm_bind_add" href="javascript:void(0);">添加</a>&nbsp;
+										<a class="nbm_bind_del" href="javascript:void(0);">移除</a>
+									</td>
+								</tr>
+							</volist>
+							</tbody>
+						</table>
+						</div>
+					</div>
+					{:W('ShowAction')}
+				</div>
+			</div>
+		</div>
+        </form>
+	</div>
+</div>

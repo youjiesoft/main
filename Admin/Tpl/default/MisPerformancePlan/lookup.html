@@ -1,0 +1,90 @@
+<script>
+$(function() {
+	$(".spinner").spinner();
+});
+//控制考核周期类型
+function cycleClick($this) {
+	var $box = $("#MisPerformancePlanCycle");
+	$box.find(".cycleCommon").hide();
+	var obj = $($this).val();
+	if (obj == 1) {
+		$box.find(".cycle_niandu_add").show();
+		$box.find(".cycle_yuefen_add").show();
+	} else if(obj == 2) { 
+		$box.find(".cycle_niandu_add").show();
+		$box.find(".cycle_jidu_add").show();
+	} else if(obj == 3) {
+		$box.find(".cycle_niandu_add").show();
+	} else if(obj == 4) {
+		$box.find(".cycle_mingchen_add").show();
+	}
+}
+//自动生成（绩效期间/名称）
+function courseLookup(){
+	var type = "{$_GET['type']}";
+	var $this = $.pdialog.getCurrent();
+	var lookupcycle = $("#lookupcycle").val();//考核周期类型
+	var lookupyear = $("#lookupyear").val();//年度
+	if(lookupcycle == 1){
+		$("#plan_cycle_"+type).val("月份");
+		var lookupmonth = $("#lookupmonth").val();//月分
+		$("#plan_course_"+type).val(lookupyear+""+lookupmonth);
+	} else if (lookupcycle == 2){
+		$("#plan_cycle_"+type).val("季度");
+		var lookupquarter = $("#lookupquarter").val();//季度
+		$("#plan_course_"+type).val(lookupyear+""+lookupquarter);
+	} else if (lookupcycle == 3){
+		$("#plan_cycle_"+type).val("年度");
+		var lookupyear = $("#lookupyear").val();//年度
+		$("#plan_course_"+type).val(lookupyear);
+	} else if (lookupcycle == 4){
+		$("#plan_cycle_"+type).val("不定期");
+		var lookupname = $("#lookupname").val();//名称
+		$("#plan_course_"+type).val(lookupname);
+	}
+	$.pdialog.closeCurrent();
+}
+</script>
+
+<div class="pageContent" id="MisPerformancePlanCycle">
+	<div class="pageFormContent" layoutH="56">
+	<div class="tml-row">
+		<div class="tml-form-col">
+			<label>考核周期类型：</label>
+			<select class="combox" name="lookupcycle" onchange="cycleClick(this)" id="lookupcycle">
+		    	<option value="1">月份</option>
+		    	<option value="2">季度</option>
+		    	<option value="3">年度</option>
+		    	<option value="4">不定期</option>
+		    </select>
+		</div>
+		<div class="cycleCommon cycle_niandu_add tml-form-col">
+			<label>考核年度：</label>
+			<input type="text" name="lookupyear" value="{$lookupdate|transTime=###,'Y年'}" format="y年" class="date" id="lookupyear"/>
+		</div>
+		<div class="cycleCommon cycle_yuefen_add tml-form-col">
+			<label>考核月份：</label>
+			<input type="text" name="lookupmonth" value="{$lookupdate|transTime=###,'m月'}" format="M月" class="date" id="lookupmonth"/>
+		</div>
+		<div class="cycleCommon cycle_jidu_add tml-form-col" style="display: none;">
+			<label>考核季度：</label>
+			<select class="combox" name="lookupquarter" id="lookupquarter">
+		    	<option value="第一季度">第一季度</option>
+		    	<option value="第二季度">第二季度</option>
+		    	<option value="第三季度">第三季度</option>
+		    	<option value="第四季度">第四季度</option>
+		    </select>
+		</div>
+		<div class="cycleCommon cycle_mingchen_add tml-form-col" style="display: none;">
+			<label>名称：</label>
+			<input type="text" name="lookupname" value="" id="lookupname"/>
+		</div>
+	</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml-btn tml-btn-primary" type="button" onclick="courseLookup();">确定</button></li>
+			<li><button type="button" class="close tml-btn tml-btn-default">取消</button></li>
+		</ul>
+	</div>
+</div>

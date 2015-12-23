@@ -1,0 +1,94 @@
+<style>
+.clear{ clear:both;}
+img {border:none;}
+ul,li{ list-style:none;}
+#s_left{ width:400px; float:right; margin-top:4px;}
+/*new*/
+.index_l{ background-color:#FFF; border-left:1px solid #b8d0d6; border-right:1px solid #b8d0d6;  border-bottom:1px solid #b8d0d6; margin-bottom:15px;  margin-left:15px; height:220px;}
+.index_c{ background:#eaf1f2; border-top:1px solid #b8d0d6; border-bottom:1px solid #b8d0d6; height:25px;}
+	.index_c h1{ font-size:14px; padding-left:5px; padding-top:6px; width:83%;}
+	.index_c img{ margin-top:-1px;}
+	.index_c p{ width:55px;}
+	.index_c li{ line-height:20px;}
+	.index_c ul{ margin-left:5px;}
+	.index_c span{ font-size:14px; padding-right:5px; font-weight:bold;}
+.r_title h4{ font-weight:100;}
+.r_title span{ color:#1d50a1;}
+.r_weather{ margin-top:5px;}
+.r_weather ul{ border:1px dashed #b8d0d6; height:30px; padding-top:3px;}
+.cl img{ margin-top:-5px;}
+#tododiv1{height:190px;width:100%;}
+.dhx_year_body table tr{ height:auto;}
+
+.lcan{ background:url(__PUBLIC__/Images/index/lcan.gif) no-repeat; width:231px; height:38px; margin:0 auto; text-align:center;}
+.lcan a{ line-height:30px; text-decoration:none;}
+.lcjt{ background:url(__PUBLIC__/Images/index/lcjt.gif) no-repeat; width:27px; height:45px; margin:0 auto;}
+</style>
+
+<script>
+initLayout();
+var sysTimeout = null;
+// 工作台更变
+function workbenchChange($id){
+	if(sysTimeout) clearTimeout(sysTimeout);
+	$("#xywrap").loadUrl("__URL__/lookupuserindex/workbench/"+$id);
+}
+$(function(){
+	$('#xyToolbar').bind('click', function(e){
+		if($(e.target).is('a') || $(e.target).parent().is('a')){
+			e.preventDefault();
+			$(this).find('li').removeClass('active');
+			$(e.target).closest('li').addClass('active');
+		}
+	});
+});
+function navToPanel(id){
+	if(sysTimeout) clearTimeout(sysTimeout);
+	$("#xywrap").loadUrl("__APP__/DesingForm/autoPanelShow/navid/"+id);
+}
+</script>
+<div id="new_index">
+    <div id="chart">
+		<div class="xymenu" id="xymenu">
+			<div class="xypt clearfix">
+				<div class="xytoolbar" id="xyToolbar">
+					<ul class="clearfix tml_myNav">
+						<!--TEMPLATE_NAV_START-->
+						<li><a class="" href="" onclick="navToPanel(59);"><span class="ui-select my-destop"></span></a><span>个人主页</span></li>
+						<if condition="$_SESSION.a eq 1 or $_SESSION['misautogrt_company']">
+							<li><a class="" href="" onclick="navToPanel(60);"><span class="ui-select my-app"></span></a><span>公司主页</span></li>
+						</if>
+						<if condition="$_SESSION.a eq 1 or $_SESSION['misautogrt_hangyezhixun']">
+							<li><a class="" href="" onclick="navToPanel(66);"><span class="ui-select my-folder"></span></a><span>行业资讯</span></li>
+						</if>
+						<if condition="$_SESSION.a eq 1 or $_SESSION['misautogrt_jiashicang']">
+							<li><a class="" href="" onclick="navToPanel(63);"><span class="ui-select my-box"></span></a><span>管理驾驶窗</span></li>
+						</if>
+						<if condition="$_SESSION.a eq 1 or $_SESSION['misautogrt_gongnenghezi']">
+							<li><a class="" href="" onclick="navToPanel(67);"><span class="ui-select my-folder"></span></a><span>功能盒子</span></li>
+						</if>
+						<!--TEMPLATE_NAV_END-->
+					</ul>
+				</div>
+			</div> 
+			
+			 
+			 <div class="xypc" layouth="48" id="xywrap">
+			<!--TEMPLATE_CONTENT_START--><li class="left panel_group_lay panel_4" title="代办工作统计" style="height:230px;"><div class="title"><span>代办工作统计</span></div><div class="desing_content">{:A('UserOftenMenu')->lookupworkinfo()}</div></li><li class="left panel_group_lay panel_5" title="提醒中心" style="height:230px;"><div class="title"><span>提醒中心</span></div><div class="desing_content">{:A('MisSystemRemind')->lookupmyRemindDis()}</div></li><li class="right panel_group_lay panel_3" title="日历" style="height:399px;"><div class="title"><span>日历</span></div><div class="desing_content">{:A('MisSystemRemind')->calder()}</div></li><li class="left panel_group_lay panel_9" title="保贷后任务" style="height:400px;"><div class="title"><span>保贷后任务</span></div><div class="desing_content">{:A('MisSystemPanelEpp')->showPanel()}</div></li><li class="left panel_group_lay panel_3" title="风险化解日志" style="height:230px;"><div class="title"><span>风险化解日志</span></div><div class="desing_content">{:A('MisSystemPanelZww')->showPanel()}</div></li><li class="left panel_group_lay panel_9" title="常用" style="height:143px;"><div class="title"><span>常用</span></div><div class="desing_content">{:A('UserOftenMenu')->getOftenList()}</div></li><li class="left panel_group_lay panel_3" title="追偿日志" style="height:143px;"><div class="title"><span>追偿日志</span></div><div class="desing_content">{:A('MisSystemPanelQvq')->showPanel()}</div></li><li class="left panel_group_lay panel_3" title="外出人员公告" style="height:143px;"><div class="title"><span>外出人员公告</span></div><div class="desing_content">{:A('MisSystemPanelJvt')->showPanel()}</div></li><!--TEMPLATE_CONTENT_END-->
+			</div> 
+			<div class="xypb">
+			</div>
+		</div><!-- end xymenu -->
+    </div>
+    <div id="s_left" style="display:none;">
+        <volist id="app" name="aryapps">
+			<div class="index_l">
+				<div class="index_c">
+					<h1 class="">{$app['appname']}</h1>
+                    <div class="clear"></div>
+                </div>
+				<div class="modules_content index_z" url="{$app['apppath']}"></div>
+			</div>
+		</volist>
+    </div>
+</div>

@@ -1,0 +1,551 @@
+<style>
+.nbmui_checkbox{cursor:pointer}
+</style>
+<script type="text/javascript">
+function lookupQuickAdd($form) {
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			dialogSearch($("#lookupGeneralForm")[0]);
+		}
+	});
+}
+var $box=$.pdialog.getCurrent();
+var navbox = navTab.getCurrentPanel();
+var fromtype = <if condition="$type eq 'dt'">true<else/>false</if>
+/* function changeorganization(obj){
+	$val = $(obj).val();
+	if($val=='name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索姓名");
+	}
+	if($val=='mis_system_department-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索部门");
+	}
+	if($val=='duty-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职位");
+	}
+	if($val=='all'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索员工姓名,部门,职位,职务");
+	}
+} 
+*/
+function ondblclickBringBack($lookupJson){
+	$.bringBack($lookupJson);
+}
+var fieldval="{$fieldval}"
+var field="{$fieldname}"
+var container = $('ul.selected_member' , $box);
+
+// lookup组件的JS通用初始化操作。
+// 当前显示方式为数据为列表，可多选单选、切换。
+var lookupControll={
+	init	:	function(){
+		var obj = this.get();
+		obj.find('input[type="checkbox"]').each(function(){
+			$(this).hide();
+			var cls = $(this).attr('class');
+			var cloneObj = $('<span class="nbmui_checkbox icon-check-empty"></span>');
+			cloneObj.addClass(cls);
+			$(this).after(cloneObj);
+		});
+	},
+	get 	:	function(){
+		//	获取当前操作容器
+		return $.pdialog.getCurrent();
+	},
+	getC	:	function(rule){
+		//	获取当前的选中值显示区域
+		return  rule?$(rule , this.get()) : $('ul.selected_member' , this.get());
+	},
+	setCheckAll	:	function(rule){
+		var _this = this;
+		// 绑定全选功能
+		var obj = rule ? $(rule , this.get()) : $("table.tml_set_table .checkboxControll" , this.get());
+		var group = obj.attr('group') || '';
+		if(group){
+			obj.on('click' , function(){
+				if($(this).hasClass('icon-check-empty')){
+					$(this).addClass('icon-check');
+					$(this).removeClass('icon-check-empty');
+				}else{
+					$(this).removeClass('icon-check');
+					$(this).addClass('icon-check-empty');
+				}
+				
+				
+				var p = $(this).closest('table');
+				var selfSts = $(this).hasClass('icon-check-empty')? true : false;
+				// selfSts = true  勾取所有数据
+				if(!selfSts){
+					$('span.nbm_lookupup_value_item',_this.get()).each(function(i){
+						if(!$(this).hasClass('selected')){
+							$(this).click();
+						}
+					});
+				}else{
+					// 取消已选中的数据
+					$('span.nbm_lookupup_value_item',_this.get()).each(function(j){
+						if($(this).hasClass('selected')){
+							$(this).trigger("click");
+						}
+					});
+					
+					
+				}
+			});
+		}
+		
+	},
+	ceilCheck	:	function(rule){
+		var _this = this;
+		var obj = rule ? $(rule , this.get()) : $(".nbm_lookupup_value_item" , this.get());
+		var c = this.getC();
+		
+		obj.toggle(
+		  function(){
+			$(this).addClass('selected');
+		  },
+		  function(){
+			$(this).removeClass('selected');
+		  }
+		);
+			
+		obj.on('click' , function(){
+			var sts = $(this).hasClass('selected');
+			if(sts == true){
+				//$(this).closest('tr').addClass('selected');
+				$(this).removeClass('icon-check-empty');
+				$(this).addClass('icon-check');
+				$(this).parents("tr").css("background-color","#03a9f4");
+				var curVal = $(this).prev('input.nbm_lookupup_value_item').val();
+				if(isNullorEmpty(curVal)){
+					var json =new Object();
+					try{
+						curVal= curVal.replace(/\s/ig,'');
+						json = $.parseJSON(curVal);
+					}catch(e){
+						console.log(e.message);
+					}
+					if(c.find('li.nbm_lookup_checked_'+json[fieldval]).length == 0){
+					
+						var html ='<li class="selected_box nbm_lookup_checked nbm_lookup_checked_'+json[fieldval]+'" data-item=\''+curVal+'\'>';
+						html +='<span class="member_name left">'+json[field]+'</span>';
+						html +='<span class="selected_tool user_remove nbmui_checkbox_removelceil right">×</span>';//-- icon-remove 
+						html +='</li>';
+						c.append(html);
+					}
+				}
+			}else{
+				var curVal = $(this).prev('input.nbm_lookupup_value_item').val();
+				$(this).addClass('icon-check-empty');
+				$(this).removeClass('icon-check');
+				$(this).parents("tr").css("background-color","");
+				if(isNullorEmpty(curVal)){
+					var json =new Object();
+					try{
+						curVal= curVal.replace(/\s/ig,'');
+						json = $.parseJSON(curVal);
+					}catch(e){
+						console.log(e.message);
+					}
+					c.find('li.nbm_lookup_checked_'+json[fieldval]).remove();
+				}
+			}
+			var arr = new Array();
+			$(".user_selected_ul li", $box).each(function(){
+				arr.push($(this).data().item);
+			});
+			var jsonstr = JSON.stringify(arr);
+			$("input[name='check_list']").val(jsonstr);
+			_this.removeCeil();
+		});
+	},
+	removeCeil	:	function(rule){
+		//	移除具体项
+		var obj = rule ? $(rule , this.get()) : $(".nbmui_checkbox_removelceil" , this.getC());
+		obj.on('click' , function(){
+			var removeObj = $(this).closest('li');
+			var vals = removeObj.data('item');
+			$('input.nbm_lookupup_value_item[data-indentity="'+vals[fieldval]+'"]').next('span.nbmui_checkbox').click();
+		});
+	}
+}
+function goSetCheck(){
+	if($(".user_selected_ul li").length){
+		$(".user_selected_ul li").each(function(){
+			var id = $(this).data().item[fieldval];
+			var this_obj = $(this);
+			$("input.nbm_lookupup_value_item").each(function(){
+				if(id.toString()==$(this).data().indentity.toString()){
+					this_obj.remove();
+					$(this).siblings("span").trigger("click");
+				}
+			});
+		});
+	}
+}
+
+$(function(){
+	lookupControll.init();
+	lookupControll.setCheckAll('.checkboxControll');
+	lookupControll.ceilCheck();
+	goSetCheck();
+	$("table.tml_set_table input.checkboxControll" , $box).off('click');
+	$("table.tml_set_table input.checkboxControll" , $box).on('click' , function(){
+		var group = $(this).attr('group') || '';
+		var p = $(this).closest('table');
+		var selfSts = $(this).attr('checked')=='checked'? true : false;
+		var cobj = p.find('input[name="'+group+'"]');
+		cobj.attr('checked' , selfSts);
+		
+		return;
+		selfSts == true? 
+		p.find('input[name="'+group+'"]').each(function(){
+			var obj = $(this);
+			var sts = obj.attr('checked')=='checked'? true : false;
+			if(sts == false){
+				obj.trigger('click');
+			}
+		})
+		:
+		p.find('input[name="'+group+'"]').each(function(){
+			var obj = $(this);
+			obj.trigger('click');
+			console.log(' event is start fasle');
+		});
+	});
+	$("table.tml_set_table input.nbm_lookupup_value_item" , $box).each(function(k , v ){
+		$(this).off('click');
+		$(this).on("click",function(e){
+			var sts = $(this).attr('checked')=='checked'? true : false;
+			if(sts == true){
+				$(this).closest('tr').addClass('selected');
+				var curVal = $(this).val();
+				curVal= curVal.replace(/\s/ig,'');
+				var json =new Object();
+				try{
+					json = $.parseJSON(curVal);
+				}catch(e){
+					console.log(e.message);
+				}
+				if(container.find('li.nbm_lookup_checked_'+json[fieldval]).length == 0){
+				
+					var html ='<li class="selected_box nbm_lookup_checked nbm_lookup_checked_'+json[fieldval]+'" data-item=\''+curVal+'\'>';
+					html +='<span class="member_name left">'+json[field]+'</span>';
+					html +='<span class="selected_tool user_remove right">×</span>';//-- icon-remove 
+					html +='</li>';
+					container.append(html);
+				}
+			}else{
+				var curVal = $(this).val();
+				curVal= curVal.replace(/\s/ig,'');
+				var json =new Object();
+				try{
+					json = $.parseJSON(curVal);
+				}catch(e){
+					console.log(e.message);
+				}
+				container.find('li.nbm_lookup_checked_'+json[fieldval]).remove();
+				$(this).closest('tr').removeClass('selected');
+			}
+		});
+	});
+	
+	$("button.nbm_btn_lookup_clear" , $box).off('click');
+	$("button.nbm_btn_lookup_clear" , $box).on('click' , function(){
+		$(".user_selected_ul li", $box).remove();
+		$(".pagination li.selected a", $box).click();
+	});
+	
+	$("button.nbm_btn_lookup_save" , $box).off('click');
+	$("button.nbm_btn_lookup_save" , $box).on('click' , function(){
+		var arr = new Array();
+		$(".user_selected_ul li", $box).each(function(){
+			arr.push($(this).data().item);
+		});
+		if(arr.length){
+			var newarr = [];
+			for(var i=0; i<arr.length; i++){
+				for(var key in arr[i]){
+					if(!newarr[key]){
+						newarr[key] = new Array();
+					}
+					newarr[key].push(arr[i][key]);
+				}
+			}
+			if(newarr){
+				for(var key in newarr){
+					newarr[key] = newarr[key].join(",");
+				}
+			}
+			if(fromtype==true){
+			    $.dtbringBack(arr);
+			    // $.bringBack(newarr);
+			}else{
+			    $.bringBack(newarr);
+			}
+			
+		}else{
+			alertMsg.error('请选择人员');
+			return false;
+			$.pdialog.closeCurrent();
+		}
+	});
+});
+
+</script>
+<style>
+.tbodylist tr.selected {
+    background-color: royalblue;
+}
+</style>
+<div style="width:100%;">
+<form id="pagerForm" action="__URL__/lookupGenerals" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="field" value="{$field}" />
+		<input type="hidden" name="deptid" value="{$deptid}" />
+		<input type="hidden" name="model" value="{$model}" />
+		<input type="hidden" name="conditions" value="{$conditions}" />
+		<input type="hidden" name="filterfield" value="{$filterfield}" />
+		<input type="hidden" name="newconditions" value="{$newconditions}"/>
+		<input type="hidden" name="lookupchoice" value="{$lookupchoice}"/>
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<input type="hidden" name="companyid" value="{$companyid}">
+		<input type="hidden" name="check_list" value={$check_list|htmlspecialchars}>
+		<input type="hidden" name="type" value="{$type}">
+	</form>
+	
+	<div class="panelBar">
+		<form id="lookupGeneralForm" onsubmit="return divSearch(this,'misrowaccessright1');" rel="pagerForm" action="__URL__/lookupGenerals/abc/23" method="post">
+			<input type="hidden" name="field" value="{$field}" />
+			<input type="hidden" name="model" value="{$model}" />
+			<input type="hidden" name="deptid" value="{$deptid}" />
+			<input type="hidden" name="conditions" value="{$conditions}" />
+			<input type="hidden" name="filterfield" value="{$filterfield}" />
+			<input type="hidden" name="viewname" value="{$viewname}"/>
+			<input type="hidden" name="newconditions" value="{$newconditions}"/>
+			<input type="hidden" name="lookupchoice" value="{$lookupchoice}"/>
+			<input type="hidden" name="parentid" value="{$parentid}"/>
+			<input type="hidden" name="companyid" value="{$companyid}"/>
+			<input type="hidden" name="jump" value="jump"/>
+		<div class="searchBar">
+		<table class="searchContent">
+			<tr>
+				<td class="tml_select_option_left">
+						<select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+							<volist id="qsl" name="quickSearchList">
+								<option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+							</volist>
+						</select>
+						<input type="hidden" name="ortype" value="{$onetype}" />
+						<input type="hidden" name="time" value="{$time}" />
+					</td>
+					<td class="tml_select_option_center">
+						<volist id="qsl" name="quickSearchList">
+							<if condition="$qsl['quickname'] eq $quicksearchby">
+								<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+									{$qsl['html']}
+								</div>
+							<else/>
+								<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+									{$qsl['html']}
+								</div>
+							</if>
+						</volist>
+					</td>
+					<td class="tml_select_option_right">
+						<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+					</td>
+					<td>
+						<a class="xyAdvancedSearch" href="__APP__/Search/advancedsearch/model/{$model}/viewname/{$viewname}" rel="__MODULE__advancedsubsearch" width="700" height="500" target="dialog" mask="true">高级检索</a>
+					</td>
+			</tr>
+		</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="tml_set_table" style="width: 100%" layoutH="192">
+		<thead>
+			<tr>
+			<th width="20">
+			<input type="checkbox" class="checkboxControll" group="userid" /></th>
+				<volist id="vos" name="detailList">
+			    	<if condition="$vos[shows] eq 1"><th <if condition="$vos[widths]">width="{$vos[widths]}"</if><if condition="$vos[sorts]">orderField="{$vos[sortname]}" class="{$sort}"</if>>{$vos[showname]}</th></if>
+			    </volist>
+				<th>选择带回</th>
+			</tr>
+		</thead>
+		<tbody class="tbodylist">
+			<volist id="vo2" name="list" key="key2">
+				<tr ondblclick='ondblclickBringBack({$vo2["lookupJson"]});'>
+					<td><input data-indentity="{$vo2[$fieldval]}" class="nbm_lookupup_value_item" type="checkbox" name="userid" value='{$vo2["lookupJson"]}' /></td>
+					<volist id="vo1" name="detailList">
+						<if condition="$vo1[shows] eq 1">
+							<td width="{$vo1[widths]}">
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+										<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+										{:getConfigFunction($vo2[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+										<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+								{$vo2[$vo1['name']]}
+								</if>
+							</td>
+						</if>
+					</volist>
+					<td><a class="btnSelect lookup_select_btn" href='javascript:$.bringBack({$vo2["lookupJson"]})' title="查找带回">选择</a></td>
+				</tr>
+		    </volist>
+			<!-- <volist id="vo" name="list">
+				<tr>
+					<td><input data-indentity="{$vo[userid]}" class="nbm_lookupup_value_item" type="checkbox" name="userid" value='{ "userid" : " {$vo[userid]} ","name":"{$vo.name}"}' /></td>
+					<td>{$vo['id']}</td>
+					<td>{$vo['orderno']}</td>
+					<td>{$vo['name']}</td>
+					<td>{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo['dutyid']|getFieldBy='id','name','duty'}</td>
+					<td>{$vo['indate']|transTime}</td>
+					<td>{$vo['transferdate']|transTime}</td>
+				</tr>
+			</volist> -->
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination"  rel="misrowaccessright1" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>
+</div>
+<!-- <script>
+function lookupQuickAdd($form) {
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			dialogSearch($("#lookupGeneralForm")[0]);
+		}
+	});
+}
+function ondblclickBringBack($lookupJson){
+	$.bringBack($lookupJson);
+}
+</script>
+<div class="pageContent lookup_page_con">
+	<if condition="$tplName">
+	<div class="xyEditForm" style="border-top-width:1px;padding:4px;">
+		<form method="post" action="__URL__/lookupQuickInsert" class="pageForm required-validate" enctype="multipart/form-data" onsubmit="return lookupQuickAdd(this);">
+			<input type="hidden" name="quickInsertModel" value="{$model}" />
+			<fieldset>
+				<legend>快速新增</legend>
+				<include file="$tplName"/>
+				<div class="buttonActive right">
+					<div class="buttonContent">
+						<button type="submit">{$Think.lang.save}</button>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+	</div>
+	</if>
+	<form id="pagerForm" action="__URL__/lookupGenerals" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="field" value="{$field}" />
+		<input type="hidden" name="deptid" value="{$deptid}" />
+		<input type="hidden" name="model" value="{$model}" />
+		<input type="hidden" name="conditions" value="{$conditions}" />
+		<input type="hidden" name="filterfield" value="{$filterfield}" />
+		<input type="hidden" name="newconditions" value="{$newconditions}"/>
+		<input type="hidden" name="lookupchoice" value="{$lookupchoice}"/>
+	</form>	
+	<div class="panelBar">
+		<form id="lookupGeneralForm" onsubmit="return dialogSearch(this);" rel="pagerForm" action="__URL__/lookupGenerals" method="post">
+			<input type="hidden" name="field" value="{$field}" />
+			<input type="hidden" name="model" value="{$model}" />
+			<input type="hidden" name="deptid" value="{$deptid}" />
+			<input type="hidden" name="conditions" value="{$conditions}" />
+			<input type="hidden" name="filterfield" value="{$filterfield}" />
+			<input type="hidden" name="viewname" value="{$viewname}"/>
+			<input type="hidden" name="newconditions" value="{$newconditions}"/>
+			<input type="hidden" name="lookupchoice" value="{$lookupchoice}"/>
+			<div class="searchBar">
+                  <table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+								<volist id="qsl" name="quickSearchList">
+									<option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+								</volist>
+							</select>
+							<input type="hidden" name="ortype" value="{$onetype}" />
+							<input type="hidden" name="time" value="{$time}" />
+						</td>
+						<td class="tml_select_option_center">
+							<volist id="qsl" name="quickSearchList">
+								<if condition="$qsl['quickname'] eq $quicksearchby">
+									<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+										{$qsl['html']}
+									</div>
+								<else/>
+									<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+										{$qsl['html']}
+									</div>
+								</if>
+							</volist>
+						</td>
+						<td class="tml_select_option_right">
+							<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+						</td>
+						<td>
+							<a class="xyAdvancedSearch" href="__APP__/Search/advancedsearch/model/{$model}/viewname/{$viewname}" rel="__MODULE__advancedsubsearch" width="700" height="500" target="dialog" mask="true">高级检索</a>
+						</td>
+					</tr>
+				</table>
+              </div>
+          </form>
+	</div>	<table class="table" layoutH="{$layoutH}" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<volist id="vos" name="detailList">
+			    	<if condition="$vos[shows] eq 1"><th <if condition="$vos[widths]">width="{$vos[widths]}"</if><if condition="$vos[sorts]">orderField="{$vos[sortname]}" class="{$sort}"</if>>{$vos[showname]}</th></if>	类型
+			    </volist>
+				<th>选择带回</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo2" name="list" key="key2">
+				<tr ondblclick='ondblclickBringBack({$vo2["lookupJson"]});'>
+					<volist id="vo1" name="detailList">
+						<if condition="$vo1[shows] eq 1">
+							<td width="{$vo1[widths]}">
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+										<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+										{:getConfigFunction($vo2[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+										<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+								{$vo2[$vo1['name']]}
+								</if>
+							</td>
+						</if>
+					</volist>
+					<td><a class="btnSelect lookup_select_btn" href='javascript:$.bringBack({$vo2["lookupJson"]})' title="查找带回">选择</a></td>
+				</tr>
+		    </volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}">
+		</div>
+	</div>
+</div> -->

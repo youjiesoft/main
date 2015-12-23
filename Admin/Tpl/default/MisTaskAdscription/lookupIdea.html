@@ -1,0 +1,56 @@
+<div class="keepContentCenter" style="width: auto;margin:0;" layoutH="125">
+    <if condition="$voList">
+        <fieldset>
+            <legend class="fieldset_legend_toggle">
+                <b>任务缺陷</b>
+            </legend>
+                <table class="xyDataTable"width="100%">
+                    <thead>
+                        <tr>
+                            <td><strong>内容</strong></td>
+                            <td width="50px;"><strong>反馈人</strong></td>
+                            <td width="55px;"><strong>是否解决</strong></td>
+                            <td width="110px;"><strong>跟踪日期</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist id="feedvo" name="voList">
+                        <tr target="" rel="{$feedvo['id']}" drel="MisTaskassolve" onclick="onTrClickCheckbox(this,'id')" dheight="450" dwidth="700" title="缺陷处理查看" drel="" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/lookupsolve/id/{$feedvo['id']}/taskid/{$feedvo['taskid']}");'>  
+                            <td>{$feedvo['remark']}</td>
+                            <td>{$feedvo['createid']|getFieldBy='id','name','User'}</td>
+                            <td><if condition="$feedvo['issolve'] eq 1">已解决<else/>未解决</if></td>
+                            <td>{$feedvo['createtime']|date='Y-m-d H:i',###}</td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+        </fieldset>
+    <else/>
+        <div class="timeLine">
+			<div class="timeLineData">
+				<ul>
+                    <li class="timeLineNode-top23 clearfix">
+                        <div class="timeLineTime-ptop12">
+                            <span>{$vo["begindate"]|date='Y-m-d',###}</span>
+                        </div>
+                    </li>
+                    <li class="timeLineNodeArrow-top23 clearfix">
+                        <div class="taskdivbordernodata">
+                            无缺陷数据
+                        </div>
+                    </li>
+                    <li class="timeLineNode-top23 clearfix">
+                        <div class="timeLineTime-ptop12">
+                            <span>{$taskendtime|date='Y-m-d',###}</span>
+                        </div>
+                    </li>
+				</ul>
+			</div>
+	    </div>
+    </if>
+</div>
+
+
+
+
+

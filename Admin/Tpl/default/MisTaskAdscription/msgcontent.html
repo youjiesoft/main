@@ -1,0 +1,15 @@
+<p style="width: auto;float:none;">{$recipientname}，您好！</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$sendusername} {$opname}任务“{$task['title'] }”，请知晓。</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>任务详细情况：</strong></p>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>任务名称：</strong>{$task['title']}</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>任务负责人员：</strong>{$task['executeuser']|getFieldBy='id','name','User'}</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>任务跟踪人员：</strong>{$task['trackusername']|getFieldBy='id','name','User'}</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>计划开始时间：</strong>{$task['begindate']|date='Y-m-d H:i',###}</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>计划结束时间：</strong>{$task['enddate']|date='Y-m-d H:i',###}</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>任务描述：</strong>
+<div>
+    <div style="margin-left:70px;line-height:20px;text-indent:2em;"><if condition="$task.remark">{$task['remark']}<else/>(无)</if></div>
+</div>
+</p><br/>
+<p style="width: auto;float:none;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果您有任何疑问，请联系{$sendusername}。</p><br/>
+<p style="width: auto;float:none;">&nbsp;</p><p>&nbsp;</p><p>&nbsp;</p>

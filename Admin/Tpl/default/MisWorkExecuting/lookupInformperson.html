@@ -1,0 +1,112 @@
+<script>
+	function workinforPersonRead(md,id){
+		var $box=navTab.getCurrentPanel();//找到当前窗体
+		$.ajax({
+			type : 'POST',
+			dataType : "json",
+			url : "__URL__/lookupinforpersonread",
+			cache : false,
+			data : {
+				md : md ,
+				id : id
+			},
+			success : function(re) {
+				if(re == 1){
+					var name=$("#inforRead"+id).text();
+					if(name=='未读'){
+						$("#inforRead"+id).attr('style','');
+						$("#inforRead"+id).text("已读");
+					}
+				}
+			}
+		});
+	}
+</script>
+<form id="pagerForm" action="__URL__/lookupInformperson">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="jump" value="1">
+	<input type="hidden" name="md" value="{$md}"/>
+</form>
+<div class="pageContent">
+<div class="panelBar">
+    <ul class="toolBar">
+		<volist name="toolbarextension" id="toolb">
+			<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+				<li>{$toolb['html']}</li>
+			</if>
+		</volist>
+    </ul>
+    <form rel="pagerForm" onsubmit="return divSearch(this, 'MisWorkExecutingbox');" action="__URL__/lookupInformperson" method="post">
+	<input type="hidden" name="pid" value="{$pid}" />
+	<input type="hidden" name="jump" value="1">
+	<input type="hidden" name="md" value="{$md}"/>
+	<div class="searchBar">
+		<table class="searchContent">
+			<tr>
+				<include file="Public:quickSearchCondition" />
+				<td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index/md/{$md}/worktype/{$worktype}','__URL__/exportBysearchHtml/md/{$md}/worktype/{$worktype}');">导出</button></td>
+			</tr>
+		</table>
+	</div>
+	</form>
+	</div>
+<table class="table" width="100%" layoutH="146">
+	<thead ename="{$ename}">
+		<tr>
+			<th width="24">序号</th>
+			<volist id="vo" name="detailList">
+		    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="MisSystemAnnouncementSetBox" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			</volist>
+			<th>状态</th>
+		</tr>
+    </thead>
+    <tbody>
+    <volist id="vo" name="list" key="key2">
+	    <tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')" title="{$title}" drel="{$md}edit" 
+	    <if condition="$dialogList[$md]">
+	    	dwidth="{$dialogList[$md]['width']}" dheight="{$dialogList[$md]['height']}"
+	    	ondblclick='ondblclick_dialog(this,"{$md}edit","__APP__/{$md}/auditview/id/{$vo[id]}/md/{$md}");workinforPersonRead("{$md}","{$vo['id']}");'>
+	    <else/>
+	    	ondblclick='ondblclick_navTab(this,"{$md}edit","__APP__/{$md}/auditview/id/{$vo[id]}/md/{$md}");workinforPersonRead("{$md}","{$vo['id']}");'>
+	    </if>
+	    
+			  <td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+			   <volist id="vo1" name="detailList">
+					<td width="{$vo1[widths]}" field="{$vo1['name']}" <if condition="$jump eq 6 && $vo['id'] eq $tableid">style="color:red;"</if>>
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}
+								</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+				</volist>
+				<?php 
+					$model=D("MisWorkExecuting");
+					$isread=$model->where("tableid=".$vo['id']." and tablename='".$md."'")->getField("isread");
+					$isread=explode(",", $isread);
+				?>
+				<td>
+					<if condition="in_array($uid,$isread)">
+						<span id="inforRead{$vo['id']}">已读</span>
+					<else/>
+						<span style="color:red;" id="inforRead{$vo['id']}">未读</span>
+					</if>
+				</td>
+		    </tr>
+	    </volist>
+	    </tbody>
+    </table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="MisWorkExecutingbox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

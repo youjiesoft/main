@@ -1,0 +1,97 @@
+<script>
+	function misworkplancontentComment(){
+		window.location.hash="workplancontent";
+	}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/MisWorkPlanContentBox" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+	<div class="pageContent applecloth" layoutH="46"  style="padding:0px 5px 10px 5px;">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="refreshtabs[data]" value="1" />
+		<input type="hidden" name="iscomment" value="1"/>
+		<input type="hidden" name="planid" value="{$vo.id}"/>
+		<div class="keepContentCenter"  style="border:none;background:none;">
+			<div style="background: #f9f9f9;border: 1px solid #cac9c9;border-radius: 5px;margin: 10px;overflow: hidden;">
+				<div style="background-color: #ededed;background-image: linear-gradient(to bottom, #f3f3f3, #e9e9e9);border-bottom: 1px solid #d8d9d9;height: 80px;padding-left: 20px;">
+					<div class="right tml-p10">
+						<a class="tml-btn tml-btn-green" onclick="misworkplancontentComment();">点评</a>
+					</div>
+					<h3 style="line-height: 40px;font-family: '微软雅黑';font-size: 18px;"><small class="tml-c-red">[报告主题]</small>&nbsp;{$vo.summary}</h3>
+					<div class="xyMessageAttachItem">
+                        <span class="tml-label tml-mr5">计划人：</span><span class="tml-mr5">{$vo.createid|getFieldBy='id','name','user'}</span>
+                        <span class="tml-label tml-mr5">计划时间：</span><span class="tml-mr5">{$vo.plantime|transTime}</span>
+					</div>
+				</div>
+				<div class="article-body">
+					<div class="article-content" style="font-size: 14px;line-height: 24px;margin: 0 10px 40px;">
+						<div>{$vo.content|htmlspecialchars_decode}</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<if condition="$attarry">
+					<div class="xyMessageAttach" style="margin:0px;">
+	                    <div style="padding:6px 10px 6px 5px;">
+	                        <div class="attach left"></div><strong>附件：</strong>
+	                    </div>
+	                    <div class="xyMessageAttachItems">
+	                        <volist name="attarry" id="att">
+	                            <div class="xyMessageAttachItem">
+	                                <span class="tml-label tml-bg-orange tml-mr5">附件{$key+1}</span>
+	                                <a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}"><span>{$att['upname']}</span></a>
+									<if condition="$att.isplay eq 1">
+										&nbsp;&nbsp;&nbsp;&nbsp;<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);">在线查看</a>
+									</if>
+									<a class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog">
+	                                    <span class="tml-icon tml-icon-file"></span>
+	                                    <span class="tml-icon-text">归档</span>
+	                                </a>
+								</div>
+	                        </volist>
+	                    </div>
+	                </div>
+                </if>
+			</div>
+			<if condition="$contentlist">
+				<div style="background: #f9f9f9;border: 1px solid #cac9c9;border-radius: 5px;margin: 10px;overflow: hidden;">
+					<div style="background-color: #ededed;background-image: linear-gradient(to bottom, #f3f3f3, #e9e9e9);border-bottom: 1px solid #d8d9d9;height: 40px;padding-left: 20px;">
+						<h3 style="line-height: 40px;font-family: '微软雅黑';font-size: 18px;"><small class="tml-c-red">点评内容</small></h3>
+					</div>
+				<volist name="contentlist" id="clist">
+					<div class="article-body">
+						<div class="article-content" style="font-size: 14px;line-height: 24px;margin: 0 10px 10px;">
+							<div>{$clist.content|htmlspecialchars_decode}</div>
+						</div>
+					</div>
+					<div class="p5" style="border-bottom: 1px solid #ccc;margin-bottom:10px;">
+                        <span class="tml-mr5">点评人：</span><span class="tml-mr5">{$clist.userid|getFieldBy='id','name','user'}</span>
+                        <span class="tml-mr5">&nbsp;&nbsp;&nbsp;点评时间：</span><span class="tml-mr5">{$clist.commenttime|transTime}</span>
+					</div>
+				</volist>
+				</div>
+			</if>
+			<div>
+				<div style="background: #f9f9f9;border: 1px solid #cac9c9;border-radius: 5px;margin: 10px;overflow: hidden;">
+					<div style="background-color: #ededed;background-image: linear-gradient(to bottom, #f3f3f3, #e9e9e9);border-bottom: 1px solid #d8d9d9;font-family: '微软雅黑';font-size: 20px;height: 48px;line-height: 48px;padding-left: 20px;">
+						<h2>点评内容</h2>
+					</div>
+					<div class="tml-row" id="workplancontent">
+						<textarea class="ueditor required" name="content" style="height:150px;">{$vo.comment}</textarea>
+					</div>
+					<div class="tml-row p5">
+						<div class="tml-form-col">
+							<label>点评人：</label>
+							<input type="text" class="js-foucs" readonly="readonly"  value="{$userid|getFieldBy='id','name','User'}" />
+							<input type="hidden" class="" name="userid" value="{$userid}" />
+						</div>
+						<div class="tml-form-col">
+							<label>点评时间：</label>
+							<input type="text" class="" readonly="readonly" name="commenttime" value="{$time|transTime}"/>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

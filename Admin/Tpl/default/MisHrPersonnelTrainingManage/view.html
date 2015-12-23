@@ -1,0 +1,178 @@
+<script>
+function deletetrain(obj){
+    $(obj).parent().parent().remove();
+}
+function hr_refreshdelete(json){
+	navTabAjaxDone(json);
+	if(json.statusCode == DWZ.statusCode.ok){
+		var ids = json.rel;
+		var url="__URL__/edit/id/"+ids;
+		var title="员工培训编辑"
+		ondblclick_navTab("a.edit","navTab.getCurrentPanel()", url,title);
+	}
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<div class="pageFormContent applecloth" layoutH="56">
+			<div class="keepContentCenter">
+				<H2 class="contentTitle contentTitle_center">员工培训编辑</H2>
+
+				<fieldset class="zlqk_1">
+							<legend class="zlqk_2">
+								<b>一、基本信息</b>
+							</legend>
+							<table class="Intable">
+								<tr>
+									<td>
+										<p>
+											<label>培训编号：</label>
+											<input type="text" name="orderno" size="15" value="{$vo.orderno}"
+											<if condition='$writable eq 0'> readonly="readonly" </if> maxlength="25" class="required alphanumeric textInput"/>
+										</p>
+									</td>
+									<td>
+										<p>
+											<label>学员姓名：</label>
+											<input type="text" class="required org.name" size="15" name="name" readonly="readonly" value="{$perlist.name}" />
+											<input type="hidden" name="personid" class="org.mangid" value="{$vo.personid}" />
+											<a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a>
+										</p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p>
+											<label>部门：</label>
+											<input type="text" class="required org.deptname" size="15" value="{$perlist['deptid']|getFieldBy='id','name','mis_system_department'}" readonly="readonly" />
+											<input type="hidden" name="deptid" class="org.deptid" value="{$perlist['deptid']}" />
+										</p>
+									</td>
+								
+									<td>
+										<p>
+											<label>职务：</label>
+											<input type="text" class="textInput org.dutyname" size="15" name="dutyname" value="{$perlist.dutyname}" readonly="readonly" />
+										</p>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<p>
+											<label>入职时间：</label>
+											<input type="text" name="entrytime" size="15" class="org.indate" readonly="readonly" value="{$perlist.indate|transTime}" />
+										</p>
+									</td>
+									<td>
+										<p>
+											<label>总课时：</label>
+											<input name="classhour" type="text"  class="textInput" size="15" value="{$classHours}" readonly="readonly" />
+										</p>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+			
+						<fieldset>
+							<legend>
+								<b>二、培训信息</b>
+							</legend>
+							<div class="xytable grid">
+							<table class="list nowrap itemDetail" addbutton="添加课程" >
+								<thead>
+									<tr style="text-align:center;">
+										<th type="lookup" name="trainid[]" fieldClass="itemsorg.trainid[]" lookupGroup="itemsorg" lookupUrl="__URL__/lookuptrain/id/{$vo.id}" size="4" suggestFields="trainid,orderno,name">查找</th>
+										<th type="text" size="9"  fieldClass="itemsorg.ordernos[]" >课程编号</th>
+										<th type="text" size="8"  fieldClass="itemsorg.traintime[]">培训时间</th>
+										<th type="text" size="7"  fieldClass="itemsorg.types[]">课程类型</th>
+										<th type="text" size="15"  fieldClass="itemsorg.names[]">课程名称</th>
+										<th type="text" size="7"  fieldClass="itemsorg.classsource[]">课程来源</th>
+										<th type="text" size="7"  fieldClass="itemsorg.targetstudent[]">适用对象</th>
+										<th type="text" size="7"  fieldClass="itemsorg.lecturer[]">培训讲师</th>
+										<th type="text" size="7" fieldClass="itemsorg.traingoal[]">培训目标</th>	
+										<!-- <th type="text" width="60" size="5"  fieldClass="itemsorg.level[]">讲师等级</th> -->
+										<th type="text" size="20"  fieldClass="itemsorg.site[]">培训地点</th>
+										<th type="text" size="4" name="classhours[]" fieldClass="itemsorg.classhour[]">课时</th>
+										<th type="text" size="9"  fieldClass="itemsorg.traintime[]">培训时间</th>
+										<!-- <th type="text" width="85" size="7"  fieldClass="itemsorg.trainform[]">培训形式</th>
+										<th type="text" width="90" size="7"  fieldClass="itemsorg.assessment[]">考核方式</th>
+										<th type="text" width="50" size="3"  fieldClass="itemsorg.traincost[]">费用</th>
+										<th type="text" width="50" size="3"  fieldClass="itemsorg.curriculumvalue[]">分值</th> -->
+										<th type="text" size="15"  fieldClass="itemsorg.remark[]">备注</th>
+										<th type="del">操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<volist name="trainlist" id="tlist">
+										<tr class="unitBox" >
+											<td><input type="text" name="trainid[]" size="4" readonly="readonly" value="{$tlist.id}"/></td>
+											<td><input type="text" size="9" readonly="readonly" value="{$tlist.orderno}"/></td>
+											<td><input type="text" size="8" readonly="readonly" value="{$tlist.traintime|transTime='Y-m-d H:i'}"/></td>
+											<td><input type="text" size="7" readonly="readonly" value="{$tlist.type}"/></td>
+											<td><input type="text" size="15" readonly="readonly" value="{$tlist.name}"/></td>
+											<td><input type="text" size="7" readonly="readonly" value="{$tlist.classsource}"/></td>
+											<td><input type="text" size="7" readonly="readonly" value="{$tlist.targetstudent}"/></td>
+											<td><input type="text" size="7" readonly="readonly" value="{$tlist.lecturer}"/></td>
+											<td><input type="text" size="7" readonly="readonly" value="{$tlist.traingoal}"/></td>
+											<!-- <td><input type="text" size="5" readonly="readonly" value="{$tlist.level}"/></td> -->
+											<td><input type="text" size="20" readonly="readonly" value="{$tlist.site}"/></td>
+											<td><input type="text" name="classhours[]"  size="4" readonly="readonly" value="{$tlist.classhour}"/></td>
+											<td><input type="text" size="9" readonly="readonly" value="{$tlist.traintime|transTime}"/></td>
+											<!-- <td><input type="text" size="9" readonly="readonly" value="{$tlist.trainform}"/></td>
+											<td><input type="text" size="9" readonly="readonly" value="{$tlist.assessment}"/></td>
+											<td><input type="text" size="3" readonly="readonly" value="{$tlist.traincost}"/></td>
+											<td><input type="text" size="3" readonly="readonly" value="{$tlist.curriculumvalue}"/></td> -->
+											<td><input type="text" size="15" readonly="readonly" value="{$tlist.remark}"/></td>
+											<td width="32">       
+												<a class="btnDel" href="__URL__/delTrain/relationid/{$tlist.relation}/id/{$vo.id}/classhour/{$tlist.classhour}" rel="relation_del" target="ajaxTodo" callback="hr_refreshdelete"  title="确认要移除此条信息"><span>删除</span></a>
+											</td>
+										</tr>
+									</volist>
+								</tbody>
+							</table>
+							</div>
+						</fieldset>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonneltrainingmanage_update">
+				<li>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="submit">{$Think.lang.save}</button>
+						</div>
+					</div>
+				</li></if>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.cancel}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.xytable').bind('click mouseover', function(e){
+		var $this = $(this);
+		var $trs = $(this).find('tr');
+		var $target = $(e.target);
+		var $tr = $target.parents('tr');
+		if($tr.length > 0){
+			if(e.type == 'click'){
+				$trs.removeClass('selected');
+				$target.parents('tr').addClass('selected');
+			} else if(e.type == 'mouseover'){
+				$trs.removeClass('hover');
+				$target.parents('tr').addClass('hover');
+			}
+		}
+	});
+});
+</script>

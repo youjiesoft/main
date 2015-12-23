@@ -1,0 +1,37 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 初始化树
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisPerformanceReportDemo"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+	<!-- 内容start -->
+	<!-- 树start -->
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div></div>
+			<ul id="MisPerformanceReportDemo" class="ztree xyTree" layoutH="10"></ul>
+		</div>
+	</div>
+	<!-- 树end -->
+	<div id="MisPerformanceReportEdit">
+		<include file="lookupeditview" />
+	</div>
+	<!-- 内容end -->
+</div>

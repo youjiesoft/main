@@ -1,0 +1,62 @@
+<script>
+$("#searchby_filesinfor{$modelname}").change(function(){
+	var v=$(this).val();
+	if( v=="createtime"){
+		$("#searchby_filesinfor{$modelname}2").css("display","block");
+		$("#searchby_filesinfor{$modelname}1").css("display","none");
+		$("#searchby_filesinfor{$modelname}3").css("display","none");
+		$("#searchby_filesinfor{$modelname}4").css("display","none");
+	} else if( v=="pid"){
+		$("#searchby_filesinfor{$modelname}3").css("display","block");
+		$("#searchby_filesinfor{$modelname}1").css("display","none");
+		$("#searchby_filesinfor{$modelname}2").css("display","none");
+		$("#searchby_filesinfor{$modelname}4").css("display","none");
+	}else if( v=="technosphere"){
+		$("#searchby_filesinfor{$modelname}4").css("display","block");
+		$("#searchby_filesinfor{$modelname}1").css("display","none");
+		$("#searchby_filesinfor{$modelname}2").css("display","none");
+		$("#searchby_filesinfor{$modelname}3").css("display","none");
+	}else{
+		$("#searchby_filesinfor{$modelname}1").css("display","block");
+		$("#searchby_filesinfor{$modelname}2").css("display","none");
+		$("#searchby_filesinfor{$modelname}3").css("display","none");
+		$("#searchby_filesinfor{$modelname}4").css("display","none");
+	}
+});
+</script>
+<div class="pageHeader">
+	<form rel="pagerForm" onsubmit="return navTabSearch(this);" action="__URL__/index" method="post">
+		<input type="hidden" name="modelname" value="{$modelname}">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div id="searchby_filesinfor{$modelname}1" <neq name="ifhidden" value="0"> style="display:none;" </neq>>
+							请输入关键字：
+							<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+						
+					</td>
+					<td>
+						<select id="searchby_filesinfor{$modelname}"  class="combox"  name="searchby">
+							<OPTION value="pname">按项目名称</OPTION>
+                            <OPTION value="ename">按企业名称</OPTION>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option  value="{$voty['id']}" <eq name="searchtypeid" value="$voty['id']">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>

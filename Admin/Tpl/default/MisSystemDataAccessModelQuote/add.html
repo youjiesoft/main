@@ -1,0 +1,43 @@
+<script type="text/javascript">
+
+var datatable = initTableWNEWOne("#MisSystemDataAccessModelQuoteAdd");
+</script>
+
+<div class="pageContent">
+	<form method="post" action="__URL__/insertformid/rel/MisSystemDataAccessModelQuoteBOX" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		
+		
+		
+		<div class="pageFormContent" layoutH="100">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>模块：</label>
+					<input type="text"  value="{$aname|getFieldBy='name','title','node'}" readonly />
+					<input type="hidden" name="actionname" value="{$aname}" readonly />				
+				</div>
+			</div>
+			<div class="into_table_lay" style="width: 99%;">
+				<table class="into_table_new nbm_data_table" table_data='{"searching":true,"re_id":1,"addRow":false,"paging":false}' id="MisSystemDataAccessModelQuoteAdd">
+					<thead ename="{$ename}">
+						<tr>
+			                <th>控制模块名称</th>
+			                <th>选择</th>
+						</tr>
+					</thead>
+					<volist name="formlist" id="fv" key="i">
+							<tr>
+								<td><div class="list_group_lay">{$fv.actiontitle}</div></td><!-- <input class="list_input" value="{$fv.actiontitle}" readonly> -->
+								<td><input  class="list_input " type="checkbox" name="formid[]" id="{$key}" value="{$key}"></div></td>
+							</tr>
+					</volist>
+					<tbody>
+						
+					</tbody>
+				</table>
+			</div>
+			
+			
+		</div>
+	{:W('ShowAction')}
+	</form>
+</div>

@@ -1,0 +1,97 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/auditProcess/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<input type="hidden" name="pid" value="{$vo['ptmptid']}">
+		<input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+			
+		<input type="hidden" name="refreshtabs[closeall]" value="1">
+		<input type="hidden" class="selectaudituser.mangid" name="audit_option_user" value="" callback="auditOpionPorcess" />
+		<a class="input-addon input-addon-addon input-addon-add" rel="lookupSelectAuditOption" style="display: none;" id="auditselectoption" href="__URL__/lookupSelectAuditOption/modulename_auditoption/__MODULE__/audittype/dialog" lookupGroup="selectaudituser">选择下一步审核人</a>
+		
+		<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+		<input type="hidden" name="refreshtabs[url]" value="__APP__/MisHrPersonnelLeaveInfo/index">
+		<input type="hidden" name="refreshtabs[data]" value="{ ntdata:1}">
+		<input type="hidden" name="refreshtabs[title]" value="员工请假管理">
+		<input type="hidden" name="refreshtabs[type]" value="dialog">
+		
+		<input type="hidden" name="backprocess" value="流程回退">
+		<input type="hidden" name="auditprocess" value="流程审核">
+		<input type="hidden" name="endprocess" value="流程结束">
+		<input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+		<input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+		<div class="pageFormContent " layoutH="55">
+			<H2 class="contentTitle contentTitle_center">请假申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+				<span class="auto_code" >
+					<b>No.</b>
+					<input type="text"  name="orderno" value="{$vo.orderno}" readonly="readonly" class="xycodedata_read" <if condition='$writable eq 0'> readonly="readonly" </if> />
+			    </span> 
+			</H2>
+			<p>
+				<label>姓名：</label>
+                <input type="text" class="org.name" size="15" readonly="readonly" value="{$vo.name}"/>
+			</p>
+			<p>
+				<label>单据类型：</label>
+				<input type="text" readonly="readonly" value="{$vo['typeid']|getFieldBy='id','name','mis_order_types'}" />
+			</p>			
+			<p>			 
+				<label>部门：</label>
+                <input type="text" class="org.deptname" size="15" readonly="readonly" value="{$vo.deptid|getFieldBy='id','name','mis_system_department'}" />
+			</p>
+			<p>
+				<label>职务：</label>
+                <input type="text" class="org.dutyname" size="15" readonly="readonly" value="{$vo.dutyname}" />
+			</p>
+			<dl class="nowrap">
+				<dt>请假类别：</dt>
+				<dd style="width:70%;">
+					<volist name="typelist" id="tplist">
+						<label><input type="radio" name="leavetypes" disabled="disabled" <if condition="$vo['leavetype'] eq $key">checked="checked"</if> value="{$key}"/>&nbsp;{$tplist}</label>
+					</volist>
+				</dd>
+			</dl>
+			<div class="clear"></div>
+			<p style="width:auto;">
+				<label>请假时间：</label>
+                    <input type="text" name="beginleavedate" class="textInput"  readonly="readonly" size="17" value="{$vo.beginleavedate|transTime='Y-m-d H:i'}" format="yyyy-MM-dd HH:mm" />
+			 		<a class="inputDateButton" href="#">选择</a>
+			 		<span class="info">&nbsp;----&nbsp;</span>
+			 		<input type="text" name="endleavedate" class="textInput" readonly="readonly" size="17" value="{$vo.endleavedate|transTime='Y-m-d H:i'}" format="yyyy-MM-dd HH:mm"/>
+					<a class="inputDateButton" href="#">选择</a>
+					<span class="info">&nbsp;&nbsp;&nbsp;合计&nbsp;</span>
+					<input type="text" class="textInput required" readonly name="" value="{$vo.hours}" size="10"/>
+			</p>
+			<div class="clear"></div>
+			<div class="unit">
+				<label>请假原因：</label>
+                <TEXTAREA   rows="2" cols="30" style="width:450px;" readonly="readonly" name="remark">{$vo.remark}</TEXTAREA>
+			</div>
+			<div class="clear"></div>
+			<div class="unit">
+				<label>职务工作代理<br>人及委托事项：</label>
+                 <TEXTAREA   rows="2" cols="30" style="width:450px;" readonly="readonly" name="leaveagency">{$vo.leaveagency}</TEXTAREA>
+			</div>
+			<div class="clear"></div>
+			<div class="unit">
+				<label>审核意见：</label>
+                <TEXTAREA   rows="2" cols="30" style="width:450px;" name="doinfo" ></TEXTAREA>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleaveinfo_auditprocess">
+				<li><div class="buttonActive"><div class="buttonContent">
+				<button type="button" onclick="auditProcess(this.form,'__MODULE__','dialog');">{$Think.lang.auditprocess}</button></div></div></li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleaveinfo_backprocess">
+				<li><div class="buttonActive"><div class="buttonContent">
+				<button type="button" onclick="BackProcess(this.form,'__MODULE__');">{$Think.lang.backprocess}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent">
+				<button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,128 @@
+<script>
+	$("#table_dynamic_conf_tableobj").change(function(){
+		var t=$(this).val();
+		var $ref =$("#field_dynamic_conf_tableobj");
+		$.ajax({
+			type:'POST',dataType:"json",url:"__URL__/comboxgetTableField",cache:false,
+			data:{table:t},
+			success:function(json){
+			if(!json)return;
+			var html='';
+			$.each(json,function(i){
+			if(json[i]&&json[i].length>1){
+			html+='<option value="'+json[i][0]+'">'+json[i][1]+'</option>';}});
+			var $refCombox=$ref.parents("div.combox:first");
+			$ref.html(html).insertAfter($refCombox);
+			$refCombox.remove();
+			$ref.trigger("change").combox();},
+			error:DWZ.ajaxError
+		});
+	});
+
+	function selectType(val){
+		var groupType = $('#groupType');
+		if(val != ''){
+			if(val == 'group'){
+				groupType.html('<label>填写字段：</label><input name="groupField" type="text" class="textInput" />');
+			}else if(val == 'group2'){
+				var html = '';
+				html += '<label>选择lookup搜索模板：</label>';
+				html += '<input type="text" show="cname" insert="ename" checkfor="searchTpl" class="checkByInput textInput" />';
+				html += '<input name="lookupField" type="hidden" />';
+				groupType.html(html);
+			}else if(val == 'checkfor'){
+				var html = '';
+				html  = '<label>填写查找对象名称：</label>';
+				html += '<input type="text" class="textInput" name="checkfor" />';
+				html += '<label>填写显示字段：</label>';
+				html += '<input type="text" class="textInput" name="show" />';
+				html += '<label>填写插入字段：</label>';
+				html += '<input type="text" class="textInput" name="insert" />';
+				html += '<label>填写显示条目数：</label>';
+				html += '<input type="text" class="textInput" name="limit" />';
+				html += '<label>填写排序字段及方式：</label>';
+				html += '<input type="text" class="textInput" name="order" />';
+				groupType.html(html);
+			}else{
+				groupType.html('');
+			}
+		}
+	}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/searchconf" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<div class="pageFormContent" layoutH="37" style="padding:0px;">
+			<input name="step" value="2" type="hidden" />
+			<input name="key" value="{$key}" type="hidden" />
+			<input name="setmodule" value="{$module}" type="hidden" />
+			<input name="issub" value="{$issub}" type="hidden" />
+			 <div class="unit">
+				<label>关联类型：</label>
+				<select class="combox" name="findtype" onchange="selectType(this.value);">
+					<option value="">请选择关联类型</option>
+					<option value="text" <eq name="vo.findtype" value="text">selected</eq>>文本类型</option>
+					<option value="time" <eq name="vo.findtype" value="time">selected</eq>>时间类型</option>
+					<option value="range" <eq name="vo.findtype" value="range">selected</eq>>范围类型</option>
+					<option value="group" <php>if(strpos($vo['findtype'], '|')) echo 'selected';</php>>组类型(指定字段)</option>
+					<option value="group2" <php>if(strpos($vo['findtype'], ':')) echo 'selected';</php>>组类型(lookup)</option>
+					<option value="checkfor" <php>if(strpos($vo['findtype'], '#')) echo 'selected';</php>>自动完成类型(checkfor)</option>
+				</select>
+				<div id="groupType" style="float:left">
+					<php>
+						if(strpos($vo['findtype'], '|')){
+							$type_tmp = explode('|', $vo['findtype']);
+							echo '<label>填写字段：</label><input name="groupField" value="'.$type_tmp[1].'" type="text" class="textInput" />';
+						}else if(strpos($vo['findtype'], ':')){
+							$type_tmp = explode(':', $vo['findtype']);
+							$cname = M('search')->where("ename='".$type_tmp[1]."'")->getField('cname');
+							$html  = '<label>选择lookup搜索模板：</label>';
+							$html .= '<input type="text" show="cname" value="'.$cname.'" insert="ename" checkfor="searchTpl" class="checkByInput textInput" />';
+							$html .= '<input name="lookupField" type="hidden" value="'.$type_tmp[1].'" />';
+							echo $html;
+						}else if(strpos($vo['findtype'], '#')){
+							$type_tmp = explode('#', $vo['findtype']);
+							$html  = '<label>填写查找对象名称：</label>';
+							$html .= '<input type="text" class="textInput" name="checkfor" value="'.$type_tmp[1].'" />';
+							$html .= '<label>填写显示字段：</label>';
+							$html .= '<input type="text" class="textInput" name="show" value="'.$type_tmp[2].'" />';
+							$html .= '<label>填写插入字段：</label>';
+							$html .= '<input type="text" class="textInput" name="insert" value="'.$type_tmp[3].'" />';
+							$html .= '<label>填写显示条目数：</label>';
+							$html .= '<input type="text" class="textInput" name="limit" value="'.$type_tmp[4].'" />';
+							$html .= '<label>填写排序字段及方式：</label>';
+							$html .= '<input type="text" class="textInput" name="order" value="'.$type_tmp[5].'" />';
+							echo $html;
+						}
+					</php>
+				</div>
+			</div>
+			<div class="unit">
+				<label>所属表查询字段：</label>
+
+				<select class="combox table_dynamic_conf_tableobj" id="table_dynamic_conf_tableobj" name="findtable" >
+					<option value="">请选择映射对象</option>
+					<volist id="vos" name="tables">
+						<option value="{$key}" <if condition="($key eq $co['bindtable'])">selected</if>>{$vos}</option>
+					</volist>
+				</select>
+				<select class="combox" id="field_dynamic_conf_tableobj" name="findfield" >
+					<if condition="$co['fieldarr']">
+						<volist id="vof" name="co.fieldarr">
+							<option value="{$vof[0]}" <if condition="$co['bindfield'] eq $vof[0]">selected</if> >{$vof[1]}</option>
+						</volist>
+					<else />
+						<option value="">请选择映射对象字段</option>
+					</if>
+				</select>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.dynamicconf_searchconf">
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,97 @@
+<script>
+/**
+ * 取消表单默认submit事件。 【必须】
+ */
+$(function(){
+	$('#myForm').submit(function(data){
+		return false;
+	});
+});
+
+/**
+ * 表单submit事件中调用
+ * @parame obj 当前表单对象
+ * @parame aid 事件触发标签ID
+ * 数据封装格式：data:[[id:'1',name:'选择项',.....]]
+ */
+function newsubmit(obj,aid){
+	obj = $(obj);
+	obj.submit(function(data){
+		return false;
+	});
+	if(obj.valid()){
+		obj.ajaxSubmit(function(data){
+			if('string'==typeof(data)){
+				data=$.parseJSON(data);
+			}
+			if(!data.status){
+				alertMsg.error(data.message)
+				return;
+			}
+			$.pdialog.closeCurrent();
+			if('object'==typeof(data.data)){
+				var cont = $("#"+aid).prev();
+				var selObj = cont.find("select");
+				var showObj = cont.find("a:first");
+				var divCombox = cont.find("div:first");
+				selObj.children().attr('selected',false);
+				var optObj = $('#op_'+divCombox.attr('id'));
+				optObj.html(optObj.html().replace('class="selected"',''));
+				$.each(data.data , function(i,v){
+					var opt = $('<option></option>');
+					opt.val(v.{$fields[0][0]}).text(v.{$fields[1][0]}).attr('selected',true);
+					selObj.append(opt);
+					var li = '<li><a value="'+v.{$fields[0][0]}+'" class="selected" href="#">'+v.{$fields[1][0]}+'</a></li>';
+					optObj.append(li);
+					showObj.html(v.{$fields[1][0]});
+				});
+			
+				optObj.find('li a').click(function(){
+					var $this=$(this);
+					$this.parent().parent().find(".selected").removeClass("selected");
+					$this.addClass("selected");
+					showObj.text($this.text());
+					var $input=$("select",cont);
+					if($input.val()!=$this.attr("value")){
+						$("select",cont).val($this.attr("value")).trigger("change");
+					}
+				});
+			}
+		});
+	}
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/quickAddInsert/accesstype/{$_REQUEST['accesstype']}" class="pageForm required-validate" id="myForm" onsubmit="return newsubmit(this,'{$_REQUEST['aid']}')">
+		<input type="hidden" name="model" value="{$model}">
+       <if condition="$_GET['id']">
+       <input type="hidden" name="formid" value="{$_GET['id']}">
+       </if>
+		<div class="pageFormContent" layoutH="56">
+            <div class="tml-row">
+                <if condition="$fields[0] neq 'id'">
+                <div class="tml-form-col">
+                    <label>请输入值：</label>
+                    <input type="text" name="{$fields[0][0]}" class="{$fields[0][1]} required" />
+                </div>
+                </if>
+                <div class="tml-form-col">
+                    <label>请输入文本：</label>
+                    <input type="text" name="{$fields[1][0]}" class="{$fields[1][1]} required" />
+                </div>
+            </div>
+            <div class="tml-form-row">
+                <label>请输入备注：</label>
+                <textarea rows="2" cols="25" name="remark"></textarea>
+            </div>
+
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent">
+				<button type="submit">{$Think.lang.save}</button>
+				</div></div></li>
+			</ul>
+		</div>
+	</form>
+</div>

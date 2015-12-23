@@ -1,0 +1,19 @@
+<div class="pageContent" layoutH="0">
+<script>
+    function openadddept(ids){
+      	//avTab.openTab('User',"__APP__/User",{title:'添加子部门', fresh:true, data:{}});
+      	$.pdialog.open("__URL__/add/id/"+ids,'MisSystemDepartmentadd','添加子部门',{mask:true,width: 600, height: 350});
+    }
+    function openeditdept(ids){
+        $.pdialog.open("__URL__/edit/id/"+ids,'MisSystemDepartmentedit','编辑部门',{mask:true,width: 600, height: 350});
+    }
+</script>
+<div class="panelBar">
+	<ul class="toolBar">
+		<if condition="$_SESSION.a eq 1 or $_SESSION.missystemdepartment_add"><li><a class="add tml-btn tml_look_btn tml_mp" rel="__MODULE__add" href="__URL__/add" target="dialog" mask="true"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+	</ul>
+</div>
+<div id="infovis" class="toolBar"></div>
+<iframe width="100%" height="100%" frameborder="0" scrolling="yes" src="__URL__/treeIndex" style="height: 500px; overflow: auto;"></iframe>
+	<!--右键菜单的源-->
+</div>

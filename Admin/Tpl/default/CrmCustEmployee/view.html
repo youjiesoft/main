@@ -1,0 +1,123 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/linkUserindex" class="pageForm required-validate"  onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="id" value="{$vo.id}" />
+			<input type="hidden" name="custmerid" value="{$vo['customerid']}"/>
+			<div class="pageFormContent applecloth" layoutH="55">
+				<div class="keepContentCenterCondensed clearfix">
+					<div class="tml-row">
+						<if condition='$fields["name"]'>
+						<div class="tml-form-col">
+							<label>{$fields["name"]}：</label>
+							<input type="text" name="name" maxlength="10" class="required" value="{$vo['name']}" />
+						</div>
+						</if>
+						<if condition='$fields["sex"]'>
+						<div class="tml-form-col">
+							<label>{$fields["sex"]}：</label>
+							<select name="sex" class="combox">
+								{:getSelectByHtml('sex','select','$vo.sex')}
+							</select>
+						</div>
+						</if>
+						<if condition='$fields["age"]'>
+						<div class="tml-form-col">
+							<label>{$fields["age"]}：</label>
+							<input type="text" name="age" maxlength="3" min="1" class="digits" value="{$vo['age']}"/>
+						</div>
+						</if>
+						<if condition='$fields["superiorID"]'>
+						<div class="tml-form-col">
+							<label>{$fields["superiorID"]}：</label>
+							<select name="superiorID" class="combox">
+								<option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="vo" name="blist">
+									<option value="{$vo['id']}" <eq name="vo.superiorID" value="$vo['id']"> selected="selected"</eq>>{$vo['name']}</option>
+								</volist>
+							</select>
+						</div>
+						</if>
+						<if condition='$fields["code"]'>
+						<div class="tml-form-col">
+							<label>{$fields["code"]}：</label>
+							<input type="text" maxlength="10" name="personorderno" class="alphanumeric" value="{$vo['code']}"/>
+						</div>
+						</if>
+						<if condition='$fields["officephone"]'>
+						<div class="tml-form-col">
+							<label>{$fields["officephone"]}：</label>
+							<input type="text" maxlength="30" name="officephone" class="phone" value="{$vo['officephone']}" />
+						</div>
+						</if>
+						<if condition='$fields["telephone"]'>
+						<div class="tml-form-col">
+							<label>{$fields["telephone"]}：</label>
+							<input type="text" maxlength="30" name="telephone" class="phone" value="{$vo['telephone']}" />
+						</div>
+						</if>
+						<if condition='$fields["indate"]'>
+						<div class="tml-form-col">
+							<label>{$fields["indate"]}：</label>
+							<span class="xyInputWithUnit">
+							<input type="text" name="indate" onfocus="WdatePicker()" class="tml-border-r0 Wdate" value="{$vo['indate']|transTime}"/>
+							<span class="input-addon input-addon-calendar"></span>
+							</span>
+						</div>
+						</if>
+						<if condition='$fields["dutyid"]'>
+						<div class="tml-form-col">
+						<label>{$fields["dutyid"]}：</label>
+						<select name="dutyid" class="combox">
+							<option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+							<volist id="vod" name="clist">
+							<option value="{$key}" <eq name="vo.dutyid" value="$key"> selected="selected"</eq>>{$vod}</option>
+							</volist>
+						</select>
+						</div>
+						</if>
+						<if condition='$fields["qq"]'>
+						<div class="tml-form-col">
+							<label>{$fields["qq"]}：</label>
+							<input type="text" maxlength="20" name="qq" value="{$vo['qq']}" value="{$vo['qq']}"/>
+						</div>
+						</if>
+						<if condition='$fields["email"]'>
+						<div class="tml-form-col">
+							<label>{$fields["email"]}：</label>
+							<input type="text" maxlength="20" name="email" class="email" value="{$vo['email']}"/>
+						</div>
+						</if>
+						<if condition='$fields["deptid"]'>
+						<div class="tml-form-col">
+							<label>{$fields["deptid"]}：</label>
+							<select name="deptid" class="combox">
+								<option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+								<volist id="vov" name="list">
+									<option value="{$key}" <eq name="vo.deptid" value="$key"> selected="selected"</eq>>{$vov}</option>
+								</volist>
+							</select>
+						</div>
+						</if>
+					</div>
+					<if condition='$fields["officeaddress"]'>
+					<div class="tml-form-row">
+						<label>{$fields["officeaddress"]}：</label>
+						<input type="text" name="officeaddress" maxlength="50" value="{$vo['officeaddress']}"/>
+					</div>
+					</if>
+					<if condition='$fields["remark"]'>
+					<div class="tml-form-row">
+						<label>{$fields["remark"]}：</label>
+						<textarea name="remark" maxlength="200">{$vo['remark']}</textarea>
+					</div>
+					</if>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

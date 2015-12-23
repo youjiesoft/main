@@ -1,0 +1,44 @@
+<div class="pageContent" style="overflow: auto;">
+	<div class="xypc">
+		<div id="xywrap" class="xywrap clearfix">
+			<div class="general_wrap">
+                 <div class="general_wrap_top"  layouth="58">
+                     <div class="fast_nav_content">
+                         <div class="tml_line_lay">
+                             <span class="tml_line_header">任务清单</span>
+                             <div class="tml_style_line tml_sl4 tml_slb_54d5eb"></div>
+                         </div>
+                     	<table class="tml_set_table tml_task_list" style="margin:0px;width:100%;" id="indexlist" width="100%">
+							<thead>
+								<tr>
+									<th>序号</th>
+									<th>任务名称</th>
+									<th>清单类型</th>
+									<th>操作</th>
+								</tr>
+							</thead>
+							<tbody>
+								<volist id="vo" name="result" key="key2">
+									<tr name="fields">
+										<td>
+											{$key2}
+										</td>
+										<td>
+											{$vo.sourcename}
+										</td>
+										<td>
+											{$vo.targetname}
+										</td>
+										<td>
+											<a class="tml_task_btn" param="field=id,orderno,userid,clientname&model={$vo['targetmodel']}"  href="__URL__/lookupDataRoamPull/sourcemodel/{$sourcemodel}/sourceid/{$sourceid}" lookupGroup="org" >数据漫游</a>
+										</td>
+									</tr>
+								</volist>
+							</tbody>
+						 </table>
+                     </div>
+                 </div>
+            </div>
+		</div>
+	</div>
+</div>

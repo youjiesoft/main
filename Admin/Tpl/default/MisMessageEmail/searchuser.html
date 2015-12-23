@@ -1,0 +1,14 @@
+<ul class="tree treeFolder collapse" style="height:300px;overflow:scroll;">
+<volist id="depart1" name="contact">
+	<li>
+        <a href="javascript:;">{$key}</a>
+        <if condition="count($depart1)">
+            <ul>
+                <volist id="vo" name="depart1">
+                    <li> <a href="javascript:;" title="{$vo.id}" rel="{$vo.name}" onclick="addleteruser13(this);">{$vo['name']}</a></li>
+                   </volist>
+               </ul>
+       	</if>
+   	</li>
+   </volist>
+</ul>

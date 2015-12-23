@@ -1,0 +1,52 @@
+<style>
+    tr{height:30px;}
+</style>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__/inventoryWarehouse" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxMiwh)">
+		<div class="pageFormContent" layoutH="80">
+			<div class="unit">
+				<label>附件保存方式：</label>
+				<select class="combox" name="config[attachdir]">
+					<option value="0">全部存入同一目录(默认)</option>
+					<option value="1">按版块存入不同目录</option>
+					<option value="2">按类型存入不同目录</option>
+					<option selected="" value="3">按月份存入不同目录</option>
+					<option value="4">按天存入不同目录</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>附件上传数量限制：</label>
+				<input type="text" class="required textInput" name="name" size="30"/>
+			</div>
+			<div class="unit" style="width:200px;">
+				<span>附件类型和尺寸控制[KB]:</span>
+			</div>
+                        <div class="unit" style="width:50%;">
+                            <table width="80%" addbutton="添加" class="list itemDetail" style="clear: both;">
+                                <thead>
+                                    <tr>
+                                            <th fieldclass="required" size="30" name="filetype[]" type="text">后缀名(小写)</th>
+                                            <th fieldclass="digits" size="30" name="maxsize[]" type="text">最大尺寸</th>
+                                            <th width="60" type="del">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+			</div>
+
+		</div>
+
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misattachedconfig_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+

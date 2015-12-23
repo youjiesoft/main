@@ -1,0 +1,38 @@
+<div class="pageFormContent xyEmployee" style="background-color:#FFFFFF" layoutH="25">
+	<div class="xyEmployeeBasicInfo">
+		<table>
+			<tbody>
+				<tr>
+					<td><label>英文登录</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$_REQUEST['uid']|getFieldBy='id','account','user'}" style="width:120px;" /></td>
+					<td><label>中文登录 </label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$_REQUEST['uid']|getFieldBy='id','zhname','user'}"></td>
+				</tr>
+					<tr>
+					<td><label>部门</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$_REQUEST['uid']|getHrinfo='deptid','companyid',$_REQUEST['companyid']|getFieldBy='id','name','mis_system_department'}"></td>
+					<td><label>职级</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$_REQUEST['uid']|getHrinfo='dutyid','companyid',$_REQUEST['companyid']|getFieldBy='id','name','mis_system_duty'}" style="width:120px;" /></td>
+				</tr>
+				<tr>
+				<td><label>岗位 </label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$_REQUEST['uid']|getHrinfo='worktype','companyid',$_REQUEST['companyid']|getFieldBy='id','name','mis_hr_job_info'}"></td>
+					<td><label>邮箱</label></td>
+					<td><input class="xycodedata_read" type="text" readonly="readonly" value="{$_REQUEST['uid']|getFieldBy='id','employeid','user'|getFieldBy='id','email','mis_hr_personnel_person_info'}" style="width:120px;" /></td>
+				</tr>
+				</tbody>
+				</table>
+				</div>
+				<div class="formBar" style="background-color:#FFFFFF">
+				<ul>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+				</div>
+	</div>
+

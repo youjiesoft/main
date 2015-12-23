@@ -1,0 +1,28 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="navTab" rel="MisUserEvents" title="员工合同" href="__APP__/MisHrBasicEmployeeContract/index"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <div id="schedule">
+			          <if condition="$MisHrBasicEmployeeContractList">
+			<div class="data">
+				<ul>
+					<volist id="MisHrBasicEmployeeContractVo" name="MisHrBasicEmployeeContractList">
+						<li class="clearfix">
+							<a class="clearfix" target="dialog" width="900" height="650"  rel="MisHrBasicEmployeeContract" title="合同管理_编辑" href="__APP__/MisHrBasicEmployeeContract/edit/id/{$MisHrBasicEmployeeContractVo.id}"><span class="hellip">{$MisHrBasicEmployeeContractVo.employeeid|getFieldBy='id','name','mis_hr_basic_employee'}</span>  <em>{$MisHrBasicEmployeeContractVo.endtime|transTime}</em></a>
+						</li>
+					</volist>
+				</ul>
+			</div>
+			<else/>
+			<div class="noData">
+				没有即将到期的员工合同
+			</div>
+			</if>
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

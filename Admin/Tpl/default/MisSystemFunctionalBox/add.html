@@ -1,0 +1,98 @@
+<script>
+//上传图片JS
+function missystemfunctionalbox_picture_addphoto(file, data, response) {
+		var $box= $.pdialog.getCurrent();
+		var s = data.split(TP_PUBLIC + "/Uploadstemp/");
+		$("#swf_upload_missystemfunctionalbox_editphoto_save_name").val(s[1]);
+		var upload_name = $("#swf_upload_missystemfunctionalbox_editphoto_save_name").val();
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookuploadimg",
+			data : {
+				'upload_name' : upload_name
+			},
+			success : function(re) {
+				 $("#missystemfunctionalbox_picture_editphoto").attr("src","__PUBLIC__/Uploads/"+re);
+				 $("input[name='logo']").val(re);
+			}
+		});
+	}
+function adduserApp(){
+	var $box= $.pdialog.getCurrent();
+	var name=$box.find("input[name='name']").val();
+	var height=$box.find("input[name='height']").val();
+	var qlink=$box.find("#qlink").val();
+	var link=$box.find("input[name='link']").val();
+	var logo=$box.find("input[name='logo']").val();
+	$.ajax({
+		url : "__URL__/insert",// 通过Ajax取数据的目标页面userConstantly
+		type : 'post',// 方法，还可以是"post"
+		dataType:"json",
+		data:{name:name,height:height,qlink:qlink,link:link,logo:logo},
+		success:function(json){
+			DWZ.ajaxDone(json);
+			$.pdialog.close($box);
+			if(json.statusCode==DWZ.statusCode.ok){
+				$("#appUserConstantly_div").loadUrl("__APP__/MisSystemApp/lookupuserSetApp/typeid/7");
+			}
+		},
+		error:DWZ.ajaxError
+	});
+}
+</script>
+
+<div class="page">
+	<div class="pageContent">
+			<input type="hidden" name="refreshtabs[byid]" value="1">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="logo"/>
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>{$fields["name"]}：</label>
+					<input type="text" name="name" class="required" value=""
+						maxlength="50" />
+				</div>
+					<div class="tml-form-col">
+					<label>高度：</label>
+					<input type="text" name="height"  value=""
+						  />
+				</div>
+			</div>
+				<div class="tml-form-row">
+					<label>{$fields["link"]}：</label>
+					<select name='qlink' id="qlink" class="combox">
+						{:getSelectByHtml('linkprefix')}
+					</select>
+					<input style="width:150px;" type="text" name="link" placeholder="www.baidu.com" class="required" />
+				</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+				<label>{$fields["logo"]}：</label>
+					<p>
+						<span style="width: 64px; height: 64px; display:block; border: 1px solid #ccc;overflow:hidden; ">
+						<img id="missystemfunctionalbox_picture_editphoto"
+							style="border: 2px solid #f1f1f1;  background-color:#468cda;  width: 64px; height: 64px;"
+							 src="__PUBLIC__/Images/xyimages/xyheader_image.jpg" >  
+						</span>
+						<input name="swf_upload_missystemfunctionalbox_add_name" id="swf_upload_missystemfunctionalbox_editphoto_save_name" value="" type="hidden" />
+						<br />
+						 <input id="swfupload_missystemfunctionalbox_editphoto" onUploadSuccess="missystemfunctionalbox_picture_addphoto" type="file" auto="true" multi="false" type="file" uploader="true" fileSizeLimit="2000KB" fileTypeExts="*.jpg;*.jpeg;*.gif;*.png;"
+												   fileTypeDesc="*.jpg;*.jpeg;*.gif;*.png;" name="missystemfunctionalbox_editphoto_file" formData="{ uploadpath:'MisSystemFunctionalBox' }" />
+						<span style="color:red">*请上传64*64logo</span>
+					</p>
+				</div>
+			</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li>
+						<button class="tml-btn tml-btn-primary" type="button" onclick="adduserApp()">{$Think.lang.save}</button>
+					</li>
+					<li>
+						<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+					</li>
+				</ul>
+			</div>
+	</div>
+</div>

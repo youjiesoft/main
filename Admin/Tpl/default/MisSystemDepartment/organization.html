@@ -1,0 +1,41 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#missystemdepartmenttree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("missystemdepartmenttree");
+    var valid='';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"></div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="MisSystemDepartmentSearchNodeKeys" />
+					<button class="searchBtn" type="button" onclick="SearchZTreeNode('missystemdepartmenttree','MisSystemDepartmentSearchNodeKeys')">搜索</button>
+				</div>
+			</div>
+			<ul id="missystemdepartmenttree" class="ztree" layoutH="45"></ul>
+		</div>
+	</div>
+	<div id="missystemdepartment" class="unitBox treeright">
+		<include file="deptindex"  />
+	</div>
+</div>

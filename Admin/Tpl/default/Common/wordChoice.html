@@ -1,0 +1,57 @@
+<div class="page">
+	<div class="pageContent">
+		<div  align="center">	
+			<a href="__URL__/export_word_one/export/word/id/{$id}/fileid/{$temList[0]['id']}">
+				<button type="button" class="tml_formBar_btn tml_formBar_btn_blue enterIndex">导出最新版本</button>
+			</a>				
+		</div>
+		<div  align="center" style="margin:10px 0px 0px 0px;">		
+			<a href="PageOffice://|http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}/{$name}/export_word_one/export/swf/id/{$id}/fileid/{$temList[0]['id']}|width=1200px;height=800px;|">
+				<button type="button" class="tml_formBar_btn tml_formBar_btn_blue enterIndex">在线查看</button>
+			</a>
+		</div>
+		<!-- <div align="center"><h3>没有相关的文件数据 </h3></div> -->
+		<div align="center" style="margin:10px 0px 0px 0px;">
+			<a href="__URL__/export_word_one/export/word/id/{$id}">
+				<button type="button" class="tml_formBar_btn tml_formBar_btn_blue enterIndex">无版本导出</button>
+			</a>				
+		</div>
+		<div  style="margin:10px 0px;" align="center">
+			<button type="button" class="tml_formBar_btn tml_formBar_btn_blue enterIndex histroy">浏览历史版本</button> 		
+		</div>
+		<div class="js-history" style="width:100%;" layoutH="140">
+			<table  class="into_table_new nbm_data_table" width="100%">
+				<thead>
+					<tr>
+						<th width="26">序号</th>
+						<th >版本</th>
+						<th >操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<volist id="vo" name="temList" key="key2">
+						<tr target="sid_node" rel="{$vo['id']}">
+							<td class="tml-first-td">{$key+1}</td>
+							<td class="tml-first-td">{$vo['filename']}</td>
+							<td>
+								<a class="btnSelect lookup_select_btn" href="__URL__/export_word_one/export/word/id/{$id}/fileid/{$vo['id']}" title="导出">导出</a>
+								<a class="btnSelect lookup_select_btn" href="PageOffice://|http://{$_SERVER['HTTP_HOST']}{$_SERVER['SCRIPT_NAME']}/{$name}/export_word_one/export/swf/id/{$id}/fileid/{$vo['id']}|width=1200px;height=800px;|" title="在线查看">
+									在线查看
+								</a>
+							</td>
+						</tr>
+					</volist>
+				</tbody>
+			</table>	
+		</div>
+	</div>
+</div>
+<script>
+$(function(){
+	var box = $.pdialog.getCurrent();
+	$("div.js-history",box).hide();
+	$(".histroy",box).click(function(){
+		$("div.js-history",box).toggle();
+	});
+});
+</script>

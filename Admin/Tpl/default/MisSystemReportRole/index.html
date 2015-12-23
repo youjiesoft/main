@@ -1,0 +1,74 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$roleTree};
+	var setting = {
+		view: {
+            selectedMulti: false,
+            fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#missystemreportroleindex"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("missystemreportroleindex");
+	var valid='1';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+
+
+    function missystemreportrole(obj) {
+            var $this=$("#missystemreportroleset");
+            $rel = $(obj).attr('rel');
+			$type = $(obj).attr('types');
+            $.ajax({
+                type:'POST',
+                url:"__URL__/getPanelRoleList/type/"+$type+"/partid/"+$rel,
+                async:true,
+                global:false,
+                success:function(response){
+                    var json=DWZ.jsonEval(response);
+                    if(json.statusCode==DWZ.statusCode.timeout) {
+                        alertMsg.error(json.message||DWZ.msg("sessionTimout"),{okCall:function(){
+                        if($.pdialog)$.pdialog.checkTimeout();
+                        if(navTab)navTab.checkTimeout();
+                        DWZ.loadLogin();}});
+                    }
+                    if(json.statusCode==DWZ.statusCode.error){
+                        if(json.message)alertMsg.error(json.message);
+                    }else{
+                        if(json.statusCode==DWZ.statusCode.timeout){
+                            $this.html(json.message+'<div style="display:none;">'+response+'</div>').initUI();
+                        } else {
+                            $this.html(response).initUI();
+                        }
+                  $("#missystemreportroleset").find("[layoutH]").layoutH();
+                }},
+                error:DWZ.ajaxError
+            });
+    }
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"></div>
+			<ul id="missystemreportroleindex" class="ztree" layoutH="10"></ul>
+		</div>
+	</div>
+	<div style="float: right; width: 300px;" id="missystemreportroleset">
+		<include file="getPanelRoleList" />
+	</div>
+	<div id="missystemreportroleBox" class="unitBox treeright">
+		<include file="panelroleuser" />
+	</div>
+</div>

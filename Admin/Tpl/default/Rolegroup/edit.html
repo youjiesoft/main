@@ -1,0 +1,39 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/{$rel}" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent new_version_page_content" layoutH="58">
+			<!-- text组件 start -->
+			<div class="col_1_3 form_group_lay field_name " >
+				<label class="label_new">{$fields["name"]}:</label>
+				<input type="text"  name="name" class=" input_new required  " value="{$vo['name']}">
+			</div>
+			<!-- text组件 end -->
+			<!-- select组件 start -->
+			<div class="col_1_3 form_group_lay field_pid " >
+				<label class="label_new">{$fields["pid"]}:</label>
+				<select name="pid" class="select2">
+					<option value="0" selected>无上级组</option>
+					{:getDataBaseByHtml('Rolegroup',array('selected'=>$vo['pid']))}
+				</select>
+			</div>
+			<!-- select组件 end -->
+			<!-- select组件 start -->
+			<div class="col_1_3 form_group_lay field_status " >
+				<label class="label_new">{$fields["status"]}:</label>
+				<select name="status" class="select2">
+					<option value="1" <eq name="vo.status" value="1">selected</eq>>启用</option>
+					<option value="0" <eq name="vo.status" value="0">selected</eq>>禁用</option>
+				</select>
+			</div>
+			<!-- select组件 end -->
+			<!-- text组件 start -->
+			<div class="col_1_7 form_group_lay field_remark " >
+				<label class="label_new">{$fields["remark"]}:</label>
+				<input type="text"  name="remark" class=" input_new" value="{$vo['remark']}">
+			</div>
+			<!-- text组件 end -->
+			<div class="clear"></div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

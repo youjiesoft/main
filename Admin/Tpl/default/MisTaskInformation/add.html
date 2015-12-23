@@ -1,0 +1,115 @@
+<div class="page">
+	<div class="pageContent">
+	<if condition="$exeadd">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__indexview" class="pageForm required-validate" onSubmit="return validateCallback(this, dialogAjaxDone);">
+	<else/>
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__indexview" class="pageForm required-validate" onSubmit="return validateCallback(this, navTabAjaxDone);">
+	</if>
+	    <input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="iseditor" value="1">
+        <input type="hidden" name="status" value="1" >
+		<input type="hidden" name="pid" value="{$pidtask['taskid']}" />
+        <input type="hidden" name="assignstatus" value="1" >
+        <div class="pageFormContent applecloth" layoutH="55">
+            <div class="keepContentCenter">
+				<if condition="!$exeadd">
+					<h2 class="contentTitle contentTitle_center">
+						新增任务
+					</h2>
+				</if>
+            <fieldset>
+                <legend class="fieldset_legend_toggle">
+					<b>基本信息</b>
+				</legend>
+                <if condition="$pidtask"><!-- 当前节点存在父节点-->
+                    <div class="unit">
+                        <label>{$fields["pid"]}：</label>
+                        <input type="text" class="required" style="width:520px;" readonly value="{$pidtask['title']}" />
+                        
+                    </div>
+                </if>
+				<div class="unit">
+                    <label>{$fields["taskid"]}：</label>
+					<input type="text" name="title" class="required" style="width:520px;" maxlength="30" value="{$task['title']}" />
+                </div>
+				<p>
+                    <label>{$fields["urgentstatus"]}：</label>
+                    <select name="urgentstatus" class="combox">
+						<volist name="urgentstatuslist" id="urgentstatuslistvo">
+							<option value="{$key}" <if condition="$vo['urgentstatus'] eq $key">selected</if>>{$urgentstatuslistvo}</option>
+					    </volist>
+					</select>
+                </p>
+                <p>
+                    <label>{$fields["difficulty"]}：</label>
+                    <select name="difficulty" class="combox">
+						<volist name="difficultylist" id="difficultylistvo">
+							<option value="{$key}" <if condition="$vo['difficulty'] eq $key">selected</if>>{$difficultylistvo}</option>
+					    </volist>
+					</select>
+                </p>
+                <p>
+                    <label>{$fields["trackuser"]}：</label>
+                    <input type="text" readonly class="trackorg.name textInput" name="trackusername" value="{$_SESSION['loginUserName']}" />
+                    <input type="hidden" class="trackorg.personid textInput" name="trackuser" value="{$_SESSION[C('USER_AUTH_KEY')]}" />
+                    <span class="info">
+                        <a class="input-addon input-addon-addon input-addon-add" lookupgroup="trackorg" href="__URL__/lookupmanage">人员选择</a>
+                    </span>
+                </p>
+                <p>
+                    <label>{$fields["executeuser"]}：</label>
+                    <input type="text" readonly class="required executeorg.name textInput" name="executeusername" value="" />
+                    <input type="hidden" class="required executeorg.personid textInput" name="executeuser" value="" />
+                    <span class="info">
+                        <a class="input-addon input-addon-addon input-addon-add" lookupgroup="executeorg" href="__URL__/lookupmanage/type/exe">人员选择</a>
+                    </span>
+                </p>
+                <p>
+                    <label>{$fields["begindate"]}：</label>
+                    <span class="xyInputWithUnit">
+                        <input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="required tml-border-r0 Wdate" name="begindate" value="{$nowtime|date='Y-m-d H:i',###}">
+                        <span class="input-addon input-addon-calendar"></span>
+                    </span>
+                </p>
+                <p>
+                    <label>{$fields["enddate"]}：</label>
+                    <span class="xyInputWithUnit">
+                        <input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="required tml-border-r0 Wdate" name="enddate" value="">
+                        <span class="input-addon input-addon-calendar"></span>
+                    </span>
+                </p>
+				<div class="unit">
+                    <label>推送系统消息：</label>
+                    <input type="radio" name="ispushmsg" checked value="1">是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="radio" name="ispushmsg"  value="0">否
+                </div>
+                <div class="unit">
+                    <label>任务描述：</label>
+					<textarea style="width:526px;" class="editor" name="remark" rows="18" cols="60" tools="mini"></textarea>
+                </div>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>上传附件：</label>
+                    <input id="swfupload_mistaskinformation_add" type="file" uploader="true" name="mistaskinformation_add_file" formData="{ uploadpath:'MisTaskInformation' }" />
+                    <input type="image" onclick="$('#swfupload_mistaskinformation_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                </div>
+                <dl class="nowrap"><!--此处为上传列表-->
+                    <dt><label>&nbsp;</label></dt>
+                    <dd>
+                        <span id="swfupload_mistaskinformation_add-queue" class="info uploadify-queue"></span>
+                    </dd>
+                </dl>
+            </fieldset>
+           </div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

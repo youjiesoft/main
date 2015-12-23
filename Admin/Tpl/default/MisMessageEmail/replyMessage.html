@@ -1,0 +1,268 @@
+<style>
+.eagleSearchDivInner {
+	display: block;
+	overflow: auto;
+	float: right;
+	width: auto;
+	height: auto;
+	min-width: 200px;
+	border: solid 1px #B8D0D6;
+	line-height: 21px;
+	background: #fff;
+}
+.addressee li {
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    margin: 0 4px 4px 0;
+    padding: 0 2px 0 5px;
+    width: auto;
+}
+.pageFormContent p {
+    display: block;
+    float: left;
+    height: 21px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding-bottom: 5px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 5px;
+    position: relative;
+    width: 680px;
+}
+.eagleSearchDivInner{
+	overflow:auto;
+	width:200px;
+	height:auto;
+	min-width: 200px;
+	border:solid 1px #B8D0D6;
+	line-height:21px;
+	background:#fff;
+	
+}
+</style>
+<script type="text/javascript">
+ /**
+ * 上传控制
+ **/
+$("#fjxxfile_upload_writeletter_add").uploadify({
+    'height'        : 20,
+    'formData'      : {'upload' : '1','public':"__PUBLIC__",'type':'88'},
+    'swf'           : "__PUBLIC__/uploadify/uploadify.swf",
+    'uploader'      : "__URL__/uploads/",
+    'width'         : 120,
+    'queueID'  : 'some_fjxxfile_queuead_writeletter_add',
+    'onUploadSuccess' : function(file, data, response) {
+		$("#inner_html_writeletter_add").append(data);
+    }
+});
+/**
+ *eagle:当提交时，如果是发送，调用这个方法，修正了提交到控制器中的哪个方法中去。
+ *
+ **/
+function commitview_add($this){
+	var $form = $($this);
+	$(":input[name='commit']",$form).val(1);
+	$form.attr("action","__URL__/insert/navTabId/__MODULE__" );
+	return validateCallback($form, navTabAjaxDone);
+};
+/**
+ *jiangx ：加载右边树 2013-07-29
+ */
+$(document).ready(function(){
+	var zNodes = {$usertree};
+	var setting = {
+		view: {
+			selectedMulti: false,
+			fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			onClick: zTreeOnClick
+		}
+	};
+	$.fn.zTree.init($("#mismessageusertree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("mismessageusertree");
+	var valid='{$check}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+function zTreeOnClick(event, treeId, treeNode) {
+	if (treeNode.pId != null) {
+		var $strHtml = appendUserHtml('Mismessageinbox_reply_add','recipient',treeNode.id,treeNode.name, 'recipientname');
+		$("#Mismessageinbox_reply_add").append($strHtml);
+	}
+}
+ /**
+ * 有清收件人列表
+ **/
+function clear_recever(){
+	$("#Mismessageinbox_reply_add").empty();
+	var parentdiv = $("#Mismessageinbox_reply_add").parent();
+	var oldrecipient = parentdiv.find("input[name='oldrecipient']").val();
+	var oldrecipientname = parentdiv.find("input[name='oldrecipientname']").val();
+    var $strHtml = '<li>\
+						<input type="hidden" value="'+ oldrecipient +'" name="recipient[]">\
+						<span>\
+						<input type="hidden" value="'+ oldrecipientname +'" name="recipientname[]">\
+						'+ oldrecipientname +'\
+						</span>\
+					</li>';
+    $("#Mismessageinbox_reply_add").append($strHtml);
+}
+</script>
+<div class="pageContent" style="border:1px #B8D0D6 solid;">
+<form method="post" action="__URL__/insert/rel/jbsxBoxMessage" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+	<div class="panelBar"></div>
+		<div id="jbsxBox_mismessage_writeform_one" class="unitBox" style="float:left; display:block; overflow:auto; width:99.5%; border:1px #B8D0D6 solid;margin:2px;" layoutH="70">
+		<input type="hidden" name="commit" value="0">
+        <input type="hidden" name="transpond" value="{$transpond}">
+		<input type="hidden" name="replyid" value="{$vo.id}">
+		<input type="hidden" name="iseditor" value="1"> 
+		<table cellpadding="0" cellspacing="0" border="0" class="i" style="width:100%;margin:1px 0;" >
+			<tr>
+				<td valign="top" width="80%"> <!-- 邮件内容区 start-->
+					<div >
+						<table cellpadding="0" cellspacing="0" border="0" class="i" style="width:95%; height:100%;margin:22px;text-align:left;">
+							<tr>
+								<td width="80">
+									<div>
+										<span title="主题是一封邮件的标题。">收&nbsp;件&nbsp;人：</span>
+									</div>
+								</td>
+								<td class="content_title" width="70%">
+                                <if condition="$transpond eq '1'">
+                                    <div>
+                                        <ul class="addressee left" id="Mismessageinbox_reply_add" style="height:35px;width:90%;border:1px #ccc solid;">
+                                        </ul>
+                                    </div>
+                                <else/>
+									<div>
+										<ul class="addressee left" id="Mismessageinbox_reply_add" style="height:35px;width:90%;border:1px #ccc solid;">
+											<li>
+												<input type="hidden" value="{$vo.createid}" name="recipient[]">
+												<span>
+												<input type="hidden" value="{$vo.createid|getFieldBy='id','name','User'}" name="recipientname[]">
+												{$vo.createid|getFieldBy='id','name','User'}
+												</span>
+											</li>
+										</ul>
+										<input type="hidden" value="{$vo.createid}" name="oldrecipient">
+										<input type="hidden" value="{$vo.createid|getFieldBy='id','name','User'}" name="oldrecipientname">
+									</div>
+                                </if>
+								</td>
+								<td class="content_title">				
+									<a class="btnLook" rel="mismessageinboxreplyuserlist" href="__URL__/lookupmanage/ulId/Mismessageinbox_reply_add" lookupGroup="inboxreplyuser" >查找带回</a>
+									<a href="javascript:;" onclick="clear_recever();"><img src="__PUBLIC__/Images/clear_field.gif" title="清空接收用户" /></a>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">&nbsp;</td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<span title="主题是一封邮件的标题。">邮件标题：</span>
+									</div>
+								</td>
+								<td class="content_title">
+									<div class="div_txt">
+										<div>
+											<input type="text" value="{$vo.title}" name="title" class="required " style="width:99%;" />
+										</div>
+									</div>
+								</td>
+								<td class="content_title">
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3">&nbsp;</td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<span title="主题是一封邮件的标题。">邮件内容：</span>
+									</div>
+								</td>
+                                <if condition="$transpond eq '1'">
+                                    <td class="content_title" colspan="2">
+                                        <div class="div_txt">
+                                            <div>
+                                                <textarea class="editor" name="content" style="height:200px;width:90%;" tools="mini">
+                                                    {$vo.content}
+                                                </textarea>
+                                            </div>
+                                        </div>
+                                    </td>
+                                <else/>
+    								<td class="content_title" colspan="2">
+    									<div class="div_txt">
+    										<div>
+    											<textarea class="editor" name="content" style="height:200px;width:90%;" tools="mini">
+    							
+    											</textarea>
+    										</div>
+    									</div>
+    								</td>
+                                </if>
+							</tr>
+							<tr>
+								<td colspan="3">&nbsp;</td>
+							</tr>
+							<tr>
+								<td>
+									<div>
+										<span title="主题是一封邮件的标题。">上传附件：</span>
+									</div>
+								</td>
+								<td class="content_title" colspan="2">
+									<input id="swfupload_mismessage_add" type="file" uploader="true" name="mismessage_add_file" formData="{ uploadpath:'MisMessage' }" />
+									<input type="image" onclick="$('#swfupload_mismessage_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+								</td>
+							</tr>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									<dl class="nowrap"><!--此处为上传列表-->
+										<dd>
+											<span id="swfupload_mismessage_add-queue" class="info uploadify-queue"></span>
+										</dd>
+									</dl>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</td> <!-- 邮件内容区 end -->
+				<td>  <!-- 邮件人员列表 start-->
+					<div id='searchuser'  style="width:235px;border-left: 1px solid silver;float:right;	overflow:auto;background-color:white;">
+						<div class="treeleft">
+							<div class="collapse">
+								<div class="toggleCollapse"><div></div></div>
+							</div>
+							<div class="close">
+								<div class=""><h2></h2><div></div></div>
+								<ul id="mismessageusertree" class="ztree" layoutH="165"></ul>
+							</div>
+						</div>
+					</div>
+				</td> <!-- 邮件人员列表 end-->
+			</tr>
+		</table>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="commitview_add(this.form);">发送</button></div></div></li>
+			<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}草稿</button></div></div></li>
+			<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+		</ul>
+	</div>	
+</form>
+</div>

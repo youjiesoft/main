@@ -1,0 +1,155 @@
+<script>
+//模板分类模块
+var misperformanceplan_editkpitypetd;
+function misperformanceplanedit_ondblclickkpitype(typeid,kpitypeqz,obj){
+	misperformanceplan_editkpitypetd=obj;
+	//判断分类下是否有指标
+	var val=$(obj).next('td').find('input[name^=plan_kpi]').val();
+	var options = {};
+	options.mask ="true";
+	if(val){
+		//有指标只能修改权重
+		$.pdialog.open("__URL__/edit/step/1/typeid/"+typeid+"/kpitypeqz/"+kpitypeqz+"/edit/1",'bbbb','请修改考核分类权重',options);
+	}else{
+		//无指标可修改分类
+		$.pdialog.open("__URL__/edit/step/1/typeid/"+typeid+"/kpitypeqz/"+kpitypeqz,'aaaa','请修改考核分类',options);
+	}
+	return false;
+}
+//删除指标分类
+function  MisPerformancePlan_del(obj){
+	alertMsg.confirm("您确定移除此考核分类吗", {
+		okCall: function(){
+			$(obj).parent().parent().remove();
+			planeditchangescore();
+		}
+	});
+}
+//添加考核分类
+function MisPerformancePlan_ondblclick(url,rel,title,obj){
+	var options = {};
+	options.mask ="true";
+	$.pdialog.open(url,rel,title,options);
+	return false;
+}
+//计算指标分值总和
+function planeditchangescore(){
+	var sum=0;
+	$("#MisPerformancePlanedit_tbody").find(".PlanKPIeditHidden_table_each").find('.counteditscore').each(function(){
+		if(Number($(this).val())){
+		sum+=Number($(this).val());
+		}
+	});
+	//获取模板最高分
+	var mostscore= $("input[name='mostscore']").val();	
+	$("#sumeditscore").html(sum);
+	$("input[name='planchangemost']").val(sum);
+	//sum 指标分值总和不得大于模板最高分
+	if(sum>mostscore){
+		alertMsg.error('分值已超过最高分，请重新分配分值！');
+		return false;
+	}
+}
+//自动生成一行
+function  MisPerformancePlan_editdetail(){
+	$("#MisPerformancePlanedit_tbody").find( "#MisPerformancePlan_editkpitype" ).show();
+}
+function MisPerformancePlan_editspinner(){ 
+	$("#MisPerformancePlanedit_tbody").find( ".spinner" ).spinner({min:1,max:100});
+}
+$(function(){
+	MisPerformancePlan_editspinner();
+	var sum=0;
+	//窗体加载获取指标分值总和
+	$("#MisPerformancePlanedit_tbody").find('.counteditscore').each(function(){
+		sum+=Number($(this).val());
+	});
+	$("#sumeditscore").html(sum);
+});
+//双击修改指标
+function MisPerformanceTemplate_editplankpi(typeid,$this){
+	thisplankpi = $($this).parents("td");
+	var options = {};
+	options.mask ="true";
+	$.pdialog.open("__URL__/edit/step/2/typeid/"+typeid,'anc','请选择考核指标',options);
+	return false;
+}
+</script>
+<div class="detail">
+	<div class="panelBar">
+		<h6 class="left">考核明细</h6>
+		<ul class="toolBar">
+			<if condition="$vo.ostatus=='0' ||  $ostatus=='0'">
+			<li>
+				<a class="edit" href="javascript:;" title="添加" onclick="MisPerformancePlan_editdetail()"><span>添加</span></a>
+			</li>
+			</if>
+		</ul>
+	</div>
+	<div class="tml-bg-white tml-pos-rel" layoutH="192">
+		<table style="table-layout:fixed;" class="tml-table tml-table-w">
+			<thead>
+				<tr>
+					<th>考核分类 </th>
+					<th>考核指标</th>
+					<th class="tml-w100">分值</th>
+					<if condition="$vo.ostatus=='0' ||  $ostatus=='0'"> <th>操作</th></if>
+				</tr>
+			</thead>
+			<tbody id="MisPerformancePlanedit_tbody">
+			<volist name="list" id="vo1">
+				<tr> 
+					<td  <if condition="$vo.ostatus=='0' ||  $ostatus=='0'"> ondblclick="misperformanceplanedit_ondblclickkpitype('{$vo1['kpitypeid']}','{$vo1['kpitypeqz']}',this)" </if>class="MisPerformancePlanedit_tbody_each" >
+						<input type="hidden" name="planedit_kpitypeid[]"  value="{$vo1['kpitypeid']}"/>
+						<input type="hidden"  name="plan_kpitypeqz[]" value="{$vo1['kpitypeqz']}"/>
+						<span class="plan_kpitypeqz">{$vo1['kpitypeid']|getFieldBy='id','name','mis_performance_type'}({$vo1['kpitypeqz']}%)</span>
+					</td> 
+					<td colspan="2" style="padding:0;"> 
+						<table style="table-layout:fixed" class="tml-table-w" border="0" class="PlanKPIeditHidden_table">
+							<volist name="vo1['kpi']" id="vos">
+								<tr class="PlanKPIeditHidden_table_each">
+								<td <if condition="$vo.ostatus=='0' ||  $ostatus=='0'">  ondblclick="MisPerformanceTemplate_editplankpi('{$vo1['kpitypeid']}',this)"</if> >{$vos['kpiid']|getFieldBy='id','name','mis_performance_kpi'}
+									<input type="hidden" value="{$vos['kpiid']}" name="plan_kpi{$vo1['kpitypeid']}[]">
+								</td>
+								<td style="border:none;width: 100px;">
+									<input  maxlength="3"   <if condition="$vo.ostatus=='0' || $ostatus=='0' ">  class="counteditscore required number spinner"<else/>class="counteditscore required number " readonly="readonly" </if>  type="text"  name="plan_kpiscore{$vo1['kpitypeid']}[{$vos['kpiid']}]" value="{$vos['kpiscore']}" onblur="planeditchangescore()" style="width: 50px;" >
+								</td>
+								</tr>
+							</volist>
+						</table>
+					</td>
+					<if condition="$vo.ostatus=='0' || $ostatus=='0'"> 
+					<td><a href="javascript:;" class="btnDel" onclick="MisPerformancePlan_del(this)" ></a></td>
+					</if>
+				 </tr>
+			</volist>
+			<if condition="$vo.ostatus=='0'||  $ostatus=='0'"> 
+				<tr id="MisPerformancePlan_editkpitype" style="display:none"> 
+					<td ondblclick="MisPerformancePlan_ondblclick('__URL__/edit/step/1/','abcd','请选择考核分类',this)">
+						<span style="color:red">&nbsp;</span>
+					</td>
+					<td>
+					</td>
+					<td>
+						<span></span>
+					</td>
+					<td><span></span></td>
+				</tr>
+				</if>
+				<tr  id="editsum" <if  condition="!$list">style="display:none" </if>>
+					<td >
+						<span>总分</span>
+					</td>
+					<td>
+					</td>
+					<td>
+						<span id="sumeditscore"></span>
+					</td>
+					 <if condition="$vo.ostatus=='0'">
+					<td><span></span></td>
+				</if>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>

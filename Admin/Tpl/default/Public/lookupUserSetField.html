@@ -1,0 +1,165 @@
+<style>
+tr[data-origstyle] td{
+	background-color: #d8d8d8 !important;
+}
+</style>
+<script>
+	function setChangeSortnum($this, $step) {
+		var $this = $($this);
+		var thisTr = $this.parents("tr:first");
+		var thisVal = thisTr.find("input.js-sortnum").val();
+		if ($step == "up") {
+			var prevTr = thisTr.prev();
+			if (prevTr) {
+				var prevVal = prevTr.find("input.js-sortnum").val();
+				thisTr.find("input.js-sortnum").val(prevVal);
+				prevTr.find("input.js-sortnum").val(thisVal);
+				prevTr.before(thisTr);
+			}
+		} else if ($step == "down") {
+			var nextTr = thisTr.next();
+			if (nextTr) {
+				var nextVal = nextTr.find("input.js-sortnum").val();
+				thisTr.find("input.js-sortnum").val(nextVal);
+				nextTr.find("input.js-sortnum").val(thisVal);
+				nextTr.after(thisTr);
+			}
+		}
+	}
+	$(".tml_set_table tbody")
+			.dragsort(
+					{
+						dragSelector : "div",
+						dragBetween : true,
+						dragEnd : saveThOrder
+					});
+
+	function saveThOrder() {
+		var input_list = $(".tml_set_table tbody tr input.js-sortnum");
+		input_list.each(function(i) {
+			$(this).val(i + 1);
+		});
+	};
+	function sortstypechange(obj){
+		var text1 = "升序";
+		var text2 = "降序";
+		var value1 = "asc";
+		var value2 = "desc";
+		if($(obj).text() == text1){
+			$(obj).text(text2);
+			$(obj).closest("td").find("input.sortstype").val(value2);
+		}else{
+			$(obj).text(text1);
+			$(obj).closest("td").find("input.sortstype").val(value1);
+		}
+	};
+	function datasortchange(obj){
+		if($(obj).attr("checked")=="checked"){
+			$(obj).closest("tr").find("button.sortstype").show();
+			$(obj).closest("tr").find("input.sortstype").attr("disabled",false);
+		}else{
+			$(obj).closest("tr").find("button.sortstype").hide();
+			$(obj).closest("tr").find("input.sortstype").attr("disabled",true);
+		}
+	};
+	function resetdefault(){
+		var box = $.pdialog.getCurrent();
+		var url="__URL__/lookupUserSetField";
+		var model = $("input[name='model']",box).val();
+		$.pdialog.reload(url, {data:{ttype:1,model:model}});
+	}
+</script>
+<form method="post"
+	action="__URL__/lookupUserFieldUpdate/navTabId/__MODULE__"
+	class="pageForm required-validate"
+	onsubmit="return validateCallback(this, dialogAjaxDone)">
+	<input type="hidden" name="model" value="{$CurModel}">
+	<div class="pageContent">
+		<div class="pageFormContent">
+			<table class="tml_set_table" id="indexlist" width="100%" layoutH="58">
+				<thead>
+					<tr>
+						<th>字段显示</th>
+						<th>列宽度</th>
+						<th><input type="checkbox"
+							onclick="all_select(this,'indexlist');" /> 列显示</th>
+						<th><!-- <input type="checkbox" onclick="all_select(this,'indexlist');" /> --> 列排序</th>
+						<th>显示顺序</th>
+					</tr>
+				</thead>
+				<tbody>
+			
+					<?php $sortnum = 0; ?>
+					<volist id="vo" name="list"> <if
+						condition="$vo['status'] neq -1">
+					<tr name="fields">
+						<td>
+							<!-- {$key}表示当前数组的键值 --> <input type="text"
+							name="showname[{$key}]" value="{$vo['showname']}" />
+						</td>
+						<td>
+							<input type="text" name="widths[{$key}]" value="{$vo['widths']}"/>
+						</td>
+						<td>
+						<if condition="$vo.ischosice eq 1">
+							<input type="checkbox" name="shows[{$key}]" disabled="disabled" value="1"/>
+						<else/>
+							<if condition="$vo.shows">
+								<input type="checkbox" name="shows[{$key}]" value="1" checked ="checked"/>
+							<else/>
+								<input type="checkbox" name="shows[{$key}]" value="1"/>
+							</if>
+						</if>
+							
+							</td>
+						<td>
+						<div style="display:inline-block;width:100%;">
+							<input type="checkbox" name="sorts[{$key}]" value="1" onclick="datasortchange(this);" <eq name="vo.sorts" value="1">checked</eq> />
+							<php>
+								if($vo['sorts']){
+									$dis="block";
+									$sortstype = $vo['sortstype']?$vo['sortstype']:'asc';
+									$discription = $sortstype=='asc'?'升序':'降序';
+									$disabled = '';
+								}else{
+									$dis="none";
+									$sortstype = "asc";
+									$discription = '升序';
+									$disabled = 'disabled=disabled';
+								}
+							
+							</php>
+							<button type="button" class="sortstype"  style="display:{$dis}"  onclick="sortstypechange(this);" >{$discription}</button>
+							<input name="sortstype[{$key}]" class="sortstype" type="hidden" value="{$sortstype}" {$disabled}>
+						</div>
+						</td>
+						<td>
+							<div class="dragdiv">
+							<?php $sortnum = $sortnum+1; ?>
+								<input class="js-sortnum" type="hidden" style="width: 8px;"
+									name="sortnum[{$key}]" value="{$sortnum}" /> <a
+									class="" href="javascript:;">
+									<span class="icon-move"></span>
+								</a>
+							</div>
+						</td>
+					</tr>
+					</if> </volist>
+				</tbody>
+			</table>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button type="submit" class="tml_select_btn tml_formBar_btn_blue">{$Think.lang.save}</button>
+				</li>
+				<li>
+					<button type="reset" class="tml_select_btn tml_formBar_btn_blue">{$Think.lang.reset}</button>
+				</li>
+				<li>
+					<button type="button" class="tml_select_btn tml_formBar_btn_blue" onclick="resetdefault();">默认配置</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+</form>

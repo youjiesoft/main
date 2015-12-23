@@ -1,0 +1,41 @@
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__APP__/MisAutoZpg/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<div class="pageFormContent" layoutH="48">
+				
+                    <table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+                        <tbody class="list_table">
+                            <tr class="list_table_header">
+                                <td class="cell_left" width="12%">{$fields["orderno"]}: </td>
+                                <td class="cell_right" width="21%">{$vo['orderno']}</td>
+                                <td class="cell_left" width="12%">{$fields["name"]}: </td>
+                                <td class="cell_right" width="21%">{$vo['name']}</td>
+                                <td class="cell_left" width="12%">{$fields["supcategory"]}: </td>
+                                <td class="cell_right" width="21%">{$vo.supcategory|getFieldBy='id','name','mis_system_flow_type'}</td>
+                            </tr>
+                            <tr>
+                                <td class="cell_left">{$fields["category"]}: </td>
+                                <td class="cell_right">{$vo.category|getFieldBy='id','name','mis_system_flow_type'}</td>
+                                <td class="cell_left">{$fields["hyid"]}: </td>
+                                <td class="cell_right ">{$vo['hyid']|getFieldBy='id','name','mis_sale_profession'}</td>
+                                <td class="cell_left">{$fields["custtypeid"]}: </td>
+                                <td class="cell_right">{$vo['custtypeid']|getFieldBy='id','name','mis_sale_client_type'}</td>
+                            </tr>
+                            <tr>
+                                <td class="cell_left">{$fields["cylid"]}: </td>
+                                <td class="cell_right">{$vo['cylid']|getFieldBy='id','name','mis_sale_industry'}</td>
+                                <td class="cell_left"></td>
+                                <td class="cell_right"></td>
+                                <td class="cell_left"></td>
+                                <td class="cell_right"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+			</div>			
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div> 

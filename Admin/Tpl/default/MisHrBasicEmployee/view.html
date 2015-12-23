@@ -1,0 +1,36 @@
+
+{~$classNodeSettingArr =getModelClassByNodeSetting('MisAutoDtw','view')}
+{~$formautosetting =setFormControllAutoCreate('MisAutoDtw' ,'view' , $main , 'update',$vo)}
+<div class="page">
+	<div class="pageContent">
+		<div class="pageFormContent applecloth anchorsToolBarParen"
+			<if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME">
+				<if condition="!$_REQUEST['bindaname']"> layoutH="40"</if>
+			</if>
+			>
+			<div class="new_version_page ">
+				<form id="MisAutoDtw_view"
+					{$appendPageContentArr[5]} {$formautosetting[3]}  
+					method="post" action="__APP__/MisAutoDtw/updateControll/navTabId/__MODULE__" 
+					class="pageForm required-validate"
+					onsubmit="return validateCallback(this, navTabAjaxDone)">
+					<a class='xyz_anchornavi_top' name='MisAutoDtw_view_top'></a> 
+					<input type="hidden" name="callbackType" value="closeCurrent" />
+					{:W('FormMenu',array('MisAutoDtw' , 'view',$main))}
+					<if condition="$_GET['viewtype'] neq 'view'&& !$_GET['main'] ">
+					<div class="new_version_page_header pageFormContent ">
+						<span class="left tml-ml20 ">树弹窗</span>
+						{:W('ShowRightToolBar',array('view','MisAutoDtw',$vo))}
+						{:W('ShowAnchorNavi',array('MisAutoDtw', 'view',$main))}{$formautosetting[0]}
+					</div>
+					</if>
+					<include file="contenthtml" />
+					<div class="clear">
+						<span style="display: none;" class="anchornaviforshow">MisAutoDtw_view</span><a
+							class='xyz_anchornavi_buttom' name='MisAutoDtw_view_bottom'></a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>			

@@ -1,0 +1,36 @@
+<script>
+function missystemannouncementsaveEdit(form,stepobj){
+	$(form).submit();
+} 
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="typeid" value="{$vo.typeid}" />
+			<input type="hidden" name="id" value="{$vo.id}"/>
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>上级类型：</label>
+					<input type="text" style="color:black;" readonly="readonly" value="{$pname}"/>
+					<input type="hidden" name="pid" value="{$pid}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>编码：</label>
+					<input type="text" style="color:black;" name="code" value="{$vo.code}" maxlength="50" />
+				</div>
+				<div class="tml-form-col">
+					<label>名称：</label>
+					<input type="text" style="color:black;" name="name" class="required" value="{$vo.name}" maxlength="50" />
+				</div>
+			</div>
+				<div class="tml-form-row">
+					<label>备注：</label>
+					<TEXTAREA rows="2" style="color:black;width:400px;" cols="30" name="remark">{$vo.remark}</TEXTAREA>
+				</div>
+			</div>
+			 {:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

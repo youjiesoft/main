@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html>
+<head>
+<title>页面提示</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta http-equiv='Refresh' content='{$waitSecond};URL={$jumpUrl}'>
+<style>
+body {
+	background:url(__PUBLIC__/Css/tmlstyle/i/welcome-bg.png) repeat;
+	color: #888;
+}
+
+.regCorrect, .regIgnore {
+background:url(__PUBLIC__/Images/xysuccess.png) no-repeat scroll 160px 90px transparent;
+padding-bottom: 30px;
+padding-left: 250px;
+padding-top:80px;
+}
+.message{
+margin:auto;
+margin-top:200px;
+width:623px;
+font-size:14px;
+height:213px;
+} 
+.regCorrect a{ color:#F00;}
+
+.container {
+	margin: 0 auto;
+	padding-top: 8em;
+	width: 960px;
+}
+
+.row {
+	*zoom: 1;
+}
+
+.row:before,
+.row:after {
+	content: " ";
+	display: table;
+}
+
+.row:after {
+	clear: both;
+}
+
+.col-4 {
+	float: left;
+	width: 33.33333333%;
+}
+
+.col-8 {
+	float: left;
+	width: 66.66666664%;
+}
+
+.me {
+	border-radius: 50%;
+	height: 280px;
+	overflow: hidden;
+	width: 280px;
+}
+
+.welcome {
+	color: #3e3e3e;
+	font: 24px 'Microsoft Yahei' sans-serif;
+}
+
+.welcome-info {
+	text-align: right;
+}
+
+.btn
+	{
+	position: relative;
+	display: inline-block;
+	color: #fff;
+	text-decoration: none;
+	font-weight: 700;
+	border: 0;
+	outline: 0;
+	cursor: pointer;
+	border-radius: 8px;
+	text-shadow: -1px -1px 0.5px rgba(0,0,0,0.5);
+	overflow: hidden;
+	background: #61b8db;
+	background-image: -webkit-linear-gradient(top, rgba(97,184,219,0), rgba(48,141,196,1));
+	background-image: linear-gradient(top, rgba(97,184,219,0), rgba(48,141,196,1));
+	box-shadow: inset 0px 0px 0px 1px #135c86, inset 0px 2px 1px 0px rgba(255,255,255,0.75);
+	-webkit-transition: background-color .2s ease-in-out;
+	transition: background-color .2s ease-in-out;
+}
+
+.btn {
+	font-size: 1.1em;
+	padding: 1em 2.35em 1em 2.35em;
+	vertical-align: middle;
+}
+
+.btn:hover {
+	background-color: #76cdf0;
+	color: #fff !important;
+}
+
+cite {
+	font-style: normal;
+}
+
+blockquote p {
+  position: relative;
+}
+
+blockquote p:before, blockquote p:after {
+  color: #999;
+  font: 1.25em fantasy;
+  position: absolute;
+}
+
+blockquote p:before {
+  content: "\201C";
+  left: -1.25em;
+  top: 0;
+}
+
+blockquote p:after {
+  content: "\201D";
+}
+
+blockquote small {
+  color: #999;
+}
+
+blockquote small:before {
+  content: "\2014 \00A0";
+}
+
+</style>
+</head>
+<body>
+	<div class="container">
+		<div class="row">
+			<div class="col-4">
+				<div class="me">
+					<if condition="$Solidot['solidpath']">
+						<img src="__PUBLIC__/Uploads/{$Solidot['solidpath']}"/>
+					<else/>
+						<img src="__PUBLIC__/Images/welcome.jpg" alt="Welcome" />
+					</if>
+				</div>
+			</div>
+			<div class="col-8">
+				<div class="welcome">
+					<blockquote>
+						<p>{$Solidot['zh-w']}</p>
+						<small>Said by <cite>{$Solidot['authorname']}</cite></small>
+					</blockquote>
+					<p class="welcome-info"><span class="success">{$message}</span>系统将在 <span style="color:blue;font-weight:bold">{$waitSecond}</span> 秒后自动跳转</p>
+	       			<p class="welcome-info" style="padding-left: 25px; font-size: 16px;">如果没有自动跳转，请 <a class="btn" href="{$jumpUrl}">点击这里</a></p>
+	       		</div>
+			</div>
+		</div>
+	</div>
+<!--<div class="message">
+	<div class="regCorrect">
+    	<p><span class="success">{$message}</span>系统将在 <span style="color:blue;font-weight:bold">{$waitSecond}</span> 秒后自动跳转</p>
+       	<p style="padding-left:25px; font-size:12px;">如果没有自动跳转，请 <a href="{$jumpUrl}">点击这里</a></p>
+    </div>
+</div>-->
+</body>
+</html>

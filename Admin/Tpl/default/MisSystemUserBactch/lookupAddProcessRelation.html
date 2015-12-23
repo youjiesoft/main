@@ -1,0 +1,251 @@
+<script type="text/javascript">
+	//流程li上隐藏域的ID。作用域 
+	var jsid = '{$jsid}';
+	//当前流程模型 
+	var $nodename = '{$nodename}';
+	$(function (){
+		if(isNullorEmpty(jsid)){
+			//如果不为空，则表示修改(未保存和保存的修改) 
+			var tname = $("#js-itemId"+jsid+" input[name='tname[]']").val();
+			var tparallel = $("#js-itemId"+jsid+" input[name='tparallel[]']").val();
+			var tempname = $("#js-itemId"+jsid+" input[name='tempname[]']").val();
+			var $box =$.pdialog.getCurrent();
+			
+			 if(tparallel == 1){
+				$box.find("input[name='parallel']").attr('checked',true);
+			 }
+			
+			$box.find("input[name='process_relation_name']").val(tname);
+			$box.find(".mis_auto_process_temp").val(tempname);
+			//------------JS获取li中隐藏域的值------------// 
+			var userobjidStr = $("#js-itemId"+jsid+" input[name='userobjidStr[]']").val();
+			var userobjidStrname = $("#js-itemId"+jsid+" input[name='userobjidStrname[]']").val();
+			var userobjStr = $("#js-itemId"+jsid+" input[name='userobjStr[]']").val();
+			var userobjStrname = $("#js-itemId"+jsid+" input[name='userobjStrname[]']").val();
+			var ruleStr = $("#js-itemId"+jsid+" input[name='ruleStr[]']").val();
+			var rulename = $("#js-itemId"+jsid+" input[name='rulename[]']").val();
+			var rulesinfoStr = $("#js-itemId"+jsid+" input[name='rulesinfoStr[]']").val();
+			
+			var bactchStr = $("#js-itemId"+jsid+" input[name='bactchStr[]']").val();
+			//------------------分号分隔值，进行循环绑定到html中---------------------// 
+			var userobjidArray = userobjidStr.split(";");
+			var userobjidStrnameArray = userobjidStrname.split(";");
+			var userobjStrArray = userobjStr.split(";");
+			var userobjStrnameArray = userobjStrname.split(";");
+			var bactchStrArray = bactchStr.split(";");
+			var bool = false;
+			if(isNullorEmpty(ruleStr) && isNullorEmpty(rulesinfoStr)){
+				//判断规则内容是否为空   
+				bool = true;
+				var ruleStrArray = ruleStr.split(";");
+				var rulenameArray = rulename.split(";");
+				var rulesinfoStrArray = rulesinfoStr.split(";");
+			}
+			var html = "";
+			//html循环赋值内容到页面显示 
+			for(var i=0;i<userobjidArray.length;i++) {
+				html +='<tr><td><input type="checkbox" name="userCheckbox[]"/></td>';
+			    html +='<td><input type="hidden" name="userobjidname[]" value="'+userobjidStrnameArray[i]+'"/><input type="hidden" name="userobjid[]" value="'+userobjidArray[i]+'"/>'+userobjidStrnameArray[i]+'</td>';
+			    html +='<td><input type="hidden" name="userobjname[]" value="'+userobjStrnameArray[i]+'"/><input type="hidden" name="userobj[]" value="'+userobjStrArray[i]+'"/>'+userobjStrnameArray[i]+'</td>';
+			    html +='<td>';
+			    if(bool){
+			    	html+='<input type="hidden" name="rulesinfo[]" value="'+rulesinfoStrArray[i]+'"/><input type="hidden" name="rulename[]" value="'+rulenameArray[i]+'"/><input type="hidden" name="rule[]" value="'+ruleStrArray[i]+'"/>'+rulenameArray[i]; 
+			    }
+			    html+='</td>';
+			    html +='<td><input type="text" name="bactch[]" value="'+bactchStrArray[i]+'"/></td></tr>';
+			}
+			$("table.js-addprocess_manage_table:first").append(html);
+		}
+	});
+	
+	function btnAddProcess(){
+		var $box =$.pdialog.getCurrent();
+		var container = $('table.js-process_manage');
+		var obj = $('input[type="radio"]:checked' , container);
+		//获取批次顺序
+		var sort = $(".condition_batch_input").val();
+		var order = $box.find("input[name='order']").val();
+		
+		var showrules = $box.find("."+order+" input[name='showrules']").val();
+		var rulesinfo = $box.find("."+order+" input[name='rulesinfo']").val();
+		var rules = $box.find("."+order+" input[name='rules']").val();
+		var condition_index = parseInt($('input.condition_batch_input').val(),10);
+		var userobjid = obj.val();
+		var userobjidname = obj.attr("rel");
+		if(isNullorEmpty(userobjid)){
+			var userobjname=$("#userobjStr"+userobjid).text(); //获取文本内容
+			var userobj = $("#userobjStr"+userobjid+" input[name='userobjStr']").val(); //获取隐藏域的内容
+			//批次条件
+			var rulename = "";
+			var rule = "";
+			
+			if(userobjname == null || userobjname == ''){
+				alertMsg.error("请选择对象值");
+			}else if(condition_index == 0 ){
+				alertMsg.error("请填写批次号");
+			}else{
+				var html = '<tr><td><input type="checkbox" name="userCheckbox[]"/></td>';
+				    html +='<td><input type="hidden" name="userobjidname[]" value="'+userobjidname+'"/><input type="hidden" name="userobjid[]" value="'+userobjid+'"/>'+userobjidname+'</td>';
+				    html +='<td><input type="hidden" name="userobjname[]" value="'+userobjname+'"/><input type="hidden" name="userobj[]" value="'+userobj+'"/>'+userobjname+'</td>';
+					html +='<td><input type="hidden" name="rulesinfo[]" value="'+rulesinfo+'"/><input type="hidden" name="rulename[]" value="'+showrules+'"/><input type="hidden" name="rule[]" value="'+rules+'"/>'+showrules+'</td>';
+					html +='<td><input type="text" name="bactch[]" value="'+sort+'"/></td></tr>';
+					$("table.js-addprocess_manage_table:first").append(html);
+					$('input.condition_batch_input').val('0');
+			}
+		}else{
+			alertMsg.error("请选择对象值");
+		}
+	}
+	//点击确定按钮
+	function editlooupconfiginfo($form) {
+		return validateCallback($form, function(json){
+			DWZ.ajaxDone(json);
+			if(json.statusCode==DWZ.statusCode.ok){
+			 	try{
+			 		var $box=navTab.getCurrentPanel();
+			 		var curData = $.parseJSON(json.data);
+			 		var html ="";
+			 		if(!isNullorEmpty(jsid)){html +='<li class="itemID" data-itemidx="0">';}
+			 		html +='<span class="js-itemId" id="js-itemId'+curData.time+'">';
+			 		//第一步，取出json里面的key值，便于后台获取对应的内容
+			 		html +='	<input type="hidden" name="tparallel[]" value="'+curData.parallel+'">';
+			 		html +='	<input type="hidden" name="tname[]" value="'+curData.name+'">';
+			 		html +='	<input type="hidden" name="userobjidStr[]" value="'+curData.userobjid+'">';
+			 		html +='	<input type="hidden" name="userobjidStrname[]" value="'+curData.userobjidname+'">';
+			 		html +='	<input type="hidden" name="userobjStr[]" value="'+curData.userobj+'">';
+			 		html +='	<input type="hidden" name="userobjStrname[]" value="'+curData.userobjname+'">';
+			 		html +='	<input type="hidden" name="ruleStr[]" value="'+curData.rule+'">';
+			 		html +='	<input type="hidden" name="rulename[]" value="'+curData.rulename+'">';
+			 		html +='	<input type="hidden" name="bactchStr[]" value="'+curData.bactch+'">';
+			 		html +='	<input type="hidden" name="rulesinfoStr[]" value="'+curData.rulesinfo+'"/>';
+			 		if(curData.tempname){
+			 		html +='	<input type="hidden" name="tempname[]" value="'+curData.tempname+'">';
+			 		}
+			 		html +='</span>';
+			 		if('{$ptype}'==1){
+			 			html +='	<div class="process_box" style="cursor: move;"><a href="__APP__/MisSystemUserBactch/lookupAddProcessRelation/ptype/1/modelname/'+$nodename+'/relaid/'+curData.time+'" rel="lookupAddProcessRelation" width="800" height="580" mask="true"  target="dialog">'+curData.name+'</a></div>';
+			 		}else{
+			 			html +='	<div class="process_box" style="cursor: move;"><a href="__APP__/MisSystemUserBactch/lookupAddProcessRelation/modelname/'+$nodename+'/relaid/'+curData.time+'" rel="lookupAddProcessRelation" width="800" height="580" mask="true"  target="dialog">'+curData.name+'</a></div>';
+			 		}
+			 		html +='	<div class="process_ico"></div>';
+			 		if('{$ptype}'==1 && '{$misSystemVo}'){
+			 			html +='<div class="nbm_tpl_item">'+curData.tempname+'</div>';
+			 		}
+			 		if(!isNullorEmpty(jsid)){html +='</li>';}
+			 		var ht = $(html).initUI();
+			 		//判断是否为未保存修改 
+			 		if(isNullorEmpty(jsid)){
+			 			$ha = $("#js-itemId"+jsid).parent().html(ht);
+			 		}else{
+			 			$("#list1" , $box.find("div.process:first")).append(ht);
+			 		}
+			 	}catch(e){
+				 	$(this).logs('返回数据异常！'+e.message);
+			 	}
+				$.pdialog.closeCurrent(); 
+			}
+		});
+	}
+	$(function(){
+		$('#btnDel').click(function(){
+			// 获取所有checkbox 
+			$('.js-addprocess_manage_table input[type="checkbox"]:checked').each(function(){
+				$(this).closest('tr').remove();
+			});
+		});
+	});
+	function MisSystemUserBactch_ptype(){
+		$.pdialog.closeCurrent();
+		var tabids = "__MODULE__add";
+		var urls = "__APP__/MisDynamicFormManage/edit/aname/{$nodename}/type/1";
+		var titles = "添加模板";
+		navTab.openTab(tabids, urls, {title : titles,fresh : true,data:""});
+	}
+</script>
+<style>
+.tml_new_mod{padding:5px 10px;background:#0099e6;color:#fff;border-radius: 4px;margin-top:-1px;font-size:14px;}
+.tml_new_mod:hover{color:#fff;cursor: pointer;}
+</style>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupInsert" class="pageForm required-validate" onsubmit="return editlooupconfiginfo(this)">
+		<div class="pageFormContent" layoutH="60">
+			<div class="tml-row pmt_warp">
+	            <div class="process_warp_header">节点名称：</div>
+				<input type="text" class="required textInput node_name_input" minlength="2" maxlength="25" name="process_relation_name" placeholder="必填，请输入节点名称" size="30" />
+	        	<span style="line-height: 32px; font-size: 14px; margin-left: 25px;"><input type="checkbox" value="1" name="parallel"/> 是否并行</span>
+	        </div>
+	        <if condition="$ptype eq '1' && $misSystemVo">
+	        <div class="tml-row pmt_warp">
+	         	<div class="process_warp_header">绑定模板：</div>
+	         	<div class="tml-form-col">
+	         	<select class="mis_auto_process_temp combox" name="tempname">
+	         	<volist name="misSystemVo"  id="misSystemC">
+	         	<option value="{$misSystemC.tempname}">{$misSystemC.tempname}</option>
+	         	</volist>
+	         	</select>
+	         </div>
+	       </div>
+	       </if>
+	        <div class="pmt_warp">
+	            <div class="process_warp_header">筛选操作者：</div>
+	            <table class="process_manage_table js-process_manage">
+	            	<volist name="userObj" id="uobj">
+	            		<tr>
+		                    <td width="20%">
+		                    	<input id="" type="radio" name="nameas" value="{$uobj.id}" rel="{$uobj.name}"/>
+		                    	<label class="process_radio" for="">{$uobj.name}</label>
+		                    </td>
+		                    <td width="40%">
+		                    	<if condition="$uobj['id'] eq 1">
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetUser/switch/1" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选择用户"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 2"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetDuty/switch/2" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="按职级"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 3"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetRoleGroup/switch/3" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选角色"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 4"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetDeptRole/switch/4" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选组织架构"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 5"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetField/switch/5/modelname/{$nodename}" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选表单字段"><span class="icon-search"></span>查找</a>
+		                    	</if>
+		                    	<span class="pl5" id="userobjStr{$uobj.id}"></span>
+		                    </td>
+		                </tr>
+	            	</volist>
+	            </table>
+	        </div>
+	        <div class="pmt_warp">
+	            <div class="process_warp_header">批次条件：</div>
+	            <div class="condition_batch">
+	            	{:W('ShowAddResult', array('model'=>$nodename,'data'=>$pInfoVo) )}
+	            	<span class="right"><input class="condition_batch_input" type="text" value="0"/></span>
+	            </div>
+	            <div class="condition_batch_button">
+	            	<button type="button" class="right condition_search_btn csb_red" id="btnDel">删除条件</button>
+	            	<button type="button" onclick="btnAddProcess();" class="right condition_search_btn mr5">添加条件</button>
+	            </div>
+	            <table class="process_manage_table js-addprocess_manage_table">
+	                <theader>
+	                    <tr>
+	                        <th width="8%">选中</th>
+	                        <th width="10%">类型</th>
+	                        <th width="20%">名称</th>
+	                        <th width="52%">批次/协办人条件</th>
+	                        <th width="10%">批次</th>
+	                    </tr>
+	                </theader>
+	        	</table>
+	        </div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+			<if condition="$ptype eq '1'">
+				<li><a class="tml_new_mod" onclick="MisSystemUserBactch_ptype(this)" target="navTab" rel="MisDynamicFormManage_edit" >添加模板</a></li>
+			</if>
+				<!--<li><button class="close tml-btn tml-btn-default" type="button" class="close">{$Think.lang.close</button></li>-->
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

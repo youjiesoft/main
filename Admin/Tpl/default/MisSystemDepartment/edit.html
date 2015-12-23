@@ -1,0 +1,110 @@
+<style>
+<!--
+.newstyle .tml-form-row .textInput{
+	width:500px;
+}
+.newstyle .addressee .addresseeText .textInput {
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	height: 20px;
+	width:auto;
+}
+-->
+</style>
+<script type="text/javascript">
+function clearreceverdeptUser(number,ulId){
+    $("#"+ulId).empty();
+    var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput" inputName="recipient'+number+'" chainname="recipientname'+number+'" emailName="email'+number+'" tabindex="1" autocomplete="off"></li>';
+   $('#'+ulId).append($string);
+   $('#'+ulId).find('input').focus();
+}
+</script>
+<form id="pagerForm" onsubmit="return divSearch(this,'MisSystemCompanyA')" action="__URL__/index" method="post">
+	<input type="hidden" value="{$deptid}" name="deptid"/>
+	<input type="hidden" value="{$ptId}" name="ptId"/>
+</form>
+ <div class="pageContent">
+	<form method="post"  action="__URL__/update/navTabId/MisSystemDepartment"  class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);" >
+		<input type="hidden" name="callbackType" value="closeCurrent"/>
+		<div class="pageFormContent" layoutH="58">
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle"><b>基本信息</b>
+				</legend>
+					<div class="tml-form-row">
+						<label>部门编号：</label>
+						<input type="text" value="{$vo.orderno}"   name="orderno"  class="required" style="width:300px;" autocomplete="off" />
+					</div>
+					<div class="tml-form-row">
+						<label>部门名称：</label>
+						<input type="hidden"  name="id" value="{$vo.id}"/>
+						<input type="text" value="{$vo.name}" name="name"  class="required" style="width:300px;" autocomplete="off" />
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label class="tml-text-r">隶属公司：</label>
+								<select name="companyid"  class="chosen" id="missystemdepartmentedit_com"><option>--请选择--</option>
+								<volist name="MisSystemCompanyList" id="MisSystemCompanyVo">
+								<option  <if condition="$key eq  $vo.companyid">selected="selected"</if>value="{$key}">{$MisSystemCompanyVo}</option>
+							</volist>
+								</select>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>U8编码：</label>
+						<input type="text" name="yongyouorderno"   style="width:300px;" value="{$vo.yongyouorderno}" autocomplete="off"/>
+					</div>
+					<div class="tml-form-row">
+					    <label class="tml-text-r">部门管理员</label>
+					    <div class="tml-input-append2">
+							<input type="text" name="managename" style="width:300px;" value="{$vo.manageid|getFieldBy='id','name','user'}" checkfor="MisMessage" show="name" insert="id" class="selectaudituser.managename checkByInput" autocomplete="off" />
+							<input type="hidden" name="manageid" class="selectaudituser.manageid" value="{$vo.manageid}" />
+							<a href="javascript:;" data="selectaudituser;manageid,userid;managename,username" class="input-addon input-addon-userplus checkUser">选择人员</a>
+					   </div>
+				    </div>
+					<div class="tml-form-row tml-dashed-b1">
+						<label>状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label>
+						<div class="tml-radio left tml-w80">
+							<label>
+								<input type="radio"  checked  value="1" name="status"/>启用
+							</label>
+						</div>
+						<div class="tml-radio left tml-w80">
+							<label>
+								<input type="radio"  value="0" name="status"/>禁用
+							</label>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor"><b>部门角色</b></legend>
+					<volist name="orglist" id="list">
+						<div class="tml-form-row">
+							<label>{$list.name}：</label>
+							<ul class="addressee left checkTo" id="organizational_list{$list.id}" style="width:300px;" autocomplete="off">
+								<volist name="relist[$list['id']][0]" id="r">
+									<li>
+										<input type="hidden" name="recipientname{$list.id}[]"value="{$r|getFieldBy='id','name','user'}">
+										<span>{$r|getFieldBy='id','name','user'}</span>
+										<input type="hidden" name="recipient{$list.id}[]" value="{$r}">
+										<a class="delAddressee" title="删除" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" href="javascript:;">x</a>
+									</li>
+								</volist>
+								<li class="addresseeText">
+	                                  <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);"
+	                               	  onfocus="addressee.clearVal(this);"
+	                                  type="text" checkfor="MisMessage" callback="addresseeInput" 
+	                                  show="" class="checkByInput addresseeTextInput" inputName="recipient{$list.id}" chainname="recipientname{$list.id}" 
+	                                  emailName="email{$list.id}" tabindex="1" autocomplete="off"  >
+	                            </li>
+                            </ul>
+	                        <!-- checkFor带回来的值 -->
+							<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="organizational_list{$list.id}" data="recipientname{$list.id},username,text;recipient{$list.id},userid,hidden,1;">查找带回</a>&nbsp;
+							<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverdeptUser('{$list.id}','organizational_list{$list.id}');" title="清空用户"></a>
+						</div>
+					</volist>
+					{:W('MisSystemOrderno',array(1))}
+				</fieldset>
+				 {:W('ShowAction')}
+			 </div>
+	</form>
+	</div>

@@ -1,0 +1,36 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据 
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misperformanceplanputtree"), setting, zNodes);
+	 var zTree = $.fn.zTree.getZTreeObj("misperformanceplanputtree");
+	 //默认选中子节点第一个
+	var valid='{$setscoretype}';
+	var nodes = zTree.getNodesByParam("id", valid, null);
+	zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<ul id="misperformanceplanputtree" class="ztree" layoutH="10"></ul>
+		</div>
+	</div>
+	<div id="misperformanceplanput_dept" class="unitBox treeright">
+		<include file="lookupmanageplanpersonlist"  />
+	</div>
+</div>

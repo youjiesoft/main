@@ -1,0 +1,234 @@
+<script src="__TMPL__LookupObj/lookupdatetable.js" type="text/javascript"></script>
+<script>
+function clearAllinforpresult($order){
+	var ht = '';
+	//移除添加按钮中list
+	if($order == 'processcondition_batch'){
+		//这一块是在流程管理中使用。切勿修改  liminggang
+		ht = '<input type="text" name="processcondition_batch" readonly="readonly" class="required textInput node_name_input" placeholder="必填，添加分子条件"/>';
+	}
+	$("."+$order).html(ht);
+	var atthref=$(".p_addresult"+$order).attr('atthref');
+	$(".p_addresult"+$order).attr('href',atthref);
+	$(".p_addresult"+$order).attr("listarr","");
+}
+function bbbb(obj){
+	var $box=navTab.getCurrentPanel();
+	$box.find("div.choisetable").html("");
+	$box.find("div.choisetable").attr("proid","");
+	$box.find("div.choisetable").attr("fieldback","");
+}
+initTableWNEWOne("#lookupobj_add_table");
+$(".tml_set_table tbody").dragsort({
+	dragSelector : "div.dragdiv",
+	dragBetween : true,
+	dragEnd : saveThOrder
+});
+function saveThOrder(){
+	
+}
+</script>
+<div class="page">
+	<div class="pageContent" style="background: #fff;">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<!-- <input type="hidden" name="callbackType" value="closeCurrent" /> -->
+		<input type="hidden" name="refreshtabs[data]" value="1" />
+		<input type="hidden" name="model" value="{$modelname}">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<input type="hidden"  name="formid" value="{$formid}"/>
+		<div class="pageFormContent">
+            <div class="work_shortcut_top lookup_top_header">新增</div>
+            <div class="set_configure" layoutH="96">
+                <div class="tml-row">
+                    <div class="tml-form-col">
+                        <label>标题：</label>
+                        <input type="text" class="required" name="title"  value="{$vo.title}" />
+                    </div>
+                    <div class="tml-form-col">
+                        <label>请求地址：</label>
+                        <input type="text" value="lookupGenerals"  name="url" />
+                    </div>
+                    <div class="tml-form-col">
+                        <label>lookup模型{$vo.mode}：</label>
+                        <input type="text"  name="modelname" value="{$modelname|getFieldBy='name','title','node'}" readonly />
+                    </div>
+                </div>
+                 <div class="tml-row">
+                    <div class="tml-form-col">
+                        <label>页面宽度：</label>
+                        <input type="text"  name="dialogwidth" value="820" />
+                    </div>
+                    <div class="tml-form-col">
+                        <label>页面高度：</label>
+                        <input type="text"  name="dialogheight" value="550" />
+                    </div>                    
+                    <div class="tml-form-col">
+                        <label>checkfor模型：</label>
+                        <input type="text" value="{$modelname|getFieldBy='name','title','node'}" readonly />
+                         <input type="hidden"  name="checkformodel" value="{$vo.checkformodel}" readonly />
+                    </div>
+                </div>
+                <div class="tml-form-row">
+                    <label>过滤条件：</label>
+                    {:W('ShowAddResult', array('model'=>$modelname,'data'=>$vo))}
+                </div>
+                <div class="tml-row">
+                	<div class="tml-form-col">
+	                    <label title="是否启用自定义存储字段">是否启用自定义存储字段：</label>
+	                    <input type="radio" name="customstatus" value="0" checked>否
+	                    <input type="radio" name="customstatus" value="1">是
+                    </div>
+                    <div class="tml-form-col" >
+						<label title="">配置类型：</label>
+						<input type="radio" name="conftype" value="0" checked>用户自定义
+	                    <input type="radio" name="conftype" value="1">系统配置
+					</div>
+                </div>
+                <if condition="$datatablecount gt '0'">
+                <div class="tml-form-row">
+                    <div class="add_del_btn_group">
+                        <label>选择内嵌表格：</label>
+                        <button class="condition_btn condition_add p_addresult" type="button"   onclick="openDatetable(this);"><span class="icon-plus"></span> 添加</button>
+                        <a class="condition_clear condition_btn" onclick="bbbb(this);" href="javascript:;"><span class="icon-trash"></span> 清除</a>
+                    </div>
+                    <div class="adddt choisetable"></div>
+                    <button type="button" class="condition_btn condition_add see_only_btn" style="display:none;" onclick="checkbutton(this);">查看</button>
+                </div>
+                </if>
+                <div class="tips_info_lay">
+                    <span class="icon-comments" style="margin-right: 5px"></span><span>友情提示：如果不选查找储存字段，系统会默认为其选择成字段id</span>
+                </div>
+                <table id="lookupobj_add_table" class="tml_set_table nbm_data_table" width="90%" table_data='{"searching":false,"addRow":false,"paging":false}'>
+                    <thead>
+                    <tr style="border-top:1px solid #d8d8d8;">
+                    	<th></th>
+                        <th>英文字段</th>
+                        <th>中文名称</th>
+                        <th>查找带回字段</th>
+                        <th>查找储存字段</th>
+                        <th>查找显示字段</th>
+                        <if condition="$datatablecount gt '0' ">
+                        <th>带内嵌表合并字段</th>
+                        </if>
+                        <th>列显示字段</th>
+                        <th>是否函数转换</th>
+                        <th>转换函数</th>
+                        <th>函数参数</th>
+                        <th>checkfor显示字段</th>
+                        <th>按字段排序</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <volist id="vl" name="detailList" key="key2">
+                    <tr>
+                    <td>
+                    	 	<div class="dragdiv">
+			 					<a href="javascript:;" class="">
+									<span class="icon-move"></span>
+								</a>
+							</div>
+						</td>
+                        <td>{$vl.name}</td>
+                        <td>{$vl.showname}</td>
+                        <if condition="$vl.name eq 'id'">
+                        <td><input type="checkbox" checked="checked"   disabled="disabled">
+                            <input type="hidden" name="fields[]" value="{$vl.name}">
+                        </td>
+                        <else/>
+                        <td><input type="checkbox" name="fields[]"  <if condition="in_array($vl.name,$vo.fields)">checked="checked"</if> <if condition="$vl.fieldcategory eq 'date'">value="{$vl.name}"<else/>value="{$vl.name}"</if>  ></td>
+                        </if>
+                       
+                        <td><input type="radio" name="val" onclick="clickLimit(this)"  <if condition="$vl.name eq $vo.val">checked="checked"</if>  value="{$vl.name}"></td>
+                        
+                        <td><input type="radio" name="filed" onclick="clickLimit(this)"  <if condition="$vl.name eq $vo.filed">checked="checked"</if>  value="{$vl.name}"></td>
+                        <if condition="$datatablecount gt '0'">
+                        <td><input type="checkbox" name="fieldcom[]" onclick="clickboxLimit(this)"  <if condition="$vl.name eq $vo.fieldcomname">checked="checked"</if>  value="{$vl.name}"></td>
+                        </if>
+                        <td><input type="checkbox" name="listshowfields[]" <if condition="in_array($vl.name,$vo.listshowfields)">checked="checked"</if> value="{$vl.name}"></td>
+                        <td><input type="checkbox" name="funccheck[]"  value="{$vl.name}"></td>
+                        <td><input type="text" name="func[{$vl.name}]" value='' ></td>
+                        <td><input type="text" name="funcdata[{$vl.name}]"></td>
+                        <td><input type="radio" name="filed1" onclick="clickLimit(this)"  <if condition="$vl.name eq $vo.filed1">checked="checked"</if> value="{$vl.name}"></td>
+                    	<td>
+                    	<input type="checkbox" name="datasort[{$vl.name}]"  <if condition="in_array($vl.name,$vo.datasort)">checked="checked"</if> value="{$vl.name}" >
+                    	
+
+                    		<button type="button" class="sorttype" style="display:none;">升序</button>
+                    		<input type="hidden" name="sorttype[{$vl.name}]" value="asc" class="sorttype" disabled value="asc">
+                    	</td>
+                    </tr>
+                    </volist>
+                    </tbody>
+                </table>
+                {:W('ShowAction')}
+            </div>
+		</div>
+		 </form>
+		</div>
+		</div>
+<script type="text/javascript">
+ var box = navTab.getCurrentPanel();
+function clickLimit(obj){
+	var node = $(obj).closest('tr').find('input[type="checkbox"]:first');
+		if(node.is(':checked')){	
+		}else{
+			alert("该字段必须在已选择好的查找带回字段中选择");
+			$(obj).attr('checked',false);
+		}		
+}
+function clickboxLimit(obj){
+	var node = $(obj).closest('tr').find('input[type="checkbox"]:first');
+	if(node.is(':checked')){		
+	}else{
+		if($(obj).attr("checked")){
+			alert("该字段必须在已选择好的查找带回字段中选择");
+			$(obj).attr('checked',false);
+		}
+		
+	}	
+}
+function clickfuncLimit(obj){
+	var node = $(obj).closest('tr').find('input[type="checkbox"]:first');
+	if(node.is(':checked')){		
+	}else{
+		if($(obj).attr("checked")){
+			alert("该字段必须在已选择好的查找带回字段中选择");
+			$(obj).attr('checked',false);
+			return;
+		}		
+	}
+	var func = $(obj).closest('tr').find('input[name^="func["]').val();
+	if(func){
+	}else{
+		if($(obj).attr("checked")){
+			alert("该字段必须在有了转换函数之后再选择");
+			$(obj).attr('checked',false);
+		}
+	}
+}
+$(function(){
+	var box = navTab.getCurrentPanel();
+	$("button.sorttype",box).click(function(){
+		var text1 = "升序";
+		var text2 = "降序";
+		var value1 = "asc";
+		var value2 = "desc";
+		if($(this).text() == text1){
+			$(this).text(text2);
+			$(this).closest("td").find("input.sorttype").val(value2);
+		}else{
+			$(this).text(text1);
+			$(this).closest("td").find("input.sorttype").val(value1);
+		}
+	});
+	$("input[name^='datasort[']").click(function(){
+		if($(this).attr("checked")=="checked"){
+			$(this).closest("tr").find("button.sorttype").show();
+			$(this).closest("tr").find("input.sorttype").attr("disabled",false);
+		}else{
+			$(this).closest("tr").find("button.sorttype").hide();
+			$(this).closest("tr").find("input.sorttype").attr("disabled",true);
+		}
+	});
+});
+</script>

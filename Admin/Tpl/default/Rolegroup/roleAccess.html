@@ -1,0 +1,59 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$roleaccesstree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			check: {
+				enable: true,
+				chkboxType: {"Y":"ps","N":"ps"}
+			},
+			callback: {
+				onCheck: zTreeOnCheck
+			}
+		};
+	$.fn.zTree.init($("#rolegroupaccesstree"), setting, zNodes);
+});
+function zTreeOnCheck(event, treeId, treeNode) {
+	//var checked=0;
+	//if(treeNode.checked) checked = 1;
+	//for(var i = 0; i < treeNode.children.length; i++) {
+		//alert(treeNode.children[i].id);
+		/*$.ajax({
+			type:"POST",
+			url:"__URL__/nodeSaveNew",
+			data:{roleid:rooleid,nodeid:treeNode.children[i].id,type:type},
+			cache:false,
+			success:function(res){
+			    //alert(res);
+			},
+			error:DWZ.ajaxError
+		});*/
+	//}
+}
+</script>
+<div class="pageContent" >
+	<div class="treeleft">
+		<div class="collapse" style="display:none;width:24px;height:auto;border:0;" layoutH="7">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse" ><h2></h2><div></div></div>
+			<div class="clearfix" style="border:0 solid #95B8E7;border-width:1px 0;padding:4px;">
+				<input class="tree-search-input" type="text" id="userroleSearchNodeKeys" />
+				<div class="buttonActive"><div class="buttonContent" onclick="SearchZTreeNode('rolegroupaccesstree','userroleSearchNodeKeys')"><button>搜索</button></div></div>
+			</div>
+			<ul id="rolegroupaccesstree" class="ztree" layoutH="78"></ul>
+		</div>
+	</div>
+	<div id="userroleaccessright" class="unitBox treeright">
+		<include file="roleAccessRight"  />
+	</div>
+</div>

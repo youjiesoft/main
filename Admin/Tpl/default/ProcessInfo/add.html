@@ -1,0 +1,35 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/SystemProcessSet" class="pageForm required validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="57">
+			<div class="tml-form-row">
+				<label>编号：</label>
+				<input type="text" class="required textInput" minlength="2" maxlength="10" name="code" size="30"/>
+			</div>
+			<div class="tml-form-row">
+				<label>名称：</label>
+				<input type="text" class="required textInput" minlength="2" maxlength="25" name="name" size="30"/>
+			</div>
+			<div class="tml-form-row">
+				<label>类型：</label>
+				<select name="typeid" class="combox">
+					<option value="0">公共类型</option>
+					<volist name="typelist" id="t">
+						<option value="{$t['id']}">{$t['name']}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="tml-form-row">
+				<label>备注：</label>
+				<textarea name="remark" class="textInput" minlength="2" maxlength="25" rows="3" cols="40"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

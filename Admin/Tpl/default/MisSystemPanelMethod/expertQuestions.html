@@ -1,0 +1,27 @@
+<script>
+function getNewQuesTions($this,type){
+    $($this).addClass('active');
+    $($this).siblings('.active').removeClass('active');
+    $("#lookupMyQuestion").loadUrl(TP_APP+"/MisSystemPanelMethod/expertQuestions/type/"+type,{},function(){
+    $("#lookupMyQuestion").find("[layoutH]").layoutH();});
+}
+</script>
+
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="_blank" rel="MisExpertQuestion" title="{$name}" href="__APP__/MisSystemNoticeMethod/expertlist"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+        <div class="xytag">
+            <a class="active" href="#" onclick="getNewQuesTions(this,1)">最新提问</a><a href="#" onclick="getNewQuesTions(this,2)">等我来答</a><a href="#" onclick="getNewQuesTions(this,3)">问题列表</a><a href="__APP__/MisSystemNoticeMethod/expertlist" target="_blank">去专家问答</a>
+        </div>
+    </div>
+    <!--<div class="tml_bottom_style"></div>-->
+    <div class="part_content">
+       <div id="lookupMyQuestion">
+            <include file="MisSystemPanelMethod:inlExpertQuestions" />
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

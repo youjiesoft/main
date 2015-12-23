@@ -1,0 +1,21 @@
+<script>
+$(function(){
+	var box = navTab.getCurrentPanel();
+	$(".show_right_top_toolbar",box).remove();
+	var formsize = $("form",box).size();
+	if(formsize == 1){
+		var form =  $("form",box);
+		var action = "__URL__/update/navTabId/__MODULE__";
+		form.attr("action",action);
+		
+		form.append('<input type="hidden" name="curModelForDataManage" value="{$curModel}">');
+	}
+});
+</script>
+
+<div>
+<div>
+{$a2}
+</div>
+
+</div>

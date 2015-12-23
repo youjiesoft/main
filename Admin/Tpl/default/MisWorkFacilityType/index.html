@@ -1,0 +1,49 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misworkfacilitytypetree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("misworkfacilitytypetree");
+    var valid='-2';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div>
+             </div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="MisWorkFacilityTypeSearchNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('mishrleaveemployeetree','MisHrLeaveEmployeeSearchNodeKeys')">搜索</button>
+				</div>
+			</div>
+	  		<ul class="toolBar"> 
+				<li><a class="add" url="__URL__/add/mdtype/MisWorkFacilityType"  mask="true" onclick="addNodes(this,'misworkfacilitytypetree');" title="添加分类" href="javascript:;" mask="true"><span></span></a></li>
+				<li><a class="delete" href="javascript:;" onclick="delNodes('misworkfacilitytypetree','/MisWorkFacilityType/delete/table/MisWorkFacilityType/id/','misworkfacilitytype_index',1);"><span></span></a></li>
+				<li><a class="edit" url="__URL__/edit/mdtype/MisWorkFacilityType/id/" mask="true" onclick="editNodes(this,'misworkfacilitytypetree');" title="修改分类" href="javascript:;"><span></span></a></li>
+			</ul>
+			<ul id="misworkfacilitytypetree" class="ztree" layoutH="43"></ul>
+		</div>
+	</div>
+	<div id="misworkfacilitytype" class="unitBox treeright">
+		<include file="workfacilitytype"  />
+	</div>
+</div>

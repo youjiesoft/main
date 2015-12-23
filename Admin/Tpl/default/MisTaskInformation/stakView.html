@@ -1,0 +1,88 @@
+<div class="page">
+	<div class="pageContent" >
+    <form method="post" id="mistaskinformationeditform" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+        <input type="hidden" name="callbackType" value="closeCurrent">
+        <input type="hidden" name="id" value="{$vo['id']}"/>
+        <input type="hidden" name="assignstatus" value="{$vo['assignstatus']}"/>
+        <input type="hidden" name="taskid" value="{$vo['taskid']}"/>
+        <div class="pageFormContent applecloth" layoutH="55">
+            <div class="keepContentCenter">
+                <H2 class="contentTitle contentTitle_center">
+                    任务查看
+                </H2>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>基本信息</b>
+                    </legend>
+                    <div class="unit">
+                        <label>{$fields["taskid"]}：</label>
+			<span class="fontGray">{$task['title']}</span>
+                    </div>
+		    <p>
+                        <label>{$fields["urgentstatus"]}：</label>
+			<span class="fontGray">{$vo['urgentstatus']|excelTplselected='1:一般处理,2:优先处理,3:急需处理'}</span>
+                    </p>
+                    <p>
+                        <label>{$fields["difficulty"]}：</label>
+			<span class="fontGray">{$vo['difficulty']|excelTplselected='1:D级,2:C级,3:B级,4:A级'}</span>
+                    </p>
+		    <p>
+                        <label>{$fields["trackuser"]}：</label>
+			<span class="fontGray">{$vo['trackuser']|getFieldBy='id','name','User'}</span>
+                    </p>
+                    <p>
+                        <label>{$fields["executeuser"]}：</label>
+			<span class="fontGray">{$vo['executeuser']|getFieldBy='id','name','User'}</span>
+                    </p>
+                    
+                    <p>
+                        <label>{$fields["executingstatus"]}：</label>
+			<span class="fontGray">{$vo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}</span>
+                    </p>
+		    <p>
+                        <label>{$fields["realityknowdate"]}：</label>
+			<span class="fontGray">{$vo["realityknowdate"]|date="Y-m-d H:i",###}</span>
+                    </p>
+                    <p>
+                        <label>{$fields["begindate"]}：</label>
+			<span class="fontGray">{$vo['begindate']|date='Y-m-d H:i',###}</span>
+                    </p>
+                    <p>
+                        <label>{$fields["enddate"]}：</label>
+			<span class="fontGray">{$vo["enddate"]|date="Y-m-d H:i",###}</span>
+                    </p>
+                    <p>
+                        <label>{$fields["realitybegindate"]}：</label>
+			<span class="fontGray">{$vo["realitybegindate"]|date="Y-m-d H:i",###}</span>
+                    </p>
+                    <p>
+                        <label>{$fields["realityenddate"]}：</label>
+			<span class="fontGray"><if condition="$vo.realityenddate">{$vo["realityenddate"]|date="Y-m-d H:i",###}</if></span>
+                    </p>
+                    <div class="clear"></div>
+                     <div class="unit">
+                        <label>任务描述：</label>
+			<div class="xyqa-view-main" style="background:none repeat scroll 0 0 #F4F4F4;width:506px;height:200px;overflow:auto;">
+                            <div class="entry-content" style="text-indent: 2em;Line-height:20px;">{$vo['remark']}</div>
+                        </div>
+                    </div>
+                    <if condition="$attarry">
+                    <div class="unit">
+                        <label>上传附件：</label>
+                            <volist name="attarry" id="att">
+                                 <p style="padding-left:0px;"><label style="width: 70px;">附件{$key+1}</label><a class="" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+                            </volist>
+                        </dd>
+                    </div>
+                    </if>
+                </fieldset>
+            </div>
+		</div>
+		<div class="formBar">
+			<ul>
+                <li><div class="button"><div class="buttonContent"><button type="button">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

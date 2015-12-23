@@ -1,0 +1,133 @@
+<script>
+function MisEquipmentApplication_del(obj,$subid){
+	alertMsg.confirm("您确定移除此设备吗？", {
+		okCall: function(){
+			if($subid){
+				$.ajax({
+					type : 'POST',
+					url : "__URL__/lookupsubdelete",
+					data : {
+						id : $subid,
+					},
+					cache : false,
+					global : false,
+					success : function(msg) {
+						if(msg){
+							$(obj).parents('tr').remove();
+						}
+					}
+				});
+			}else{
+				$(obj).parents('tr').remove();
+			}
+			//重新计算ND
+			$("._itemIndexapp").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+	});
+}
+function appendappaddHtml(name,objid, objmodel, id,orderno,version,appqty, returnqty,unit, place,createname,opeartion,etype) {
+		var lg=$("#MisWorkFacilityReturnMas_tbody .applications").length;
+		var divleng = Number(lg+1);
+		var isTrue = true;
+		$("#MisWorkFacilityReturnMas_tbody").find("input[name^='disid']").each(function() {
+			if ($(this).val() == id) {
+				isTrue = false;
+			}
+		});
+		var $str = "";
+		if (isTrue) {
+			$str += "<tr>";
+			$str+="<td class='_itemIndexapp'>"+divleng+"</td>"
+			$str += "<td>";
+			$str += "<input type='hidden' class='applications' name='disid[]' value='"+id+"'>"
+					+ orderno + "";
+			$str += "</td>";
+			$str += "<td>" +etype + "</td>";
+			$str += "<td>" + name + "</td>";
+			$str += "<td>" + version + "</td>";
+			$str += "<td>" + appqty + "</td>";
+			$str += "<td>" + returnqty + "</td>";
+			$str += "<td>" + unit + "</td>";
+			$str += "<td>" + place + "</td>";
+			$str += "<td>" + createname + "</td>";
+			$str += "<td>" + opeartion + "</td>";
+			$str += "<td><input type='text'  style='width:50px;'  onblur='FormatNumber(this)' max="+Number(returnqty.replace(/,/g,""))+" name='rqty[]'></td>";
+			$str += "<td><a href='javascript:;' class='btnDel' onclick='MisEquipmentApplication_del(this)' ></a>";
+			$str += "</td>";
+			$str += "</tr>";
+			$("#MisWorkFacilityReturnMas_tbody").append($str);
+		}
+	}
+	function misworkfacilityreturnmas_addwf(name,objid, objmodel, id,orderno,version,appqty,returnqty, unit, place,createname,opeartion,etype) {
+		appendappaddHtml(name,objid, objmodel, id,orderno,version,appqty,returnqty, unit, place,createname,opeartion,etype);
+	}
+	function misworkfacilityreturnmas_selectinto() {
+		var $dialog = $.pdialog.getCurrent();
+		if ($(".MisWorkFacilityReturnMaslist").find("input[type='checkbox']:checked").length < 1) {
+			alertMsg.error('请选择设备！');
+			return false;
+		}
+		var $boolname = false;
+		$(".MisWorkFacilityReturnMaslist").find("input[type='checkbox']:checked").each(function() {
+					var val = DWZ.jsonEval($(this).attr('value'));
+					misworkfacilityreturnmas_addwf(val.name,val.objid, val.objmodel,val.id, val.orderno,val.version, val.appqty,val.returnqty,val.unit,val.place,val.createname,val.opeartion,val.etype);
+				});
+		$.pdialog.close($dialog);
+	}
+</script>
+<div class="layoutBox">
+<div class="panelBar">
+<ul class="toolBar">
+		<li>
+			<a class="add" href="__URL__/lookupworkfacilityreturn" lookupGroup="org" title="选择设备"><span>添加</span></a>
+		</li>
+</ul>
+</div>
+<table class="tml-table" width="100%">
+    <thead>
+        <tr>
+       		<th width="40">序号</th>
+			<th width="120">设备编号</th>
+			<th >设备类型</th>
+			<th width="100">设备名称</th>
+			<th>设备型号</th>
+			<th>分布数量</th>
+			<th>可归还数量</th>
+			<th width="40">单位</th>
+			<th>存放地点</th>
+			<th>存放人</th>
+			<th>申请类型</th>
+			<th>退还数量</th>
+			<th>操作</th>
+		</tr>
+    </thead>
+    <tbody id="MisWorkFacilityReturnMas_tbody">
+    <if condition="$sublist">
+    <volist name="sublist" id="subvo" key="i">
+    <tr>
+    <td class="_itemIndexapp">{$i}</td>
+    <td>
+		<input class="applications" type="hidden"   value="{$subvo.objid}" name="disid[]">
+		<input type="hidden"  name="subid[]" value="{$subvo.id}"/>
+		<input type="hidden"  name="oldrty[]" value="{$subvo.returnqty}"/>
+		{$subvo.manageid|getFieldBy='id','orderno','mis_work_facility_manage'}
+	</td>
+ 	<td>{$subvo.manageid|getFieldBy='id','equipmenttype','mis_work_facility_manage'|getFieldBy='id','name','mis_work_facility_type'}</td>
+  	<td>{$subvo.manageid|getFieldBy='id','equipmentname','mis_work_facility_manage'}</td>
+   	<td>{$subvo.manageid|getFieldBy='id','version','mis_work_facility_manage'}</td>
+    <td>{$subvo.objid|getFieldBy='id','appqty','mis_work_facility_distribute'|getDigits}</td>
+    <td>{$subvo.sumreturnqty|getDigits}</td>
+    <td>{$subvo.manageid|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}</td>
+    <td>{$subvo.objid|getFieldBy='id','place','mis_work_facility_distribute'}</td>
+    <td>{$subvo.objid|getFieldBy='id','createid','mis_work_facility_distribute'|getFieldBy='id','name','user'}</td>
+    <td>{:getSelectByName('operationdis',$subvo['operationname'])}</td>
+    <td>  <input type="text" name="rqty[]"  onblur='FormatNumber(this)' style="width:50px; max="{$subvo.sumreturnqty}" value="{$subvo.returnqty|getDigits}"></td>
+    <td><a href='javascript:;' class='btnDel' onclick='MisEquipmentApplication_del(this,{$subvo.id})' ></a> </td>
+    </tr>
+    </volist>
+    </if>
+    </tbody>
+</table>
+</div>

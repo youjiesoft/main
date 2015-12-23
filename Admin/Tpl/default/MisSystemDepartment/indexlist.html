@@ -1,0 +1,166 @@
+<style>
+<!--
+.newstyle .tml-form-row .textInput{
+	width:500px;
+}
+.newstyle .addressee .addresseeText .textInput {
+	-webkit-border-radius: 0;
+	border-radius: 0;
+	height: 20px;
+	width:auto;
+}
+-->
+</style>
+<script>
+//清除联系人
+/**
+ * number 表示选择的是收件人还是抄送人，ullid表示的是收件人或抄送人的ulid  
+ */
+function clearreceverdeptUser(number,ulId){
+     $("#"+ulId).empty();
+     var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput" inputName="recipient'+number+'" chainname="recipientname'+number+'" emailName="email'+number+'" tabindex="1" autocomplete="off"></li>';
+    $('#'+ulId).append($string);
+    $('#'+ulId).find('input').focus();
+}
+/****新增部门 JS*****/
+function addDept(){
+	var $ptId = '{$deptid}';
+	var $company = '{$companyid}';
+	var url = "__URL__/index/addJump/1";
+	$("#misSystemDept_index").loadUrl(url,{ptId:$ptId,companyid:$company},function(){
+		$("#misSystemDept_index").find("[layoutH]").layoutH();
+	});
+}
+function deptRoleGroup(){
+	var url = "__APP__/MisOrganizationalSet/add"
+	var options = {};
+	options.mask = "true";
+	options.height = 400;
+	$.pdialog.open(url,"MisSystemDepartmentimport", "部门角色_新增",options);
+}
+
+</script>
+<form id="pagerForm" action="__URL__" method="post">
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this,'misSystemDept_index')" action="__URL__/index" method="post">
+	<input type="hidden" value="1" name="jump"/>
+	<input type="hidden" value="{$deptid}" name="deptid"/>
+	<input type="hidden" value="{$ptId}" name="ptId"/>
+</form>
+<div class="pageContent">
+	<form method="post" <if condition="!$deptid">action="__URL__/insert/navTabId/__MODULE__"<else/>action="__URL__/update/rel/misSystemDept_index"</if> class="pageForm required-validate" onsubmit="return iframeCallback(this,navTabAjaxDone);" >
+		<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="56">
+			<div class="keepContentCenter form-affix-content newstyle">
+				<div class="contentTitle contentTitle_center form-affix-title">
+						<span class="xyEditFormIcon clearfix">
+						<if condition="$_SESSION.a eq 1 or $vo.manageid eq $userid or $_SESSION.missystemdepartment_add">
+							<button class="xyIconSaveButton" type="button" onclick="addDept();">新增</button>
+						</if>
+						<if condition="$_SESSION.a eq 1 or $vo.manageid eq $userid or $_SESSION.missystemdepartment_delete">
+							<button class="xyicon xyIconSaveNewButton" type="button" onclick="delNodes('MisSystemDepartment','/MisSystemDepartment/delete/id/','misSystemDept_index');">删除</button>
+						</if>
+						<if condition="$_SESSION.a eq 1 or $vo.manageid eq $userid or $_SESSION.misorganizationalset_add">
+							<button class="xyicon xyIconSaveNewButton" type="button" onclick="deptRoleGroup();">新增部门角色</button>
+						</if>
+						</span>
+				</div>
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor"><b>基础信息</b></legend>
+					<div class="tml-form-row">
+						<label>部门名称：</label>
+						<input type="hidden" name="id" value="{$vo.id}"/>
+						<input type="text" class="required" name="name" value="{$vo.name}"/>
+					</div>
+					<div class="tml-form-row">
+						<label>部门编号：</label>
+						<input type="text" class="" size="65" name="code" value="{$vo.code}"/>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label class="tml-text-r">隶属公司：</label>
+							<if condition="$vo.id">
+								<input type="text" readonly="readonly" class="" value="{$vo.companyid|getFieldBy='id','name','mis_system_company'}"/>
+								<else/>
+								<select name="companyid" class="combox required" onchange="chooiseCompany(this,'js-systemDeptIndexAdd');">
+									<if condition="$companylist">
+									 	<volist name="companylist" id="cplist">
+									 		<option value="{$cplist.id}" <if condition="$companyid eq $cplist.id">selected</if> >{$cplist.name}</option>
+									 	</volist>
+									 	<else/>
+									 	<option selected="selected" value="">请选择公司</option>
+									</if>
+								</select>
+							</if>
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label class="tml-text-r">上级部门：</label>
+							<input type="hidden" name="oldparentid" value="{$vo.parentid}"/>
+							<select name="parentid" class="combox" id="js-systemDeptIndexAdd">
+								<option selected="selected" value="">请选择</option>
+								{$html}
+							</select>
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label class="tml-text-r">管理区域：</label>
+							<select name="siteid" class="combox">
+								<option selected="selected" value="">请选择</option>
+								{:getDataBaseByHtml('mis_sales_site',array('selected'=>$vo['siteid']))}
+							</select>
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>U8编码：</label>
+							<input type="text" name="yongyouorderno"   style="width:300px;" value="{$vo.yongyouorderno}" autocomplete="off"/>
+						</div>
+					</div>
+					<div class="tml-form-row">
+					    <label class="tml-text-r">部门管理员</label>
+					    <div class="tml-input-append2">
+							<input type="text" name="managename" style="width:300px;" value="{$vo.manageid|getFieldBy='id','name','user'}" checkfor="MisMessage" show="name" insert="id" class="selectaudituser.managename checkByInput" autocomplete="off" />
+							<input type="hidden" name="manageid" class="selectaudituser.manageid" value="{$vo.manageid}" />
+							<a href="javascript:;" data="selectaudituser;manageid,userid;managename,username" class="input-addon input-addon-userplus checkUser">选择人员</a>
+					   </div>
+				    </div>
+				</fieldset>
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor"><b>部门角色</b></legend>
+					<volist name="orglist" id="list">
+						<div class="tml-form-row">
+							<label>{$list.name}：</label>
+							<ul class="addressee left checkTo" id="organizational_list{$list.id}" style="width:80%;">
+								<volist name="relist[$list['id']][0]" id="r">
+									<li>
+										<input type="hidden" name="recipientname{$list.id}[]"value="{$r|getFieldBy='id','name','user'}">
+										<span>{$r|getFieldBy='id','name','user'}</span>
+										<input type="hidden" name="recipient{$list.id}[]" value="{$r}">
+										<a class="delAddressee" title="删除" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" href="javascript:;">x</a>
+									</li>
+								</volist>
+								<li class="addresseeText">
+	                                  <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);"
+	                               	  onfocus="addressee.clearVal(this);"
+	                                  type="text" checkfor="MisMessage" callback="addresseeInput" 
+	                                  show="" class="checkByInput addresseeTextInput" inputName="recipient{$list.id}" chainname="recipientname{$list.id}" 
+	                                  emailName="email{$list.id}" tabindex="1" autocomplete="off">
+	                            </li>
+                            </ul>
+	                        <!-- checkFor带回来的值 -->
+							<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="organizational_list{$list.id}" data="recipientname{$list.id},username,text;recipient{$list.id},userid,hidden,1;">查找带回</a>&nbsp;
+							<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverdeptUser('{$list.id}','organizational_list{$list.id}');" title="清空用户"></a>
+						</div>
+					</volist>
+				</fieldset>
+			</div>
+		</div>
+		<div class="formBar tml-text-c">
+			<if condition="$_SESSION.a eq 1 or $vo.manageid eq $userid or $_SESSION.missystemdepartment_add">
+				<button class="tml-btn tml-btn-blue tml-btn-special tml-mr10" type="submit">{$Think.lang.save}</button>
+			</if>
+		</div>
+	</form>
+</div>

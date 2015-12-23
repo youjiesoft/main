@@ -1,0 +1,31 @@
+<script>
+$(function(){
+	$(".closeAuditDiv").click(closeAuditDiv);
+	$(".submitAuditDiv").click(function(){
+		var $form = $(this.form);
+		return validateCallback($form, startProcessRefreshTabs);
+	});
+});
+</script>
+<div class="js-auditDiv tml_audit_div">
+	<div class="pageFormContent">
+	    <fieldset>
+            <div class="audit_line_lay">
+                <label>意见</label>
+                <div class="audit_ll_right">
+                    <textarea style="width: 312px; height: 100px" name="doinfo" class="required js-focustextarea">同意</textarea>
+                </div>
+            </div>
+	    </fieldset>
+	</div>
+	<div class="formBar" style="border: none;">
+	    <ul>
+	        <li>
+	            <button type="button" class="tml_select_btn tml_formBar_btn_blue submitAuditDiv">确定</button>
+	        </li>
+	        <li>
+	        	<button type="button" class="tml_select_btn tml_formBar_btn_red closeAuditDiv">取消</button>
+	        </li>
+	    </ul>
+	</div>
+</div>

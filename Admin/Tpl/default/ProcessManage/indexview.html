@@ -1,0 +1,44 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add/nodename/{$nodename}" target="navTab" mask="true"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li>
+			<li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}" target="navTab" mask="true" warn="请选择节点"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span></a></li>
+		</ul>
+		<form rel="pagerForm" onsubmit="return  divSearch(this, 'ProcessManageBox')" action="__URL__/index" method="post">
+			<input type="hidden" name="jump"  value="1"/>
+			<input type="hidden" name="nodename"  value="{$nodename}"/>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="148">
+		<thead>
+			<tr>
+				<th width="25">序号</th>
+				<th>流程名称</th>
+				<th>类型</th>
+				<th>是否默认</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr target="sid_node" rel="{$vo['id']}">
+					<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td field="name">{$vo['name']}</td>
+					<td field="catgory">{:$resoult = $vo['catgory']==1?'固定流程':'变更流程'}</td>
+					<td field="default">{:$rs = $vo['default']==1?'是':'否'}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" rel="ProcessManageBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

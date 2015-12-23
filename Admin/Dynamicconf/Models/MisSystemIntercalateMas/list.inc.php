@@ -1,0 +1,71 @@
+<?php 
+return array(
+	'id' => array(
+		'name' => 'id',
+		'showname' => '编号',
+		'shows' => '0',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'id',
+		'sortnum' => '1',
+		'issearch' => '0',
+		'searchField' => '',
+		'table' => '',
+		'field' => '',
+		'conditions' => '',
+		'type' => '',
+		'isallsearch' => '0',
+		'searchsortnum' => '0',
+	),
+	'name' => array(
+		'name' => 'name',
+		'showname' => '面板名',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'name',
+		'sortnum' => '3',
+		'issearch' => '1',
+		'searchField' => 'mis_system_intercalate_mas.name',
+		'table' => '',
+		'field' => '',
+		'conditions' => '',
+		'type' => 'text',
+		'isallsearch' => '1',
+		'searchsortnum' => '0',
+	),
+	'action' => array(
+		'name' => 'action',
+		'showname' => '操作',
+		'shows' => '1',
+		'widths' => '',
+		'sorts' => '0',
+		'models' => '',
+		'sortname' => 'status',
+		'func' => array(
+			'0' => array(
+				'0' => 'getStatus',
+			),
+		),
+		'funcdata' => array(
+			'0' => array(
+				'0' => array(
+					'0' => '#status#',
+				),
+			),
+		),
+		'sortnum' => '12',
+		'issearch' => '0',
+		'searchField' => '',
+		'table' => '',
+		'field' => '',
+		'conditions' => '',
+		'type' => '',
+		'isallsearch' => '0',
+		'searchsortnum' => '0',
+	),
+);
+
+?>

@@ -1,0 +1,45 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/rel/myfileManagerBox"" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="pid" value="{$pvo.id}"><!-- 隐藏父节点ID -->
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文件夹名称：</label>
+					<input type="text" style="width:300px;" class="required" maxlength="30" size="40" name="filename">
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>备注：</label>
+					<textarea name="remark" style="width:300px;height:120px;" class="textInput enterIndex valid">{$vo.remark}</textarea>
+				</div>
+				<!--<div class="tml-form-col">
+					<if condition="$_SESSION.a eq 1 && $pvo['category'] neq 1">
+						<label>所有人可见</label>
+						<select name="allsee" class="combox">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+					</if>
+				</div>-->
+			</div>
+			<!-- <if condition="$pvo['id'] eq 4">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label >关联项目:</label>
+						<div class="tml-input-append2">
+							<input type="text" class="ORG3.orderno temp_css" autocomplete="off" readonly="readonly"   value="{$pvo.projectid|getFieldBy='id','orderno','mis_auto_kimpu'}"  />
+							<input type="hidden" class="ORG3.id" name="projectid" value="{$pvo.projectid}"  />
+							<a class="input-addon input-addon-addon input-addon-add" param="field=id,orderno&model=MisAutoEbm&conditions=status,1" href="__URL__/lookupGeneral" lookupGroup="ORG3" >{$fields["userid"]}</a>
+							<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearOrg('ORG3');"></a>
+						</div>
+				</div>
+			</div>
+			</if> -->
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>
+

@@ -1,0 +1,71 @@
+<form id="pagerForm" action="__URL__/import" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+</form>
+<div class="pageContent">
+	<form rel="pagerForm" method="post" action="__URL__/import/do/insert" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<input type="hidden" name="step" value="3" />
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="jsondata" value="{$excelid}" />
+	<table class="list" width="100%" layoutH="26">
+		<thead>
+			<tr style="text-align:center;">
+				<?php $ii=0;$j=0; ?>
+				<volist id="vo" name="detailList">
+					<?php if($vo[colspan]>1){
+						$ii=$vo[colspan];
+						$j=1;
+					} ?>
+					
+					<?php if($vo[rowspan]>1 ){
+						$jj=1;
+					} ?>
+					
+					<?php if($ii<=0 or $j==1){ ?>
+						<th <if condition="$jj eq 1">rowspan="{$vo[rowspan]}"</if>  <if condition="$j eq 1">colspan="{$vo[colspan]}"</if> style="padding: 1px 10px;word-break: keep-all;" <if condition="$vo[widths]">width="{$vo[widths]}"</if> >
+						<if condition="$jj eq 1">{$vo[showname]}<else />{$vo[colspantitle]}</if>
+						</th>
+					
+					<?php } $ii--;$j--;$jj--; ?>
+				</volist>
+			</tr> 
+			<tr>
+				 
+				<volist id="vo" name="detailList">
+					<if condition="($vo[rowspan] gt 1)">
+					<else />
+						<th  style="word-break: keep-all;" <if condition="$vo[widths]">width="{$vo[widths]}"</if> >
+						{$vo[showname]}
+						</th>
+					</if>
+			    </volist>
+			</tr>
+			
+		</thead>
+		<tbody>
+			<volist id="vo" name="list"  key="key2">
+				<tr target="sid" >
+					<volist id="vo1" name="vo"  key="key2">
+						<td>{$vo1}</td>
+					</volist>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pages" style="padding:0px 15px 0px 5px; height:25px; float:right;">
+			<ul style="padding:0px;">
+				<li style="height:25px;">
+					<div class="buttonActive">
+						<div class="buttonContent"><button type="submit" >导入</button></div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+	</form>
+</div>

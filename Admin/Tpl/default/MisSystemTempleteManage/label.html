@@ -1,0 +1,254 @@
+<script src="__PUBLIC__/Js/copy/copy.js"></script>
+<script type="text/javascript">
+$('.copy_label_btn_1').zclip({
+	path: '__PUBLIC__/Js/copy/ZeroClipboard.swf',
+	copy: function(){
+		return $(this).attr("code");
+	},
+	afterCopy: function(){
+		alertMsg.info("成功复制："+$(this).attr("code"));
+    }
+});
+
+$('.copy_label_btn_0').on("mouseover",function(){
+	var zclip = $(this).parent().find(".zclip").html();
+	if(zclip==null){
+		$(this).zclip({
+			path: '__PUBLIC__/Js/copy/ZeroClipboard.swf',
+			copy: function(){
+				return "${"+$(this).attr("code")+"}";
+			},
+			afterCopy: function(){
+				alertMsg.info("成功复制：${"+$(this).attr("code")+"}");
+		    }
+		});
+	}
+});
+
+$(".search_label").die();
+$(".search_label").live("change keyup", function(){
+	var obj = $(".base_tips .label_show",navTab.getCurrentPanel());
+	var text = $(this).val();
+	if($.trim(text)!=""){
+		obj.each(function(i){
+			if($(this).text().indexOf(text) > -1){
+				$(this).show();
+			}else{
+				$(this).hide();
+			}
+		});
+	}else{
+		$(".base_tips .label_show").show();
+	}
+});
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisSystemTempleteManage/label/rel/MisSystemTempleteManageindexview" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<!-- 表单组合模式下的关联ID -->
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="isedit" value="1" />
+			<input type="hidden" name="modelname" value="{$modelname}" />
+			<input type="hidden" name="modelid" value="{$modelid}" />
+			<div class="pageFormContent applecloth anchorsToolBarParen" layoutH="40">
+				<div class="new_version_page ">
+					<div class="new_version_page_header pageFormContent ">标签管理</div>
+					<div class="new_version_page_content">
+					<div class="col_1_7 form_group_lay field_upload3">
+						<div class="tml_search_tips info_tips">
+						    <div class="search_tips_title"><span class="icon-comments" style="margin-right: 5px"></span>友情提示：</div>
+							<p class="search_tips_center">1、蓝色或绿色标签别名可点击进行编辑、红色标签名称和函数可进行复制。</p>
+							<p class="search_tips_center">2、蓝色标签为表格标签，绿色标签为单行/列标签</p>
+							<p class="search_tips_center">3、运算公式只能输入英文状态下的字符。</p>
+							<p class="search_tips_center">4、公式写法：<span class="copy_label_btn copy_label_btn_1" code="(${a}+${b}-${c})*${d}/${f}+100">(${a}+${b}-${c})*${d}/${f}+100</span>或使用计算函数<span class="copy_label_btn copy_label_btn_1" code='date("Y年m月d日",${createtime})'>date("Y年m月d日",${createtime})</span>。</p>
+							<p class="search_tips_center">5、目前支持函数：<span class="copy_label_btn copy_label_btn_1" code="upperMoney(1234)">upperMoney(1234)</span>(金额转大写)、<span class="copy_label_btn copy_label_btn_1" code='date("Y年m月d日 H时i分s秒")'>date("Y年m月d日 H时i分s秒")</span>(转日期格式)、<span class="copy_label_btn copy_label_btn_1" code='round(123.4567,2)'>round(123.4567,2)</span>(四舍五入保留小数)</p>
+							<p class="search_tips_center">6、公式中使用"."进行字符串连接，连接数字时请用小括号包括数字，连接字符串时用双引号包括字符串。例：如果要得到 18.2% 请输入公式 <span class="copy_label_btn copy_label_btn_1" code='(18.2)."%"'>(18.2)."%"</span>。</p>
+					    </div>
+						<div class="col_8_0 form_group_lay field_upload3">
+							<div class="base_tips">
+							<div class="man_label_header">
+                                <span class="left man_lab_header">可用标签：</span>
+                                <span class="right search_label_lay">
+                                    <label>搜索：</label>
+                                    <input type="text" class="search_label" placeholder="输入关键词">
+                                </span>
+                            </div>
+								<p class="" style="color:#333;overflow:hidden;">
+								<volist name="exportData" key="k" id="rsvo">
+									<p class="zi_title_lay">
+										<span class="zi_title">{$rsvo['title']}</span>
+									</p>
+									 	<volist name="rsvo.value" id="rvo" key="k2">
+									 		<span class="label_show">
+												<if condition="$rvo.colORrow eq 1">
+													<a class="table_col"  id="{$rvo.name}" target="dialog"   href="__URL__/lookupEditColORrow/showname/{$rvo[showname]|str_replace='%','％',###}/id/{$rvo.id}/name/{$rvo.name}/modelname/{$modelname}/modelid/{$modelid}"  width="720" height="500"  mask="true"  title="{$rvo[showname]}-编辑标签">
+													<span class="lable_name_show" title="{$rvo.showname}">{$rvo.showname}</span>
+													</a>
+												<elseif condition="$rvo.is_datatable eq 1"  />
+													<a class="table_a"  id="{$rvo.name}" target="dialog"   href="__URL__/lookupEditTable/showname/{$rvo[showname]|str_replace='%','％',###}/id/{$rvo.id}/name/{$rvo.name}/modelname/{$modelname}/modelid/{$modelid}"  width="720" height="500"  mask="true"  title="{$rvo[showname]}-编辑表格">
+													<span class="lable_name_show" title="{$rvo.showname}">{$rvo.showname}</span>
+													</a>
+													<input type="hidden" name="{$rvo.name}" value='{$rvo.value|json_encode}' /> 
+												<else/>
+												<span class="lable_name_show" title="{$rvo.showname}">{$rvo.showname}</span>
+												</if>
+												：
+												<span class="copy_label_btn copy_label_btn_0" code="{$rvo.name}"><span style="font-weight:600;">{$rvo.name}</span></span> 
+												
+											</span>
+									 	</volist>
+									 	<div class="clear"></div>
+								</volist>
+								 <if condition="$relList">
+							 		<p class="zi_title_lay">
+										<span class="zi_title">制单意见【审批标签】<span class="relList_number">0</span></span>
+									</p>
+									<span class="label_show">
+										<span class="lable_name_show" title="{$relList.name}">节点名称</span>
+										：
+										<span class="copy_label_btn copy_label_btn_0" code="createname"><span style="font-weight:600;">createname</span></span> 
+									</span>
+									<span class="label_show">
+										<span class="lable_name_show" title="{$relList.name}">提交意见</span>
+										：
+										<span class="copy_label_btn copy_label_btn_0" code="createdoinfo"><span style="font-weight:600;">createdoinfo</span></span> 
+									</span>
+									<span class="label_show">
+										<span class="lable_name_show" title="{$relList.name}">提交时间</span>
+										：
+										<span class="copy_label_btn copy_label_btn_0" code="createdotime"><span style="font-weight:600;">createdotime</span></span> 
+									</span>
+									<span class="label_show">
+										<span class="lable_name_show" title="{$relList.name}">提交人</span>
+										：
+										<span class="copy_label_btn copy_label_btn_0" code="createuser"><span style="font-weight:600;">createuser</span></span> 
+									</span>
+									<div class="clear"></div>
+									 <volist name="relList" id="relList">
+									 	<p class="zi_title_lay">
+											<span class="zi_title">{$relList.name}【审批标签】<span class="relList_number">{$relList.flowid}</span></span>
+										</p>
+										<volist name="relList.biaoqian" id="bq">
+											<span class="label_show">
+												<span class="lable_name_show" title="{$relList.name}">{$bq.name}</span>
+												：
+												<span class="copy_label_btn copy_label_btn_0" code="{$bq.id}"><span style="font-weight:600;">{$bq.id}</span></span> 
+											</span>
+										</volist>
+										<div class="clear"></div>
+									</volist>
+									<p class="zi_title_lay">
+										<span class="zi_title">审批意见【表格标签】<span class="relList_number">0</span></span>
+									</p>
+									<span class="label_show">
+										<span class="lable_name_show" title="{$relList.name}">意见表格标签</span>
+										：
+										<span class="copy_label_btn copy_label_btn_0" code="doinfoval"><span style="font-weight:600;">doinfoval</span></span> 
+									</span>
+								</if>
+								<div class="clear"></div>
+								<if condition="$endExportData">
+									<p class="zi_title_lay">
+										<span class="zi_title">新增标签</span>
+									</p>
+									 	<volist name="endExportData" id="ervo" key="k2">
+									 		<span class="label_show">
+												<if condition="$ervo.colORrow eq 1">
+													<a class="table_col"  id="{$ervo.name}" target="dialog"   href="__URL__/lookupEditColORrow/showname/{$ervo[showname]}/id/{$ervo.id}/name/{$ervo.name}/modelname/{$modelname}/modelid/{$modelid}"  width="720" height="500"  mask="true"  title="{$ervo[showname]}-编辑标签">
+													<span class="lable_name_show" title="{$ervo.showname}">{$ervo.showname}</span>
+													</a>
+												<elseif condition="$ervo.is_datatable eq 1"  />
+													<a class="table_a"  id="{$ervo.name}" target="dialog"   href="__URL__/lookupEditTable/showname/{$ervo[showname]}/id/{$ervo.id}/name/{$ervo.name}/modelname/{$modelname}/modelid/{$modelid}"  width="720" height="500"  mask="true"  title="{$ervo[showname]}-编辑表格">
+													<span class="lable_name_show" title="{$ervo.showname}">{$ervo.showname}</span>
+													</a>
+												<else/>
+												<span class="lable_name_show" title="{$ervo.showname}">{$ervo.showname}</span>
+												</if>
+												：
+												<span class="copy_label_btn copy_label_btn_0" code="{$ervo.name}"><span style="font-weight:600;">{$ervo.name}</span></span> 
+												
+											</span>
+									 	</volist>
+									 	<div class="clear"></div>
+									 	</if>
+								</p>
+							</div>
+						</div>
+						<div class="col_8_0 form_group_lay field_datatable10 ">				
+							<div class="into_table_lay">
+							<table class="into_table_new nbm_data_table" id="dt_datatable10_edit" table_type="edit">
+								<thead>
+									<tr class="thead_tr">
+										<th style='width:40px;' template_key="serial" >序号</th>
+										<th template_key="input" template_name="datatable[#index#][datatable10][name]"  stats_num=\"2\" template_class=" ">
+											标签名称
+										</th>
+										<th template_key="input" template_name="datatable[#index#][datatable10][showname]"  stats_num=\"2\" template_class=" ">
+											标签别名
+										</th>
+										<th template_key="input" template_name="datatable[#index#][datatable10][formula]"  stats_num=\"2\" template_class=" ">
+											运算公式
+										</th>
+										<th template_key="input" template_name="datatable[#index#][datatable10][defaultnull]"  stats_num=\"2\" template_class=" ">
+											默认空值
+										</th>
+										<th style='width:90px;' template_data='{"table":"datatable10","post_table":"mis_system_templete_label","post_url":"__URL__/onesave","del_url":"__URL__/delsubinfo"}' template_key="action">操作</th>
+									</tr>
+								</thead>
+								<tbody cellpadding="0" cellspacing="1">
+						{~$key=0;}
+						<volist name="labelList" id="item">
+						<if condition="$item.is_datatable neq 1  and $item.colORrow neq 1">
+							<tr>
+								<td>
+									<span class="serial_number">
+										{$key+1}
+									</span>
+								</td>
+								<!-- 现有数据 -->
+								<td>
+									<div class="list_group_lay" style="display: none;">
+										<input type="text"  class="list_input       " 	   disabled="disabled" name="#hide#datatable[#index#][datatable10][name]"  value="{$item[name]}" />
+									</div>
+									<span class="datatable_show_val">{$item[name]}</span>
+								</td>	
+								<td>
+									<div class="list_group_lay" style="display: none;">
+										<input type="text"  class="list_input       " disabled="disabled" name="#hide#datatable[#index#][datatable10][showname]"  value="{$item[showname]}" />
+									</div>
+									<span class="datatable_show_val">{$item[showname]}</span>
+								</td>							
+								<td>
+										<div class="list_group_lay" style="display: none;">
+											<input type="text"  class="list_input      " disabled="disabled" name="#hide#datatable[#index#][datatable10][formula]"  value="{$item[formula]}" />
+										</div>
+										<span class="datatable_show_val">{$item[formula]}</span>
+								</td>	
+								<td>
+										<div class="list_group_lay" style="display: none;">
+											<input type="text"  class="list_input      " disabled="disabled" name="#hide#datatable[#index#][datatable10][defaultnull]"  value="{$item[defaultnull]}" />
+										</div>
+										<span class="datatable_show_val">{$item[defaultnull]}</span>
+								</td>	
+								<td >
+									<input type="hidden" name="#hide#datatable[#index#][datatable10][id]" value="{$item.id}" />
+									<button type="button" class="into_table_new_trash_tr  tml-btn tml_look_btn tml_mp" del_url="__URL__/delsubinfo" del_id="{$item.id}" del_table="mis_system_templete_label" >
+									删除</button>
+									<button post_id="{$item.id}" post_url="__URL__/lable" post_id="{$item.id}" post_table="mis_system_templete_label" rel_type="edit" class="save_row_btn" type="button">编辑</button>
+								</td>
+							</tr>
+							{~$key++}
+							</if>
+						</volist>	
+						</tbody>
+				</table>
+			</div>	
+		</div>
+   </div></div>
+							<!-- hiddens组件 end -->
+		<div class="formBar"><ul><li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button></li></ul></div>
+</div>
+				</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,203 @@
+<style>
+#div_ajax{ width:700px; margin:20px auto;}
+.title_d{ font-size:14px; padding-bottom:5px; text-align:center;}
+.table_dd{ }
+.border_d tr td,.border_d1 tr td{ line-height:20px; height:20px; padding-left:5px;}
+.border_d,.border_d1{ float:left;}
+</style>
+<script type="text/javascript">
+
+    //自定义权限类别分组
+    var lookupList = ["index","seeProcessDetail","auditView","searching"];
+    var editList = ["update","edit"];
+    var createList = ["add","insert"];
+    
+    //查看，编辑，创建的radio切换方法
+    function chooseRdo(rdo) {
+    	var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    	var sNode = zTree.getSelectedNodes()[0];
+    	var list;
+    	var type = rdo.id;
+    	switch(type) {
+    	case "rdoLookup":
+    		list = lookupList;
+    		break;
+    	case "rdoEdit":
+    		list = editList;
+    		break;
+    	case "rdoCreate":
+    		list = createList;
+    		break;
+    	}
+    	var dels = $(".mychk[checked=checked]");
+    	dels.each(function(){
+    		$(this).removeAttr("checked");
+    		chkAjax(this);
+    	});
+    	$(".mychk").each(function(){
+    		var result = $.inArray($(this).attr("title"),list);
+    		if(result != -1) {
+    			$(this).attr("checked","checked");
+    			chkAjax(this);
+    		}
+    	});
+    	sNode.halfCheck = true;
+    	sNode.checked = true;
+        zTree.updateNode(sNode,true);
+    }
+
+    $(function(){
+        checkRdo();
+        
+    });
+    //全选 全部撤销 自定义按钮radio
+    function checkNode(element) {
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+        nodes = zTree.getSelectedNodes();
+        var type = element.value;
+        for (var i=0, l=nodes.length; i<l; i++) {
+            if (type == "checkTruePS") {
+                nodes[i].halfCheck = false;
+                zTree.checkNode(nodes[i], true, true);
+                zTreeOnCheck(null,null,nodes[i]);
+                $(".mychk").attr("checked","checked");  
+            } else if (type == "checkFalsePS") {
+                nodes[i].halfCheck = false;
+                zTree.checkNode(nodes[i], false, true);
+                zTreeOnCheck(null,null,nodes[i]);
+                $(".mychk").removeAttr("checked");
+            } else if (type == "togglePS") {
+                nodes[i].halfCheck = true;
+                nodes[i].checked = true;
+                zTree.updateNode(nodes[i],true);
+            }
+        }
+    }
+    //点击右面板checkbox
+    function checkRdo(chk) {
+        var $chks = $(".mychk");
+        var count = 0;
+        $chks.each(function(){
+            if($(this).attr("checked") == "checked") {
+                count++;
+            }
+        });
+        if(count == $chks.length) {
+            $("#checkTruePS").attr("checked","checked");
+            var obj = document.getElementById("checkTruePS");
+        } else if (count == 0) {
+            $("#checkFalsePS").attr("checked","checked");
+            var obj = document.getElementById("checkFalsePS");
+        } else {
+            $("#togglePS").attr("checked","checked");
+            var obj = document.getElementById("togglePS");
+        } 
+        if(chk) {
+            chkAjax(chk);
+        }
+        checkNode(obj); 
+    }
+
+    function chkAjax(chk) {
+    	var roleid = $("#gpid").val();
+        var type = 0;
+        if(chk.checked) {
+            type = 1;
+        }
+        var id = chk.id;
+        var pid = chk.getAttribute("pid");
+        var url = "__URL__/opSave";
+        $.ajax({
+            type:"POST",
+            url:url,
+            data:{roleid:roleid,nodeid:id,type:type,pid:pid,ajax:1},
+            cache:false,
+            success:function(response){
+		var json=DWZ.jsonEval(response);
+		if(json.statusCode==DWZ.statusCode.error){
+		    alertMsg.error(json.message);
+		}
+            },
+	    error:DWZ.ajaxError
+        });
+    }
+</script>
+<div id="div_ajax">
+<form id="myform">
+	<div class="title_d"><caption>{$title}</caption></div>
+    <table class="border_d" width="15%" cellspacing="0"  border="1"  bordercolor="#cccccc" style="border-collapse:collapse;">
+                <tr style="background-color:#6CF">
+                    <td>
+                        <input id="checkFalsePS" type="radio" name="rdo" checked="checked" value="checkFalsePS" onchange="checkNode(this)"/>
+                        <span>禁止访问</span>
+                    </td>
+                <tr>
+                <tr>
+                    <td>
+                        <input id="rdoLookup" type="radio" name="rdo" onchange="chooseRdo(this)"/>
+                        <span>查看</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="rdoEdit" type="radio" name="rdo" onchange="chooseRdo(this)"/>
+                        <span>编辑</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="rdoCreate" type="radio" name="rdo" onchange="chooseRdo(this)"/>
+                        <span>创建</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="checkTruePS" type="radio" name="rdo" value="checkTruePS" onchange="checkNode(this)"/>
+                        <span>完全控制</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="radio" name="rdo" />
+                        <span>权限</span>
+                    </td>
+                 </tr>
+                 <tr>
+                    <td>
+                        <input id="togglePS" type="radio" name="rdo" value="togglePS"/>
+                        <span>自定义</span>
+                    </td>
+                 </tr>
+        </table>
+	<table class="border_d1" width="85%" cellspacing="0"  border="1"  bordercolor="#cccccc" style="border-collapse:collapse;">  
+        <tr>
+        <!--循环显示出模块的特有操作-->
+        <volist name="operate" id="op">
+            <?php
+         		$n = $n+1;
+         	?>
+            <td>
+                <input id="{$op['id']}" pid="{$op['pid']}" class="mychk"
+                    type="checkbox" title="{$op['name']}" value="{$op['id']}" onclick="checkRdo(this)" 
+                    <neq name="$accList" value="null">
+                         <if condition="in_array($op['id'],$accList)">checked="checked"</if>
+                    </neq> />
+                <label class="mu" for="{$op['id']}">{$op['title']}</label>
+            </td>
+            <?php
+         		if($n == 6) {
+                	echo "</tr><tr>";
+                    $n=0;
+                }
+         	?>
+        </volist>
+        <?php 
+        	if($n!=0)
+        	for($i = $n;$i<=5;$i++){
+            	echo "<td></td>";
+            }
+        ?>
+        </tr>
+    </table>
+</form>
+</div>

@@ -1,0 +1,26 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="navTab" rel="MisWorkReadStatement" title="工作报告_查阅" href="__APP__/MisWorkReadStatement/index"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <if condition="$worklist">
+            <div class="data">
+                <ul>
+                    <volist name="worklist" id="wlist">
+                        <li><a class="clearfix" rel="MisWorkReadStatementedit" target="navTab" title="工作报告_查阅" href="__APP__/MisWorkReadStatement/edit/id/{$wlist.id}">
+                        <span class="hellip">{$wlist.title}&nbsp;&nbsp;{$wlist.createid|getFieldBy='id','name','user'}</span>
+                        <em class="hellip">[{$wlist.createtime|transTime}]</em></a></li>
+                    </volist>
+                </ul>
+            </div>
+        <else/>
+            <div class="noData">
+                没有待阅报告
+            </div>
+        </if>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

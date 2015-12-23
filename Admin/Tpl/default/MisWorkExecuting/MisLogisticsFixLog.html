@@ -1,0 +1,138 @@
+<div class="page">
+	<div class="pageContent applecloth" layoutH="0">
+		<form method="post" action="__URL__/update/md/{$md}/rel/{$rel}" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="refreshtabs[data]" value="1" />
+			<div class="pageFormContent applecloth" layoutH="56">
+			<div class="keepContentCenter form-affix-content">
+				<H2 class="contentTitle contentTitle_center form-affix-title">日常维护申请
+					<span class="auto_code">
+	                	<b>No. </b>
+						<input type="text" name="orderno" value="{$vo.orderno}" <if condition='$writable eq 0'> readonly="readonly" class="xycodedata_read" <else/> class="xycodedata_write required alphanumeric" </if> />
+	               	</span>
+				</H2>
+			<fieldset>
+				<legend class="fieldset_legend_toggle side-catalog-text">
+						<b>报修信息</b>
+					</legend>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>{$fields["falut_type"]}:</label>
+							<input type="text" readonly="readonly" value="{$vo.falut_type|getFieldBy='id','name','mis_logistics_fix_logtype'}" />
+						</div>
+						</div>
+						</fieldset>
+						 <fieldset>
+                    <legend>
+                        <b>设备明细</b>
+                    </legend>
+                         <table class="tml-table" width="100%">
+				    <thead>
+				        <tr>
+				       		<th width="40">序号</th>
+							<th width="120">设备编号</th>
+							<th >设备类型</th>
+							<th width="100">设备名称</th>
+							<th>设备型号</th>
+							<th>现存部门</th>
+							<th>申请总数量</th>
+							<th width="40">单位</th>
+							<th>可维修数量</th>
+							<th>需维修数量</th>
+						</tr>
+				    </thead>
+				    <tbody >
+				    <if condition="$sublist">
+				    <volist name="sublist" id="subvo" key="i">
+				    <tr>
+				    <td >{$i}</td>
+				    <td>
+						{$subvo.manageid|getFieldBy='id','orderno','mis_work_facility_manage'}
+					</td>
+				 	<td>{$subvo.manageid|getFieldBy='id','equipmenttype','mis_work_facility_manage'|getFieldBy='id','name','mis_work_facility_type'}</td>
+				  	<td>{$subvo.manageid|getFieldBy='id','equipmentname','mis_work_facility_manage'}</td>
+				   	<td>{$subvo.manageid|getFieldBy='id','version','mis_work_facility_manage'}</td>
+				   	<td>{$subvo.appsubid|getFieldBy='id','applydepartmentid','mis_work_facility_distribute'|getFieldBy='id','name','mis_system_department'}</td>
+				    <td>{$subvo.appsubid|getFieldBy='id','appqty','mis_work_facility_distribute'|getDigits}</td>
+				    <td>{$subvo.manageid|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}</td>
+				    <td>{$subvo.sumreturnqty|getDigits}</td>
+				    <td> {$subvo.qty|getDigits}</td>
+				    </tr>
+				    </volist>
+				    </if>
+				    </tbody>
+				</table>
+                </fieldset>
+					 <fieldset>
+					  <legend>
+                        <b>故障描述</b>
+                    </legend>
+					<div class="tml-form-row">
+						<label>{$fields["fault_cause"]}:</label>
+						<textarea style="height:100px;" rows="2"  readonly="readonly" name="fault_cause">{$vo['fault_cause']}</textarea>
+					</div>
+					<if condition="$attarry">
+					<div class="tml-form-row"><!--此处为上传列表-->
+						<label>附件:</label>
+						<span id="swfupload_mislogisticsfixlog_edit-queue" class="info uploadify_queue">
+							<if condition="$attarry">
+								<volist name="attarry" id="att">
+									<div class="uploadify-queue-item">
+										<span class="fileName"><a href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank">{$att['upname']}</a></span>
+										<a  class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" mask="true" rel="aa" title="文件归档" target="dialog"><span class="tml-icon tml-icon-file"></span><span class="tml-icon-text">归档</span></a>
+									</div>
+								</volist>
+							</if>
+						</span>
+					</div>
+					</if>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>报修人员:</label>
+						<input readonly="readonly" type="text" value="{$vo['createid']|getFieldBy='id','name','user'}" class="required" />
+					</div>
+					<div class="tml-form-col">
+						<label>报修时间:</label>
+						<input  type="text" readonly="readonly" value="{$vo['createtime']|transtime}" />
+					</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend class="fieldset_legend_toggle side-catalog-text">
+						<b>处理信息</b>
+					</legend>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>结 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 果:</label>
+						<select name="fixed" class="combox">
+							<option <if condition="$vo.fixed eq 1">selected</if> value='1'>修复</option>
+							<option <if condition="$vo.fixed eq 2">selected</if> value='2'>未修复</option>
+							<option <if condition="$vo.fixed eq 3">selected</if> value='3'>报废</option>
+							<option <if condition="$vo.fixed eq 4">selected</if> value='4'>外修</option>
+							<option <if condition="$vo.fixed eq 5">selected</if> value='5'>其他</option>
+						</select>
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["solution"]}:</label>
+					<textarea cols="50" rows="2" name="solution" >{$vo.solution}</textarea>
+				</div>
+				<div class="tml-form-col">
+						<label>检修人员:</label>
+						<input  type="text" name="fix_man" class="required" <if condition="!$vo.fix_man">value="{$Think.session.loginUserName}"<else/>value="{$vo.fix_man}"</if> />
+					</div>
+					<div class="tml-form-col">
+						<label>检修日期:</label>
+						<div class="tml-input-append">
+							<input type="text" format="{dateFmt:'yyyy-MM-dd'}" class="Wdate js-wdate" name="fix_time" value="{$time|transtime}" />
+							<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			</div>
+			{:W('ShowAction')}
+	</form>
+	</div>
+</div>

@@ -1,0 +1,102 @@
+ <div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisSaleBusiness/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this, navTabAjaxDone)" enctype="multipart/form-data">
+			<input type="hidden" name="callbackType" value="closeCurrent"/>
+			<div class="pageFormContent applecloth" layoutH="40">
+				<div class="keepContentCenter form-affix-content">
+				<div class="contentTitle contentTitle_center form-affix-title">任务管理{:W('ShowOrderno',array(0,'mis_system_flow_form'))}</div>
+                <fieldset class="side-catalog-anchor">
+                    <table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+                        <tbody>
+   		  <tr>
+			<td class="cell_left" width="12%">{$fields["name"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['name']}</td>
+			<td class="cell_left" width="12%">{$fields["supcategory"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['supcategory']|getFieldBy='id','name','mis_system_flow_type'}</td>
+			<td class="cell_left" width="12%">{$fields["category"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['category']|getFieldBy='id','name','mis_system_flow_type'}</td>
+		</tr>
+		 <tr>
+			<td class="cell_left" width="12%">{$fields["parentid"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['parentid']|getFieldBy='id','name','mis_system_flow_form'}</td>
+			<td class="cell_left" width="12%">{$fields["summary"]}:</td>
+			<td class="cell_right" width="21%" ><if condition="($vo['summary'] eq 1)">是<else/>否</if></td>
+			<td class="cell_left" width="12%">{$fields["days"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['days']}天</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["begintime"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['begintime']|transtime='Y-m-d H:i'}</td>
+			<td class="cell_left" width="12%">{$fields["endtime"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['endtime']|transtime='Y-m-d H:i'}</td>
+			<td class="cell_left" width="12%">{$fields["outlinenumber"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['outlinenumber']}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["outlinelevel"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['outlinelevel']}</td>
+			<td class="cell_left" width="12%">{$fields["readyonly"]}:</td>
+			<td class="cell_right" width="21%" ><if condition="($vo['readyonly'] eq 1)">是<else/>否</if></td>
+			<td class="cell_left" width="12%">{$fields["percentcomplete"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['percentcomplete']}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" >{$fields['notes']}:</td>
+			<td class="cell_line_right"  colspan="5"><pre>{$vo['notes']}</pre></td>
+		</tr>
+		<tr>
+			<td class="cell_left" colspan="2" width="12%">{$fields["constrainttype"]}:</td>
+			<td class="cell_right"  width="21%" ><if condition="($vo['constrainttype'] eq 1)">是<else/>否</if></td>
+			<td class="cell_left" colspan="2" width="12%">{$fields["hyperlink"]}:</td>
+			<td class="cell_right"  width="21%" >{$vo['hyperlink']}</td>
+			
+		</tr>
+		<tr>
+			<td class="cell_left" colspan="2" align="left" width="12%">{$fields["hyperlinkurl"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['hyperlinkurl']}</td>
+			<td class="cell_left" colspan="2" align="left" width="12%">{$fields["classname"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['classname']}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" colspan="2" align="left" width="12%">前置任务:</td>
+			<td class="cell_right" width="21%" >{$voList['predecessorid']|getFieldBy='id','name','mis_system_flow_form'}</td>
+			<td class="cell_left" colspan="2" align="left" width="12%">后置任务:</td>
+			<td class="cell_right" width="21%" >{$voList['successorid']|getFieldBy='id','name','mis_system_flow_form'}</td>
+		</tr>
+	    <tr >
+			<td class="cell_left" colspan="2"   width="12%">{$fields["critical"]}:</td>
+			<td class="cell_right" width="21%" ><if condition="($vo['critical'] eq 1)">是<else/>否</if></td>
+			<td class="cell_left" colspan="2"   width="12%">{$fields["custtypeid"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['custtypeid']|getFieldBy='id','name','mis_sale_client_type'}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["hyid"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['hyid']|getFieldBy='id','name','mis_sale_profession'}</td>
+			<td class="cell_left" width="12%">{$fields["cylid"]}</td>
+			<td class="cell_right"  width="21%" >{$vo['cylid']|getFieldBy='id','name','mis_sale_industry'}</td>
+			<td class="cell_left" width="12%">{$fields["formtype"]}</td>
+			<td class="cell_right"  width="21%" >{$vo['formtype']|getFieldBy='id','name','mis_system_flow_inventory_type'}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["formobj"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['formobj']}</td>
+			<td class="cell_left" width="12%">{$fields["yzid"]}</td>
+			<td class="cell_right"  width="21%" >{$vo['cylid']|getFieldBy='id','name','mis_sale_industry'}</td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" >{$vo['xiangmujuese']|getFieldBy='orderno','name','mis_auto_wqzrv'}<div class="display_none {$classNodeSettingArr['suoshujiaose']}">{$vo['suoshujiaose']|getFieldBy='orderno','name','mis_auto_wqzrv'}</div></td>
+			
+		</tr> 
+                      
+                            
+                        </tbody>
+                    </table>
+                    <br />
+                </fieldset>
+				
+			</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+	</form>
+	</div>
+</div>
+ 

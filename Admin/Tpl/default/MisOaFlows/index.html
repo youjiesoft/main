@@ -1,0 +1,33 @@
+<script>
+/* $(document).ready(function(){
+	var zNodes = {$typetree}; //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisOaFlowsTree"), setting, zNodes);
+}); */
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+    <div class="treeleft">
+	<div class="work_statement"></div>
+        <div class="collapse" layoutH="0">
+            <div class="toggleCollapse"><div></div></div>
+        </div>
+        <div class="close">
+            <div class="toggleCollapse" ><h2></h2><div></div></div>
+            <ul id="MisOaFlowsTree" class="ztree" layoutH="10"></ul>
+        </div>
+    </div>
+    <div id="misoaflowsview" class="unitBox treeright">
+        <include file="indexview"  />
+    </div>
+</div>

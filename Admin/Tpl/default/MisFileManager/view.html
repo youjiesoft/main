@@ -1,0 +1,38 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/myfileManagerBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$vo.id}"><!-- 隐藏当前内容的ID值 -->			<input type="hidden" name="pid" value="{$vo.id}"><!-- 隐藏父节点ID -->
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文件夹名称：</label>
+					<input type="text" style="width:400px" class="required" maxlength="25" size="40" value="{$vo.name}" name="filename" readonly="readonly">
+					<if condition="$vo['type'] neq 1">
+					<input type="hidden" value="{$vo.ext}" name="ext"> <!-- 隐藏文件夹后缀名 -->
+					</if>
+				</div>
+				<div class="tml-form-col">
+					<if condition="$_SESSION.a eq 1 && $vo['category'] neq 1">
+						<label>所有人可见</label>
+						<select name="allsee" class="combox" disabled="disabled">
+							<option value="1" <eq name="vo['allsee']" value="1">selected</eq> >是</option>
+							<option value="0" <eq name="vo['allsee']" value="0">selected</eq>>否</option>
+						</select>
+					</if>
+				</div>
+			</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,22 @@
+<div id="myactiononeSelectBox">
+<div class="unit">
+	<label>面板：</label>
+	<select name="mianbanId" onchange="selectMianban_mianban('#setMyactionAction')">
+		<option value="">{$Think.lang.select}</option>
+		<volist id="item" name="mianbanList">
+		<option value="{$key}" <?php echo in_array($key, $selectMianbanId) ? "selected" : "" ?>>{$item}</option>
+		</volist>
+	</select>
+</div>
+</div>
+<div id="myactiontwoSelectBox">
+<div class="unit">
+	<label>模块：</label>
+	<select name="moduleId" onchange="selectMianban_module('#setMyactionAction')">
+		<option value="">{$Think.lang.select}</option>
+		<volist id="item" name="moduleList">
+		<option value="{$key}" <?php echo in_array($key, $selectModuleId) ? "selected" : "" ?>>{$item}</option>
+		</volist>
+	</select>
+</div>
+</div>

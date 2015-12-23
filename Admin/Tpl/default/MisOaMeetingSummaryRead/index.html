@@ -1,0 +1,84 @@
+<style>
+.fc-day-content{display: none;}
+.pred{background-color: #4d90fe;
+	 color: #FFFFFF;}
+.fc-grid .fc-day-number {
+    float: none;
+    text-align: center;
+    cursor: pointer;
+}
+.fc-grid .fc-day-number:hover {
+    background-color: #EAF2FF;
+    color:#383838;
+}
+</style>
+<script>
+$(document).ready(function () {
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    var calendar = $('#calendarMisOaMeetingSummaryRead').fullCalendar({
+        header: {
+            left: 'prev',
+            center: 'title',
+            right: 'next'
+        },
+	 
+        height:20,
+        monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        dayNames: ["日", "一", "二", "三", "四", "五", "六"],
+        dayNamesShort: ["日", "一", "二", "三", "四", "五", "六"],
+        today: ["今天"],
+        firstDay: 0,
+        buttonText: {
+            month: '月',
+            prev: "<span class='fc-text-arrow'>&lsaquo;</span>",
+            next: "<span class='fc-text-arrow'>&rsaquo;</span>",
+            prevYear: "<span class='fc-text-arrow'>&laquo;</span>",
+            nextYear: "<span class='fc-text-arrow'>&raquo;</span>"
+       },
+       /* 显示日程  */
+       viewDisplay: function (view) {
+           var viewStart = $.fullCalendar.formatDate(view.start, "yyyy-MM-dd");
+           var viewEnd = $.fullCalendar.formatDate(view.end, "yyyy-MM-dd");
+           $("#calendarMisOaMeetingSummaryRead").fullCalendar('removeEvents');
+           $.post("__URL__/lookupGetdate/jump/jump/starttime/"+viewStart+"/endtime/"+viewEnd, { start: viewStart, end: viewEnd }, function (data) {
+               var resultCollection = jQuery.parseJSON(data);
+               $.each(resultCollection, function (index, term) {
+                   $("#calendarMisOaMeetingSummaryRead").fullCalendar('renderEvent', term, true);
+               });
+           }); 
+      },
+      selectable: true,
+      selectHelper: true,
+      /* 新增日程  */
+      select: function(start, end, allDay) {
+    	  var start = $.fullCalendar.formatDate(start, "yyyy-MM-dd");
+    	  $("#misMisOaMeetingSummaryReadBox").loadUrl(TP_APP+"/MisOaMeetingSummaryRead/index/jump/jump/datetime/"+start,'',function(){
+    		  $("#misMisOaMeetingSummaryReadBox").find("[layoutH]").layoutH();
+    	  });
+      }
+    });
+});
+</script> 
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="10">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix">
+				<div id='calendarMisOaMeetingSummaryRead'></div>
+			</div>
+			<ul id="MisMisOaMeetingSummaryRead" class="ztree" layoutH="200"></ul>
+		</div>
+	</div>
+	<div id="misMisOaMeetingSummaryReadBox" class="treeright">
+		<include file="indexview"  />
+	</div>
+</div>

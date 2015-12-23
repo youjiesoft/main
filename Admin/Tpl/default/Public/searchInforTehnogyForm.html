@@ -1,0 +1,52 @@
+<script>
+$("#searchby_form{$modelname}").change(function(){
+	var v=$(this).val();
+	if( v=="createtime"){
+		$("#searchby_form{$modelname}1").css("display","none");
+		$("#searchby_form{$modelname}2").css("display","block");
+	} else{
+		$("#searchby_form{$modelname}1").css("display","block");
+		$("#searchby_form{$modelname}2").css("display","none");
+	}
+});
+</script>
+<div class="pageHeader">
+	<form rel="pagerForm" onsubmit="return navTabSearch(this);" action="__URL__/index" method="post">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div id="searchby_form{$modelname}1" <neq name="ifhidden" value="0"> style="display:none;" </neq>>
+							请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+						<div id="searchby_form{$modelname}2" <neq name="ifdatehidden" value="0"> style="display:none;" </neq> >
+							请输入查询日期：
+							<input type="text" readonly="readonly" value="{$datestart}" size="15" format="yyyy-MM-dd" class="date textInput readonly" name="datestart">
+							<-------->
+							<input type="text" readonly="readonly" value="{$dateend}" size="15" format="yyyy-MM-dd" class="date textInput readonly" name="dateend">
+						</div>
+					</td>
+					<td>
+						<select id="searchby_form{$modelname}" class="combox"  name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option  value="{$vou['id']}" <eq name="searchbyid" value="$vou['id']">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option  value="{$voty['id']}" <eq name="searchtypeid" value="$voty['id']">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">检索</button></div></div></li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>

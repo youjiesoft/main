@@ -1,0 +1,37 @@
+<div class="pageContent">
+	<form id="pagerForm" action="__URL__/edit/type/work/id/{$id}" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<table class="table" width="99%" layoutH="60">
+		<thead>
+			<tr>
+				<th width="35">序号</th>
+				<th>开始时间</th>
+				<th>结束时间</th>
+				<th>工作单位或机构</th>
+				<th>担任职务</th>
+				<th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr>
+					<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td>{$vo['startdate']|transTime}</td>
+					<td>{$vo['finishdate']|transTime}</td>
+					<td>{$vo['company']}</td>
+					<td>{$vo['position']}</td>
+					<td>{$vo['remark']|missubstr=40,true}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmWorkForm" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

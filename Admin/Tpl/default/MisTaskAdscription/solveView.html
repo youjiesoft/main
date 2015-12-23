@@ -1,0 +1,76 @@
+<div class="tabsContent" style="padding:0px;">
+    <div class="pageContent">
+        <div class="pageFormContent" layoutH="55">
+            <div class="unit">
+                <label>缺陷描述：</label>
+                <textarea class="" readonly cols='42' rows='4' style="width:400px;">{$feedback['remark']}</textarea>
+            </div>
+            <div class="clear"></div>
+            <if condition="$feedbackatt">
+                <div class="unit">
+					<div>
+						<dl class="nowrap">
+							<dt>
+								<label>附件：</label>
+							</dt>
+						</dl>
+					</div>
+					<div style="padding-left: 130px;">
+						<dd>
+							<volist name="feedbackatt" id="att">
+							<p style="padding: 0;">
+								<label>附件{$key+1}</label>
+								<a class="attlink" rel="{$att['id']}" target="_blank"
+									href="__PUBLIC__/{$att['attached']}">
+									<span class="info">{$att['upname']}</span>
+								</a>
+							</p>
+							</volist>
+						</dd>
+					</div>
+				</div>
+            </if>
+            <if condition="$feedback['child']">
+                <div class="unit">
+                    <label>缺陷整改：</label>
+                    <textarea class="" readonly cols='42' rows='4' style="width:400px;">{$feedback['child']['remark']}</textarea>
+                </div>
+                <div class="unit">
+					<div>
+						<dl class="nowrap">
+							<dt>
+								<label>附件：</label>
+							</dt>
+                            <if condition="$childfeedbackatt">
+                            <else/>
+                            <dt>
+								<label>无附件</label>
+							</dt>
+                            </if>
+						</dl>
+					</div>
+                    <if condition="$childfeedbackatt">
+					<div style="padding-left: 130px;">
+						<dd>
+							<volist name="childfeedbackatt" id="childatt">
+                                <p style="padding: 0;">
+                                    <label>附件{$key+1}</label>
+                                    <a class="attlink" rel="{$childatt['id']}" target="_blank"
+                                        href="__PUBLIC__/{$childatt['attached']}">
+                                        <span class="info">{$childatt['upname']}</span>
+                                    </a>
+                                </p>
+							</volist>
+						</dd>
+					</div>
+                    </if>
+				</div>
+            </if>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,41 @@
+<div class="pageContent">
+	<form id="pagerForm" action="__URL__/edit/type/transfer/id/{$id}" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<table class="table" width="99%" layoutH="60">
+		<thead>
+			<tr>
+				<th width="35">序号</th>
+				<th>调职类型</th>
+				<th>调职前部门</th>
+				<th>调职后部门</th>
+				<th>调职前职位</th>
+				<th>调职后职位</th>
+				<th>填表时间</th>
+				<th>调职原因</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr>
+					<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td>{$vo.typeid|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+					<td>{$vo.deptid|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo.newdeptid|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo.dutylevelid|getFieldBy='id','name','duty'}</td>
+					<td>{$vo.newdutylevelid|getFieldBy='id','name','duty'}</td>
+					<td>{$vo.createtime|transTime}</td>
+					<td>{$vo.transfer}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmTransferForm" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

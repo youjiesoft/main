@@ -1,0 +1,30 @@
+
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert_project/rel/mishrpersonneladdressbookmodel/jump/1" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="56">
+					<div class="tml-form-col">
+						<label>项目名称：</label>
+						<input type="text"  size="50" name="name" value=""/>
+					</div>																
+					<div class="tml-form-col">
+						<label>项目类型：</label>
+						<SELECT name="typeid" class="combox">
+							<volist name="tlist" id="tlist">
+								<option value="{$tlist.id}">{$tlist.name}</option>
+							</volist>
+						</SELECT>
+					</div>
+					<div class="tml-form-col">
+						<label>标记显示：</label>
+						<select class="combox" name="isbook">
+							<option  value="1" <eq name="vo.isbook" value="0">selected</eq>>是</option>
+							<option  value="0" <eq name="vo.isbook" value="1">selected</eq>>否</option>
+						</select>
+					</div>
+			</div>
+			 {:W('ShowAction')}
+	</form>
+	</div>
+</div>

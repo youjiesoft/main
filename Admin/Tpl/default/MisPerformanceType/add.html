@@ -1,0 +1,81 @@
+<div class="page">
+	<div class="pageContent">
+     type:{$type}--------vid:{$vid}
+     <!-- 
+	<form method="post"  class="pageForm required-validate" 
+		<if condition="$vid neq '1'">
+			action="__URL__/insert/navTabId/__MODULE__"
+			<if condition="$type eq '1'">
+			onsubmit="return refreshTreeAdd(this,'name','misperformancelevel_rightcontent_tree','misperformancelevel_rightcontent','__APP__/MisPerformanceLevel/index/jump/1/type/',0);"
+			</if>
+			<if  condition="$type eq '2'">
+			onsubmit="return refreshTreeAdd(this,'name','misperformancekpitree','MisPerformanceKpiZnodes','__APP__/MisPerformanceKpi/index/jump/1/type/',0);"
+			</if>
+			<if  condition="$type eq '3'">
+			onsubmit="return refreshTreeAdd(this,'name','misperformancetemplate_rightcontent_tree','misperformancetemplate_rightcontent','__APP__/MisPerformanceTemplate/index/jump/1/type/',0);"
+			</if>
+		<else />
+			action="__URL__/insert/rel/MisPerformanceTypeRelIndex"
+			onsubmit="return validateCallback(this, dialogAjaxDone)"
+		</if>
+		>
+        </form>
+         <form rel="nbmForm" method="post" action="__URL__/insert/navTabId/MisSystemAnnouncement" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+         原版代码::备份
+        -->
+        <if condition="$vid eq '1'">
+            <if condition="$type eq 1">
+            
+            {$team = 'MisPerformanceLevel'}
+            </if>
+            <if condition="$type eq 2">
+            
+            {$team = 'MisPerformanceKpi'}
+            </if>
+            <if condition="$type eq 3">
+            
+            {$team = 'MisPerformanceTemplate'}
+            </if>
+        <else/>
+        {$team = 'MisPerformanceTypeRelIndex'}
+        </if>
+        <form method="post" action="__URL__/insert/navTabId/{$team}" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+            
+		<input type="hidden" name="ajax" value="1">
+		<input type=hidden name="type" value="{$type}">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-form-row tml-w330">
+				<if condition="$type eq '1' or $type eq '2' or $type eq '3'">
+					<label>分类名称：</label>
+				<else/>
+					<label>评分人类型：</label>
+				</if>
+				<input type="text" class="required"  name="name"/>
+				<if condition="$type eq  '1'">
+					<div class="left tml-checkbox">
+						<label>
+							<input type="checkbox" value="1" name="isdefault" />默认
+						</label>
+					</div>
+				</if>
+			</div>
+			<div class="tml-form-row">
+				<if condition="$type eq '1' or $type eq '2' or $type eq '3'">
+					<label>备&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+				<else />
+					<label>备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+				</if>
+				<textarea name="remark"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_insert">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

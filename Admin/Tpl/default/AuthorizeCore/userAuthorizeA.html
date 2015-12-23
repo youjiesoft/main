@@ -1,0 +1,40 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$roleaccesstree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+		};
+	$.fn.zTree.init($("#userAuthorizeAZtree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("userAuthorizeAZtree");
+	var valid = '{$group_id}';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="10">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse">
+				<h2></h2>
+				<div></div>
+			</div>
+			<ul id="userAuthorizeAZtree" class="ztree xyTree" layoutH="10"></ul>
+		</div>
+	</div>
+	<div id="{$divrel}" class="unitBox treeright">
+		<include file="AuthorizeCore:userAuthorizeRight"  />
+	</div>
+</div>

@@ -1,0 +1,89 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/auditProcess/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<input type="hidden" name="pid" value="{$vo['ptmptid']}">
+		<input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+		
+		<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+		<input type="hidden" name="refreshtabs[url]" value="__APP__/MisHrLeaveEmployee/index">
+		<input type="hidden" name="refreshtabs[data]" value="{ ntdata:1}">
+		<input type="hidden" name="refreshtabs[title]" value="人员离职管理">
+		<input type="hidden" name="refreshtabs[type]" value="dialog">
+		
+		<input type="hidden" name="backprocess" value="流程回退">
+		<input type="hidden" name="auditprocess" value="流程审核">
+		<input type="hidden" name="endprocess" value="流程结束">
+		<input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+		<input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+		
+		<input type="hidden" name="refreshtabs[closeall]" value="1">
+		<div class="contentTitle contentTitle_center">离职申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+			<input type="hidden"  name="leavetype" value="{$vo.leavetype}">
+			<input type="hidden" name="employeeid" value="{$MisHrBasicEmployeeList.id}">
+			
+		</div>
+		<div class="pageFormContent" layoutH="105">
+				<div class="tml-row">	
+				{:W('ShowOrderno',array(1,'mis_hr_leave_employee',$vo['orderno']))}
+						<div class="tml-form-col">
+							<label> 姓&nbsp;&nbsp;&nbsp;&nbsp;名： </label>
+							<input type="text"   value="{$vo.employeeid|getFieldBy='id','name','mis_hr_personnel_person_info'}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 部&nbsp;&nbsp;&nbsp;&nbsp;门： </label>
+							<input type="text" name="deptid" value="{$vo.employeeid|getFieldBy='id','deptid','mis_hr_personnel_person_info'|getFieldBy='id','name','mis_system_department'}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 职&nbsp;&nbsp;&nbsp;&nbsp;级： </label>
+							<input type="text" name="dutyname" value="{$vo.employeeid|getFieldBy='id','dutylevelid','mis_hr_personnel_person_info'|getFieldBy='id','name','duty'}"   readonly="readonly">
+		                </div>
+						<div class="tml-form-col">
+							<label> 岗&nbsp;&nbsp;&nbsp;&nbsp;位： </label>
+							<input type="text" readonly="readonly" value="{$vo.employeeid|getFieldBy='id','worktype','mis_hr_personnel_person_info'|getFieldBy='id','name','mis_hr_job_info'}" >
+						</div>
+						<div class="tml-form-col">
+							<label>联系方式：</label>
+							<input type="text"   value="{$vo.employeeid|getFieldBy='id','phone','mis_hr_personnel_person_info'}"    readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+					 	<label>身份证号：</label>
+						<input  type="text"  readonly="readonly" value="{$vo.chinaid}"  class="textInput" />
+						</div>
+						<div class="tml-form-col">
+							<label> 入职时间： </label>
+							<input type="text" name="indate" value="{$vo.employeeid|getFieldBy='id','indate','mis_hr_personnel_person_info'|transtime}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label>预离时间 ： </label>
+							<input type="text" class="textInput" name="leavedate" readonly="readonly"  value="{$vo.leavedate|transtime}"     />
+						</div>
+						<div class="tml-form-col">
+							<label>工&nbsp;&nbsp;&nbsp;&nbsp;龄：</label>
+							<input type="text" name=workage value="{$workage}"   readonly="readonly">
+						</div>
+						<if condition="$vo.leavetype eq '3'||$vo.leavetype eq '4'">
+							<div class="tml-form-col">
+								<label>离职类型 ： </label>
+								<input type="text" class="textInput"  readonly="readonly"  value="{$vo.forleavetype|getFieldBy='id','name','mis_hr_typeinfo'}"     />
+							</div>
+						</if>
+				</div>
+				<div class="tml-form-row">
+					<label>离职原因：</label>
+					<textarea name="leavereason" readonly="readonly" >{$vo.leavereason}</textarea>
+				</div>
+				<div class="tml-row">	
+					<div class="tml-form-col">
+						<label>申请人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}" />
+					</div>
+					<div class="tml-form-col">
+					 	<label>申请时间：</label>
+						<input name="applicationdate" type="text"  readonly="readonly" value="{$vo.createtime|transTime}"  class="textInput" />
+					</div>
+				</div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

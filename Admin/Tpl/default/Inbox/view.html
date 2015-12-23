@@ -1,0 +1,33 @@
+<div class="page">
+	<div class="pageContent">
+        <div class="pageFormContent" layoutH="60">
+            <div class="unit">
+            	<label>发件人：</label>
+				<span>{$vo['createid']|getFieldBy='id','name','User'}</span>
+            </div>
+            <div class="unit">
+            	<label>主题:</label>
+				<span>{$vo['title']}</span>
+            </div>
+            <div class="unit">
+            	<label>内容:</label>
+				<span>{$vo['content']}</span>
+            </div>
+            <div class="unit">
+            	<label>附件:</label>
+            	<volist name="attach" id="att">
+				<span><a href="__PUBLIC__/{$att['attached']}" target="_blank">{$att['upname']}</a></span><br>
+				</volist>
+            </div>
+            <div class="unit">
+            	<label>发件时间:</label>
+				<span>{$vo['createtime']|transTime='Y-m-d H:i:s'}</span>
+            </div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+</div>

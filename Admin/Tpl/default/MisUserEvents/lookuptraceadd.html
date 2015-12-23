@@ -1,0 +1,69 @@
+<div class="pageContent">
+    <form method="post" action="__URL__/insert/" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <input type="hidden" name="commit" value="0">
+        <input type="hidden" name="iseditor" value="1">
+        <input type="hidden" name="rel" value="MisUserEventslookuptraceindex" />
+        <input type="hidden" name="callbackType" value="closeCurrent">
+        <div class="unitBox">
+            <div class="pageFormContent" layoutH="61">
+                <div class="tml-form-row">
+                    <label>主要内容：</label>
+                    <input type="text" class="required" value="" name="text" style="width:370px;margin-right:2px;" />
+					<div class="left combox-auto">
+                    <select class="combox" name="scheduletype">
+                        <option value="1">个人</option>
+                        <option <if condition="$scheduletype">selected</if>   value="2">工作</option>
+                    </select>
+					</div>
+                </div>
+                <div class="tml-form-row">
+                    <label>起止日期：</label>
+					<div class="tml-input-date">
+						<div class="tml-input-append">
+						  <input type="text" name="startdate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" class="Wdate js-wdate required" value="{$startdate|transTime='Y-m-d H:i:s'}" />
+						  <a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+						<span class="tml-form-text">&nbsp;至&nbsp;</span>
+						<div class="tml-input-append">
+							<input type="text" name="enddate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" class="Wdate js-wdate required" value="{$enddate|transTime='Y-m-d H:i:s'}" />
+							<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+                </div>
+                <div class="tml-form-row">
+                    <label>颜色标记：</label>
+                    <volist name="bgcolor" id="bgcolorvo">
+					<div class="left tml-radio tml-w60">
+					   <label>
+                        	<input type="radio" value="{$bgcolorvo.index}" name="importancedegree" <if condition="$bgcolorvo.index eq 1">checked</if>>
+                        	&nbsp;<span class="tml-label {$bgcolorvo.color} tml-w30">&nbsp;</span>
+						</label>
+					</div>
+                   </volist>
+               </div>
+                <div class="tml-form-row">
+                    <label>关联人员：</label>
+                        <ul class="addressee left" id="writeFormUserAddEventsTrace" style="width:390px;">
+                        </ul>
+                        <a class="input-addon input-addon-userplus checkUser" href="javascript:;" ulid="writeFormUserAddEventsTrace" data="recipientname,username,text;personid,userid,hidden,1;email,email,hidden">查找带回</a>&nbsp;
+                </div>
+                <div class="tml-form-row">
+                    <label>信息：</label>
+                    <textarea class="ueditor" name="details" style="height:220px;width:432px;" tools="mini" ></textarea>
+                </div>
+                <!-- 附件信息 -->
+				{:W('ShowUpload')}
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+                </li>
+                <li>
+                    <button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

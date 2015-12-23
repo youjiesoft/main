@@ -1,0 +1,96 @@
+<form id="pagerForm" action="__URL__/lookupmanage" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<div class="pageHeader" style="border: 1px #B8D0D6 solid;">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'misworkstatementX');" action="__URL__/lookupmanage" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<input type="hidden" name="step" value="{$step}">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div class="unit">
+							请输入关键字：
+							<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+					</td>
+					<td>
+						<select class="combox" name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">{$Think.lang.subsearch}</button>
+							</div>
+						</div>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="button" multLookup="orgId" onclick="workstate_selectinto('{$step}')" warn="请选择收件人">批量带回</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="123">
+		<thead>
+			<tr>
+				<th width="20"><input type="checkbox" class="checkboxCtrl" group="orgId" /></th>
+				<th width="20">ID</th>
+				<th>员工编号</th>
+				<th>员工姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+				<th>入职时间</th>
+				<th>转正时间	</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody class="tbodylist">
+			<volist id="vo" name="list">
+				<tr onclick="onTrClickCheckbox(this,'orgId')">
+					<td><input type="checkbox" name="orgId" value="{ mangid:'{$vo.id}', name:'{$vo.name}'}" userid="{$vo.id}" username="{$vo.name}" /></td>
+					<td>{$vo['id']}</td>
+					<td>{$vo['orderno']}</td>
+					<td>{$vo['name']}</td>
+					<td>{$vo['deptname']}</td>
+					<td>{$vo['dutyname']}</td>
+					<td>{$vo['indate']|transTime}</td>
+					<td>{$vo['transferdate']|transTime}</td>
+					<td>
+						<a class="btnSelect" onclick="workstate_addpeople('{$vo.id}','{$vo.name}','{$step}')" href="javascript:$.bringBack({ mangid:'{$vo.id}', name:'{$vo.name}'})" title="查找带回">选择</a>
+					</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="misworkstatementX" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

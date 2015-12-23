@@ -1,0 +1,108 @@
+<script>
+	$(document).ready(function(){
+		var setting = {view: { selectedMulti: false,fontCss: setFontCss},data: {simpleData: {enable: true}}};
+		var zNodes = {$documentTree};
+		//将节点内容帮顶到html上面 
+		$.fn.zTree.init($("#document_collate_tree"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("document_collate_tree");
+		//根据name来获得默认选中的节点 
+		var valid = '我的文档'; 
+	    var nodes = zTree.getNodesByParam("name", valid, null);
+	    zTree.selectNode(nodes[0]);
+	});
+	function setFontCss(treeId, treeNode) {
+	    var val=false;
+	    var admin='{$admin}';
+	    if(admin=='0'){
+		var arr ={$managerid};
+		 for(var key in arr){
+		    if(arr[key]==treeNode.realid ){
+			val=true;
+		    }
+		}
+	    }else{
+		val=true;
+	    }
+	    if(val){
+		return {};
+	    }else{
+		return {color:"#999", background:"#F8F8F8"};
+	    }
+	}
+	function documentcollatesubmit(obj){
+		var zTree = $.fn.zTree.getZTreeObj("document_collate_tree"),nodes = zTree.getSelectedNodes(),treeNode = nodes[0];
+		var id=treeNode.realid;
+		if(id==0){
+		    alertMsg.error("不能规定到跟目录");
+		    return false;
+		}
+		var val=false;
+		var admin='{$admin}';
+		if(admin=='0'){
+		    var arr ={$managerid};
+		     for(var key in arr){
+			if(arr[key]==id ){
+			    val=true;
+			}
+		    }
+		}else{
+		    val=true;
+		}
+		if(!val){
+		    alertMsg.error("您没有对 "+treeNode.name+" 文件夹的归档权限!");
+		    return false;
+		}
+		$(obj).find("input[name='parentid']").val(id);
+	//	$(obj).submit();
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/lookupDocumentCollate" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$id}">
+			<input type="hidden" name="step" value="2">
+			<input type="hidden" name="parentid" value="1">
+			<input type="hidden" name="t" value="{$t}">
+			<div class="pageFormContent" layoutH="58">
+			    <div class="unit">
+				温馨提示:灰色背景文件无归档权限
+			    </div>
+			    <div class="unit">
+				<ul id="document_collate_tree" class="ztree" ></ul>
+					<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文档编号：</label>
+					<input type="text" style="width:300px"  maxlength="30" size="40" value="{$vo.orderno}" name="orderno">
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文档位置：</label>
+					<input type="text" style="width:300px"  maxlength="30" size="40" value="{$vo.position}" name="position">
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>文档页数：</label>
+					<input type="text" style="width:300px"  maxlength="30" size="40" value="{$vo.page}" name="page">
+				</div>
+			</div>
+					<div class="tml-form-col">
+						<label>备注：</label>
+						<textarea name="remark" style="width:300px;height:120px;" class="textInput enterIndex valid">{$vo.remark}</textarea>
+					</div>
+			    </div>
+			</div>
+			<div class="formBar">
+			    <ul>
+				    <li>
+						<button class="tml-btn tml-btn-primary" onclick="documentcollatesubmit(this.form);" type="submit">{$Think.lang.save}</button>
+				    </li>
+					<li>
+					    <button class="tml-btn close" type="button">{$Think.lang.close}</button>
+					</li>
+			    </ul>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,44 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+    <input type="hidden" name="dwzpageNum" value="1"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+    <input type="hidden" name="numPerPage" value="{$numPerPage}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancegrading_add"><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" title="新增-评分人类型" target="dialog" mask="true" width="350" height="280"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+		</ul>
+		<form onSubmit="return  navTabSearch(this);" action="__URL__" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="50%" layoutH="83">
+		<thead ename="{$ename}">
+			<tr>
+				<th width="20"><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+				<th width="20">序号</th>
+				<th width="20">名称</th>
+				<th width="20">类型</th>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')" title="编辑-评分人类型"  dwidth="350" dheight="280" ondblclick='ondblclick_dialog(this,"__MODULE__edit","__URL__/edit/id/{$vo[id]}");'>
+				<td><input type="checkbox" name="id" value="{$vo['id']}" /></td>
+				<td>{$vo.id}</td>
+				<td>{$vo.name}</td>
+				<td>{$vo.type}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar"></div>
+</div>

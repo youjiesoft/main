@@ -1,0 +1,6 @@
+<select name="flowid" class="combox">
+	<option value="0">--请选择流程--</option>
+	<volist name="flowsList" id="flowsVo">
+		<option value="{$flowsVo['id']}">{$flowsVo['title']}</option>
+	</volist>
+</select>

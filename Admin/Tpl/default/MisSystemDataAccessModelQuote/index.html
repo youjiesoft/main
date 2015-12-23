@@ -1,0 +1,43 @@
+ <script>
+$(document).ready(function(){
+	var zNodes = {$nodeList};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#MisSystemDataAccessModelQuoteTree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("MisSystemDataAccessModelQuoteTree");
+ 	var valid = '{$uilid}';
+    var nodes = treeObj.getNodesByParam("id", valid, null);
+    treeObj.selectNode(nodes[0]); 
+}); 
+</script> 
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="MisSystemDataAccessModelQuoteTreeSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('MisSystemDataAccessModelQuoteTree','MisSystemDataAccessModelQuoteTreeSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="MisSystemDataAccessModelQuoteTree" class="ztree" layoutH="148"></ul>
+		</div>
+	</div>
+	<div id="MisSystemDataAccessModelQuoteBOX" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

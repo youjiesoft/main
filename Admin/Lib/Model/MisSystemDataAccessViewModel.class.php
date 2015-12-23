@@ -1,0 +1,30 @@
+<?php
+class MisSystemDataAccessViewModel extends ViewModel {
+	public $viewFields = array(
+			'mis_system_data_access_mas'=>array(
+					'_as'=>'mis_system_data_access_mas',
+					'id',
+					'actionname',
+					'table'=>'tablename',
+					'field'=>'fieldname',
+					'type'=>'typeid',
+					'accesscontenttype',
+					'accesscontentsource',
+					'accesscontentsave',
+					'accesscontentcategory',
+					'status',
+					'startstatus',
+					'isalldata',
+					'_type'=>'LEFT'
+			),
+			'mis_system_data_access_sub'=>array(
+					'_as'=>'mis_system_data_access_sub',
+					'accesscontent',
+					'id'=>'subid',
+					'objid',
+					'objtype',
+					'_on'=>'mis_system_data_access_mas.id=mis_system_data_access_sub.masid',
+					'_type'=>'LEFT'
+			),
+	);
+}

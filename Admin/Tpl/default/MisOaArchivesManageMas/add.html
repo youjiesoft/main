@@ -1,0 +1,157 @@
+<script>
+function addMisOaArchivesManageMas(file, data, response) {
+	var $box=navTab.getCurrentPanel();
+    var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+    $box.find("input[name='swf_upload_source_name']").val(file.name);
+    $box.find("input[name='swf_upload_save_name']").val(s[1]);
+}
+$('#begindateMisOaArchivesManageMasAdd').focus(function (){
+	WdatePicker({maxDate:"#F{$dp.$D('enddateMisOaArchivesManageMasAdd')}"});
+});
+$('#enddateMisOaArchivesManageMasAdd').focus(function () {
+	WdatePicker({minDate:"#F{$dp.$D('begindateMisOaArchivesManageMasAdd')}"});
+});	
+</script>
+<div class="pageContent">
+    <form method="post" action="__URL__/insert/rel/misoaarchivesmanagesub" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+    <input type="hidden" name="callbackType" value="closeCurrent">
+    <input type="hidden" name="refreshtabs[data]" value="1">
+        <div class="pageFormContent applecloth" layoutH="55">
+            <div class="keepContentCenter form-affix-content">
+                <div class="contentTitle contentTitle_center form-affix-title">档案管理新增
+                    
+                </div>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle"> <b>基本信息</b> </legend>
+                    <div class="tml-row">
+                    {:W('ShowOrderno',array(1,'mis_oa_archives_manage_mas'))}
+	                    <if condition='$fields["fondsnum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["fondsnum"]}：</label>
+	                        <input type="text" name="fondsnum" class="required textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["typenum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["typenum"]}：</label>
+	                        <input type="text" name="typenum" class="required textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["catnum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["catnum"]}：</label>
+	                        <input type="text" name="catnum" class="required textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["year"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["year"]}：</label>
+	                        <input type="text" name="year" class="required textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["casenum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["casenum"]}：</label>
+	                        <input type="text" name="casenum" class="required textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["retentionperiod"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["retentionperiod"]}：</label>
+	                        <input type="text" name="retentionperiod" class="required textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["begindate"]'>
+	                    <div class="tml-form-col">
+	                        <label title="案件起始日期">案件起始日期：</label>
+	                        <span class="xyInputWithUnit">
+	                        <input type="text" id="begindateMisOaArchivesManageMasAdd" name="begindate"  class="Wdate" value="{$curday}"/>
+	                		<span class="input-addon input-addon-calendar"></span>
+	                        </span>
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="案件截止日期">案件截止日期：</label>
+	                        <span class="xyInputWithUnit">
+	                        <input type="text" id="enddateMisOaArchivesManageMasAdd" name="enddate" class="Wdate" value="{$curday}"/>
+	                		<span class="input-addon input-addon-calendar"></span>
+	                        </span>
+	                    </div>
+	                    </if>
+	            	</div>
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle"> <b>导入目录</b> </legend>
+                    <div class="tml-form-row">
+                    <label title="样本下载">样本下载：</label>
+                    <p style="padding:0;"><a class="attlink" rel="" target="_blank" href="__PUBLIC__/{$url}"><span class="info">{$filename}</span></a></p>
+                    </div>
+                    <div>
+                    <div class="tml-form-row">
+                        <label title="导入新文件">导入新文件：</label>
+                        <input id="swfupload_misoaarchivesmanagemas_add" onUploadSuccess="addMisOaArchivesManageMas" auto="true" multi="false" type="file" uploader="true" fileTypeExts="*.xls;" fileTypeDesc="*.xls;" name="misoaarchivesmanagemas_add_file" formData="{ uploadpath:'MisOaArchivesManageMas' }" />
+                    </div>
+                    <div class="tml-form-row">
+                        <label title="导入文件名">导入文件名：</label>
+                        <input type="text" name="swf_upload_source_name" readonly value="未选择文件！" style="margin:2px 5px 0 0; width:200px;">
+                        <input type="hidden" name="swf_upload_save_name" value="">
+                        <a class="tml-btn tml-btn-default" onclick="clearInput('swf_upload_source_name,swf_upload_save_name');"><span class="buttonContent"><em class="tml-icon tml-icon-cross tml-mr3"></em><strong class="tml-icon-text">清空文本框</strong></span></a>
+                    </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle"><b>卷内文书目录</b></legend>
+                    <div id="misoaarchivesmanagemasadd" class="xytable grid">
+                        <table class="list nowrap itemDetail" addbutton="添加目录" style="width:100%">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th width="90" type="text" name="deptid[]">责任者</th>
+                                    <th width="150" type="text" name="referencenum[]">文号</th>
+                                    <th type="text" name="title[]">标题</th>
+                                    <th width="90" type="date" name="datetime[]" >日期</th>
+                                    <th width="30" type="text" name="page[]">页码</th>
+                                    <th type="text" name="remark[]">备注</th>
+                                    <th type="del" width="30">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle"><b>页脚</b></legend>
+                    <div class="tml-row">
+	                    <div class="tml-form-col">
+	                        <label title="制单人">制单人：</label>
+	                        <input type="text" readonly="readonly" class="textInput" value="{$Think.SESSION.loginUserName}" />
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="制单时间">制单时间：</label>
+	                        <input class="textInput" readonly="readonly" value="{$createtime|transTime}" />
+	                    </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        {:W('ShowAction')}
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.xytable').bind('click mouseover', function(e){
+        var $this = $(this);
+        var $trs = $(this).find('tr');
+        var $target = $(e.target);
+        var $tr = $target.parents('tr');
+        if($tr.length > 0){
+            if(e.type == 'click'){
+                $trs.removeClass('selected');
+                $target.parents('tr').addClass('selected');
+            } else if(e.type == 'mouseover'){
+                $trs.removeClass('hover');
+                $target.parents('tr').addClass('hover');
+            }
+        }
+    });
+});
+</script>

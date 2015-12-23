@@ -1,0 +1,61 @@
+<div class="page">
+	<div class="pageContent">
+		<div class="pageFormContent " layoutH="58">
+			<h2 class="contentTitle contentTitle_center">转正申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+				{:W('ShowOrderno',array(0,'mis_hr_regular_employee',$vo['orderno']))}
+			</h2>
+			<fieldset>
+				<table class="table" width="100%" >
+					<thead>
+						<tr>
+							<th>姓名</th>
+							<th>职级</th>
+							<th>入职日期</th>
+							<th>试用期</th>
+							<th>已试用</th>
+						</tr>
+					</thead>
+					<tbody class="Basicsaleprojectlist">
+					<volist id="void" name="volistid" > 
+						<tr>
+							<td>
+							 <input type="hidden" name="employeeid[]" value="{$void.id}">{$void.name}
+							</td>
+							<td>{$void.dutylevelid|getFieldBy='id','name','duty'}</td>
+							<td>{$void['indate']|transTime}</td>
+							<td>{$void['pedate']}</td>
+							<td>{$void['date']}</td>
+						</tr>
+					</volist>
+				</table>
+			    <p>
+					<label>转正日期：</label>
+					<span class="xyInputWithUnit">
+						<input type="text" name="positivedate" size="15" id="positivedate_e" readonly="readonly" value="{$vo.positivedate|transTime}"/>
+						<span class="input-addon input-addon-calendar"></span>
+					</span>
+				</p>
+			</fieldset>
+			<fieldset>
+				<legend class="fieldset_legend_toggle"><b>个人总结</b></legend>
+             	<textarea style="width: 600px; height: 160px;" name="remark" readonly="readonly" class="required">{$vo.remark}</textarea>
+				<div class="clear"></div>
+				<span class="tml-help-block" style="color:red">* 试用期间工作总结（内容包括对试用期工作的回顾、总结，对公司企业文化的理解；自己在工作中的优点及不足，如何改进存在的不足；对今后工作的设想、建议等）。</span>
+			</fieldset>
+			<hr/>
+			<p>
+				<label>代&nbsp;办&nbsp;人：</label>
+				<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}" />
+			</p>	
+			<p>
+			 	<label>代办时间：</label>
+				<input type="text" size="19"  readonly="readonly" value="{$vo.createtime|transTime}" />
+			</p>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+</div>

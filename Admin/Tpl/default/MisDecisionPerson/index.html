@@ -1,0 +1,32 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$zNodes};
+		var setting = {
+			view: {selectedMulti: false},
+			data: {simpleData: {enable: true}}
+		};
+		$.fn.zTree.init($("#MisDecisionPerson"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("MisDecisionPerson");
+		var valid = '{$defaultSelect}';
+	    var nodes = zTree.getNodesByParam("id", valid, null);
+	    zTree.selectNode(nodes[0]);
+	});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close" layoutH="33" style="border-top:none;">
+			<ul id="MisDecisionPerson" class="ztree xyTree" style="height: 45%; overflow: auto;"></ul>
+			<ul id="MisDecisionPersonType" class="ztree xyTree" style="height: 45%; overflow: auto;"></ul>
+		</div>
+	</div>
+	<div id="MisDecisionPersonindexview" class="unitBox treeright">
+		<include file="indexview" />
+	</div>
+</div>

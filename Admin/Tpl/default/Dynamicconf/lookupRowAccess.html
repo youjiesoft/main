@@ -1,0 +1,82 @@
+<style>
+.tml-btn{margin-left:20px}
+.pageFormContent label{ float: left;line-height: 21px;padding: 0 5px;width:150px}
+</style>
+<div class="pageFormContent TablePress">
+<script>
+function changeShowGlobal(obj){
+    var v = $(obj).val();
+    if(v==0){
+	$(obj).parents("tr").find(".yx").show();
+	$(obj).parents("tr").find(".jz").hide();
+    }else{
+	$(obj).parents("tr").find(".jz").show();
+	$(obj).parents("tr").find(".yx").hide();
+    }
+    
+}
+</script>
+<form method="post" action="__URL__/lookupRowAccess" class="pageForm required-validate"  onsubmit="return validateCallback(this, dialogunclose)" >
+	<input type="hidden" name="step" value="2" />
+	<input name="setmodule" value="{$module}" type="hidden" />
+	<input name="issub" value="{$issub}" type="hidden" />
+	<input name="userid" value="{$userid}" type="hidden" />
+	    <div class="unit">
+	    	<div class="tml-row">
+				    <label ><strong>当前设置对象[人]</strong></label>
+				     <input type="hidden"  name="userid" value="" class="rowaccessOrg1.userid" />
+				    <input type="text" size="30" value="" class="textInput rowaccessOrg1.name" readonly="readonly" />
+				    <a class="btnLook" lookupgroup="rowaccessOrg1" href="__URL__/lookupBackendUserList">查找带回</a>
+		    </div>
+		    <div class="tml-row">	
+				    <label><strong>当前设置对象[角色]</strong></label>
+				      <input type="hidden"  name="roleid" value="" class="rowaccessOrg2.id" />
+				    <input type="text" size="30" value="" class="textInput rowaccessOrg2.name" readonly="readonly" />
+					<a class="btnLook info"  lookupGroup="rowaccessOrg2"   href="__URL__/lookuprolegroup/stepType/1/obj/dynamicconfadd_rolegroup/objname/editXxBox" >查找带回</a>
+	    	</div>
+		   <div class="tml-row">
+			   <label ><strong>当前设置对象[专家]</strong></label>
+			      <input type="hidden"  name="expertid" value="" class="rowaccessOrg3.id" />
+			    <input type="text" size="30" value="" class="textInput rowaccessOrg3.name" readonly="readonly" />
+				<a class="btnLook info"  lookupGroup="rowaccessOrg3"   href="__URL__/lookupExpert" >查找带回</a>
+		   	 <button class="tml-btn tml-btn-primary"  type="submit">{$Think.lang.save}</button>
+	     </div>
+	    </div>    
+	    <table class="table" id="rowaccesset" layoutH="146" targetType="dialog" width="100%"  >
+		<thead>
+		    <tr>
+				<th>列名称</th>
+				<th>删除原允许权</th>
+				<th>删除原禁止权</th>
+				<th><strong>当前对象</strong>允许</th>
+				<th><strong>当前对象</strong>禁止</th>
+				<th>除[<strong>当前对象</strong>]的其他对象</th>
+				<th>当前字段<strong>可见</strong>人员</th>
+		    </tr>
+		</thead>
+		<tbody>
+		     <volist id="vo" name="list">
+				<if condition="$vo['shows']">
+				    <tr>
+					<td>{$vo['showname']}</td>
+					<td><input type="checkbox"  name="clearallow[]" value="{$key}" /></td>
+					<td><input type="checkbox"  name="cleardeny[]" value="{$key}" /></td>
+					<td>
+						<input type="radio" class="allowcheck" onchange="changeShowGlobal(this);" checked="checked" name="allow[{$key}]" value="1" />
+					</td>
+					<td>
+						<input type="radio" class="allowcheck" onchange="changeShowGlobal(this);" name="allow[{$key}]" value="0" />
+					</td>
+					<td>
+						<input type="checkbox"  name="globalrow[]" class="jz"  value="{$key}" /><span class="yx control_display_none" style="font-weight: bold;color:purple">允许</span><span class="jz" style="font-weight: bold;color: blue">禁止</span>
+					</td>
+					<td>
+						<a href="__URL__/lookupForbidView/setmodule/{$module}/key/{$key}" mask="true"  width="800" height="500" target="dialog" rel="quanxian_view">查看</a>
+					</td>
+				    </tr>
+				</if>
+		    </volist>
+	    </tbody> 
+	</table>
+</form>
+</div>

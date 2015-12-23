@@ -1,0 +1,31 @@
+<div class="pageContent">
+    <table class="table" width="100%" layoutH="77">
+	 <thead> 
+		 <tr>
+		      <th>检测到有新的版本可供升级，您可以选择自动升级或者下载安装包手动升级。</th>
+		       <th>操作</th>  
+		 </tr>
+	 </thead>
+	 <tbody>
+	      <volist name="upgraderow" id="g">
+		  <tr>
+		      <td>{$g[0]}</td>
+		      <td>{$g[1]}</td>
+		  </tr>
+	      </volist>
+	 </tbody>
+    </table> 
+</div>
+<script>
+    var ajaxbg=$("#background,#progressBar");
+    $(document).ajaxStart(function(){ajaxbg.show();}).ajaxStop(function(){ajaxbg.hide();});
+    function upgradecross( obj ){
+	var url = $(obj).attr("href");
+	alertMsg.confirm("自动升级前请您先备份程序及数据库，确定开始升级吗？",{
+	    okCall:function(){
+		navTab.openTab("TMLupgrade", url, { title : "系统升级_第一步", fresh : true, data : {} });
+		return false;
+	    }
+	}); 
+    }
+</script>

@@ -1,0 +1,101 @@
+<form id="pagerForm" action="__URL__/index/jump/jump" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$type eq 1">
+				<if condition="$_SESSION.a eq 1 or $_SESSION.misoaitemswaitfor_view eq 1">
+					<li>
+						<a class="icon" href="__URL__/view/id/{sid}" target="dialog" title="协同事项_查看" mask="true" width="730" height="620" rel="__MODULE__view">
+							<span>查看</span>
+						</a>
+					</li>
+				</if>
+			<else/>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.misoaitemswaitfor_edit eq 1">
+					<li>
+						<a class="redo" href="__URL__/edit/id/{sid}" target="dialog" title="协同事项_审核" mask="true" width="730" height="620" rel="__MODULE__edit">
+							<span>审核</span>
+						</a>
+					</li>
+				</if>
+			</if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']]) eq 1">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this, 'misoaitemswaitforview');" action="__URL__/index/jump/jump" method="post">
+		<input type="hidden" name="type" value="{$type}">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+						<if condition="$_SESSION.a eq 1 or $_SESSION.misoaitemswaitfor_exportbysearchhtml ">
+							<td>
+								<button  class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index','__URL__/exportBysearchHtml');">导出</button>
+							</td>
+					    </if>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead>
+			<tr>
+				<th width="25">序号</th>
+				<volist id="vo" name="detailList">
+					<if condition="$vo[shows] eq 1">
+						<th <if condition="$vo[widths]">width="{$vo[widths]}"</if>
+							<if condition="$vo[sorts]">rel="misoaitemswaitforview" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}
+						</th>
+					</if><!--类型-->
+				</volist>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list" key="key2">
+				<tr target="sid" title="协同事务_查看" dwidth="730" dheight="620" 
+					<if condition="$type eq 1">
+					 rel="{$vo['id']}"
+					 drel="__MODULE__view"
+					 ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/view/id/{$vo[id]}");' 
+					<else/>
+					 rel="{$vo['instanceid']}"
+					 drel="__MODULE__edit"
+					 ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$vo[instanceid]}");' 
+					</if>>
+					<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<volist id="vo1" name="detailList">
+						<if condition="$vo1[shows] eq 1">
+							<td width="{$vo1[widths]}">
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+										<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+											{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+										<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+									{$vo[$vo1['name']]}
+								</if>
+							</td>
+						</if>
+					</volist>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" rel="misoaitemswaitforview" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

@@ -1,0 +1,92 @@
+<script type="text/javascript">
+	function panduans(obj){
+		<volist name="processList" id="pt">
+		$(".xiuxiugai{$pt.flowid}").hide();
+		$("#xiugairenxuanze{$pt.flowid}").attr("disabled","");
+		</volist>
+		$(obj).val();
+		if($(obj).val()){
+			$(".xiuxiugai"+$(obj).val()).show();
+			$("#xiugairenxuanze"+$(obj).val()).removeAttr("disabled");
+		}
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/ganyuProcess/rel/ProcessManageBox" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="60">
+		<input type="hidden" name="tableid" value="{$tableid}"/>
+		<input type="hidden" name="tablename" value="{$tablename}"/>
+		<input type="hidden" name="catgory" value="{$catgory}"/>
+		<input type="hidden" name="ostatus" value="{$ostatus}"/>
+		<input type="hidden" name="callbackType" value="closeCurrent"/>
+	        <div class="pmt_warp">
+	        	<div class="process_warp_header">干预到流程节点：</div>
+	        	<div class="condition_batch">
+					 <!-- select组件 start -->
+					<div class="col_1_2 form_group_lay" callback="panduanxuanzezhi">
+						<select name="tuiprocessid" class="select2 required" onchange="panduans(this)" >
+							<option value="">请选择</option>
+							<volist name="processList" id="pt">
+								<option parallel="{$pt.parallel}" value="{$pt.flowid}">{$pt.name}<if condition="$pt.parallel eq 2">-串并</if></option>
+							</volist>
+						</select>
+					</div>
+					<!-- select组件 end -->
+	            </div>
+	        </div>
+	        <div class="pmt_warp">
+	            <div class="process_warp_header">批复人修改：</div>
+	            <volist name="processList" id="pt">
+	            <if condition="$pt.parallel eq 2">
+						<table class="process_manage_table js-process_manage xiuxiugai{$pt.flowid}" style="display: none;">
+	            		<tr>
+		                    <td width="20%">
+		                    	<input id="xiugairenxuanze{$pt.flowid}" type="checkbox" name="nameas" value="-1" rel="用户"/>
+		                    	<label class="process_radio" for="">{$pt.name}</label>
+		                    </td>
+		                    <td width="40%">
+		                    	<label class="process_radio" for="">串并混合选择</label>
+		                    </td>
+		                </tr>
+		                <volist name="parallels" id="pars">
+		                	<if condition="$pars.relation_formid eq $pt.id">
+		                	<tr>
+		                	<td width="20%">
+		                    	<label class="process_radio" for="">{$pars.bactchname}</label>
+		                    </td>
+		                	<td width="40%">
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetUser/switch/1/fengzhuangbianhao/{$pars.id}"  rel="term" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选择用户"><span class="icon-search"></span>查找</a>
+		                    	<span class="pl5" id="userobjStr{$pars.id}"></span>
+		                    </td>
+		                    </tr>
+		                    </if>
+		                </volist>
+	            </table>
+					<else/>
+			            <table class="process_manage_table js-process_manage xiuxiugai{$pt.flowid}" style="display: none;">
+			            		<tr>
+				                    <td width="20%">
+				                    	<input id="xiugairenxuanze{$pt.flowid}" type="checkbox" name="nameas" value="{$pt.flowid}" rel="用户"/>
+				                    	<label class="process_radio" for="">{$pt.name}</label>
+				                    </td>
+				                    <td width="40%">
+				                    		<a href="__APP__/MisSystemUserBactch/lookupGetUser/switch/1/fengzhuangbianhao/{$pt.flowid}"  rel="term" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选择用户"><span class="icon-search"></span>查找</a>
+				                    	<span class="pl5" id="userobjStr{$pt.flowid}"></span>
+				                    </td>
+				                </tr>
+			            </table>
+	          		</if>
+				</volist>
+	            
+	        </div>
+		</div>
+		
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">提交</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

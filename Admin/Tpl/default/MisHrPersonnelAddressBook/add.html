@@ -1,0 +1,67 @@
+
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/rel/mislogisticsfixlogmodel/jump/1" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent smallFormContent" layoutH="56">
+				<div style="width:455px;border-right:1px solid gray;float:left;">
+					<div class="tml-form-row">
+						<label>{$fields["name"]}:</label><input  type="text" name="name" class="required" value="{$vo['name']}" style="width:350px;">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["report_name"]}:</label>
+						<div class="tml-input-append">
+							<input type="text" class="org.name"  name="report_name" size="10" value="{$vo['report_name']}">
+							<a class="input-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a>
+							<input type="hidden" name="report_name_id" value="{$report_name_id}" class="readonly  org.mangid"/>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["department_name"]}:</label>
+						<input  type="text" name="department_name" class="org.deptname" value="{$vo['department_name']}" size="15">
+						<input  type="hidden" name="department_id" class="org.deptid" value="{$vo['department_id']}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["fix_man"]}:</label><input  type="text" name="fix_man" class="required" value="{$vo['fix_man']}" size="10">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["fix_time"]}:</label>
+						<div class="tml-input-append">
+							<input type="text" format="{dateFmt:'yyyy-MM-dd HH:mm'}" class="Wdate js-wdate"  name="fix_time" value="{$Think.server.REQUEST_TIME|date='Y-m-d H:m',###}" />
+							<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["falut_type"]}:</label>
+						<select name="falut_type"  class="combox required">
+							<option  value="1">给排水</option>
+							<option  value="2">电路</option>
+							<option  value="3">电气设备</option>
+							<option  value="4">其它</option>
+						</select>
+					</div>
+					<div class="tml-form-row">
+						<label>{$fields["fixed"]}:</label><input  name="fixed" class="required" type="radio" value="1" /> 修复&nbsp;&nbsp; <input  name="fixed" class="required" type="radio" value="2" /> 未修复 &nbsp;&nbsp;<input  name="fixed" type="radio" class="required" value="3" /> 报废&nbsp;&nbsp; <input  name="fixed" type="radio" class="required" value="4" /> 外修&nbsp;&nbsp; <input  name="fixed"  class="required" type="radio" value="5" /> 其它&nbsp;&nbsp; 
+					</div>
+	
+	
+					<div class="tml-form-col"><label>{$fields["fault_cause"]}:</label><textarea cols="40" rows="4"  name="fault_cause">{$vo['fault_cause']}</textarea></div>
+					<div class="tml-form-col"><label>{$fields["solution"]}:</label><textarea cols="40" rows="4"  name="solution">{$vo['solution']}</textarea></div>
+					<div class="tml-form-col"><label>{$fields["remark"]}:</label><textarea cols="40" rows="2"  name="remark">{$vo['remark']}</textarea></div>
+					<div class="clear"></div>
+				</div>
+				<div sytle="width:450px;float:left;">
+				<!-- 上传附件区 -->
+				<fieldset>
+					<legend class="fieldset_legend_toggle">
+						<b>上传附件</b>
+					</legend>
+					{:W('ShowUpload')}
+				</fieldset>
+				<!-- 上传附件区 -->
+				</div>
+			</div>
+			 {:W('ShowAction')}
+	</form>
+	</div>
+</div>

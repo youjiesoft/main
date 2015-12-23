@@ -1,0 +1,45 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$roleaccesstree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			check: {
+				enable: true,
+				chkboxType: {"Y":"ps","N":"ps"}
+			}
+		};
+	$.fn.zTree.init($("#userroleaccesstree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("userroleaccesstree");
+	var valid = '{$valid}';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+				<input class="js-searchZTreeSubmit" class="tree-search-input" type="text" id="userroleSearchNodeKeys" />
+				<input class="searchBtn" type="button" onclick="SearchZTreeNode('userroleaccesstree','userroleSearchNodeKeys')">
+				</div>
+			</div>
+			<ul id="userroleaccesstree" class="ztree" layoutH="43"></ul>
+		</div>
+	</div>
+	<div id="userroleaccessright" class="unitBox treeright">
+		<include file="roleAccessRight"  />
+	</div>
+</div>

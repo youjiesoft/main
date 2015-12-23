@@ -1,0 +1,78 @@
+<include file="Public:pagerForm" />
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__"
+			class="pageForm required-validate"
+			onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="53">
+				<table width="100%" border="0" cellspacing="0">
+					<tr>
+						<td>
+							<div class="unit">
+								<label>编号：</label>
+								<input type="text" name="code" class="required"
+									value="{$vo['code']}">
+							</div>
+						</td>
+						<td>
+							<div class="unit">
+								<label>指标名称：</label>
+								<input type="text" name="name" class="required"
+									value="{$vo['name']}">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="unit">
+								<label>评估类型：</label>
+								<select name="evetypeid" class="combox ">
+									<volist name="evetypeidlist" id="voevetypeid">
+									<option value="{$voevetypeid['id']}">{$voevetypeid['name']}</option>
+									</volist>
+								</select>
+							</div>
+						</td>
+						<td>
+							<div class="unit">
+								<label>权重：</label>
+								<input type="text" name="weight" class="double"
+									value="{$vo['weight']}">
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="unit">
+								<label>指标解释：</label>
+								<textarea name="content">{$vo['content']}</textarea>
+							</div>
+						</td>
+						<td></td>
+					</tr>
+				</table>
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationtarget_insert">
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">{$Think.lang.save}</button>
+							</div>
+						</div>
+					</li>
+					</if>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

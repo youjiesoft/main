@@ -1,0 +1,93 @@
+<script type="text/javascript">
+	function auditProcessFlowsAjaxDone(json){
+		DWZ.ajaxDone(json);
+		if (json.statusCode == DWZ.statusCode.ok) {
+			//by 杨东 刷新根据ID进行
+			if (json.rel) {
+				navTabPageBreak({realnavTab:true,refreshtabs:1}, json.rel);
+			}
+			$.pdialog.closeCurrent();
+			navTab.closeCurrentTab("MisOaItemsedit");
+		}
+	}
+	function stopFlowsProcess(form){
+		alertMsg.confirm("该流程将被终止，您的后续节点将无法收到该流程，是否继续？", {
+			okCall: function(){
+				var $form = $(form);
+				if (!$form.valid()) {
+					return false;
+				}
+				$form.attr("action", "__URL__/stopProcess/rel/misoaitemsview");
+				$.ajax({
+					type : form.method || 'POST',
+					url : $form.attr("action"),
+					data : $form.serializeArray(),
+					dataType : "json",
+					cache : false,
+					success : function(json) {
+						var j = DWZ.jsonEval(json);
+						if (j.checkfield != "") {
+							$form.find("input[name='" + j.checkfield + "']").val(j.data);
+						}
+						DWZ.ajaxDone(json);
+						if (json.statusCode == DWZ.statusCode.ok) {
+							//by 杨东 刷新根据ID进行
+							if (json.rel) {
+								navTabPageBreak({realnavTab : true}, json.rel);
+							}
+							$.pdialog.closeCurrent();
+							/* 屈强@20140715 去掉dialog呈现  改为 navTab呈现 
+							var dialog = $("body").data("MisOaItemsedit");
+							$.pdialog.close(dialog);
+							*/
+							// add 屈强@20140715
+							navTab.closeCurrentTab();
+                            navTabPageBreak({realnavTab:'MisWorkExecutingbox',refreshtabs:1}, 'MisWorkExecuting');
+                            // end
+							
+						} else {
+							$form.attr("action","__URL__/auditProcess/rel/misoaitemsview");
+						}
+					},
+					error : DWZ.ajaxError
+				});
+			}
+		});
+		return false;
+	}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/auditProcess/rel/MisWorkExecutingbox" class="pageForm required-validate" onsubmit="return validateCallback(this, auditProcessFlowsAjaxDone)">
+	<input type="hidden" name="id" value="{$_REQUEST['instanceid']}" />
+	<input type="hidden" name="itemsid" value="{$_REQUEST['id']}" />
+	<input type="hidden" name="model" value="MisOaItems" />
+	<div class="pageFormContent" layoutH="58">
+		<div class="tml-form-row">
+		    <label><strong>加签对象</strong></label>
+		    <div class="tml-input-append2">
+				<input type="text" name="flowUsername" style="width:300px;" checkfor="MisMessage" show="name" insert="id" class="selectaudituser.flowUsername checkByInput" autocomplete="off" />
+				<input type="hidden" name="flowUserid" class="selectaudituser.flowUserid" value="" />
+				<a href="javascript:;" data="selectaudituser;flowUserid,userid;flowUsername,username" class="input-addon input-addon-userplus checkUser">选择人员</a>
+		   </div>
+	    </div>
+		<div class="tml-form-row">
+			<label>处理意见：</label>
+			<textarea class="required" name="doinfo" style="width: 330px;height: 100px;"></textarea>
+		</div>
+		<!-- 附件信息 -->
+		{:W('ShowUpload')}
+		<div class="tml-form-row" style="padding-left:80px;">
+			<span class="tml-c-red">
+				如果想改变下一协同人员，请在加签对象中，选择需要协同的人员。
+			</span>
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button type="submit" class="tml-btn tml-btn-blue">{$Think.lang.save}</button></li>
+			<li><button type="button" class="tml-btn tml-btn-primary" onclick="stopFlowsProcess(this.form)">终止</button></li>
+			<li><button type="button" class="close tml-btn">{$Think.lang.close}</button></li>
+		</ul>
+	</div>
+	</form>
+</div>

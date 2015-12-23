@@ -1,0 +1,154 @@
+		<style>
+		.tml-form-row label.tmp_label{margin-left:0px;width: 120px;float: none;font: 14px/30px "Microsoft Yahei","微软雅黑",sans-serif;}
+		.tml-form-row label.tmp_label:hover{color:#006699;}
+		</style>
+	<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisAutoGkt/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="masid" value="{$vo['id']}" />
+			<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+				<div class="keepContentCenter form-affix-content">
+					<div class="contentTitle contentTitle_center form-affix-title">流程节点管理
+					</div><div class="tml-row">
+					{:W('ShowOrderno',array(1,'mis_auto_hcfwc',$vo['orderno']))}
+							<div class="tml-form-col ">
+								<label>{$fields["name"]}:</label>
+								<input type="text"  name="name" class="  " value="{$vo['name']}">
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["supcategory"]}:</label>
+								<input type="text"  name="supcategory" class="  " value="{$vo['supcategory']}">
+							</div>
+							<div class="tml-form-col ">
+									<label>{$fields["category"]}:</label>
+								<div class="tml-input-append2">
+						<input type="text" class="org3.name   " autocomplete="off" readonly="readonly" disabled="disabled"  value="{$vo['category']|getFieldBy='a','name','a'}" />
+						<input type="hidden" class="org3.a" name="category" value="{$vo['category']}"  />
+						<a class="input-addon input-addon-addon input-addon-add" param="field=aa&model=a&conditions=aa" href="__URL__/lookupGeneral" lookupGroup="org3" >{$fields["category"]}</a>
+						<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearInputInDialog(this,'category,name');"></a>
+						</div>
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["modelname"]}:</label>
+								<input type="text"  name="modelname" class="  " value="{$vo['modelname']}">
+							</div>
+							<div class="tml-form-col ">
+									<label>{$fields["parentid"]}:</label>
+								<div class="tml-input-append2">
+						<input type="text" class="org5.name   " autocomplete="off" readonly="readonly" disabled="disabled"  value="{$vo['parentid']|getFieldBy='a','name','a'}" />
+						<input type="hidden" class="org5.a" name="parentid" value="{$vo['parentid']}"  />
+						<a class="input-addon input-addon-addon input-addon-add" param="field=aa&model=a&conditions=aa" href="__URL__/lookupGeneral" lookupGroup="org5" >{$fields["parentid"]}</a>
+						<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearInputInDialog(this,'parentid,name');"></a>
+						</div>
+							</div></div>
+							<div class="tml-form-row " >
+								<label>{$fields["summary"]}:</label>
+								{:getControllbyHtml('selectlist',array('type'=>'radio','names'=>'summary','key'=>'debit','selected'=>$vo['summary']))}
+							</div><div class="tml-row">
+							<div class="tml-form-col ">
+								<label>{$fields["days"]}:</label>
+								<input type="text"  name="days" class="  " value="{$vo['days']}">
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["begintime"]}:</label>
+								<div  class="tml-input-append">
+					<input type="text" name="begintime" class="Wdate js-wdate  " format="{dateFmt:'yyyy-MM-dd'}" value="{$vo['begintime']|transtime='Y-m-d'}"/>
+					<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+				</div>
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["endtime"]}:</label>
+								<div  class="tml-input-append">
+					<input type="text" name="endtime" class="Wdate js-wdate  " format="{dateFmt:'yyyy-MM-dd'}" value="{$vo['endtime']|transtime='Y-m-d'}"/>
+					<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+				</div>
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["outlinenumber"]}:</label>
+								<input type="text"  name="outlinenumber" class="  " value="{$vo['outlinenumber']}">
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["outlinelevel"]}:</label>
+								<input type="text"  name="outlinelevel" class="  " value="{$vo['outlinelevel']}">
+							</div></div>
+							<div class="tml-form-row " >
+								<label>{$fields["readyonly"]}:</label>
+								{:getControllbyHtml('selectlist',array('type'=>'radio','names'=>'readyonly','key'=>'debit','selected'=>$vo['readyonly']))}
+							</div><div class="tml-row">
+							<div class="tml-form-col ">
+								<label>{$fields["percentcomplete"]}:</label>
+								<input type="text"  name="percentcomplete" class="  " value="{$vo['percentcomplete']}">
+							</div></div>
+							<div class="tml-form-row ">
+								<label>{$fields["notes"]}:</label>
+								<textarea  cols="100" rows="2" class=" " name="notes">{$vo['notes']}</textarea>
+							</div><div class="tml-row">
+							<div class="tml-form-col ">
+								<label>{$fields["constrainttype"]}:</label>
+								<select  name="constrainttype"  class="combox    ">{:getControllbyHtml('selectlist',array('type'=>'select','key'=>'debit','selected'=>$vo['constrainttype']))}
+								</select>
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["hyperlink"]}:</label>
+								<input type="text"  name="hyperlink" class="  " value="{$vo['hyperlink']}">
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["hyperlinkurl"]}:</label>
+								<input type="text"  name="hyperlinkurl" class="  " value="{$vo['hyperlinkurl']}">
+							</div>
+							<div class="tml-form-col ">
+								<label>{$fields["classname"]}:</label>
+								<input type="text"  name="classname" class="  " value="{$vo['classname']}">
+							</div></div>
+							<div class="tml-form-row " >
+								<label>{$fields["critical"]}:</label>
+								{:getControllbyHtml('selectlist',array('type'=>'radio','names'=>'critical','key'=>'debit','selected'=>$vo['critical']))}
+							</div><div class="tml-row">
+							<div class="tml-form-col ">
+									<label>{$fields["custtypeid"]}:</label>
+								<div class="tml-input-append2">
+						<input type="text" class="org.name   " autocomplete="off" readonly="readonly" disabled="disabled"  value="{$vo['custtypeid']|getFieldBy='a','name','a'}" />
+						<input type="hidden" class="org.a" name="custtypeid" value="{$vo['custtypeid']}"  />
+						<a class="input-addon input-addon-addon input-addon-add" param="field=aa&model=a&conditions=aa" href="__URL__/lookupGeneral" lookupGroup="org" >{$fields["custtypeid"]}</a>
+						<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearInputInDialog(this,'custtypeid,name');"></a>
+						</div>
+							</div>
+							<div class="tml-form-col ">
+									<label>{$fields["hyid"]}:</label>
+								<div class="tml-input-append2">
+						<input type="text" class="org.name   " autocomplete="off" readonly="readonly" disabled="disabled"  value="{$vo['hyid']|getFieldBy='a','name','a'}" />
+						<input type="hidden" class="org.a" name="hyid" value="{$vo['hyid']}"  />
+						<a class="input-addon input-addon-addon input-addon-add" param="field=aa&model=a&conditions=aa" href="__URL__/lookupGeneral" lookupGroup="org" >{$fields["hyid"]}</a>
+						<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearInputInDialog(this,'hyid,name');"></a>
+						</div>
+							</div>
+							<div class="tml-form-col ">
+									<label>{$fields["cylid"]}:</label>
+								<div class="tml-input-append2">
+						<input type="text" class="org.name   " autocomplete="off" readonly="readonly" disabled="disabled"  value="{$vo['cylid']|getFieldBy='a','name','a'}" />
+						<input type="hidden" class="org.a" name="cylid" value="{$vo['cylid']}"  />
+						<a class="input-addon input-addon-addon input-addon-add" param="field=aa&model=a&conditions=aa" href="__URL__/lookupGeneral" lookupGroup="org" >{$fields["cylid"]}</a>
+						<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearInputInDialog(this,'cylid,name');"></a>
+						</div>
+							</div></div>
+							<div class="tml-form-row " >
+								<label>{$fields["formtype"]}:</label>
+								{:getControllbyHtml('selectlist',array('type'=>'radio','names'=>'formtype','key'=>'debit','selected'=>$vo['formtype']))}
+							</div><div class="tml-row">
+							<div class="tml-form-col ">
+									<label>{$fields["yzid"]}:</label>
+								<div class="tml-input-append2">
+						<input type="text" class="org.name   " autocomplete="off" readonly="readonly" disabled="disabled"  value="{$vo['yzid']|getFieldBy='a','name','a'}" />
+						<input type="hidden" class="org.a" name="yzid" value="{$vo['yzid']}"  />
+						<a class="input-addon input-addon-addon input-addon-add" param="field=aa&model=a&conditions=aa" href="__URL__/lookupGeneral" lookupGroup="org" >{$fields["yzid"]}</a>
+						<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearInputInDialog(this,'yzid,name');"></a>
+						</div>
+							</div></div>
+		{:W('ShowAction',array('data'=>$vo))}
+				</div>
+			</div>
+		</form>
+	</div>
+	</div>

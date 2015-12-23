@@ -1,0 +1,279 @@
+
+  <form method="post" action="__URL__/lookupdatetable" class="pageForm required-validate" onsubmit="return addresultlookupdatetable(this)">
+ 	 <div class="pageContent"  layoutH="96">
+			<input type="hidden" name="subtype" value="1"/>            
+            <input type="hidden" name="formid" value="{$formid}"/>
+            <div class="process_condition_lay">
+                <div class="process_condition_header">
+                    <span class="pch_one">选择</span>
+                    <span class="pch_two">内嵌表名</span>
+                </div>
+                {~$nbmkey=0;}
+                    <div class="tml-row process_condition_con">
+                     <volist name="datelist" id="dateVo">
+                        <div  class="tml-form-col pcc_left">
+                            <input class="table_ckb" type="checkbox"  value="{$key}"  onclick="distablelist(this,{$key})" name="proid[]" />
+                        </div>
+                        <div class="tml-form-col pcc_right">
+                            <div class="conf_table_lable">{$dateVo}</div>
+							<div class="addpend{$key}"></div>
+                        </div>
+                        </volist>
+                    </div>
+			</div>
+		  </div>
+		</div>
+		<div class="formBar">
+		<ul>
+			<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+	</div>
+</form>
+ <script>
+ // 数据表格最大带回数量
+ // 为0时表示功能不启用。
+ var maxChoiseCount = 3;
+ function distablelist(obj,$key){
+	 var $box = $.pdialog.getCurrent();
+	 var proid=$(obj).val();
+	 var  tableCkbLength = $('input[type="checkbox"].table_ckb:checked').length;
+/* 	  if(tableCkbLength>maxChoiseCount){
+		 $(obj).attr("checked",false)
+		 alert('当前不允许选择多数据表格的带回！');
+		 return;
+	 }  */
+		 
+	 if($(obj).attr("checked")){
+	 //查询字段信息
+	 if(proid){
+		 $.ajax({
+     		type:"POST",
+     		url:"__URL__/lookupgetdatelist",
+     		data:{'proid':proid},
+     		datatype:"json",
+    		global:false,
+     		success:function(response){
+     			var data=DWZ.jsonEval(response);
+     			var html='<table class="table conf_table" width="100%">'+
+     					 '<thead>'+
+    					 ' <tr>'+
+		    				'<th>英文字段</th>'+
+		    				'<th>中文名称</th>'+
+		    				'<th>查找带回字段<input type="checkbox" class="checkboxCtrl2" group="fieldback['+proid+']" />全选</th>'+
+		    				'<th>是否函数转换</th>'+
+		    				'<th>转换函数</th>'+
+		    				'<th>函数参数</th>'+
+		    				//'<th>合并字段</th>'+
+		    				'<th>按该字段排序</th>'+
+		    				'<th>降序（默认升序）</th>'+
+			    			'</tr>'+
+			    			'</thead>'+
+			    			'<tbody>';
+    			var inlineinfo = $("div.choisetable").find("input[name='inlineinfo']").val();
+    			var iinfo = $.parseJSON(inlineinfo);
+    			// 获取已选择带回字段信息			
+				var fieldbackArr=Array();	
+				//是否转换函数				
+				var dtfuncfieldarr = Array();				
+				//转换函数方法		
+				var dtfuncarr = Array();	
+				//转换函数参数
+				var dtfuncdataarr = Array();	
+				//获取排序字段
+				var orderfield = '';				
+				//获取降序字段
+				var ordersort = '';
+    			if(iinfo){
+    				var adds = $.makeArray(iinfo.proid);
+    				// 获取已选择带回字段信息
+    				if(iinfo.fieldback){
+    					if(iinfo.fieldback[proid]){
+    						$.each(iinfo.fieldback[proid],function(i,v){
+    							fieldbackArr.push(v);
+    						});
+    					}    					
+    				}
+    				//是否转换函数
+    				if(iinfo.dtfuncfield){
+    					if(iinfo.dtfuncfield[proid]){
+    						$.each(iinfo.dtfuncfield[proid],function(i,v){
+    							dtfuncfieldarr.push(v);
+    						});
+    						//dtfuncfieldarr =  $.makeArray(iinfo.dtfuncfield[proid]);
+    					}    					
+    				}
+    				//转换函数方法
+    				if(iinfo.dtfunc){
+    					if(iinfo.dtfunc[proid]){
+    						$.each(iinfo.dtfunc[proid],function(i,v){
+    							dtfuncarr.push(v);
+    						});
+    					}    					
+    				}
+    				//转换函数参数
+    				if(iinfo.dtfuncdata){
+    					if(iinfo.dtfuncdata[proid]){
+    						$.each(iinfo.dtfuncdata[proid],function(i,v){
+    							dtfuncdataarr.push(v);
+    						});
+    					}    					
+    				}
+    				//获取排序字段
+    				if(iinfo.orderfield){
+    					if(iinfo.orderfield[proid]){
+    						orderfield = iinfo.orderfield[proid];
+    					}    					
+    				}
+    				//获取降序字段
+    				if(iinfo.ordersort){
+    					if(iinfo.ordersort[proid]){
+    						ordersort = iinfo.ordersort[proid];
+    					}    					
+    				}
+    			}
+
+    			
+    			
+    			
+    			
+    			
+    			
+    			
+    			
+    			
+    			
+    			
+				$.each(data,function(k,kval){	
+					var checked = ''; //带回字段
+					//var comchecked='';//合并字段
+					var ofchecked = ''; //排序字段
+					var oschecked = ''; //是否降序
+					var ffchecked = ''; //是否函数转换
+					
+					// 检查已选择带回字段，并将其选中					
+					if($.inArray(kval.id , fieldbackArr) > -1){
+						checked='checked="checked"';
+					}
+					/* // 检查已选择合并字段，并将其选中
+					if($.inArray(kval.id , fieldcomArr) > -1){
+						comchecked='checked="checked"';
+					} */
+					// 检查已选择排序字段，并将其选中
+					if(kval.fieldname == orderfield){
+						ofchecked = 'checked="checked"';
+					}
+					// 检查已选择是否降序字段，并将其选中
+					if(kval.fieldname == ordersort&&ordersort!='null'&&ordersort){
+						oschecked = 'checked="checked"';
+					}
+					// 检查已选择是否函数转换字段，并将其选中
+					if($.inArray(kval.id , dtfuncfieldarr) > -1){
+						ffchecked='checked="checked"';
+					}
+					// 转换函数
+					var dtfunc = dtfuncarr[k]?dtfuncarr[k]:'';
+					// 函数参数
+					var dtfuncdata = dtfuncdataarr[k]?dtfuncdataarr[k]:'';
+					html += "<tr>";
+     				html += "<td align='center'>"+kval.fieldname+"</td>";
+     				html += "<td align='center'>"+kval.fieldtitle+"</td>";
+     				html += "<td align='center'><input type='checkbox' value='"+kval.id+"' "+checked+" name='fieldback["+proid+"]["+kval.id+"]'/></td>";
+     				html += "<td align='center'><input type='checkbox' value='"+kval.id+"' "+ffchecked+" name='dtfuncfield["+proid+"]["+kval.id+"]'/></td>";
+     				html += "<td align='center'><input type='text' value='"+dtfunc+"' name='dtfunc["+proid+"]["+kval.id+"]' /></td>";
+     				html += "<td align='center'><input type='text' value='"+dtfuncdata+"' name='dtfuncdata["+proid+"]["+kval.id+"]'/></td>";
+     				html += "<td align='center'><input type='radio' value='"+kval.fieldname+"' name='orderfield["+proid+"]' "+ofchecked+"></td>";
+     				html += "<td align='center'><input type='checkbox' onclick='ordersortaaa(this);' value='"+kval.fieldname+"' name='ordersort["+proid+"]' "+oschecked+"></td>";
+     				html += "</tr>";// <td><input type='checkbox' value='"+kval.id+"' "+comchecked+" name='fieldcombination[]'/></td></tr>"; 
+     				html += "</tbody>";
+				});
+     			$box.find("div.addpend"+$key).html(html);
+     		}
+     	});
+	 }
+	 }else{
+		//关闭层
+		 $box.find("div.addpend"+$key).html("");
+	 }
+ }
+ 
+ //内嵌表配置完成返回主页面数据
+ function addresultlookupdatetable($form){
+ 	return validateCallback($form, function(json){
+ 		DWZ.ajaxDone(json);
+ 		if(json.statusCode==DWZ.statusCode.ok){ 			
+ 		 	try{
+ 		 		var curData = $.parseJSON(json.data); 	
+ 		 		var html ="";
+ 		 		if(curData.proid){
+ 		 			html +='<input type="hidden" name="inlineinfo" value=\''+json.data+'\'>';
+ 		 			var nbox = navTab.getCurrentPanel();
+ 		 			$("button..see_only_btn",nbox).show();
+ 		 		}else{
+ 		 			$("button.see_only_btn",nbox).hide();
+ 		 		}
+ 		 		/* html +='<div>'+curData.showdt+'</div>';
+ 		 		html +='<input type="hidden" name="showdt" value="'+curData.showdt+'">';
+ 		 		html +='<input type="hidden" name="formid" value="'+curData.formid+'">';
+ 		 		html +='<input type="hidden" name="proid" value="'+curData.proid+'">';
+ 		 		html +='<input type="hidden" name="fieldback" value="'+curData.fieldback+'">';
+ 		 		//html +='<input type="hidden" name="fieldcom" value="'+curData.fieldcom+'">';
+ 		 		html +='<input type="hidden" name="datename" value="'+curData.datename+'">';
+ 		 		html +='<input type="hidden" name="filedtitle"  value="'+curData.filedtitle+'">';
+ 		 		html +='<input type="hidden" name="dtfuncfields" value="'+curData.dtfuncfields+'">';
+ 		 		html +='<input type="hidden" name="dtfuncinfo" value=\''+curData.dtfuncinfo+'\'>';
+ 		 		html +='<input type="hidden" name="orderfield" value="'+curData.orderfield+'">';
+ 		 		html +='<input type="hidden" name="ordersort"  value="'+curData.ordersort+'">'; */
+ 		 		$("div.choisetable").html(html);
+ 		 		/* $("div.choisetable").attr("proid",curData.proid);
+ 		 		$("div.choisetable").attr("fieldback",curData.fieldback);
+ 		 		$("div.choisetable").attr("fieldcom",curData.fieldcom); */
+ 		 	}catch(e){  
+ 			 	$(this).logs('返回数据异常！'+e.message);
+ 		 	}
+ 			$.pdialog.closeCurrent(); 
+ 		}
+ 	});
+ }
+var box = $.pdialog.getCurrent();
+
+/* var proid=$("div.choisetable").attr("proid");
+var fieldback=$("div.choisetable").attr("fieldback");
+var obj =  $('input[type="checkbox"][value="'+proid+'"].table_ckb');
+obj.attr('checked',true);
+distablelist(obj,proid); */  
+ $(function(){
+	var inlineinfo = $("div.choisetable").find("input[name='inlineinfo']").val();
+	var iinfo = $.parseJSON(inlineinfo);
+	if(iinfo){
+		if(iinfo.proid){
+			if(iinfo.proid.length>0){
+				$.each(iinfo.proid,function(i,v){
+					var obj = $('input[type="checkbox"][value="'+v+'"].table_ckb');
+					obj.attr('checked',true);
+					distablelist(obj,v);
+				});
+			}
+		}		
+	}
+	//全选--2015-10-10
+	var box = $.pdialog.getCurrent();
+	$("input.checkboxCtrl2").live("click",box,function(){
+		var group=$(this).attr("group");
+		var checked = $(this).attr("checked");
+		if(typeof(checked)=="undefined"){
+			checked=false;
+		} 
+		$("input[type='checkbox'][name^='"+group+"']").attr("checked",checked);
+	})
+}) 
+function ordersortaaa(obj){
+		var orderfield = $(obj).closest("tr").find("input[name^='orderfield']").attr("checked");
+		if(orderfield){
+			
+		}else{
+			alert("该字段没有作为排序字段");
+			$(obj).attr("checked",false);
+		}
+	}
+ </script>

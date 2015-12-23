@@ -1,0 +1,102 @@
+<script>
+function onUplodeOk_additemview(file, data, response) {
+	var $box = $("#"+file.id).parents("tr");
+	var $val = $box.find("input[name='ndnumber']").val();
+	$val = $val-1;
+	var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+	var html='<input name="swf_upload_save_name['+$val+'][]" value="'+s[1]+'" type="hidden" /><input name="swf_upload_source_name['+$val+'][]" value="'+file.name+'" type="hidden" />';
+	$('#' + file.id).find('.swf_upload_save_name').append(html);
+};
+function onAddUplodeOk_additemview(file, data, response) {
+	var fileid = file.id;
+	var $box = $("#"+file.id).parents("tr");
+	var $val = $box.find("input[name='ndnumber']").val();
+	var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+	var html='<input name="swf_upload_save_name['+$val+'][]" value="'+s[1]+'" type="hidden" /><input name="swf_upload_source_name['+$val+'][]" value="'+file.name+'" type="hidden" />';
+	$('#' + file.id).find('.swf_upload_save_name').append(html);
+};
+</script>
+<div class="fieldset_show_box field_fieldset2">
+	 <legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+		<b>附件列表</b>
+		<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+	</legend>
+	<table class="into_table_new nbm_data_table"  table_data='{"searching":false,"paging":false}' table_type="list">
+			<thead>
+				<tr>
+					<th style='width:20px;' template_key="serial" template_name="ndnumber">序号</th>
+					<th template_key="select" template_name="subdatum[#index#]" template_html='{:getDataBaseLevelByHtml("mis_auto_fkhvh")}'>资料分类</th>
+					<!-- <th template_key="select" template_class="required" template_html='{:getDataBaseLevelByHtml("mis_auto_wqzrv")}' template_name="subjuese[#index#]">所属角色</th> -->
+					<th template_key="input" template_class="required" template_name="subname[#index#]">资料名称</th>
+					<!-- <th template_key="select" template_name="subtype[#index#]" template_data='{$allexts1}'>类型限制</th> -->
+					<th template_key="input" template_name="subremark[#index#]">描述</th>
+					<th style='width:150px;' template_key="12" template_name="">资料参照</th>
+					<th style='min-width:240px;,width:240px;' template_key="uploadfile" template_data='{"uploadpath":"MisProjectAttachedTemplate","callback":"onAddUplodeOk_additemview"}'>资料上传</th>
+					<!-- <th template_key="action" >操作</th> -->
+				</tr>					
+			</thead>
+		<tbody id="Addprivy_divA_edit" class="clearfix">
+			<volist name="sublist" id="subvo" key="key2">
+				<tr >
+					<td>
+						<span class="serial_number ">{$key2}</span>
+						<input type="hidden" value="{$key2}" name="ndnumber">
+					</td>
+					<!-- <td>
+						<div class="list_group_lay">
+							{$subvo['suoshujuese']|getFieldBy='orderno','name','mis_auto_wqzrv'}
+							<input class="list_input" name="subjuese[{$key2}]" value="$subvo['suoshujuese']" type="hidden">
+						</div>
+					</td> -->
+					<td>
+						<div class="list_group_lay">
+							{$subvo.name}
+							<input class="list_input" name="subname[{$key2}]" value="{$subvo.name}" type="hidden">
+						</div>
+					</td>
+					<td>
+						<div class="list_group_lay">
+							{$subvo['datum']|getFieldBy='id','name','mis_auto_fkhvh'}
+							<input class="list_input" name="subdatum[{$key2}]" value="{$subvo['datum']}" type="hidden">
+						</div>
+					</td>
+					<td>
+						<div class="list_group_lay">
+							{$subvo.remark}
+							<input class="list_input" type="hidden" name="subremark[{$key2}]" value="{$subvo.remark}" />
+						</div>
+					</td>
+					<td>
+						<div class="list_group_lay">
+							<div class="">
+								<ul class="">
+									<volist name="subvo['record']" id="recvo" key="key3">
+										<li>
+					                        <a href="__URL__/misFileManageDownload/path/{$recvo['name']}/rename/{$recvo['lookname']}" target="_blank" class="attlink">{$recvo['filename']}</a>
+					                        <a class="file_count_right" mask="true" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$recvo['id']}" title="文件归档" target="dialog"><span class="guidang_btn">归档</span></a>
+					                     </li>
+									</volist>
+								</ul>
+							</div>
+						</div>
+					</td>
+					<td>
+						<div class="list_group_lay">
+							<div class="" >
+								<input id="swf_up_gml{$key2}" type="file" multi="true" onUploadSuccess="onUplodeOk_additemview" queueSizeLimit="1" auto="true" formData="{ uploadpath:'MisProjectAttachedTemplate'}"/>
+							</div>
+							<div class="js_privyIndex">
+								<span id="swf_up_gml{$key2}-queue" class="info uploadify-queue"></span>
+							</div>
+						</div>
+					</td>
+					<!-- <td>
+						<input type="hidden" name="subid[{$key2-1}]" value="{$subvo.id}">
+						<button type="button" del_url="undefined" del_table="undefined" del_id="0" class="into_table_new_trash_tr  enterIndex">删除</button>
+					</td> -->
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+</div>
+ 

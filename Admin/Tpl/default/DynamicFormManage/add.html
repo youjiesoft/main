@@ -1,0 +1,231 @@
+<script>
+function DynamicnavTabDone(json){
+	DWZ.ajaxDone(json);
+	if(json.statusCode==DWZ.statusCode.ok){
+		var path=json.data;
+		var params=[{name: 'upload', value: 0},{name: 'step', value: 2},{name: 'filepath', value: path}];
+		if(path){
+			navTab.reload("__URL__/add",{data:params,navTabId:"__MODULE__add"});
+		}else{
+			navTabAjaxDone(json);
+			navTab.closeCurrentTab();
+		}
+		return false;
+	}
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/add/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this,DynamicnavTabDone);" enctype="multipart/form-data" target="callbackframe" >
+		<div class="pageFormContent" layoutH="58">
+			<if condition="$step eq 1">
+				<table width="100%" border="0" cellspacing="0">
+					<tr>
+						<td>
+							<div class="unit">
+								<label style="width:auto;">
+									<input type="hidden" name="step" value="2" />
+									<input type="hidden" name="upload" value="1" />
+									<input class="required valid" type="file" name="attached" />
+								</label>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<div class="unit">
+								<span class="info">温馨提示 (为保证数据导入正确请上传后缀为xls 或者 xlsx的文件！)</span>
+							</div>
+						</td>
+						
+					</tr>
+				</table>
+			<elseif condition="$step eq 2" />
+				<script>
+					$("#misimportexcelsubeditpage select.import_tableobj").change(function(){
+						var t=$(this).val();
+						var i=$(this).attr("id");
+						var $ref =$("#field"+i);
+						var $ref2 =$("#field2"+i);
+						$.ajax({
+							type:'POST',dataType:"json",url:"__URL__/comboxgetTableField",cache:false,
+							data:{table:t},
+							success:function(json){
+							if(!json)return;
+							var html='';
+							$.each(json,function(i){
+							if(json[i]&&json[i].length>1){
+							html+='<option value="'+json[i][0]+'">'+json[i][1]+'</option>';}});
+							var $refCombox=$ref.parents("div.combox:first");
+							var $refCombox2=$ref2.parents("div.combox:first");
+							
+							$ref.html(html).insertAfter($refCombox);
+							$ref2.html(html).insertAfter($refCombox2);
+							
+							$refCombox.remove();
+							$refCombox2.remove();
+							
+							$ref.trigger("change").combox();
+							$ref2.trigger("change").combox();
+							},
+							error:DWZ.ajaxError
+						});
+					});
+					
+					$("#misimportexcelsubeditpage select.catalog").change(function(){
+						var t=$(this).val();
+						if(t!="text" && t!="textarea" && t!="date"){
+							$(this).parents(".combox").next("input.showoption").css("display","");
+						}else{
+							$(this).parents(".combox").next("input.showoption").css("display","none");
+						}
+					});
+					
+					$("#misimportexcelsubeditpage select.modeltype").change(function(){
+						var t=$(this).val();
+						if(t!="add"){
+							$(this).parents(".combox").siblings("div.adddiv").css("display","none");
+							$(this).parents(".combox").siblings("div.editdiv").css("display","");
+						}else{
+							$(this).parents(".combox").siblings("div.adddiv").css("display","");
+							$(this).parents(".combox").siblings("div.editdiv").css("display","none");
+						}
+					});
+					
+				</script>
+				<input type="hidden" name="step" value="3" />
+				<input type="hidden" name="excelsource" value="{$excelsource}" />
+				<table id="misimportexcelsubeditpage" class="list" width="100%" border="0" cellspacing="0">
+					<thead>
+						<tr>
+							<th>字段</th>
+							<th>列表标题</th>
+							<th>类型</th>
+							<th>验证唯一</th>
+							<th>关联查询</th>
+							<th>验证</th>
+						</tr>
+					</thead>
+					
+					<volist name="configdata" id="co">
+					<tr>
+						<td>{$co.0} <input name="fields[{$co.0}]" value="{$co.0}"  type="hidden" /></td>
+						<td>{$co.1} <input name="title[{$co.0}]"  value="{$co.1}" type="hidden" /></td>
+						<td>
+							<select class="catalog combox" name="catalog[{$co.0}]">
+								<option value="text">单行文本</option>
+								<option value="textarea" >多行文本</option>
+								<option value="select">下拉列表</option>
+								<option value="radio" >单选按钮</option>
+								<option value="checkbox" >多选按钮</option>
+								<option value="date" >日期</option>
+								
+							</select>
+							<input name="showoption[{$co.0}]" class="showoption" value="1:AA;2:BB" type="text" style="display:none;" />
+						</td>
+						<td><input type="checkbox" value="1" name="columnscheckexist[{$co.0}]"/></td>
+						<td>
+							<span class="info">绑定表：</span>
+							<select class="combox import_tableobj" id="import_tableobj{$co.0}" name="subimporttableobj[{$co.0}]" >								<option value="">请选择映射对象</option>
+								<volist id="vos" name="tables">
+									<option value="{$key}" >{$vos}</option>
+								</volist>
+							</select>
+							<span class="info">绑定字段：</span>
+							<select class="combox" id="fieldimport_tableobj{$co.0}" name="subimporttablefieldobj[{$co.0}]" >
+								<if condition="$co['fieldarr']">
+									<volist id="vof" name="co.fieldarr">
+										<option value="{$vof[0]}" >{$vof[1]}</option>
+									</volist>
+								<else />
+									<option value="">请选择映射对象字段</option>
+								</if>
+							</select>
+							<span class="info">显示字段：</span>
+							<select class="combox" id="field2import_tableobj{$co.0}" name="subimporttablefield2obj[{$co.0}]" >
+								<if condition="$co['fieldarr']">
+									<volist id="vof2" name="co.fieldarr">
+										<option value="{$vof2[0]}" >{$vof2[1]}</option>
+									</volist>
+								<else />
+									<option value="">请选择映射对象字段</option>
+								</if>
+							</select>
+						</td>
+						<td>
+							<select class="combox" name="checkfunc[{$co.0}]">
+								<option value="">无需验证</option>
+								<option value="required" >必填</option>
+								<option value="eamil" >邮箱</option>
+								<option value="url" >网址</option>
+								<option value="number" >整数</option>
+								<option value="double" >浮点数</option>
+								<option value="english" >字母</option>
+							</select>
+						</td>
+					</tr>
+					</volist>
+					<tr>
+						<td colspan="6">
+							<div class="unit">
+								<input name="use_excel_tpl" type="radio" value="1" checked="checked" />
+								<span>使用excel模板</span>
+								<input name="use_excel_tpl" type="radio" value="0" />
+								<span>自动生成模板</span>
+								
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<div class="unit">
+								
+								<select class="combox modeltype" name="modeltype">
+									<option value="add">创建新节点</option>
+									<option value="update" >更新以有节点</option>
+								</select>
+								<span class="info">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+								<div class="adddiv">
+									<span class="info add">父节点：</span>
+									<select name="parentnodename" class="combox">
+										<volist name="nodelist" id="n">
+											<option value="{$n['id']}">{$n['title']}</option>
+											<if condition="isset($n['children'])">
+												<volist name="n.children" id="n2">
+													<option value="{$key}">&nbsp;&nbsp;&nbsp;&nbsp;{$n2}</option>
+												</volist>
+											</if>
+										</volist>
+									</select>
+									<span class="info">节点名称：</span>
+									<input name="nodename" type="text" class="lettersonly" value="" />
+									<span class="info">显示名称：</span>
+									<input name="nodetitle" type="text" value="" />
+								</div>
+								<div class="editdiv" style="display:none;" >
+									<select name="parentnodename2" class="combox">
+										<volist name="nodemodellist" id="n1">
+											<option value="{$n1['id']}">{$n1['title']}</option>
+										</volist>
+									</select>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			<elseif condition="$step eq 3" />
+				{$diyhtml}
+			</if>
+		</div>
+		
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.dynamicformmanage_insert">	
+				<li><button type="submit" class="tml-btn tml-btn-primary"><if condition="$step eq 1">{$Think.lang.nextstep}<else />{$Think.lang.save}</if></button></li>
+			</if>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

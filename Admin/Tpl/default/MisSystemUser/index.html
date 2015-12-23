@@ -1,0 +1,64 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+</form>
+
+<div class="page">
+	<div class="pageContent">
+		<div class="panelBar">
+			<ul class="toolBar">
+				<if condition="$_SESSION.a eq 1 or $_SESSION.missystemuser_add"><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="navTab" mask="true"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.missystemuser_delete"><li><a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_user}/navTabId/__MODULE__" target="ajaxTodo" title="你确定要删除吗？" warn="请选择员工"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li></if>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.missystemuser_edit"><li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_user}" target="navTab" mask="true" warn="请选择员工"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.edit}</span></a></li></if>
+				<volist name="toolbarextension" id="toolb">
+					<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+						<li>{$toolb['html']}</li>
+					</if>
+				</volist>
+			</ul>
+		</div>
+
+		<table class="table" width="100%" layoutH="75">
+			<thead>
+			<tr>
+				<th field="id" width="60">编号</th>
+				<th field="manname">姓名</th>
+				<th field="sex">性别</th>
+				<th field="workdate"  type="time">入职时间</th>
+				<th field="dutyid" type="duty">职务</th>
+				<th field="deptid" type="department">部门</th>
+
+				<th field="email">联系邮箱</th>
+				<th field="email">备注</th>
+				<th field="status" type="status">状态</th>
+				<th>{$Think.lang.action}</th>
+			</tr>
+			</thead>
+			<tbody>
+			<volist id="vo" name="list">
+				<tr target="sid_user" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')">
+				<td><input type="checkbox" name="id" value="{$vo['id']}" />{$vo['id']}</td>
+					<td field="manname">{$vo['manname']}</td>
+					<td field="sex">{$vo['sex']|getS}</td>
+					<td field="workdate" type="time">{$vo['workdate']|transTime}</td>
+					<td field="dutyid">{$vo['dutyid']|getFieldBy='id','name','mis_system_duty'}</td>
+					<td field="deptid">{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+					<td field="email">{$vo['email']}</td>
+					<td field="email">{$vo['remark']}</td>
+					<td field="status" type="status">{$vo['status']|getStatus}</td>
+					<td>{$vo['status']|showStatus=$vo['id']}</td>
+				</tr>
+			</volist>
+			</tbody>
+		</table>
+
+		<div class="panelBar panelPageBar">
+			<div class="pages">
+				<span>共{$totalCount}条</span>
+			</div>
+			<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+		</div>
+
+	</div>
+
+</div>
+

@@ -1,0 +1,61 @@
+<div class="pageContent">
+		<form method="post" action="__URL__/insert/rel/__MODULE__Box" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="jump" value="jump">
+			<input type="hidden" name="model" value="{$modelname}">
+			<input type="hidden" name="modelname" value="{$modelname}">
+			<div class="pageFormContent new_version_page_content" layoutH="58">
+							<!-- select组件 start -->
+							
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new" title="以js-开头+字母，比如js-add">按钮标识:</label>
+								<input   type="text"  name="jskey" class=" input_new required" value="">
+							</div>
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new">检查权限:</label>
+								<select  name="ifcheck"  class="select2 select_elm">
+										<option value='0' <if condition="$vo.ifcheck neq 1">selected</if> >否</option>
+										<option value='1' <if condition="$vo.ifcheck eq 1">selected</if> >是</option>
+								</select>
+							</div>
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new">权限控制:</label>
+								<input   type="text"  name="permisname" class=" input_new  input_new  " value="{$vo.permisname}">
+							</div>
+							<div class="col_1_7 form_group_lay field_leibie " >
+								<label class="label_new" title='<a class="js-delete delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_node}/#extendurl#/rel/ToolBarConfigBox" target="ajaxTodo" title="你确定要删除吗？" warn="请选择一条组记录"><span><span class="icon icon-trash icon_lrp"></span>删除</span></a>'>html代码:</label>
+								<textarea  cols="100" rows="4" class="  text_area  required" name="html">{$vo.html}</textarea>
+								
+							</div>
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new">是否显示:</label>
+								<select  name="shows"  class="select2 select_elm">
+										<option value='0' <if condition="$vo.shows neq 1">selected</if> >否</option>
+										<option value='1' <if condition="$vo.shows eq 1">selected</if> >是</option>
+								</select>
+							</div>
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new">按钮序号:</label>
+								<input   type="text"  name="sortnum" class=" input_new  input_new  "  value="{$vo.sortnum}">
+							</div>
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new">规则:</label>
+								<input   type="text"  name="rule" class=" input_new  input_new " value="{$vo.rule}">
+							</div>
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new">放在更多按钮:</label>
+								<select  name="ismore"  class="select2 select_elm">
+										<option value='0' <if condition="$vo.ismore neq 1">selected</if> >否</option>
+										<option value='1' <if condition="$vo.ismore eq 1">selected</if> >是</option>
+								</select>
+							</div>
+							<div class="col_1_3 form_group_lay field_leibie " >
+								<label class="label_new">禁止点击规则:</label>
+								 {:W('ShowAddResult', array('model'=>$modelname))}
+							</div>
+							
+				
+		<div class="clear"></div>
+			</div>
+		{:W('ShowAction')}
+		</form>
+	</div>

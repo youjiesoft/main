@@ -1,0 +1,116 @@
+<script>
+function MessageCurrentReadprev(obj,c){
+	var $this=$("#MessageCurrentReadprev");
+    var $rel = $(obj).attr('rel');
+    var messageType = '{$messageType}';
+    var important = '{$important}';
+    if(messageType){
+        mtypurl = "/messageType/"+messageType;
+    }
+    if(important){
+        mtypurl = "/important/"+important;
+    }
+    if($rel){
+    	$.ajax({
+            type:'POST',
+            url:"__URL__/lookupreadmessage/id/"+$rel+mtypurl,
+            async:true,
+            global:false,
+            success:function(response){
+                var json=DWZ.jsonEval(response);
+                if(json.statusCode==DWZ.statusCode.timeout) {
+                    alertMsg.error(json.message||DWZ.msg("sessionTimout"),{okCall:function(){
+                    if($.pdialog)$.pdialog.checkTimeout();
+                    if(navTab)navTab.checkTimeout();
+                    DWZ.loadLogin();}});
+                }
+                if(json.statusCode==DWZ.statusCode.error){
+                    if(json.message)alertMsg.error(json.message);
+                }else{
+                    if(json.statusCode==DWZ.statusCode.timeout){
+                        $this.html(json.message+'<div style="display:none;">'+response+'</div>').initUI();
+                    } else {
+                        $this.html(response).initUI();
+                    }
+                    $("#MessageCurrentRead").find("[layoutH]").layoutH();
+                    $("#messageTable").find("tr").removeClass('cu');
+                    $("#messageTable").find("tr").each(function(){
+                    	var id = $(this).attr("rel");
+                    	if($rel == id){
+                    		$(this).addClass("cu");
+                    	}
+                    });
+              }
+            },
+            error:DWZ.ajaxError
+        });
+    }else{
+    	return false;
+    }
+}
+
+
+</script>
+<div class="xyMailReadInner" id="MessageCurrentReadprev">
+    <ul class="xyMailReadTools clearfix">
+        <if condition="$msgtype">
+        <li class="xyMailReadTool"><a class="tml-btn tml-btn-small tml-btn-green" rel="replyMessage" href="__URL__/replyMessage/id/{$a_id}" target="dialog" width="1000" height="600"><span>回复</span></a></li>
+        </if>
+        <li class="xyMailReadTool"><a class="tml-btn tml-btn-small tml-btn-green" rel="replyMessage" href="__URL__/replyMessage/id/{$a_id}/transpond/1" target="dialog" width="1000" height="600"><span>转发</span></a></li>
+        <li class="xyMailReadTool"><a class="tml-btn tml-btn-small tml-btn-green" title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage"><span>删除</span></a></li>
+        <if condition="$updataid"><li class="xyMailReadTool"><else/><li class="xyMailReadTool disabled"></if><a class="tml-btn tml-btn-small tml-btn-green" href="#" rel="{$downdataid}" onclick="MessageCurrentReadprev(this, 'prev');"><span>上一封</span></a></li>
+        <if condition="$downdataid"><li class="xyMailReadTool"><else/><li class="xyMailReadTool disabled"></if><a class="tml-btn tml-btn-small tml-btn-green" href="#" rel="{$updataid}" onclick="MessageCurrentReadprev(this, 'next');"><span>下一封</span></a></li>
+    </ul>
+    <div class="xyMailReadContent" layoutH="120">
+        <div class="xyMessage">
+            <div class="xyMessageHead">
+                <div class="clearfix xyMessageInfo">
+                    <div class="xyMessageTitle">
+                        <span class="xyMessageTitleCon"><if condition="$default.istranspond eq '1'"><em style="color:#999;">【转】</em></if>{$default.title}主题</span>
+                        <!-- <a class="xyMessageStarActive" href="#"></a>
+                        <a class="xyMessageStar" href="#"></a> -->
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span>发件人：</span>
+                        <span style="color: #00aa00;"><b>{$default['createid']|getFieldBy='id','name','User'}</b></span>
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span>时&nbsp;&nbsp;间：</span>
+                        <span>{$default['createtime']|transTime='Y-m-d H:i'}</span>
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span>收件人：</span>
+                        <span style="color: #00aa00;"><b>{$default.recipientname}</b></span>
+                    </div>
+                    <if condition="$default.copytopeoplename">
+                        <div class="xyMessageInfoList">
+                            <span>抄送人：</span>
+                            <span style="color: #00aa00;"><b>{$default.copytopeoplename}</b></span>
+                        </div>
+                    </if>
+                </div>
+            </div>  
+            <div class="xyMessageContent">
+                <div class="xyMessageText">
+                    {$default['content']}
+                </div>
+                <if condition="$attarry">
+                <div class="xyMessageAttach">
+                    <div style="padding:6px 10px 6px 8px;">
+                        <span>附件：</span>
+                    </div>
+                    <div class="xyMessageAttachItems">
+                        <volist name="attarry" id="att">
+                            <div class="xyMessageAttachItem">
+                                <span>附件{$key+1}</span>
+                                <a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}"><span>{$att['upname']}</span></a>
+                           		<a href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="tml-icon tml-icon-file"></span><span class="tml-icon-text">归档</span></a>
+                            </div>
+                        </volist>
+                    </div>
+                </div>
+                </if>
+            </div>
+        </div>
+    </div>
+</div>

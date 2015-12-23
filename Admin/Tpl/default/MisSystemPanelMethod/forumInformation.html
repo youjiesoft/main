@@ -1,0 +1,35 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}">
+            <a class="more" title="进入论坛" rel="youbbs" target="navTab" href="__APP__/Index/tmlbbs">
+                <span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >进入论坛</span>
+            </a>
+            <a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a>
+            <span class="expand">{$name}</span>
+        </h3>
+    </div>
+    <div class="part_content">
+        <if condition="$newest">
+            <div class="data">
+                <ul>
+                    <volist id="newestvo" name="newest">
+                        <li>
+                            <a class="clearfix" target="navTab" rel="youbbs" title="{$newestvo['title']}" href="__APP__/Index/tmlbbs/id/t-{$newestvo['id']}">
+                                <span class="hellip">{$newestvo['title']|missubstr=###,120,true}</span>
+                                <em class="hellip">{$newestvo['edittime']|transTime='Y-m-d'}</em>
+                            </a>
+                        </li>
+                    </volist>
+                </ul>
+            </div>
+        <else/>
+        <div class="noData">
+            暂无新帖
+        </div>
+        </if>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

@@ -1,0 +1,170 @@
+<script>
+/* 修改配置邮件 id为要修改邮箱的id type:1表示的是点击修改将所有的数据显示出来 */
+function editconfig(id){
+	var $box= navTab.getCurrentPanel();
+	$.ajax({
+        type:'POST',
+        dataType:'json',
+        url:'__URL__/lookupeditmessageconfig',
+        data:{id:id},
+        success : function(ary){
+        	$box.find("input[name='id']").val(ary.id);
+        	$box.find("input[name='email']").val(ary.email);
+        	$box.find("input[name='pop3']").val(ary.pop3);
+        	$box.find("input[name='smtp']").val(ary.smtp);
+        	$box.find("input[name='userid']").val(ary.userid);
+        	//登录账户格式开始 
+        	var $refloginaccform = $box.find("select[name='loginaccform']");
+        	$refloginaccform.children("option").removeAttr("selected");
+        	$refloginaccform.children("option[value='"+ ary.loginaccform +"']").attr("selected","selected");
+        	var htmlloginaccform = $box.find("select[name='loginaccform']").html();
+            var $refComboxloginaccform = $refloginaccform.parents("div.combox:first");
+            $refloginaccform.html(htmlloginaccform).insertAfter($refComboxloginaccform);
+            $refComboxloginaccform.remove();
+            $refloginaccform.combox();
+            //登录账户格式结束 
+        	$box.find("input[name='password']").val(ary.password);
+            //SMTP服务器需要身份验证开始 
+            var refsmtpcheck = $box.find("select[name='smtpcheck']");
+            refsmtpcheck.children("option").removeAttr("selected");
+            refsmtpcheck.children("option[value='"+ ary.smtpcheck +"']").attr("selected","selected");
+            var htmlsmtpcheck = $box.find("select[name='smtpcheck']").html();
+            var refComboxsmtpcheck = refsmtpcheck.parents("div.combox:first");
+            refsmtpcheck.html(htmlsmtpcheck).insertAfter(refComboxsmtpcheck);
+            refComboxsmtpcheck.remove();
+            refsmtpcheck.combox();
+        	//SMTP服务器需要身份验证结束
+        	$box.find("input[name='color']").val(ary.color);
+        	//设置为默认接收/发送邮件箱开始
+        	//$box.find("select[name='defaultemail']").children("option[value='"+ ary.defaultemail +"']").attr("selected",true);
+        	var refdefaultemail = $box.find("select[name='defaultemail']");
+            refdefaultemail.children("option").removeAttr("selected");
+            refdefaultemail.children("option[value='"+ ary.defaultemail +"']").attr("selected","selected");
+            var htmldefaultemail = $box.find("select[name='defaultemail']").html();
+            var refComboxdefaultemail = refdefaultemail.parents("div.combox:first");
+            refdefaultemail.html(htmldefaultemail).insertAfter(refComboxdefaultemail);
+            refComboxdefaultemail.remove();
+            refdefaultemail.combox();
+        	//设置为默认接收/发送邮件箱结束
+        	$box.find("input[name='pop3port']").val(ary.pop3port);
+        	$box.find("input[name='smtpport']").val(ary.smtpport);
+        }
+    });
+}
+</script>
+<form id="pagerForm" action="__APP__/MisMessage/messageconfig/frame/1/" method="post">
+</form>
+<div class="pageContent" layoutH="0">
+<form action="__URL__/insertmessageconfig/rel/jbsxBoxMessage" method="post" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+<input type="hidden" name="id" value="">
+<input type="hidden" name="userid" value="">
+    <div class="tml_mail_config"></div>
+<table class="xyMailTable" cellspacing="0" width="100%" style="margin:0 0 60px;">
+    <thead style="background: #e5e5e5;">
+        <tr>
+          <td colspan="4"><span style="color: #363636;font-size: 14px;font-weight: bold;">邮箱信息配置：</span></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="Control_td" nowrap="" width="22%">电子邮件地址：</td>
+            <td colspan="3">
+                <input name="email" class="input1 email required" value="" size="30" maxlength="200" type="text">例如 username@ksense.com.cn
+            </td>
+        </tr>
+        <tr>
+            <td> 接收邮件服务器（POP3）：</td>
+            <td><input class="required" name="pop3" value="" size="20" maxlength="100" type="text">例如 pop.qq.com</td>
+            <td>端口号：</td>
+            <td><input class="required" name="pop3port" value="" size="20" type="text">例如 110</td>
+        </tr>
+        <tr>
+            <td> 发送邮件服务器（SMTP）：</td>
+            <td><input class="required" name="smtp" value="" size="20" maxlength="100" type="text">例如 smtp.qq.com</td>
+            <td>端口号：</td>
+            <td><input class="required" name="smtpport" value="" size="20" type="text">例如 25</td>
+        </tr>
+        <tr>
+            <td nowrap="" valign="top"> 登录账户格式：</td>
+            <td>
+                <select name="loginaccform" class="combox">
+                  <option value="1">仅用户名</option>
+                  <option value="2">用户名@主机名</option>
+                </select>
+                <br>说明：
+                263 等邮局要求账户格式为如 abc，即仅用户名。
+                <br>yeah.net 等邮局要求账户格式为如 abc@yeah.net，即<br>用户名@主机名。
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td nowrap=""> 账户密码：</td>
+            <td><input class="required" name="password" class="input1" value="" size="20" maxlength="100" type="password">必填，填写正确的邮箱密码</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <!-- <tr>
+            <td nowrap="" valign="top"> SMTP服务器需要身份验证：</td>
+            <td>
+                <select name="smtpcheck" class="combox">
+                  <option value="1" <if condition="$ary.smtpcheck eq 1">selected</if>>是</option>
+                  <option value="0" <if condition="$ary.smtpcheck eq 0">selected</if>>否</option>
+                </select>
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr> -->
+        <tr>
+            <td>邮件显示颜色：</td>
+            <td><input name="color" value="clrDlg" size="8" alt="clrDlg" type="text">&nbsp;&nbsp;<font color="">点击输入框选择颜色</font></td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>设置为默认接收/发送邮件箱：</td>
+            <td>
+                <select name="defaultemail" class="combox">
+                    <option value="1" selected="selected">是</option>
+                    <option value="0">否</option>
+                </select>&nbsp;有且只有一个默认的邮箱
+            </td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr align="center">
+          <td colspan="4">
+           <!--  <button name="buttion" class="tml-btn tml-m5" onclick="return save('check')" type="button">测试配置</button> -->
+            <button class="tml-btn tml-m5" type="submit">保存配置信息</button>
+            <button class="tml-btn tml-m5" name="button" onclick="clearInput('email,pop3,pop3port,smtp,smtpport,password');" type="button">清除配置信息</button>
+            <!-- <input value="返回" class="btn2" onclick="location='../inbox/index.php'" type="button"> -->      </td>
+        </tr>
+    </tbody>
+</table>
+</form>
+<table class="xyMailTable" cellspacing="0" align="center" width="100%">
+    <thead>
+        <tr>
+            <td colspan="4"><img src="__PUBLIC__/Images/notify_open.gif">
+        <span class="" style="color: #1263A5;font-size: 14px;font-weight: bold;"> 管理外部邮箱</span></td>
+        </tr>
+    </thead>
+   <tbody>
+       <tr>
+         <td>邮箱地址</td>
+         <td width="15%">默认邮箱</td>
+         <td width="12%">邮件识别颜色</td>
+         <td width="10%">操作</td>
+       </tr>
+       <volist name = 'list' id='vo'>
+       <tr>
+        <td>{$vo.email}</td>
+        <td><if condition="$vo['defaultemail'] eq '1'">YES<else/>NO</if></td>
+        <td title=""><div>{$vo.color}</div></td>
+        <td><a href="#" onclick="editconfig('{$vo.id}');">修改</a>&nbsp;&nbsp;
+            <a href="__URL__/lookupdeletemessageconfig/id/{$vo.id}/rel/jbsxBoxMessage" target="ajaxTodo">删除</a></td>
+       </tr>
+       </volist>
+  </tbody>
+</table>
+</div>

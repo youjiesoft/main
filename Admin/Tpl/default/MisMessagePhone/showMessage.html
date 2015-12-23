@@ -1,0 +1,28 @@
+<style>
+.selfFieldset fieldset{
+	border:1px solid #b7b5b5;
+	margin:10px;
+	padding:10px;
+	color:#828282;
+}
+.selfFieldset fieldset legend{
+	border-bottom:1px solid #b2b2b2;
+	color: #2698ab;
+}
+</style>
+<div class="page">
+	<div class="pageContent selfFieldset" style="background-color:white;border:1px solid silver" layoutH="10">
+		<fieldset>
+			<legend> 接收号码：</legend>
+			<div>{$vo['userid']}</div>
+		</fieldset>
+		<fieldset>
+			<legend>信息内容:</legend>
+			<div>{$vo['content']}</div>
+		</fieldset>
+		<fieldset>
+			<legend>发送人:</legend>
+			<div>{$vo['createid']|getFieldBy='id','name','user'} &nbsp;&nbsp;&nbsp;&nbsp;{$vo['sendtime']|transTime='Y-m-d H:i:s'}</div>
+		</fieldset>
+	</div>
+</div>

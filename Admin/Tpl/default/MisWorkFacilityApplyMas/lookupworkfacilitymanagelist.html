@@ -1,0 +1,66 @@
+<form id="pagerForm" action="__URL__/lookupworkfacilitymanage" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'lookupworkfacilitymanagelistli');" action="__URL__/lookupworkfacilitymanage" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="equipmenttype" value="{$equipmenttype}">
+		
+		<div class="searchBar">
+				 <table class="searchContent"> 
+					<tr>
+						<include file="Public:quickSearchCondition" />
+						 <td><button class="xyBack" type="button" onclick="misworkfacilityapplymas_selectinto(this)" warn="请选择人员">选择带回</button></td>  
+					</tr>
+				</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="102">
+		<thead>
+			<tr>
+			<th width="20"><input type="checkbox"  class="checkboxCtrl" group="orgId" /></th> 
+			<th width="120">设备编号</th>
+			<th width="100">设备名称</th>
+			<th>设备型号</th>
+			<th>总数量</th>
+			<th>可用数量</th>
+			<th width="40">单位</th>
+			<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="MisWorkFacilityApplyMaslist">
+		<volist id="vo" name="list">
+			<tr>
+				<td  width="20"><input type="checkbox" name="orgId"   value="{ mangid:'{$vo.id}',orderno:'{$vo.orderno}',equipmentname:'{$vo.equipmentname}',version:'{$vo.version}',qty:'{$vo.qty|getDigits}',unit:'{$vo['unit']|getFieldBy='id','name','mis_product_unit'}',kyqty:'{$vo.kyqty|getDigits}',etype:'{$vo['equipmenttype']|getFieldBy='id','name','mis_work_facility_type'}'}"/></td>
+				<td>{$vo['orderno']}</td>
+				<td>{$vo['equipmentname']}</td>
+				<td>{$vo['version']}</td>
+				<td>{$vo['qty']|getDigits}</td>
+				<td>{$vo['kyqty']|getDigits}</td>
+				<td>{$vo['unit']|getFieldBy='id','name','mis_product_unit'}</td>
+				<td>
+					<a class="btnSelect" onclick="misworkfacilityapplymas_addwf('{$vo.id}','{$vo.orderno}','{$vo.equipmentname}','{$vo.version}','{$vo['qty']|getDigits}','{$vo['unit']|getFieldBy='id','name','mis_product_unit'}','{$vo['kyqty']|getDigits}','{$vo['equipmenttype']|getFieldBy='id','name','mis_work_facility_type'}')"
+						href="javascript:$.bringBack({
+						 mangid:'{$vo.id}',
+						 orderno:'{$vo.orderno}',
+						 equipmentname:'{$vo.equipmentname}',
+						 version:'{$vo.version}',
+						  unit:'{$vo['unit']|getDigits}',
+						 qty:'{$vo['qty']|getFieldBy='id','name','mis_product_unit'}',
+						  kyqty:'{$vo['kyqty']|getDigits}'})" title="查找带回">选择</a>
+				</td>
+	  		</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="lookupworkfacilitymanagelistli" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

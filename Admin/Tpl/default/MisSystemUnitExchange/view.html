@@ -1,0 +1,38 @@
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisSystemUnit/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			{:W('HiddenInput',$vo)}
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="masid" value="{$vo['id']}" />
+			<div class="pageFormContent new_version_page_content" layoutH="58">
+				<table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+					<tbody>
+						<tr>
+							<td class="cell_left" width="12%">编号:</td>
+							<td class="cell_right" width="21%" colspan="5">{:W('ShowOrderno',array(2,'mis_system_unit_exchange',$vo['orderno']))}</td>
+						</tr>
+						<tr>
+							<td class="cell_left" width="12%">转换名称:</td>
+							<td class="cell_right" width="21%" >{$vo['zhuanhuanmingchen']}</td>
+							<td class="cell_left" width="12%">主单位:</td>
+							<td class="cell_right" width="21%" >{$vo['baseunitid']|getFieldBy='id','danweimingchen','mis_system_unit'}</td>
+							<td class="cell_left" width="12%">转换系数:</td>
+							<td class="cell_right" width="21%" >{$vo['exchange']}</td>
+						</tr>
+						<tr>
+							<td class="cell_left" width="12%">转换单位:</td>
+							<td class="cell_right" width="21%" >{$vo['subunitid']|getFieldBy='id','danweimingchen','mis_system_unit'}</td>
+							<td class="cell_left" width="12%">备注:</td>
+							<td class="cell_right" width="21%" >{$vo['beizhu']}</td>
+							<td class="cell_left" width="12%"></td>
+							<td class="cell_right" width="21%" ></td>
+						</tr>
+					</tbody>
+				</table>
+							<!-- text组件 end -->
+		<div class="clear"></div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+

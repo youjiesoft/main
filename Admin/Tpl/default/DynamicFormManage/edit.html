@@ -1,0 +1,278 @@
+<script>
+function DynamicnavTabDone(json){
+	DWZ.ajaxDone(json);
+	if(json.statusCode==DWZ.statusCode.ok){
+		var path=json.data;
+		var ids={$vo['id']};
+		var params=[{name: 'upload', value: 0},{name: 'id', value: ids},{name: 'step', value: 2},{name: 'filepath', value: path}];
+		if(path){
+			navTab.reload("__URL__/edit/navTabId/__MODULE__",{data:params,navTabId:"__MODULE__edit"});
+		}else{
+			navTabAjaxDone(json);
+			navTab.closeCurrentTab();
+		}
+		return false;
+	}
+}
+var $box=navTab.getCurrentPanel();
+$box.find("input:[name='editstyle']").change(function(){
+	var t=$(this).val();
+	var obj2=$box.find("tr.uploadtr");
+	if(t!=1){
+		$(obj2).css("display","none");
+	}else{
+		$(obj2).css("display","");
+	}
+});
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" <if condition="$step eq 1">action="__URL__/edit/navTabId/__MODULE__"<else />action="__URL__/update/navTabId/__MODULE__"</if> class="pageForm required-validate" onsubmit="return iframeCallback(this,DynamicnavTabDone);" enctype="multipart/form-data" target="callbackframe" >
+		<div class="pageFormContent" layoutH="58">
+			<if condition="$step eq 1">
+				<input type="hidden" name="step" value="2" />
+				<input type="hidden" name="upload" value="1" />
+				<input type="hidden" name="id" value="{$vo.id}" />
+				<table width="100%" border="0" cellspacing="0">
+					<tr>
+						<td>
+							<div class="unit">
+								<input style="float:left;" checked="checked" type="radio" name="editstyle" value="1" /><span class="info">重新上传excel样式文件</span>
+								<input style="float:left;" type="radio" name="editstyle" value="2" /><span class="info">使用当前样式</span>
+							</div>
+						</td>
+					</tr>
+					<tr class="uploadtr">
+						<td>
+							<div class="unit">
+								<label>上传xcel样式文件：</label>
+								<input class="textInput" type="file" name="attached" />
+								<br/><br/>
+								<div style="clear:both;"></div>
+								<label>&nbsp;</label>
+								<span class="info">温馨提示 (为保证数据导入正确请上传后缀为xls 或者 xlsx的文件！)</span>
+							</div>
+						</td>
+					</tr>
+				</table>
+			<elseif condition="$step eq 2" />
+				<script>
+					$("#misimportexcelsubeditpageedit select.import_tableobj").change(function(){
+						var t=$(this).val();
+						var i=$(this).attr("id");
+						var $ref =$("#field"+i);
+						var $ref2 =$("#field2"+i);
+						$.ajax({
+							type:'POST',dataType:"json",url:"__URL__/comboxgetTableField",cache:false,
+							data:{table:t},
+							success:function(json){
+							if(!json)return;
+							var html='';
+							$.each(json,function(i){
+							if(json[i]&&json[i].length>1){
+							html+='<option value="'+json[i][0]+'">'+json[i][1]+'</option>';}});
+							var $refCombox=$ref.parents("div.combox:first");
+							var $refCombox2=$ref2.parents("div.combox:first");
+							
+							$ref.html(html).insertAfter($refCombox);
+							$ref2.html(html).insertAfter($refCombox2);
+							
+							$refCombox.remove();
+							$refCombox2.remove();
+							
+							$ref.trigger("change").combox();
+							$ref2.trigger("change").combox();
+							},
+							error:DWZ.ajaxError
+						});
+					});
+					
+					$("#misimportexcelsubeditpageedit select.catalog").change(function(){
+						var t=$(this).val();
+						if(t!="text" && t!="textarea" && t!="date"){
+							$(this).parents(".combox").next("input.showoption").css("display","");
+						}else{
+							$(this).parents(".combox").next("input.showoption").css("display","none");
+						}
+					});
+					
+					$("#misimportexcelsubeditpageedit select.import_tableobj").each(function(){
+						var t=$(this).val();
+						if(t!=""){
+							var i=$(this).attr("id");
+							var $ref =$("#field"+i);
+							var $ref2 =$("#field2"+i);
+							var selected1 = $ref.attr("selectedfield");
+							var selected2 = $ref2.attr("selectedfield");
+							$.ajax({
+								type:'POST',dataType:"json",url:"__URL__/comboxgetTableField",cache:false,
+								data:{table:t},
+								success:function(json){
+								if(!json)return;
+								var html=html2='';
+								$.each(json,function(i){
+									if(json[i]&&json[i].length>1){
+										var s1=s2="";
+										if( selected1 && selected1==json[i][0] ){
+											s1="selected";
+										}
+										if(selected2 && selected2==json[i][0]){
+											s2="selected";
+										}
+										html+='<option '+s1+' value="'+json[i][0]+'">'+json[i][1]+'</option>';
+										html2+='<option '+s2+' value="'+json[i][0]+'">'+json[i][1]+'</option>';
+									}
+								});
+								var $refCombox=$ref.parents("div.combox:first");
+								var $refCombox2=$ref2.parents("div.combox:first");
+								$ref.html(html).insertAfter($refCombox);
+								$ref2.html(html2).insertAfter($refCombox2);
+								
+								$refCombox.remove();
+								$refCombox2.remove();
+								
+								$ref.trigger("change").combox();
+								$ref2.trigger("change").combox();
+								},
+								error:DWZ.ajaxError
+							});
+						}
+					});
+					
+				</script>
+				<input type="hidden" name="step" value="3" />
+				<input type="hidden" name="nodeid" value="{$vo['nodeid']}" />
+				<input type="hidden" name="dynamicformid" value="{$vo['id']}" />
+				<input type="hidden" name="excelsource" value="{$excelsource}" />
+				<table id="misimportexcelsubeditpageedit" class="list" width="100%" border="0" cellspacing="0">
+					<thead>
+						<tr>
+							<th>字段</th>
+							<th>列表标题</th>
+							<th>类型</th>
+							<th>验证唯一</th>
+							<th>关联查询</th>
+							<th>验证</th>
+						</tr>
+					</thead>
+					
+					<volist name="configdata" id="co">
+					<tr>
+						<td>{$co.0} <input name="fields[{$co.0}]" value="{$co.0}"  type="hidden" /><input name="ids[{$co.0}]" value="{$vofield[$co[0]]['id']}"  type="hidden" /></td>
+						<td>{$co.1} <input name="title[{$co.0}]"  value="{$co.1}" type="hidden" /></td>
+						<td>
+							<select class="catalog combox" name="catalog[{$co.0}]">
+								<option value="text" 		<if condition="$vofield[$co[0]]['fieldtype'] eq 'text'">selected</if>>单行文本</option>
+								<option value="textarea" 	<if condition="$vofield[$co[0]]['fieldtype'] eq 'textarea'">selected</if>>多行文本</option>
+								<option value="select" 		<if condition="$vofield[$co[0]]['fieldtype'] eq 'select'">selected</if>>下拉列表</option>
+								<option value="radio" 		<if condition="$vofield[$co[0]]['fieldtype'] eq 'radio'">selected</if>>单选按钮</option>
+								<option value="checkbox" 	<if condition="$vofield[$co[0]]['fieldtype'] eq 'checkbox'">selected</if>>多选按钮</option>
+								<option value="date" 		<if condition="$vofield[$co[0]]['fieldtype'] eq 'date'">selected</if>>日期</option>
+								
+							</select>
+							<if condition="empty($vofield[$co[0]]['linktable']) &&  $vofield[$co[0]]['options']">
+								<input name="showoption[{$co.0}]" class="showoption" value="{$vofield[$co[0]]['options']}" type="text" />
+							<else />
+								<input name="showoption[{$co.0}]" class="showoption" value="AA;BB" type="text" style="display:none;" />
+							</if>
+						</td>
+						<td><input type="checkbox" value="1" <if condition="$vofield[$co[0]]['fieldonly'] eq 1">checked="checked"</if> name="columnscheckexist[{$co.0}]"/></td>
+						<td>
+							<span class="info">绑定表：</span>
+							<select class="combox import_tableobj" id="import_tableobj{$co.0}" name="subimporttableobj[{$co.0}]" >								<option value="">请选择映射对象</option>
+								<volist id="vos" name="tables">
+									<option value="{$key}" <if condition="$vofield[$co[0]]['linktable'] eq $key">selected</if> >{$vos}</option>
+								</volist>
+							</select>
+							<span class="info">绑定字段：</span>
+							<select class="combox" selectedfield="{$vofield[$co[0]]['linkfield']}" id="fieldimport_tableobj{$co.0}" name="subimporttablefieldobj[{$co.0}]" >
+								<if condition="$co['fieldarr']">
+									<volist id="vof" name="co.fieldarr">
+										<option value="{$vof[0]}" <if condition="$vofield[$co[0]]['linkfield'] eq $vof[0]">selected</if>>{$vof[1]}</option>
+									</volist>
+								<else />
+									<option value="">请选择映射对象字段</option>
+								</if>
+							</select>
+							<span class="info">显示字段：</span>
+							<select class="combox" selectedfield="{$vofield[$co[0]]['linkshowfield']}" id="field2import_tableobj{$co.0}" name="subimporttablefield2obj[{$co.0}]" >
+								<if condition="$co['fieldarr']">
+									<volist id="vof2" name="co.fieldarr">
+										<option value="{$vof2[0]}" <if condition="$vofield[$co[0]]['linkshowfield'] eq $vof2[0]">selected</if>>{$vof2[1]}</option>
+									</volist>
+								<else />
+									<option value="">请选择映射对象字段</option>
+								</if>
+							</select>
+						</td>
+						<td>
+							<select class="combox" name="checkfunc[{$co.0}]">
+								<option value="">无需验证</option>
+								<option value="required" <if condition="$vofield[$co[0]]['fieldcheck'] eq 'required'">selected</if> >必填</option>
+								<option value="eamil" <if condition="$vofield[$co[0]]['fieldcheck'] eq 'eamil'">selected</if>>邮箱</option>
+								<option value="url" <if condition="$vofield[$co[0]]['fieldcheck'] eq 'url'">selected</if>>网址</option>
+								<option value="number" <if condition="$vofield[$co[0]]['fieldcheck'] eq 'number'">selected</if>>整数</option>
+								<option value="double" <if condition="$vofield[$co[0]]['fieldcheck'] eq 'double'">selected</if>>浮点数</option>
+								<option value="english" <if condition="$vofield[$co[0]]['fieldcheck'] eq 'english'">selected</if>>字母</option>
+							</select>
+						</td>
+					</tr>
+					</volist>
+					<tr>
+						<td colspan="6">
+							<div class="unit">
+								<input name="use_excel_tpl" <if condition="$vo['tplhtmltype'] eq 1">checked="checked" </if> type="radio" value="1" />
+								<span>使用excel模板</span>
+								<input name="use_excel_tpl" <if condition="$vo['tplhtmltype'] eq 0">checked="checked" </if>  type="radio" value="0" />
+								<span>自动生成模板</span>
+								
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<div class="unit">
+								<div class="adddiv">
+									<span class="info add">父节点：</span>
+									<select name="parentnodename" class="combox">
+										<volist name="nodelist" id="n">
+											<option value="{$n['id']}" <if condition="$n['id'] eq $nodeinfo['pid']">selected</if>>{$n['title']}</option>
+											<if condition="isset($n['children'])">
+												<volist name="n.children" id="n2">
+													<option value="{$key}" <if condition="$key eq $nodeinfo['pid']">selected</if>>&nbsp;&nbsp;&nbsp;&nbsp;{$n2}</option>
+												</volist>
+											</if>
+										</volist>
+									</select>
+									<span class="info">节点名称：</span>
+									<input name="nodename" type="text" class="lettersonly" value="{$vo['nodeid']|getFieldBy='id','name','Node'}" />
+									<span class="info">显示名称：</span>
+									<input name="nodetitle" type="text" value="{$vo['nodeid']|getFieldBy='id','title','Node'}" />
+								</div>
+								<div class="editdiv" style="display:none;" >
+									<select name="parentnodename2" class="combox">
+										<volist name="nodemodellist" id="n1">
+											<option value="{$n1['id']}">{$n1['title']}</option>
+										</volist>
+									</select>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
+			<elseif condition="$step eq 3" />
+				{$diyhtml}
+			</if>
+		</div>
+		
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.dynamicformmanage_update">	
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit"><if condition="$step eq 1">{$Think.lang.nextstep}<else />{$Think.lang.save}</if></button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

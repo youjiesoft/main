@@ -1,0 +1,204 @@
+<script>
+function mistaskinfoQQConnect(obj){
+    var qqnumber = $(obj).attr('qq');
+    if(!qqnumber == '') {
+        $("#mistaskinfoQQurlconnect").attr('href','http://wpa.qq.com/msgrd?v=3&uin='+qqnumber+'&site=qq&menu=yes');
+    } else {
+        alert("用户还未上传QQ号码");
+        return false;
+    };
+}
+//加关注 
+function setmistaskinfoAttentionAdedit(obj, status, tableid, modelname){
+    $.ajax({
+        type : 'POST',
+        url  : '__URL__/lookupSetAttention',
+        data : {status:status,tableid:tableid,modelname:modelname,type:2},
+        success : function (succ){
+            if (succ == 1) {
+                var string = '<a class="headProcessDetail addAtt" style="margin-left:13px;" href="javascript://;" onclick="setmistaskinfoAttentionAdedit(this,\'{$attent['status']}\', \'{$vo['id']}\', \'MisTaskInformation\');">取消关注</a>';
+                var val = $(obj).parent();
+                $(val).empty();
+                $(val).append(string);
+            }
+            if (succ == 0) {
+                var string = '<a class="headProcessDetail addAtt" style="margin-left:13px;" href="javascript://;" onclick="setmistaskinfoAttentionAdedit(this,\'{$attent['status']}\', \'{$vo['id']}\', \'MisTaskInformation\');">+关注</a>';
+                var val = $(obj).parent();
+                $(val).empty();
+                $(val).append(string);
+            }
+        },
+        async:false,
+        global:false
+    });
+}
+function mistaskinfo_refreshdialog(json){
+	dialogAjaxDone(json);
+	if(json.statusCode == DWZ.statusCode.ok){
+            var refreshtabs = json.refreshtabs;
+            var tab = refreshtabs.ntdata;
+            var ids = refreshtabs.ids || json.data;
+            var url = "__URL__/trace/zhi/"+tab+"/id/" + ids;
+            ondblclick_dialog("a.mistaskistaskinfo","div#mistaskrefreshtabsid", url);
+        }
+    }
+function GetmistaskinfomationTime() {
+    var nowtimetostr = Date.parse(new Date());
+    var nowtime = (Number(nowtimetostr)) /1000;
+    var endtime = '{$vo["enddate"]}';
+    endtime = Number(endtime);
+    var times = endtime - nowtime;
+    var tostrtime = '任务已超期';
+    if (times > 0) {
+        var day = Math.floor(times /(60 * 60 * 24));
+        var hours = Math.floor((times %(60 * 60 * 24))/(60 * 60));
+        var minutes = Math.floor((times % (60 * 60)) / 60);
+        var seconds = times % 60;
+        tostrtime = day +'天'+ hours +'时'+ minutes +'分'+ seconds+'秒';
+    }
+    var $box=$.pdialog.getCurrent();
+    $box.find(".mistaskinfomationedit_ountdown").text(tostrtime);
+}
+setInterval("GetmistaskinfomationTime()", 250);
+</script>
+<form method="post" action="__URL__/auditTask" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+<div class="tabs" currentIndex="{$zhi}" eventType="click">
+    <div class="tabsHeader">
+        <div class="tabsHeaderContent">
+            <ul>
+                <li class="selected"><a href="javascript:;" rel="showtask" ><span>基本信息</span></a></li>
+                <!--<li><a href="__URL__/trace/id/{$task['id']}/navtab/getAttachment" rel="mistaskinfogetAttachment" class="j-ajax" ><span>附件文档</span></a></li>-->
+                <li><a href="__URL__/trace/id/{$task['id']}/navtab/communicationFeedback" rel="lookupcommunicationFeedback" class="j-ajax" ><span>交流反馈</span></a></li>
+                <li><a href="__URL__/trace/id/{$task['id']}/navtab/lookupIdea/identifying/1" rel="mistaskinfolookupTraceIdea"  class="j-ajax"><span>任务缺陷</span></a></li>
+                <li><a href="__URL__/trace/id/{$task['id']}/navtab/lookupPlanCondition" rel="lookupPlanConditionTrace" class="j-ajax" ><span>执行情况</span></a></li>
+                <li><a href="__URL__/trace/id/{$task['id']}/navtab/relevques" rel="relevques" class="j-ajax" ><span>关联问题</span></a></li>
+                <if condition="$ishavechild">
+                    <li><a href="__URL__/trace/id/{$vo['taskid']}/navtab/getchildtask" rel="mistaskinfogetchildtask" class="j-ajax" ><span>子任务</span></a></li>
+                </if>
+            </ul>
+        </div>
+    </div>
+    <div class="tabsContent" layoutH="70" style="padding:0px;">
+        <div>
+            <div class="page">
+                <div class="pageContent">
+                    <div class="pageFormContent">
+                        <input type="hidden" name="id" value="{$vo.id}">
+                        <div style="float:right;width:128px;">
+                            <img alt="时钟" src="__PUBLIC__/Images/mistask_time.jpg">
+                            <a class="mistaskinfomationedit_ountdown" style="color:{$timescolor};display:block;line-height:32px;text-align:center;width:100px;"></a>
+                            <div class="clear"></div>
+                            <span class="fontGray" style="padding: 0 12px;">
+                                <a class="" target="_blank" qq="{$userinfo}" onclick="mistaskinfoQQConnect(this);" href="javascript:;" id="mistaskinfoQQurlconnect">
+                                    <img alt="QQ交谈" src="http://wpa.qq.com/pa?p=2:168660460:41%20&r=0.22914223582483828">
+                                </a>
+                            </span>
+                            <div class="clear"></div>
+                            <span class="fontGray">
+                                <a class="headProcessDetail addAtt" style="margin-left:13px;" href="javascript://;" onclick="setmistaskinfoAttentionAdedit(this,'{$attent['status']}', '{$vo['id']}', 'MisTaskInformation');"><if condition="$attent['status'] eq '1'">取消关注<else/>+关注</if></a>
+                            </span>
+                            <div class="clear"></div>
+                            <if condition="$taskView">
+                                <span class="fontGray">
+                                    <a class="headProcessDetail addAtt" style="margin-left:13px;" height="300" width="450" target="dialog" href="__URL__/lookupsettrackingstate/taskid/{$task['id']}" rel="mistaskinfolookupsettrackingstate" title="设置跟踪周期" mask='true'>跟踪周期</a>
+                                </span>
+                            </if>
+                            <div class="clear"></div>
+                            <if condition="$taskView">
+                                <span class="fontGray">
+                                    <a class="headProcessDetail addAtt" style="margin-left:13px;" width="700" height="350" target="dialog" href="__URL__/lookupaddtrace/taskid/{$task['id']}" rel="mistaskinfoaddtrace" title="任务评查" mask='true'>任务评查</a>
+                                </span>
+                            </if>
+                            <div class="clear"></div>
+                            <if condition="$taskView">
+                                <span class="fontGray">
+                                    <a class="headProcessDetail addAtt" style="margin-left:13px;" height="350" width="700" target="dialog" href="__URL__/lookupsolve/taskid/{$task['id']}" rel="mistaskinfolookupsolve" title="任务缺陷" mask='true'>任务缺陷</a>
+                                </span>
+                            </if>
+                        </div>
+                        <div style="overflow:hidden;">
+                            <h2 class="contentTitle contentTitle_center">
+								<span class="fontGray">
+									<a class="headProcessDetail" rel="MisTaskInformationgetTimeLine" title="任务时间轴" mask="true" width="580" height="450"
+									   target="dialog" href="__URL__/getTimeLine/taskid/{$task['id']}">[时间轴]</a>
+								</span>{$task['title']}
+							</h2>
+                            
+                            
+                            <table class="taskInfoTable" width="90%">
+								<tbody>
+									<tr>
+										<th><label>完成进度：</label></th>
+										<td colspan="3">
+											<span class="taskfontblue">
+												<span class="taskprogressbar">
+													<span class="taskpspan1" style="width:{$vo['chedule']}%;"></span>
+													<span class="taskpspan2">{$vo['chedule']}%</span>
+												</span>
+											</span>
+										</td>
+									</tr>
+                                    <tr>
+										<th><label>执行状态：</label></th>
+										<td colspan="3"><span class="taskfontblue">{$vo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}</span></td>
+									</tr>
+									<tr>
+										<th><label>困难程度：</label></th>
+										<td><span class="taskfontblue">{$vo['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</span></td>
+										<th width="130"><label>紧急状况:</label></th>
+										<td><span class="taskfontblue">{$vo['urgentstatus']|excelTplselected='1:宽松,2:一般,3:紧急'}</span></td>
+									</tr>
+									<tr>
+										<th><label>发布人员：</label></th>
+										<td><span class="fontGray">{$vo['createid']|getFieldBy='id','name','User'}</span></td>
+										<th><label>执行人员：</label></th>
+										<td><span class="fontGray">{$vo['executeuser']|getFieldBy='id','name','User'}</span></td>
+									</tr>
+									<tr>
+										<th><label>计划开始时间：</label></th>
+										<td><span class="taskfontblue">{$vo["begindate"]|date='Y-m-d H:i',###}</span></td>
+										<th><label>计划结束时间：</label></th>
+										<td><span class="taskfontblue">{$vo["enddate"]|date="Y-m-d H:i",###}</span></td>
+									</tr>
+									<tr>
+										<th><label>实际开始时间：</label></th>
+										<td><span class="fontGray"><if condition="$vo[realitybegindate]">{$vo["realitybegindate"]|date="Y-m-d H:i",###}<else/>未开始</if></span></td>
+										<th><label>实际结束时间：</label></th>
+										<td><span class="fontGray"><if condition="$vo[realityenddate]">{$vo["realityenddate"]|date="Y-m-d H:i",###}<else/>未完成</if></span></td>
+									</tr>
+                                    <tr>
+										<th>任务描述：</th>
+										<td colspan="3">
+											<span class="fontGray">{$vo['remark']}</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="unitBox j-resizeGrid" style="overflow:auto;" id="mistaskinfogetAttachment">
+        </div>
+        <div class="unitBox j-resizeGrid" style="overflow:auto;" id="lookupcommunicationFeedback">
+        </div>
+        <div class="unitBox j-resizeGrid" style="overflow:auto;" id="mistaskinfolookupTraceIdea">
+        </div>
+        <div class="unitBox j-resizeGrid" style="overflow:auto;" id="lookupPlanConditionTrace">
+        </div>
+        <div class="unitBox j-resizeGrid" style="overflow:auto;" id="relevques">
+        </div>
+        <div class="unitBox j-resizeGrid" style="overflow:auto;" id="mistaskinfogetchildtask">
+        </div>
+    </div>
+</div>
+<div class="formBar">
+    <ul>
+        <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskquestion_add">
+            <li><div class="buttonActive taskmovesuccess"><div class="buttonContent"><a height="350" width="700" rel="mistaskinfoaddtrace" title="任务评查" mask='true' target="dialog" href="__URL__/lookupaddtrace/taskid/{$task['id']}">任务评查</a></div></div><li>
+        </if>
+        <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+    </ul>
+</div>
+</form>

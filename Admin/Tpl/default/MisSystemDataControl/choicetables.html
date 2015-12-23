@@ -1,0 +1,200 @@
+<script>
+$(function(){
+	var ztNodes={$list};//$.parseJSON(tree);
+	//zNodes = '';
+	if(ztNodes){
+		var setting = {
+				view: {
+		              selectedMulti: false,
+		              fontCss: getFontCss
+		          },
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+		          check: {
+		       	   autoCheckTrigger:true,
+		       	   chkboxType:{ "Y" : "p", "N" : "s" },
+		       	   chkStyle : "checkbox", 
+		       	   enable : true,
+		       	   nocheckInherit : false,
+		       	   chkDisabledInherit : false,
+		       	   radioType : "level"
+		          },
+				callback: {
+					onCheck: zTreeAOnClick
+				}
+			};
+		$.fn.zTree.init($("#MisSystemDataControlTreeExtend"), setting, ztNodes);
+		var zTree1 = $.fn.zTree.getZTreeObj("MisSystemDataControlTreeExtend");
+	}
+});
+function zTreeAOnClick(e,treeId,treeNode){
+	var box = $.pdialog.getCurrent();
+	$("tbody.relation",box).find("tr").hide();
+	$("tbody.relation",box).find("input").attr("disabled",true).removeClass("required");
+	$("tbody.relation",box).find("select").attr("disabled",true).removeClass("required");
+    var treeObj=$.fn.zTree.getZTreeObj("MisSystemDataControlTreeExtend"),
+    nodes=treeObj.getCheckedNodes(true),
+    v="";
+    for(var i=0;i<nodes.length;i++){
+   	 v+=nodes[i].id + ",";
+   	 nodes[i].getParentNode();
+		var tr = $("tr[treeid='"+nodes[i].id+"']",box);
+		tr.show();
+		tr.find("input").attr("disabled",false).addClass("required");
+		tr.find("select").attr("disabled",false).addClass("required select2").css("width",'100%').select2();
+    }
+    $("input[name='treenode']").val(v);
+    //console.log(treeNode);
+    //获取tbody内容
+  	
+   
+    //点击选择节点后生成html
+    
+}
+
+/**
+ * 将页面处理结果赋值到上级页面
+ */
+function xyzPostAjaxDone(json){
+	var navbox = navTab.getCurrentPanel();
+	var box = $.pdialog.getCurrent();
+	var modelname = $("input[name='modelname']",box).val();
+	var sourcetable = $("input[name='sourcetable']",box).val();
+	var tag = $("input[name='tag']",box).val();
+	var inputname = tag.replace("choicetables","sql");
+	var roltd = $("input[name='"+tag+"']",navbox).closest('tr').find("div.MisSystemDataControl_table_role");
+	roltd.loadUrl("__URL__/lookupdetailadd/type/1",{modelname:modelname,data:json.list,inputname:inputname,sourcetable:sourcetable},function() { roltd.find("[layoutH]").layoutH();	}, false);
+	var inputname2 = tag.replace("choicetables","msginfo");
+	var msgtd = $("input[name='"+tag+"']",navbox).closest('tr').find("div.MisSystemDataControl_table_msg");
+	msgtd.loadUrl("__URL__/lookupdetailadd/type/1",{modelname:modelname,data:json.list,inputname:inputname2,sourcetable:sourcetable},function() { roltd.find("[layoutH]").layoutH();	}, false);
+	$("input[name='"+tag+"']",navbox).closest('td').find("input.treenode").val(json.treenode);
+	$("input[name='"+tag+"']",navbox).closest('td').find("input.choicetablesval").val(json.china);
+	$("input[name='"+tag+"']",navbox).closest('td').find("span.showchoicetables").text(json.china);
+	$("input[name='"+tag+"']",navbox).closest('td').find("input[name^='choicetablesforrole']").val(json.wdata);
+	$("input[name='"+tag+"']",navbox).closest('td').find("input[name^='sqlselectform']").val(json.sqlselectform);
+	$("input[name='"+tag+"']",navbox).closest('td').find("input[name^='sqlselectformarr']").val(json.sqlselectformarr);
+	$.pdialog.closeCurrent();
+	//$("input[name='"+tag+"']",navbox).closest('td').find("span.showchoicetables").css("background":"#99CCCC","color":"#006666");
+}
+</script>
+<style>
+.xyz_input{
+
+ 	border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    height: 24px;
+    margin: 0 auto;
+    padding: 0;
+    width: 97%;
+    }
+</style>
+<div class="pageContent" style="background: #fff;">
+	<form method="post" action="__URL__/ztreeValDo/rel/MisSystemDataAccessCarrierBOX"  class="pageForm required-validate" onsubmit="return validateCallback(this, xyzPostAjaxDone)">
+		<div class="pageFormContent">   
+			<div class="treeleft listtree" >
+			    <input type="hidden" name="treenode" value="{$treenode}"/> 
+				<input type="hidden" name="modelname" value="{$modelname}">
+				<input type="hidden" name="tag" value="{$tag}">
+				<input type="hidden" name="sourcetable" value="{$sourcetable}">
+				<input type="hidden" name="sqlselectformarr" value="{$sqlselectformarr}">
+				<div class="collapse">
+					<div class="toggleCollapse"><div></div></div>
+				</div>
+				<div class="close">
+				   <div class="toggleCollapse"><h2></h2><div></div></div>
+					<div class="clearfix p5">
+						<div class="member_searcher">
+							<input class="add_key left" id="MisSystemDataControlTreeExtendSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+							<button class="btn_member icon-search right" onclick="SearchZTreeNode('MisSystemDataControlTreeExtend','MisSystemDataControlTreeExtendSearchNodeKeys')" type="button"></button>
+						</div>
+					</div>
+					<ul id="MisSystemDataControlTreeExtend" class="ztree" layoutH="180"></ul>
+				</div>
+			</div>
+			<div id="MisSystemDataControlTableRelation" class="treeright">
+				<div>触发数据表：{$sourcetable}</div>
+				<div>控制数据表：</div>
+				<table class="data_table" width="100%">
+					<thead>
+						<tr>
+							<th width="230">表名</th>
+							<th width="130">连接符</th>
+							<th width="350">连接关系</th>
+						</tr>
+					</thead>
+					<tbody class="relation">
+						<volist name="decodelist" id="lv">
+						<if condition="$lv.checked">
+							<tr treeid = "{$lv.id}">
+								<td>
+									<p>{$lv.title}</p>
+									<p><input type="hidden" name="objid[{$lv.id}]" value="{$lv.id}" title="{$lv.name}" readonly/>{$lv.tablename}</p>
+								</td>
+								<td>
+									<select class="select2" name="relationlink[{$lv.id}]">
+										<option value="left join" <if condition="'left join' eq $lv['relationlink']">selected</if>>left join</option>
+										<option value="right join" <if condition="'right join' eq $lv['relationlink']">selected</if>>right join</option>
+										<option value="inner join" <if condition="'inner join' eq $lv['relationlink']">selected</if>>inner join</option>
+									</select>
+								
+								</td>
+								<td><input class="list_input" type="text" name="relationcont[{$lv.id}]" value="{$lv.relationcont}"  /></td>
+							</tr>
+						<else/>
+							<tr treeid = "{$lv.id}" style="display:none;">
+								<td>
+									<p>{$lv.title}</p>
+									<p><input type="hidden" name="objid[{$lv.id}]" value="{$lv.id}" title="{$lv.name}" readonly disabled/>{$lv.tablename}</p>
+								</td>
+								<td>
+									<select  name="relationlink[{$lv.id}]" disabled>
+										<option value="left join" <if condition="'left join' eq $lv['relationlink']">selected</if>>left join</option>
+										<option value="right join" <if condition="'right join' eq $lv['relationlink']">selected</if>>right join</option>
+										<option value="inner join" <if condition="'inner join' eq $lv['relationlink']">selected</if>>inner join</option>
+									</select>
+								
+								</td>
+								<td><input class="xyz_input" type="text" name="relationcont[{$lv.id}]" value="{$lv.relationcont}" disabled /></td>
+							</tr>
+						</if>						
+							
+						</volist>
+					</tbody>
+				
+				</table>
+				<div class="table_relation_content">
+				
+				</div>
+				<div class="table_relation_content_for_mysql">
+					<span class="select_of_mysql"></span><span class="on_of_mysql"></span>
+				</div>
+			</div>	
+		</div>
+		<div style="border-top: 1px solid #d8d8d8; padding-top: 15px" class="formBar">
+			<ul> 
+				
+	            <li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button>
+	            	</li>
+	            
+            </ul>
+         </div>
+	</form>
+</div>	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				

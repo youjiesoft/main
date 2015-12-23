@@ -1,0 +1,60 @@
+
+<style>
+.tml-form-row label.tmp_label {
+	margin-left: 0px;
+	width: 120px;
+	float: none;
+	font: 14px/30px "Microsoft Yahei", "微软雅黑", sans-serif;
+}
+
+.tml-form-row label.tmp_label:hover {
+	color: #006699;
+}
+</style>
+
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/updatesub/rel/missystempanellookupindex" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="id" value="{$id}">			
+			<input type="hidden" name="type" value="2">
+ 			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<div class="pageFormContent" layoutH="40">
+			<div style="width:90%" class="new_version_page">
+			<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">面板管理新增</span></div>
+			<div class="new_version_page_content">
+				<div class="tml-row">
+
+					<div class="tml-form-col">
+						<label>面板名称：</label>
+						<input type="text" class="required" name="name" value="{$vo.name}">
+					</div>
+					<div class="tml-form-col ">
+						<label>关键词：</label>
+						<input type="text" class="required" name="keyword" value="{$vo.keyword}">
+					</div>
+					<div class="tml-form-col ">
+						<label>关键词范围：</label>
+						<select name="keywordtype" class="select2"  style="width:150px;">
+								<option <if condition="$vo.keywordtype eq 'newstitle'">selected="selected"</if> value='newstitle'>标题包含</option>
+								<option <if condition="$vo.keywordtype eq 'news'">selected="selected"</if> value='news'>内容包含</option>
+							</select>
+					</div>
+					<div class="tml-form-col">
+						<label>显示条数：</label>
+						<input type="text" class="required" name="num" value="{$vo.num}">
+					</div>	
+				</div>
+				<div class="formBar">
+					<ul><li>
+					<button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button>
+					</li>
+					</ul>
+				</div>
+				</div>
+				</div>
+				</div>
+		</form>
+
+	</div>
+</div>
+

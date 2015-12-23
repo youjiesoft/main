@@ -1,0 +1,59 @@
+<script>
+function getexecutingtypenameEdit(ob){
+	var $this=$(ob);
+	var val=$this.val();
+	if(val == 0){
+		$("#EditsetTypename2").hide();
+	}else{
+		$("#EditsetTypename2").show();
+	}
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$vo.id}"/>
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<h2 class="contentTitle contentTitle_center">工作执行设置</h2>
+			<div class="pageFormContent applecloth" layoutH="102">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>模块名：</label>
+						<input type="text" name="name" value="{$vo.name}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>名称：</label>
+						<input type="text" name="cname" value="{$vo.cname}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>是否显示处理中：</label>
+						<select name="isshow" class="combox" onchange="getexecutingtypenameEdit(this);">
+							<option <if condition="$vo.isshow eq 0">selected</if> value="0">否</option>
+							<option <if condition="$vo.isshow eq 1">selected</if> value="1">是</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>状态</label>
+						<select name="status" class="combox">
+							<option <if condition="$vo.status eq 1">selected</if> value="1">启用</option>
+							<option <if condition="$vo.status eq 0">selected</if> value="0">禁用</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>分类1名称：</label>
+						<input type="text" name="typenameone" value="{$vo.typenameone}"/>
+					</div>
+					<div class="tml-form-col" id="EditsetTypename2" <if condition="$vo.isshow eq 0">style="display:none;"</if>>
+						<label>分类2名称：</label>
+						<input type="text" name="typenametow" value="{$vo.typenametow}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>分类3名称：</label>
+						<input type="text" name="typenamethree" value="{$vo.typenamethree}"/>
+					</div>
+				</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

@@ -1,0 +1,84 @@
+<style>
+#userinfo tr{height:40px;line-height:40px;}
+#userinfo td{padding-left:5px;}
+</style>
+<div class="pageContent">
+<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this);">
+<div class="pageFormContent" layoutH="45">
+<table  width="100%" id="userinfo">
+<tbody>
+<tr><td><div class="unit">
+			<label>账号：</label>
+			{$vo.account}
+		</div>
+	</td>
+	<td><div class="unit">
+			<label>昵称：</label>
+			<input type="text" class="textInput" name="name" value="{$vo.name}">
+		</div>
+	</td></tr>
+	<tr><td><div class="unit">
+			<label>性别：</label>
+			<select name="sex">
+				<option value="1" <if condition="$vo.sex eq 1">selected</if>>女</option>
+				<option value="0" <if condition="$vo.sex eq 0">selected</if>>男</option>
+			</select>
+		</div>
+	</td>
+	<td><div class="unit">
+			<label>电话：</label>
+			<input type="text" class="textInput" name="tel" value="{$vo.tel}">
+		</div>
+	</td></tr>
+	<tr><td><div class="unit">
+			<label>部门：</label>
+			{$vo.dept_id|getFieldBy='id','name','SystemDepartment'}
+		</div>
+	</td>
+	<td><div class="unit">
+			<label>职位：</label>
+			{$vo.duty_id|getFieldBy='id','name','SystemDuty'}
+		</div>
+	</td></tr>
+	<tr><td><div class="unit">
+			<label>入职时间：</label>
+			{$vo.work_date|transTime}
+		</div>
+	</td>
+	<td><div class="unit">
+			<label>最后登录时间：</label>
+			{$vo.last_login_time|transTime='Y-m-d H:i:s'}
+		</div>
+	</td></tr>
+	<tr><td><div class="unit">
+			<label>登录次数：</label>
+			{$vo.login_count}
+		</div>
+	</td>
+	<td><div class="unit">
+			<label>状态：</label>
+			<if condition="$vo.status eq 1">正常<else />禁用账号</if>
+		</div>
+	</td></tr>
+	<tr><td><div class="unit">
+			<label>备注：</label>
+			{$vo.remark}
+		</div>
+	</td>
+	<td>
+	</td></tr>
+</tbody>
+</table>
+</div>
+<div class="formBar">
+	<ul>
+		<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+		<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+	</ul>
+</div>
+
+</form>
+</div>
+
+
+

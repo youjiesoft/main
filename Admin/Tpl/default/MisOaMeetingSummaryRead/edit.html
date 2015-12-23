@@ -1,0 +1,69 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="iseditor" value="1">
+		<input type="hidden" name="stepType" value="0"/>
+		<input type="hidden" name="id" value="{$vo.id}">
+		<div class="pageFormContent applecloth" layoutH="55">
+			<div class="keepContentCenter form-affix-content">
+				<H2 class="contentTitle contentTitle_center form-affix-title">
+					会议信息
+					<span class="auto_code">
+						<b>No. </b>
+						<input type="text" name="orderno" value="{$vo.orderno}" <if condition='$writable eq 0'> readonly="readonly" class="xycodedata_read" <else/> class="xycodedata_write required alphanumeric" </if> />
+					</span>
+				</H2>
+				<fieldset class="zlqk_1">
+					<legend class="fieldset_legend_toggle">
+						<b>基本信息</b>
+					</legend>
+					<div class="tml-form-row">
+						<label>{$fields["name"]}：</label>
+						<input type="text" readonly="readonly" class="org1.name" value="{$vo.name}"/>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>{$fields["personname"]}：</label>
+							<input type="text" name="personname" readonly="readonly" class="org1.personname" value="{$vo.personname}"/>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["typename"]}：</label>
+							<input type="text" name="typename" readonly="readonly" class="org1.typename" value="{$vo.typename}"/>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["starttime"]}：</label>
+							<div class="tml-input-append">
+								<input type="text" class="org1.starttime" readonly="readonly" value="{$vo.starttime|transTime=###,'Y-m-d H:i'}"/>
+	                        	<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+	                        </div>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["endtime"]}：</label>
+							<div class="tml-input-append">
+								<input type="text" class="org1.endtime" readonly="readonly" value="{$vo.endtime|transTime=###,'Y-m-d H:i'}"/>
+	                        	<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+	                        </div>
+						</div>
+						<div class="tml-form-col">
+							<label>会议纪要人：</label>
+							<input type="text" readonly="readonly" name="summaryname" value="{$vo.summaryname}"/>
+						</div>
+					</div>
+					<div class="tml-form-row">
+	                	<label>查阅人：</label>
+	                	<input type="text" readonly="readonly" class="org1.joinpeoplename" value="{$vo.joinpeoplename}"/>
+	                </div>
+					<div class="tml-form-row">
+						<label>{$fields["address"]}：</label>
+						<input type="text" class="org1.address" readonly="readonly" value="{$vo.address}"/>
+					</div>
+					<div class="tml-form-row">
+						<label>会议纪要：</label>
+						<textarea style="width: 624px; height: 200px" name="summary" class="ueditor" readonly="readonly">{$vo['summary']}</textarea>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

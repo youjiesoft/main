@@ -1,0 +1,22 @@
+<!--  form id="pagerForm" action="__APP__/MisSystemPanelMethod/schedule/type/{$type}" method="post"></form>
+<form rel="pagerForm" onsubmit="return divSearch(this, 'schedule');" action="__APP__/MisSystemPanelMethod/schedule/type/{$type}" method="post">
+</form -->
+<if condition="$selist">
+<div class="data" id="schedule">
+	<ul class="company_content_ul">
+		<if condition="$type eq 2">
+			<volist id="sevo" name="selist">
+				<li><a class="hellip" href="__APP__/MisUserEvents/lookupview/id/{$sevo['id']}" title="协同日程" height="550" width="750" mask="true" target="dialog">{$sevo['startdate']|transTime='Y-m-d H:i'}~{$sevo['enddate']|transTime='Y-m-d H:i'}&nbsp;&nbsp;&nbsp;{$sevo['text']|missubstr=20,'true'}&nbsp;&nbsp;&nbsp;{$sevo['personname']}</a></li>
+			</volist>
+		<else/>
+			<volist id="sevo" name="selist">
+				<li><a class="hellip" href="__APP__/MisUserEvents/lookupview/id/{$sevo['id']}" title="我的日程" height="550" width="750" mask="true" target="dialog">{$sevo['startdate']|transTime='Y-m-d H:i'}~{$sevo['enddate']|transTime='Y-m-d H:i'}&nbsp;&nbsp;&nbsp;{$sevo['text']|missubstr=40,'true'}</a></li>
+			</volist>
+		</if>
+	</ul>
+</div>
+<else/>
+<div class="noData">
+	没有日程安排
+</div>
+</if>

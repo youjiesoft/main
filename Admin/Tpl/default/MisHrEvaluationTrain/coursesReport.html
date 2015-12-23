@@ -1,0 +1,287 @@
+<style>
+.datalistsection2{width:auto;height:auto;background-color:#ffffff;}
+
+.datalistsection2 .dataitem .knowledge_leftimg {    display: inline;}
+.datalistsection2 .dataitem{	width:730px;	height:auto;	padding:10px;		border: 1px solid #898989;	background-color:#FBFCFE;	margin:10px auto; margin-left:10px;	}
+.datalistsection2 .knowledge_leftimg{	border: 1px solid green;}
+
+.clearfix:after {    clear: both;    content: ".";    display: block;    height: 0;    visibility: hidden;}
+.clearfix {    display: block;}
+.clear {    clear: both;}
+.datalistsection2 .knowledgeimgarea, .datalistsection2 .itemcontent{	float: left;}
+.datalistsection2 .knowledgeimgarea{	width:120px;	}
+.datalistsection2 .knowledgeimgarea span{	display: block;	margin-top:20px;	font-weight:bold;	text-align: center;}
+.datalistsection2 .knowledgeborder{	border: 1px solid #c0b4b4;	text-align:center;}
+
+.datalistsection2 .itemcontent{	margin-left:10px;	width:600px;}
+.datalistsection2 .itemheader{	width:auto;	height:18px;	border-bottom:1px solid #5c5c5c;}
+
+.datalistsection2 .headerleft{	float:left;	width:auto;	font-size:14px;	font-weight: bold;}
+.datalistsection2 .headerleft .titlerow a:link{	color:#09775b;}
+.datalistsection2 .headerright{	float:right;	width:auto;}
+.datalistsection2 .headerright,.labletitle{	color:#646464;	margin-right:5px;	font-size:12px;}
+
+.datalistsection2 .headerright,.labletitle b{	color:#036069;	padding-right:2px;}
+.datalistsection2 .itemlongtext{	padding:2px;	height:auto;	min-height: 25px;	line-height: 20px;	color:#277c0f;border-bottom:1px dashed silver;}
+.datalistsection2 .itemrow{	border-top:1px solid #bdbdbd; 	height:15px; 	padding-top:2px;}
+.datalistsection2 .panelBarHeight{height:650px;background-color:#ffffff;margin:0 auto;}
+}
+
+.info_div_body{	margin:0 auto;	text-align: center;	width:700px;	margin-top:5px;	padding:2px;border: 1px solid #fafafa;}
+.info_div_body_div{	margin:1px;	padding: 2px;	text-align: left;	color: #868686;	margin-left:20px;}
+.info_div_body_div span{	padding:2px;	display: block;	width: 210px;	float:left;	margin-right:10px;	margin-bottom:1px;	color: #a7a7a7;font-weight: normal;}
+.info_div_body_div span b{	display: inline-block;	width:70px;	color: #585858;font-weight: normal;}
+.info_div_body_div b{	color:#990000;}
+
+.datalistsection2 .background_mark{color:#167970;font-size: 1em;margin-top:10px;margin-bottom:10px;margin-left:2px;font-weight:bold;}
+
+/* 表格信息 */
+.rateTable table{border:1px solid gray; margin:5px; text-align: center;}
+.rateTable table th{border:1px solid gray; margin:5px; text-align: center;background-color: #f2f2f2;padding:3px;}
+
+.rateTable .tdDetail td{border:1px solid gray;padding:4px; color:#555555;font-weight: normal;}
+.rateTable .tdDetail .tdLeft{text-align: left;}
+
+/* 表单信息栏 */
+.datalistsection2 p label{margin-left:10px;margin-top:10px;padding:3px;display:block;}
+</style>
+
+
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid;background-color:#f3ffff;" >
+	<form method="post" action="__URL__/update/" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$trainid}">
+	<div class="datalistsection2"  layoutH="35">  
+		<div class="panelBar panelBarHeight">
+			
+				<div class="info_div_body">
+					<div class="background_mark">(一)基本信息</div>		<!-- 批复图片	 -->
+					<div class="info_div_body_div">
+						<span><b>课程名称:</b>{$oneinfo['name']}</span>
+						<span><b>课程讲师:</b>{$oneinfo['lecturer']}</span>
+						<span><b>课程课时:</b>{$oneinfo['classhour']}小时</span>
+						<span><b>培训对象:</b> {$oneinfo['targetstudent']}</span>
+						<span><b>实到人数:</b>{$countShangKerRen}人</span>
+						<span><b>调查人数:</b>{$diaoChaPersion}人</span>
+						<span><b>课程评分:</b>{$diaoChaPersion}人</span>
+						<div class="clear"></div>
+					</div>
+					<div class="clear"></div>
+				</div>	
+				<div class="rateTable">
+					<div class="background_mark">(二)基本信息</div>
+					<table width="760" border="1" cellpadding="0" cellspacing="0">
+						<tr>
+						  <th width="50" rowspan="2"><strong>评估项目</strong></th>
+						  <th width="220" rowspan="2"><strong>具体指标</strong></th>
+						  <th width="50"><strong>非常符合</strong></th>
+						  <th width="50"><strong>较为符合</strong></th>
+						  <th width="50"><strong>一般</strong></th>
+						  <th width="50"><strong>不符合</strong></th>
+						</tr>
+						<tr>
+							<th><strong>10分</strong></th>
+							<th><strong>8分</strong></th>
+							<th><strong>6分</strong></th>
+							<th><strong>4分</strong></th>
+						</tr>
+						<tr class="tdDetail">
+							<td rowspan="5">课程</td><td class="tdLeft">1、课程内容符合我学习需求</td><td>{$totalNumber['z1'][1]|default="0"}</td><td>{$totalNumber['z1'][2]|default="0"}</td><td>{$totalNumber['z1'][3]|default="0"}</td><td>{$totalNumber['z1'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td class="tdLeft">2、课程内容详略分布合理</td>							<td>{$totalNumber['z2'][1]|default="0"}</td><td>{$totalNumber['z2'][2]|default="0"}</td><td>{$totalNumber['z2'][3]|default="0"}</td><td>{$totalNumber['z2'][4]|default="0"}</td>
+						</tr >
+						<tr class="tdDetail">
+							<td class="tdLeft">3、讲义设计吸引我学习兴趣</td>							<td>{$totalNumber['z3'][1]|default="0"}</td><td>{$totalNumber['z3'][2]|default="0"}</td><td>{$totalNumber['z3'][3]|default="0"}</td><td>{$totalNumber['z3'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td class="tdLeft">4、课程能举例子且通俗易懂</td>							<td>{$totalNumber['z4'][1]|default="0"}</td><td>{$totalNumber['z4'][2]|default="0"}</td><td>{$totalNumber['z4'][3]|default="0"}</td><td>{$totalNumber['z4'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td class="tdLeft">5、课程对我的工作有指导性</td>							<td>{$totalNumber['z5'][1]|default="0"}</td><td>{$totalNumber['z5'][2]|default="0"}</td><td>{$totalNumber['z5'][3]|default="0"}</td><td>{$totalNumber['z5'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td rowspan="5">讲师</td><td class="tdLeft">6、讲师有很充分的准备</td>	<td>{$totalNumber['z6'][1]|default="0"}</td><td>{$totalNumber['z6'][2]|default="0"}</td><td>{$totalNumber['z6'][3]|default="0"}</td><td>{$totalNumber['z6'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td class="tdLeft">7、讲师讲授得清楚明了</td>							<td>{$totalNumber['z7'][1]|default="0"}</td><td>{$totalNumber['z7'][2]|default="0"}</td><td>{$totalNumber['z7'][3]|default="0"}</td><td>{$totalNumber['z7'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td class="tdLeft">8、我喜欢讲师的授课方式</td>							<td>{$totalNumber['z8'][1]|default="0"}</td><td>{$totalNumber['z8'][2]|default="0"}</td><td>{$totalNumber['z8'][3]|default="0"}</td><td>{$totalNumber['z8'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td class="tdLeft">9、讲师调动我学习与思考</td>							<td>{$totalNumber['z9'][1]|default="0"}</td><td>{$totalNumber['z9'][2]|default="0"}</td><td>{$totalNumber['z9'][3]|default="0"}</td><td>{$totalNumber['z9'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td class="tdLeft">10、内容与课时安排合理	</td>						<td>{$totalNumber['z10'][1]|default="0"}</td><td>{$totalNumber['z10'][2]|default="0"}</td><td>{$totalNumber['z10'][3]|default="0"}</td><td>{$totalNumber['z10'][4]|default="0"}</td>
+						</tr>
+						<tr class="tdDetail">
+							<td>总评</td><td class="tdLeft">11、我很满意这次培训</td>				<td>{$totalNumber['z11'][1]|default="0"}</td><td>{$totalNumber['z11'][2]|default="0"}</td><td>{$totalNumber['z11'][3]|default="0"}</td><td>{$totalNumber['z11'][4]|default="0"}</td>
+						</tr>
+					</table>		
+				</div>
+				<!-- 图例区域 -->
+				<script src="__PUBLIC__/Js/chart/raphael.js" type="text/javascript"></script>
+				<script src="__PUBLIC__/Js/chart/g.raphael.js" type='text/javascript'></script>
+				<script src="__PUBLIC__/Js/chart/g.bar.js" type="text/javascript"></script>
+				<script src="__PUBLIC__/Js/chart/g.line.js" type="text/javascript"></script>
+				<script src="__PUBLIC__/Js/chart/g.pie.js" type="text/javascript"></script>
+				<script src="__PUBLIC__/Js/chart/g.dot.js" type="text/javascript"></script>
+				
+				<script type="text/javascript" charset="utf-8">
+				/* Title settings */		
+				title = "＊学员对课程满意情况";
+				titleXpos = 107;
+				titleYpos = 189;
+				
+				/* Pie Data */
+				pieRadius = 60;
+				pieXpos = 75;
+				pieYpos = 105;
+				pieData = [{$totalPersent['a']|default="0"}, {$totalPersent['b']|default="0"}, {$totalPersent['c']|default="0"},{$totalPersent['d']|default="0"}];
+				pieLegend = [
+				"%%.%% – 非常符合", 
+				"%%.%% – 较为符合", 
+				"%%.%% – 一般", 
+				"%%.%% – 不符合"];
+				
+				pieLegendPos = "east";
+				
+				$(function () {
+					var r = Raphael("chartHolder");
+					 
+					r.text(titleXpos, titleYpos, title).attr({"font-size": 12});
+					
+					var pie = r.piechart(pieXpos, pieYpos, pieRadius, pieData, {legend: pieLegend, legendpos: pieLegendPos});
+					pie.hover(function () {
+						this.sector.stop();
+						this.sector.scale(1.1, 1.1, this.cx, this.cy);
+						if (this.label) {
+							this.label[0].stop();
+							this.label[0].attr({ r: 7.5 });
+							this.label[1].attr({"font-weight": 800});
+						}
+					}, function () {
+						this.sector.animate({ transform: 's1 1 ' + this.cx + ' ' + this.cy }, 500, "bounce");
+						if (this.label) {
+							this.label[0].animate({ r: 5 }, 500, "bounce");
+							this.label[1].attr({"font-weight": 400});
+						}
+					});
+					
+				});
+				</script>
+
+
+				<div id="chartHolder" style="border:1px solid green;float:left;width:300px;height:250px;margin-left:5px;"></div>
+
+
+				<script type="text/javascript">
+				var options = {
+					axis: "0 0 1 1", // Where to put the labels (trbl)
+					axisxstep: 9, // How many x interval labels to render (axisystep does the same for the y axis)
+					axisxlables: ['指标1', '指标2', '指标3', '指标4', '指标5', '指标6', '指标7', '指标8', '指标9', '指标10'],
+					axisystep: 10,
+					shade:false, // true, false
+					smooth:true, //曲线
+					symbol:"circle",
+					legend:["%%.%% – 非常符合","%%.%% – 较为符合","%%.%% – 一般","%%.%% – 不符合"],
+					legendpos :"east",
+					colors:["red","green","silver","#3282cd"]
+				};
+				
+				/* Title settings */		
+				var title = new Array("非常符合","较为符合","一般","不符合");
+				var titleXpos = 100;
+				var titleYpos = 15;
+				var titleColor = new Array("red","green","silver","#3282cd");
+				var stepX = new Array('140','220','290','380');
+  
+				
+				$(function () {
+					
+					// Make the raphael object
+					var rr = Raphael("chartHolderLine"); 
+					
+					//label show
+					for(i=0;i<4;i++){
+						var rect =rr.rect(titleXpos+80*i, titleYpos,10,10);
+						rect.attr("fill",titleColor[i]);
+						rect.attr("stroke","#fafafa");
+						rr.text(stepX[i], titleYpos+5, title[i]).attr({"font-size": 12});
+					}
+					
+					var lines = rr.linechart(
+						20, // X start in pixels
+						35, // Y start in pixels
+						400, // Width of chart in pixels
+						200, // Height of chart in pixels
+						[0,1,2,3,4,5,6,7,8,9], // Array of x coordinates equal in length to ycoords
+						[[{$rateString[0]|default="0"}],[{$rateString[1]|default="0"}],[{$rateString[2]|default="0"}],[{$rateString[3]|default="0"}]], // Array of y coordinates equal in length to xcoords
+						options // opts object
+					).hoverColumn(function () {
+				        this.tags = rr.set();
+				
+						var box_x = this.x, box_y = 30,
+							box_w = 100, box_h = 80;
+						if (box_x + box_w > rr.width) box_x -= box_w;
+						var box = rr.rect(box_x,box_y,box_w,box_h).attr({stroke: "#f00", "stroke-width": 1, rr:5});
+						this.tags.push(box);
+				
+				        for (var i = 0; i < this.y.length; i++) {
+				        	var t = rr.text(box_x+20, box_y+10 + i*16,"$"+this.values[i]).attr({fill: this.symbols[i].attr("fill")})
+				        	this.tags.push(t);
+				        }
+				        
+				    }, function () {
+				        this.tags && this.tags.remove();
+				    });
+				
+				    lines.symbols.attr({ rr: 6 });
+				});
+				</script>
+				
+				<div id="chartHolderLine" style="float:left;border:1px solid green;width:445px;height:250px;margin-left:10px;"></div>
+
+				<!-- 图例区域 -->
+		</div> 
+		<div class="background_mark">(三)综合评估内容</div> 
+
+			<!-- 数据区开始  -->     
+			<p><label><img src="__PUBLIC__/Images/point_img.png"/>学员反映的收获 </label><textarea name="comment10" rows="3" cols="50" style="margin-left:20px;width:95%">{$oneinfo['comment10']}</textarea></p>
+			<p><label><img src="__PUBLIC__/Images/point_img.png"/>学员希望重点讲解的内容 </label><textarea name="comment11" rows="3" cols="50" style="margin-left:20px;width:95%">{$oneinfo['comment11']}</textarea></p>
+			<p><label><img src="__PUBLIC__/Images/point_img.png"/>学员培训的建议 </label><textarea name="comment12" rows="3" cols="50" style="margin-left:20px;width:95%">{$oneinfo['comment12']}</textarea></p>
+			<p><label><img src="__PUBLIC__/Images/point_img.png"/>培训总结 </label><textarea name="comment13" rows="3" cols="50" style="margin-left:20px;width:95%">{$oneinfo['comment13']}</textarea></p>
+			<p><br/></p>
+			<!-- 数据区结束  -->        
+	</div>
+	<div class="formBar">
+		<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationtrain_export">	
+			<li>
+				<div class="buttonActive">
+					<div class="buttonContent">
+						<button type="submit">{$Think.lang.save}</button>
+					</div>
+				</div>
+			</li>
+			</if>
+			<li>
+				<a class="button" href="javascript:;" style="float:right;"><span>打印</span></a>
+			</li>	
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationtrain_export">		
+			<li>
+				<a class="button" href="__URL__/exportExcel/trainid/{$trainid}" style="float:right;" ><span>导出报表</span></a>						
+			</li>	
+			</if>
+			<li>
+				<div class="button">
+					<div class="buttonContent">
+						<button type="button" class="close">{$Think.lang.close}</button>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+	</form>
+</div>

@@ -1,0 +1,107 @@
+<style>
+.eagleSearchDivInner {
+	display: block;
+	overflow: auto;
+	float: right;
+	width: auto;
+	height: auto;
+	min-width: 200px;
+	border: solid 1px #B8D0D6;
+	line-height: 21px;
+	background: #fff;
+}
+</style>
+<script>
+//清除联系人
+function clearMisUserEventAddSchedule(){
+    $("#writeFormUserAddEventsaddSchedule").empty();
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__APP__/MisUserEvents/insert/rel/schedule" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+		<div id="jbsxBox_mismessage_writeform_one" class="unitBox">
+			<input type="hidden" name="commit" value="0">
+			<input type="hidden" name="iseditor" value="1">
+			<div class="pageFormContent" layoutH="61">
+                <p style="width:100%;">
+                    <label>主要内容：</label>
+                    <input type="text" class="required" value="" name="text" size="70" />
+                </p>
+                <p>
+                    <label>开始时间：</label>
+                    <span class="xyInputWithUnit">
+                      <input type="text" name="startdate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" class="Wdate js-wdate required" value="{$startdate|transTime='Y-m-d H:i:s'}" />
+                      <a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+                    </span>
+                </p>
+                <p>
+                    <label>结束时间：</label>
+                    <span class="xyInputWithUnit">
+                        <input type="text" name="enddate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" class="Wdate js-wdate required" value="{$enddate|transTime='Y-m-d H:i:s'}" />
+                        <a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+                    </span>
+                </p>
+                <p>
+                    <label>日程类型：</label>
+                    <select class="combox" name="scheduletype">
+                        <option value="1">个人日程</option>
+                        <option <if condition="$scheduletype">selected</if>   value="2">工作日程</option>
+                    </select>
+                </p>
+                <p>
+                    <label>重要程度：</label>
+                    <select class="combox" name="importancedegree">
+                        <option value="1">一般</option>
+                        <option value="2">优先</option>
+                        <option value="3">紧急</option>
+                    </select>
+                </p>
+                <div class="clear"></div>
+                <div>
+                    <label>关联人员：</label>
+                        <ul class="addressee left" id="writeFormUserAddEventsaddSchedule" style="height:35px;width:420px;border:1px #ccc solid;">
+                        </ul>
+                    <a class="btnLook" href="__URL__/lookupmanage/addedit/writeFormUserAddEventsaddSchedule" lookupGroup="org1" >查找带回</a>
+                	<a href="javascript:;" onclick="clearMisUserEventAddSchedule();"><img title="清空接收用户" src="__PUBLIC__/Images/clear_field.gif"></a>
+                </div>
+                <dl class="nowrap">
+                    <dt>信息：</dt>
+                    <dd>
+                        <textarea class="editor" name="details" style="width: 450px;height: 250px;" tools="mini" ></textarea>
+                    </dd>
+                </dl>
+                <dl class="nowrap">
+                    <dt>上传附件：</dt>
+                    <dd>
+                        <input id="swfupload_misuserevents_addSchedule" type="file" uploader="true" name="misuserevents_add_file" formData="{ uploadpath:'MisUserEvents' }" />
+                        <input type="image" onclick="$('#swfupload_misuserevents_addSchedule').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                    </dd>
+                </dl>
+                <dl class="nowrap">
+                    <dt>&nbsp;</dt>
+                    <dd>
+                        <span id="swfupload_misuserevents_addSchedule-queue" class="info uploadify-queue"></span>
+                    </dd>
+                </dl>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="submit">{$Think.lang.save}</button>
+						</div>
+					</div>
+				</li>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.close}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,231 @@
+<script>
+//组、模型联动
+	$(function() {
+		var conf = new Object();
+		var data = '{$nodelist}';
+		conf.data = eval("(" + data + ")");//$.parseJSON(data);
+		conf.ids = '#addsubnbm1,#addsubnbm2', conf.tag = 'group,node';
+		conf.pid = 'group_id';
+		conf.tex = 'name';
+		conf.val = 'id';
+		//conf.container = $.pdialog.getCurrent();
+		conf.defaultVal = '{$group_id}';
+		$.linkage(conf);
+		changedetailAdd($('#addsubnbm2'));
+	});
+//模型下拉框改变事件
+	function changedetailAdd(obj) {
+		var $box = navTab.getCurrentPanel();//$.pdialog.getCurrent();
+		var curmodelid = $("select[name='modelid']",$box).val();	
+		var $id = $(obj).val();
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookupdetailadd",
+			global : false,
+			data : {
+				'modelid' : $id
+			},
+			success : function(response) {
+				response = DWZ.jsonEval(response);
+				$("#paneldesignaddresult_add").loadUrl("__URL__/lookupdetailadd/type/1/modelname/" + response.modelname,{'akey':'panel'},function() { $("#paneldesignaddresult_add").find("[layoutH]").layoutH();	}, false);
+				$("#moredesignaddresult_add").loadUrl("__URL__/lookupdetailadd/type/1/modelname/" + response.modelname,{'akey':'more'},function() { $("#moredesignaddresult_add").find("[layoutH]").layoutH();	}, false);
+				//$("#paneldesignaddresult_edit").loadUrl("__URL__/lookupdetailadd/type/1/modelname/"+ response.modelname,{},function() { $("#paneldesignaddresult_edit").find("[layoutH]").layoutH();}, false);
+				if(response){
+					//$box.find(".input-addon-add").attr("attjson",response);
+					var tbodyhtml = '<div class=" into_table_lay ">';
+					tbodyhtml += '<table class="into_table_new nbm_data_table xyz_move" table_data=\'{"ordering":true,"searching":true,"re_id":1,"search_column":0,"addRow":false,"paging":false,"scrollY":"200px","isYMInfo":false}\' id="accesscarrierdata">';
+					tbodyhtml += '<thead>';
+					tbodyhtml += '<tr>';
+					tbodyhtml += '<th></th>';
+					tbodyhtml += '<th>字段名称</th>';
+					tbodyhtml += '<th>选择</th>';
+					tbodyhtml += '<th>显示宽度%</th>';
+					tbodyhtml += '<th>数据排序</th>';
+					tbodyhtml += '</tr>';
+					tbodyhtml += '</thead>';
+					tbodyhtml += '<tbody>';
+					$.each(response,function(i,v) {	
+						if (v.name) {
+							tbodyhtml += '<tr>';
+							tbodyhtml += '<td><div class="dragdiv">';
+							tbodyhtml += '<a href="javascript:;" class="">';	
+							tbodyhtml += '<span class="icon-move"></span>';		
+							tbodyhtml += '</a>';	
+							tbodyhtml += '</div></td>';
+							tbodyhtml += '<td><div class="list_group_lay">'+v.showname+'</div></td>';
+							tbodyhtml += '<td><div class="list_group_lay"><input class="list_input"  type="checkbox" name="checkfield['+v.name+']" value="'+v.name+'" ></div></td>';
+							tbodyhtml += '<td><div class="list_group_lay"><input class="list_input"  type="text" name="showwidth['+v.name+']" value=""></div></td>';
+							tbodyhtml += '<td><div class="list_group_lay">'
+							tbodyhtml += '<input class="list_input"  type="checkbox" name="showsort['+v.name+']" value="asc" onchange="datasortchange(this)">'
+							tbodyhtml += '<button type="button" class="sortstype" sort="asc" style="display:none;"  onclick="sortstypechange(this);" >升序</button>';
+							tbodyhtml += '<button type="button" class="sortstype" sort="desc" style="display:none;"  onclick="sortstypechange(this);" >降序</button>';
+							tbodyhtml += '</div></td>';
+							tbodyhtml += '</tr>';
+						}
+					});
+					tbodyhtml +=  '</tbody>';
+					tbodyhtml +=  '</table>';
+					tbodyhtml +=  '</div>';	
+					$("div.xyz_selectFieldShow").html(tbodyhtml);
+					datatable= initTableWNEWOne("#xyz_selectFieldShow");
+					$(".xyz_move tbody").dragsort({
+						dragSelector : "div.dragdiv",
+						dragBetween : true,
+						dragEnd : saveThOrder
+					});
+				}
+			}
+		});
+		
+	}
+function saveThOrder(){
+	
+}
+function showfieldorhidden(obj){
+	$(obj).closest('div').find("div.xyz_selectFieldShow").toggle();
+	console.log($(obj));
+	console.log($(obj).closest('div').find("div.xyz_selectFieldShow"));
+}
+
+$(function(){
+	var box = navTab.getCurrentPanel();
+	var showsort = $("input[type='checkbox'][name^='showsort']");
+	$.each(showsort,function(){
+		if($(this).attr("checked")!="checked"){
+			$(this).closest("td").find("button.sortstype").hide();
+		}
+	});
+});
+</script>
+<style>
+.tml-form-row label.tmp_label {
+	margin-left: 0px;
+	width: 120px;
+	float: none;
+	font: 14px/30px "Microsoft Yahei", "微软雅黑", sans-serif;
+}
+
+.tml-form-row label.tmp_label:hover {
+	color: #006699;
+}
+</style>
+
+<div class="page">
+
+	<div class="pageContent">
+		<form method="post"
+			action="__URL__/insertsub/rel/MisSystemPanelDesingMasBox" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="id" value="{$id}">
+			<div class="pageFormContent" layoutH="40">
+			<input type="hidden" name="refreshtabs[data]" value="1">
+ <input type="hidden" name="callbackType" value="closeCurrent" />
+			<div style="width:90%" class="new_version_page">
+			<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">面板管理新增</span></div>
+			<div class="new_version_page_content">
+				<div class="tml-row">
+
+					<div class="tml-form-col">
+						<label>面板名称：</label>
+						<input type="text" class="required" name="name" value="">
+					</div>
+					<div class="tml-form-col">
+						<label>组名称：</label>
+						<select name="group_id" class="select2" style="width:150px;" id="addsubnbm1">
+							<option>--请选择--</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>所属模块：</label>
+						<select name="modelid" class="select2"  style="width:150px;"
+							onchange="changedetailAdd(this)" id="addsubnbm2">
+							<option>--请选择--</option>
+						</select>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-row ">
+						<label>引用方式：</label>
+						<div>
+						<input onclick="choisetype(this);" name="type" checked="checked"
+							type="radio" value="1" />
+						系统内部
+						<input onclick="choisetype(this);" name="type" type="radio"
+							value="2" />
+						url地址
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>显示条数：</label>
+						<input type="text" class="required" name="num" value="5">
+					</div>	
+					<div class="tml-form-col">
+						<label>是否滚动：</label>
+						<select name="issroll" class="select2"  style="width:150px;">
+							{:getSelectByHtml('debit','select')}
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>显示字段名称：</label>
+						<select name="isbasepanel" class="select2"  style="width:150px;">
+							{:getSelectByHtml('debit','select',$vo['isbasepanel'])}
+						</select>
+					</div>
+				</div>
+				<div class="tml-row ">
+					<div class="tml-form-row xyz_url" style="display: none;">
+						<label>外部url地址：</label>
+						<input type="text" name="url" placeholder="外部url请加http://"
+							value="">
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>链接方式：</label>
+							<select name="target" class="select2"  style="width:150px;">
+								<option value='navTab'>框架显示</option>
+								<option value='_blank'>新开页面</option>
+							</select>
+						</div>
+						
+					</div>
+					<div class="tml-row  xyz_neibu ">
+						<div class="tml-form-row ">
+							<label onclick="showfieldorhidden(this);">显示字段：</label>
+							<div class="xyz_selectFieldShow" ></div>
+						</div>
+					</div>
+					<div class="tml-row ">
+						<div class="tml-form-row">
+							<label>面板条件<span class='_itemIndex'></span>：</label>
+							<div id="paneldesignaddresult_add">
+							<include file="lookupdetailadd" />
+							</div>
+						</div>
+					</div>
+					<div class="tml-row ">
+						<div class="tml-form-row ">
+							<label title="【更多按钮】条件">【更多按钮】条件<span class='_itemIndex'></span>：</label>
+							<div id="moredesignaddresult_add">
+								<include file="lookupdetailadd" />
+							</div>
+						</div>
+					</div>
+					<div class="tml-row">
+						
+	<!-- 					<div class="tml-form-col">
+							<label>基础面板：</label>
+							<select name="isbasepanel" class="select2">
+								{:getSelectByHtml('debit','select')}
+							</select>
+						</div> -->
+					</div>
+				</div>
+				{:W('ShowAction')}
+				</div>
+				</div>
+				</div>
+				
+		</form>
+
+	</div>
+</div>
+

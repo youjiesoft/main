@@ -1,0 +1,118 @@
+<div class="page">
+    <div class="pageContent">
+    <form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+        <input type="hidden" name="callbackType" value="closeCurrent">
+        <input type="hidden" name="contracttype" value="{$table}">
+        <input type="hidden" name="id" value="{$vo.id}">
+        <div class="pageFormContent applecloth" layoutH="56">
+            <div class="keepContentCenter">
+                <H2 class="contentTitle contentTitle_center">办公设备异动
+                    {:W('ShowOrderno',array(0,'mis_work_facility_abnormalmove',$vo['orderno']))}
+                </H2>
+                <fieldset class="zlqk_1">
+                    <legend class="zlqk_2">
+                        <b>基本信息</b>
+                    </legend>
+                    <div class="tml-row">
+	                    <div class="tml-form-col">
+	                        <label>{$fields["equipmenttype"]}：</label>
+	                        <div class="tml-input-append2">
+		                        <input type="text" class="checkByInput required org1.equipmenttypename tml-find-num" name="equipmenttype" value="{$vo['equipmenttype']|getFieldBy='id','name','mis_work_facility_type'}" show='equipmenttypename' insert='equipmenttype' checkfor='MisWorkFacilityAbnormalmove' autocomplete='off'/>
+		                        <input type="hidden" class="org1.equipmenttype" name="equipmenttype" check_key="equipmenttype" value="{$vo.equipmenttype}" />
+		                        <input type="hidden" class="org1.id"   name="facilitymanageid"  check_key="id"  value="{$vo.facilitymanageid}"/>
+		                        <a class="input-addon input-addon-addon input-addon-add" param="field=id,unit,equipmentname,equipmenttype,equipmenttypename,version,qty,departmentid,unitname,departmentname&model=MisWorkFacilityAbnormalmoveView" href="__URL__/lookupGeneral" lookupGroup="org1" >客户选择</a>
+		                        <a title="清空客户信息" class="input-addon input-addon-recycle" href="javascript:;" onclick="clearInput('equipmenttype');"></a>
+	                    	</div>
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["equipmentname"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["equipmentname"]}：</label>
+	                        <input type="text" name="equipmentname" readonly="readonly" check_key="equipmentname" class="textInput org1.equipmentname" value="{$vo.equipmentname}"  />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["version"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["version"]}：</label>
+	                        <input type="text" name="version" readonly="readonly" check_key="version" class="textInput org1.version" value="{$vo.version}"  />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["qty"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["qty"]}：</label>
+	                        <input type="text" name="qty" readonly="readonly" check_key="qty" class="number textInput org1.qty"  value="{$vo.qty}"  />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["unit"]'>
+	                    <div class="tml-form-col">
+	                        <label title="单位">{$fields["unit"]}：</label>
+	                        <input type="text" readonly="readonly" check_key="unitname" class="textInput org1.unitname" value="{$vo.unit|getFieldBy='id','name','mis_product_unit'}" />
+	                        <input type="hidden" name="unit" check_key="unit" class="textInput org1.unit" value="{$vo.unit}" />
+	                        <!-- <select name="unit" class="combox org1.unit"">
+	                            <volist id="bt" name="unitList">
+	                                 <option value="{$bt['id']}"  >{$bt['name']}</option>
+	                            </volist>
+	                        </select> -->
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["olddepartmentid"]'>
+	                    <div class="tml-form-col">
+	                        <label title="曾经存放部门">{$fields["olddepartmentid"]}：</label>
+	                        <input type="text" readonly="readonly" check_key="departmentname" class="textInput org1.departmentname" value="{$vo.olddepartmentid|getFieldBy='id','name','mis_system_department'}" />
+	                        <input type="hidden" name="olddepartmentid" check_key="departmentid" class="textInput org1.departmentid" value="{$vo.olddepartmentid}" >
+	                        <!-- <select name="olddepartmentid"  check_key="departmentid" class="combox org1.departmentid">
+	                            {$deptidlist}
+	                        </select>     -->
+	                    </div>
+	                    </if>
+	                    </if>
+	                    <if condition='$fields["departmentid"]'>
+	                    <div class="tml-form-col">
+	                        <label title="现在存放部门">{$fields["departmentid"]}：</label>
+	                        <select name="departmentid" class="combox">
+	                            <volist id="bt" name="deptidlist">
+	                                 <option value="{$bt['id']}" <if condition="$vo.departmentid eq $bt['id']">selected</if> >{$bt['name']}</option>
+	                            </volist>
+	                        </select>
+	                    </div>
+	                    </if>
+	            	</div>
+                </fieldset>
+                <fieldset class="zlqk_1">
+                    <legend class=zlqk_2>
+                        <b>备注信息</b>
+                    </legend>
+                    <if condition='$fields["remark"]'>
+                    <div class="tml-form-row">
+                          <label>{$fields["remark"]}：</label>
+                          <textarea  style="height:50px" name="remark" minlength="0" maxlength="100" class="textInput">{$vo.remark}</textarea>
+                    </div>
+                    </if>
+                </fieldset>
+                <fieldset class="zlqk_1">
+                    <legend class="fieldset_legend_toggle">
+                        <b>上传附件</b>
+                    </legend>
+                    <!-- 附件信息 -->
+					{:W('ShowUpload',$attarry)}
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>页脚</b>
+                    </legend>
+                    <div class="tml-row">
+	                    <div class="tml-form-col">
+	                        <label title="制单人">制单人：</label>
+	                        <input type="text" readonly="readonly" class="textInput" value="{$vo.createid|getFieldBy='id','name','user'}" />
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="制单时间">制单时间：</label>
+	                        <input class="textInput" readonly="readonly" value="{$vo.createtime|transTime}" />
+	                    </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+       {:W('ShowAction',array('data'=>$vo))}
+    </form>
+</div>

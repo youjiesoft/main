@@ -1,0 +1,207 @@
+<div class="page">
+	<div class="pageContent">
+		<div class="xyPaper" layoutH="36">
+			<h2 class="contentTitle contentTitle_center">
+				任务名称
+				<span class="auto_code">
+					<a href="__URL__/edit/id/{$task['id']}"  rel="__MODULE__edit" target="navTab"title="查看/编辑任务"><span>进入任务</span></a>
+                    
+				</span>
+			</h2>
+			<div class="clearfix" style="padding:0 5%;">
+				<div class="left" style="width:40%;">
+					<fieldset style="height:240px;">
+						<legend>任务基本资料</legend>
+                        <div class="unit">
+                            <label>任务名称：</label>
+                            <input type="text" value="{$task['title']}" readonly="readonly">
+                        </div>
+                        <div class="clear"></div>
+                        <div class="unit">
+                            <label>任务描述：</label>
+                            <textarea cols='42' rows='4' readonly style="border:1px #000 solid;">{$vo['remark']}</textarea>
+                        </div>
+                        <div class="clear"></div>
+                         <p>
+                            <label>紧急状况：</label>
+                            <input type="text" class="" name="urgentstatus" readonly value="{$vo['urgentstatus']|excelTplselected='1:一般处理,2:优先处理,3:急需处理'}" />
+                        </p>
+                         <p>
+                            <label>难度程度：</label>
+                            <input type="text" class="" name="difficulty" readonly value="{$vo['difficulty']|excelTplselected='1:D级,2:C级,3:B级,4:A级'}" />
+                        </p>
+                        <p>
+                            <label>执行状态：</label>
+                                <input type="text" class="" readonly="readonly" name="" value="{$vo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}">
+                            </span>
+                        </p>
+					</fieldset>
+				</div>
+				<div class="right" style="width:50%;">
+					<fieldset style="height:240px;">
+						<legend>任务参与人</legend>
+                        <p>
+                            <label>发布人：</label>
+                            <span class="">
+                                <input type="text" class="" readonly="readonly" name="" value="{$vo['createid']|getFieldBy='id','name','user'}">
+                            </span>
+                        </p>
+                        <p>
+                            <label>跟踪人：</label>
+                            <span class="">
+                                <input type="text" class="" readonly="readonly" name="" value="{$vo['trackuser']|getFieldBy='id','name','user'}">
+                            </span>
+                        </p>
+                        <p>
+                            <label>负责人：</label>
+                            <span class="">
+                                <input type="text" class="" readonly="readonly" name="" value="{$vo['executeuser']|getFieldBy='id','name','user'}">
+                            </span>
+                        </p>
+					</fieldset>
+				</div>
+				<div class="left" style="width:100%;">
+					<fieldset>
+						<legend>任务进度情况分析</legend>
+                        <div class="unit">
+                            <label>任务进度：</label>
+                            <span style="border:1px #ccc solid;width:525px;height:20px;display:inline-block;position:relative;line-height:20px;text-align:center;">
+                                <span style="background:green;width:<if condition="$vo['chedule'] GT 100">100<else/>{$vo['chedule']}</if>%;height:20px;position:absolute;left:0;top:0; float:left;display:inline-block;z-index:1;">
+                                    
+                                </span>
+                                <span style="z-index:2;position:relative;">{$vo['chedule']}%</span>
+                            </span>
+                        </div>
+                        <div class="clear"></div>
+                        <label>进度甘特图：</label>
+                        <div class="clearfix dashboard_part3">
+                            <div class="" style="margin:0 auto;padding:10px 0 0;width:800px;">
+                                <div class="clearfix dashboard_detail" style="padding:10px;">
+                                    <if condition="$gantti eq ''">
+                                        <div>
+                                            <br/>
+                                            <div style="float:left;padding:20px;width:50%;height:210px;text-align:center;"><span>暂无数据</span></div>
+                                        </div>
+                                    <else/>
+                                        <link rel="stylesheet" href="__PUBLIC__/GanttiMaster/styles/css/screen.css" />
+                                        <link rel="stylesheet" href="__PUBLIC__/GanttiMaster/styles/css/gantti.css" />
+                                        <div style="">
+                                            {$gantti}
+                                        </div>
+                                    </if>
+                                </div>
+                            </div>
+                        </div>
+					</fieldset>
+				</div>
+				<div class="left" style="width:45%;">
+					<fieldset style="height:220px;">
+						<legend>进度情况</legend>
+                        <p>
+                            <label>计划开始时间：</label>
+                            <span class="xyInputWithUnit">
+                                <input type="text" class="" readonly="readonly" name="begindate" value="{$vo['enddate']|date='Y-m-d H:i',###}">
+                                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+                            </span>
+                        </p>
+                        <p>
+                            <label>计划完成时间：</label>
+                            <span class="xyInputWithUnit">
+                                <input type="text" class="" readonly="readonly" name="enddate" value='<if condition="$vo[enddate]">{$vo["enddate"]|date="Y-m-d H:i",###}</if>'>
+                                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+                            </span>
+                        </p>
+                        <p>
+                            <label>查看时间：</label>
+                            <span class="xyInputWithUnit">
+                                <input type="text" class="" readonly="readonly" name="begindate" value='<if condition="$vo[realityknowdate]">{$vo["realityknowdate"]|date="Y-m-d H:i",###}</if>'>
+                                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+                            </span>
+                        </p>
+                        <p>
+                            <label>实际开始时间：</label>
+                            <span class="xyInputWithUnit">
+                                <input type="text" class="" readonly="readonly" name="begindate" value='<if condition="$vo[realitybegindate]">{$vo["realitybegindate"]|date="Y-m-d H:i",###}</if>'>
+                                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+                            </span>
+                        </p>
+                        <p>
+                            <label>实际完成时间：</label>
+                            <span class="xyInputWithUnit">
+                                <input type="text" class="" readonly="readonly" name="enddate" value='<if condition="$vo[realityenddate]">{$vo["realityenddate"]|date="Y-m-d H:i",###}</if>'>
+                                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+                            </span>
+                        </p>
+					</fieldset>
+				</div>
+				<div class="right" style="width:45%;">
+					<fieldset style="height:200px;">
+						<legend>成果情况</legend>
+                        <if condition="$isattarry">
+                            <volist name="isattarry" id="att">
+                                <p style="padding-left:100px;"><label style="width: 70px;">附件{$key+1}</label><a class="" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+                            </volist>
+                            <else/><p style="padding-left:100px;">无附件</p>
+                        </if>
+                        
+                        <if condition="$ingattarry">
+                            <volist name="ingattarry" id="att">
+                                <p style="padding-left:100px;"><label style="width: 70px;">附件{$key+1}</label><a class="" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+                            </volist>
+                        </if>
+                        <if condition="$todostopattarry">
+                            <volist name="todostopattarry" id="backatt">
+                                <p style="padding-left:100px;"><label style="width: 70px;"> 附件{$key+1}</label><a class="" rel="{$backatt['id']}" target="_blank" href="__PUBLIC__/{$backatt['attached']}"><span class="info">{$backatt['upname']}</span></a></p>
+                            </volist>
+                        </if>
+                        <if condition="$overattarry">
+                            <volist name="overattarry" id="overatt">
+                                <p style="padding-left: 100px;"><label style="width: 70px;">附件{$key+1}</label><a class="" rel="{$overatt['id']}" target="_blank" href="__PUBLIC__/{$overatt['attached']}"><span class="info">{$overatt['upname']}</span></a></p>
+                            </volist>
+                        </if>
+					</fieldset>
+				</div>
+                <div class="left" style="width:100%;">
+                    <fieldset>
+                        <legend>反馈信息列表</legend>
+                        <table class="xyDataTable" cellspacing="0" width="80%" border="1" bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">
+                            <thead>
+                                <tr>
+                                    <td width="30px;"><strong>序号</strong></td>
+                                    <td><strong>内容</strong></td>
+                                    <td width="50px;"><strong>创建人</strong></td>
+                                    <td width="55px;"><strong>类型</strong></td>
+                                    <td width="60px;"><strong>创建日期</strong></td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <volist id="feedvo" name="feedbacklist">
+                                <tr>
+                                    <td style="width: 60px;">{$feedvo['id']}</td>
+                                    <td>{$feedvo['remark']}</td>
+                                    <td style="width: 110px;">{$feedvo['createid']|getFieldBy='id','name','User'}</td>
+                                    <td style="width: 110px;">{$feedvo['optiontype']}</td>
+                                    <td style="width: 110px;">{$feedvo['createtime']|date='Y-m-d H:i',###}</td>
+                                </tr>
+                                </volist>
+                            </tbody>
+                        </table>  
+                        
+                        
+                    </fieldset>
+                </div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.close}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,226 @@
+.autocomplete-w1 { background:url(shadow.png) no-repeat bottom right; position:absolute; top:0px; left:0px; margin:8px 0 0 6px; /* IE6 fix: */ _background:none; _margin:0; }
+.autocomplete { border:1px solid #999; background:#FFF; cursor:default; text-align:left; max-height:350px; overflow:auto; margin:-6px 6px 6px -6px; /* IE6 specific: */ _height:350px;  _margin:0; _overflow-x:hidden; }
+.autocomplete .selected { background:#F0F0F0; }
+.autocomplete div { padding:2px 5px; white-space:nowrap; }
+.autocomplete strong { font-weight:normal; color:#3399FF; }
+.unit{float: left;}
+
+/* �Զ����ֵ*/
+.ac_results {	padding: 0px;	border: 1px solid black;	background-color: white; text-align:left;	overflow: hidden;	z-index: 99999;}
+.ac_results ul {width: 100%;list-style-position: outside;list-style: none;padding: 0;	margin: 0;}
+.ac_results li {margin: 0px;padding: 2px 5px;cursor: default;	display: block;	font: menu;	font-size: 12px;line-height: 16px;overflow: hidden;}
+.ac_loading {background: white url('indicator.gif') right center no-repeat;}
+.ac_odd {background-color: #eee;}
+.ac_over {background-color: #0A246A;color: white;}
+
+table.advice{
+	border-bottom: 1px solid #333333;
+    border-right: 1px solid #333333;
+    margin-bottom: 0;
+	width:90%;
+	margin:1%;
+	text-align: center;
+}
+table.advice .evenRow{
+    background: #F0F0F0;
+}
+table.advice .oddRow{
+    background: white;
+}
+table.advice th{
+	background: #B8CCE4;
+	font-weight: bold;
+}
+table.advice th, table.advice td {
+    border-left: 1px solid #333333;
+    border-top: 1px solid #333333;
+    color: #333333;
+    padding: 0.5em;
+}
+
+table.advice a.send{
+	background: url("../Images/nav_new_xx.png") no-repeat scroll 0 0 transparent;
+	width:20px;
+	height:20px;
+	vertical-align:middle;
+	display: inline-block;
+}
+
+/*--------footpanel--------*/
+#footpanel .right {
+    float: right;
+}
+
+#footpanel a{
+	color: #0070BB;
+	font-size: 12px;
+}
+
+#footpanel {
+	position: fixed;
+	border-radius:8px 8px 0 0;
+	bottom: 0;
+	box-shadow:0 1px 10px #666; 
+	right: 100px;
+	z-index: 70;
+	background:url(../Images/xyimages/bcktool.png) repeat;
+	border: 1px solid #eeeeee;
+	border-bottom: none;
+	width: 350px;
+}
+*html #footpanel { /*--IE6 Hack - Fixed Positioning to the Bottom--*/
+	margin-top: -1px; /*--Prevents IE6 from having an infinity scroll bar - due to 1px border on #footpanel--*/
+	position: absolute;
+	top:expression(eval(document.compatMode &&document.compatMode=='CSS1Compat') ?documentElement.scrollTop+(documentElement.clientHeight-this.clientHeight) : document.body.scrollTop +(document.body.clientHeight-this.clientHeight));
+}
+#footpanel ul {
+	padding: 0; margin: 0;
+	float: left;
+	width: 100%;
+	list-style: none;
+}
+#footpanel ul li{
+	padding: 0; margin: 0;
+	float: left;
+	position: relative;
+}
+#footpanel ul li a{
+	padding: 5px;
+	float: left;
+	text-indent: -9999px;
+	height: 16px; width: 16px;
+	line-height:16px;
+	text-decoration: none;
+	position: relative;
+}
+html #footpanel ul li a:hover{}
+html #footpanel ul li a.active { /*--Active state when sub-panel is open--*/
+	background-color:#e4e4e4;
+	height: 17px;
+	margin-top: -2px; /*--Push it up 2px to attach the active button to sub-panel--*/
+	border: 1px solid #a4a4a4;
+	border-top: none;
+	z-index: 200; /*--Keeps the active link on top of the sub-panel--*/
+	position: relative;
+}
+#footpanel a.home{
+	background: url(../Images/icon/comments.png) no-repeat 15px center;
+	width: 16px;
+	padding-left: 25px;
+	border-right: 1px solid #e1e1e1;
+	text-indent: 0;
+}
+#footpanel a.profile{ background: url(../Images/icon/group.png) no-repeat center center;  }
+#footpanel a.editprofile{ background: url(../Images/icon/user.png) no-repeat center center; }
+#footpanel a.contacts{ background: url(address_book.png) no-repeat center center; }
+#footpanel a.messages{ background: url(../Images/icon/mail2.png) no-repeat center center; }
+#footpanel a.feed{
+	background: url(../Images/icon/help.png) no-repeat 15px center;
+	width: 85px;
+	border-left: 1px solid #e1e1e1;
+	padding-left: 20px;
+	text-indent: 0;
+}
+#footpanel a.alerts{
+	background: url(../Images/icon/information.png) no-repeat 15px center;
+	width: 85px;
+	border-left: 1px solid #e1e1e1;
+	padding-left: 20px;
+	text-indent: 0;
+}
+#footpanel li#chatpanel, #footpanel li#alertpanel {	float: right; }
+#footpanel a small {
+	text-align: center;
+	width: 70px;
+	background:url(../Images/xyimages/tip.png) no-repeat 0 -14px;
+	padding:17px 14px 24px;
+	display: none; /*--Hide by default--*/
+	color: #666;
+	font-size: 1em;
+	text-indent: 0;
+}
+#footpanel a:hover small, #footpanel small.shownotic{
+	display: block;
+	position: absolute;
+	top: -55px;
+	left: 50%;
+	margin-left: -49px;
+	z-index: 9999;
+}
+#chatpanel .subpanel {
+	position: absolute;
+	left: 0px; bottom: 27px;
+	display: none;
+	width: 222px;
+	border: 1px solid #a4a4a4;
+	background: #e4e4e4;
+	overflow: hidden;
+}
+#alertpanel .subpanel {border-radius:4px;
+	position: absolute;
+	left: -88px; top: 27px;
+	display: none;
+	width: 200px;
+	border: 1px solid #979792;
+	background: #ffffff;
+	overflow: hidden;
+	z-index:2;
+	box-shadow:0 0 8px rgba(0,0,0,.5);
+}
+#footpanel h3 {
+	background: #FFF3D9;
+	padding: 5px 10px;
+	cursor: pointer;
+	font-size: 14px;
+}
+#footpanel .subpanel ul{
+	padding: 5px 0; margin: 0;
+	background: #e4e4e4;
+	width: 100%;
+	overflow: auto;
+}
+#footpanel .subpanel li{
+	float: none; /*--Reset float--*/
+	display: block;
+	padding: 0; margin: 0;
+	overflow: hidden;
+	clear: both;
+	position: static;  /*--Reset relative positioning--*/
+}
+#footpanel .subpanel li:hover{background:#fff;}
+#footpanel .subpanel a{
+	text-indent: 0;
+	width: auto;
+	padding: 2px 5px;	margin: 0;
+	line-height: 18px;
+	height: 18px;
+	display: block;
+}
+
+.newMsgIn{
+	color: #f89406;
+	font-weight: bold;
+}
+/*控制显示和隐藏的class,以后按照江哥要求，禁止在直接在页面上写样式。统一用标签控制*/
+.control_display_none{
+	display:none;
+}
+.control_display_block{
+	display:block;
+}
+/*物资新增，头部检索部分样式*/
+.pageHeader_jp p { 
+	float:left; 
+	display:block; 
+	width:288px; margin:0; 
+	overflow:hidden;
+	padding:5px 1px; 
+	position:relative;
+	min-height:24px;
+	_height:24px;
+}
+.pageHeader_jp fieldset {
+    border: 1px solid #CCCCCC;
+    margin: 0 0 5px;
+    padding: 3px;
+}

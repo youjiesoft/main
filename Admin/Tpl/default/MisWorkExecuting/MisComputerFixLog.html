@@ -1,0 +1,102 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/md/{$md}/rel/{$rel}" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="refreshtabs[data]" value="1" />
+		<input type="hidden" name="id" value="{$vo.id}"/>
+		<div class="pageFormContent applecloth" layoutH="56">
+		<div class="keepContentCenter">
+			<H2 class="contentTitle contentTitle_center">电脑维护记录
+			<span class="auto_code">
+                     <b>No. </b>
+				<input type="text" name="orderno" value="{$vo.orderno}" <if condition='$writable eq 0'> readonly="readonly" class="xycodedata_read" <else/> class="xycodedata_write required alphanumeric" </if> />
+                 </span>
+			</H2>
+			<fieldset>
+				<legend class="fieldset_legend_toggle side-catalog-text">
+				<b>基础信息</b>
+				</legend>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>{$fields["falut_type"]}:</label>
+							<input type="text" readonly="readonly" <if condition="$vo.falut_type eq 1">value="系统"</if>
+								<if condition="$vo.falut_type eq 2">value="硬件"</if>
+								<if condition="$vo.falut_type eq 3">value="软件"</if>
+								<if condition="$vo.falut_type eq 4">value="网络"</if>
+								<if condition="$vo.falut_type eq 5">value="病毒感染"</if>
+								<if condition="$vo.falut_type eq 6">value="其它"</if> />
+						</div>
+						<div class="tml-form-col">
+							<label>紧急程度</label>
+							<input type="text" readonly="readonly" <if condition="$vo.level eq 1">value="不急"</if>
+								<if condition="$vo.level eq 2">value="急"</if>
+								<if condition="$vo.level eq 3">value="非常急"</if> />
+						</div>
+					</div>
+					<div class="tml-form-row">
+						<label>故障描述:</label>
+						<textarea rows="2" readonly="readonly">{$vo['fault_cause']}</textarea>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>报修人:</label>
+							<input type="text" readonly="readonly" value="{$vo['report_name']|getFieldBy='id','name','mis_hr_personnel_person_info'}" />
+						</div>
+						<div class="tml-form-col">
+							<label>报修时间:</label>
+							<input type="text" readonly="readonly" value="{$vo['createtime']|transtime}" />
+						</div>
+					</div>
+					</fieldset>
+					<fieldset>
+						<legend class="fieldset_legend_toggle side-catalog-text">
+							<b>处理记录</b>
+						</legend>
+						<div class="tml-row">
+							<div class="tml-form-col">
+								<label>{$fields["fixed"]}:</label>
+								<select name="fixed"  class="combox required">
+									<option <if condition="$vo.fixed eq 1">selected</if> value="1">修复</option>
+									<option <if condition="$vo.fixed eq 2">selected</if> value="2">未修复</option>
+									<option <if condition="$vo.fixed eq 3">selected</if> value="3">报废</option>
+									<option <if condition="$vo.fixed eq 4">selected</if> value="4">另约维修</option>
+									<option <if condition="$vo.fixed eq 5">selected</if> value="5">报告状态</option>
+									<option <if condition="$vo.fixed eq 6">selected</if> value="6">验证测试</option>
+									<option <if condition="$vo.fixed eq 7">selected</if> value="7">其它</option>
+								</select>
+							</div>
+						</div>
+						<div class="tml-form-row">
+							<label>故障原因:</label>
+							<textarea cols="50" rows="2" name="fault_describe" >{$vo.fault_describe}</textarea>
+						</div>
+						<div class="tml-form-row">
+							<label>{$fields["solution"]}:</label>
+							<textarea rows="3" name="solution" >{$vo.solution}</textarea>
+						</div>
+						<div class="tml-row">
+							<div class="tml-form-col">
+								<label>{$fields["fix_man"]}:</label>
+								<input type="text" name="fix_man" value="{$Think.session.loginUserName}">
+							</div>
+							<div class="tml-form-col">
+								<label>检修日期:</label>
+								<div class="tml-input-append">
+									<input type="text" class="Wdate required js-wdate"  name="fix_time" value="{$time|transTime}">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</div>
+							</div>
+						</div>
+						<!-- <div class="tml-form-col">
+					        <label>{$fields["computer_id"]}:</label>
+							<div class="tml-input-append">
+								<input type="text" class="required readonly org.name" readonly="readonly" />
+								<input type="hidden" name="computer_id" class="readonly  org.mangid" value="0">
+								<a class="input-addon-unit" href="__APP__/MisComputerFixLog/lookupmanage/report_name/{$vo['report_name']}" lookupGroup="org" title="设备选择">...</a>
+							</div>
+				        </div> -->
+				</fieldset>
+			</div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

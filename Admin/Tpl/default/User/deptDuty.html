@@ -1,0 +1,36 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$ztree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#userDeptDuty_index_left"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+<div class="treeleft">
+<div class="collapse" layoutH="10">
+	<div class="toggleCollapse"><div></div></div>
+</div>
+<div class="close">
+	<div class="toggleCollapse" ><h2></h2><div></div></div>
+	<div class="clearfix p5">
+		<input class="tree-search-input" type="text" id="userDeptDuty_index_leftSearchNodeKeys" />
+		<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('userDeptDuty_index_left','userDeptDuty_index_leftSearchNodeKeys')" type="button">搜索</button>
+		</div>
+		<ul id="userDeptDuty_index_left" class="ztree" layoutH="44"></ul>
+	</div>
+</div>
+<div id="userDeptDuty_index" style="overflow:hidden;" class="unitBox treeright">
+	<include file="deptDuty_right"  />
+</div>
+</div>

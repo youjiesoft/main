@@ -1,0 +1,87 @@
+<script>
+//初始化
+$(document).ready(function(){
+	// 合并行
+	var kpitype = "";
+	var kpitypetd = null;
+	var rowspan = 1;
+	var $box=navTab.getCurrentPanel();
+	$box.find(".plankpitype").each(function(){
+		var val = $(this).text();
+		if(val != kpitype){
+			kpitype = val;
+			kpitypetd = $(this);
+			rowspan = 1;
+			$(this).attr("rowspan",rowspan);
+		} else {
+			rowspan = rowspan+1;
+			kpitypetd.attr("rowspan",rowspan);
+			$(this).remove();
+		}
+	});
+});
+function MisPerformanceTemplate_loadurledit(tempid){
+	$("#misperformancetemplate_rightcontent1").loadUrl("__URL__/edit/temptype/detail/tempid/"+tempid+"",{},function(){
+    $("#misperformancetemplate_rightcontent1").find("[layoutH]").layoutH();});
+}
+</script>
+<div class="pageContent tml-bg-white" layoutH="0">
+	<div class="panelBar">
+		<input type="hidden" name="tempid"  value="{$TemplateList.id}">
+		<ul class="toolBar">
+			<if condition="$TemplateList.id">
+				<li><a class="edit tml-btn tml_look_btn tml_mp"  href="javascript:;" title="修改此模板" onclick="MisPerformanceTemplate_loadurledit('{$TemplateList.id}')" >
+						 <span><span class="icon icon-edit icon_lrp"></span>修改</span> 
+					</a>
+				</li>
+			</if>
+		</ul>
+		<div style="overflow:hidden;">
+			<table id="domain" width="100%" style="height:25px;">
+				<tr>				
+					<td>
+						<label>模板名称:</label>
+						<span>{$TemplateList.name}</span>
+					</td>
+					<td>
+						<label>模板最高分:</label>
+						 <span>{$TemplateList.mostscore}</span>
+					</td>
+					<td>
+						<label>当前标准总分:</label>
+						<span class="info"><if condition='$sumscore'>{$sumscore|getDigits}<else/>0</if>分</span>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div>
+		<table style="table-layout:fixed;width:100%;" class="tml-table">
+			<thead>
+				<tr>
+					<th style="min-width: 150px;">考核分类</th>
+					<th>考核指标</th>
+					<th style="width: 100px;">分值</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+			<volist name="list" id="vo">
+				<volist name="vo['kpi']" id="vos">
+				<tr> 
+				 	<td class="plankpitype">
+			         	<span>{$vo['kpitypeid']|getFieldBy='id','name','mis_performance_type'}({$vo['kpitypeqz']}%)</span>
+			        </td> 
+					<td>
+						{$vos['kpiid']|getFieldBy='id','name','mis_performance_kpi'}
+					</td>
+					<td>
+						<span>{$vos['kpiscore']}</span>
+					</td>
+				 </tr>
+				 </volist>
+			</volist>
+			</tbody>
+		</table>
+	</div>
+</div>

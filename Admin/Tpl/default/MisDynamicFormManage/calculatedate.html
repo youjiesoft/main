@@ -1,0 +1,96 @@
+<script type="text/javascript">
+var id = '{$_GET[id]}';
+var check = '{$_GET[check]}'; 
+
+function deleteRecordFormul(){ 
+    $("#editform").append('<input type="hidden" name="conveneStatus" value="2" />');
+    $("#editform").submit(); 
+} 
+
+function checkNumber(){
+	var number=$('input[name="number"]').val();
+	var   reg=/^(-?\d+)$/;
+	var result= reg.test(number);
+	if(result==false){
+    	alert("请输入整数");
+    	return false;
+    }
+	
+}
+function datatableFormul($form){
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			var data=DWZ.jsonEval(json.data);
+			getTag(getContainer(check) , 'hidden' , id).val(json.data);
+			$.pdialog.closeCurrent(); 
+		}
+	});
+	
+}
+
+</script>
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" id="editform" action="__URL__/calculatedate" class="pageForm required-validate" onsubmit="return datatableFormul(this, dialogAjaxDone)">
+			<input type="hidden" name="controll" value="1" />
+			<input type="hidden" name="propertyid" value="{$propertyid}" />
+			<input type="hidden" name="formid" value="{$formid}" />
+			<div class="pageFormContent" layoutH="58">
+                    <table class="data-table" width="100%" cellspacing="0" style="line-height:32px;width: 96%;margin: 0 auto;" >
+                        <tbody class="list_table">
+                            <tr>
+                                <td class="cell_left" width="20%">选择组件: </td>
+                                <td class="cell_right " width="80%">
+                                <select name="formula" class="select2" style="width: 200px;">
+                              	  <volist name="voList" id="voList">
+                              	  		<option <if condition="$calculateList.formula eq $voList.id">selected=selected</if> value="{$voList.id}">{$voList.title}</option>
+									</volist>
+                                </select>
+                                </td>
+                            </tr>
+                             <tr>
+                                <td class="cell_left">加值: </td>
+                                <td class="cell_right">
+                                	
+                                	<input type="text"   name="number" onchange="checkNumber()"  value="{$calculateList.number}" placeholder="请输入需要加的值">
+                                </td>
+                            </tr>
+                           
+	                            <tr class="jinduClass"  >
+	                            	<td class="cell_left">精度:</td>
+	                            	<td class="cell_right">
+	                            		<select name="jingdu" class="select2" style="width: 200px;">
+	                                		<option <if condition="$calculateList.jingdu eq y">selected=selected</if> value="y">年</option>
+	                                		<option <if condition="$calculateList.jingdu eq m">selected=selected</if> value="m">月</option>
+	                                		<option <if condition="$calculateList.jingdu eq d">selected=selected</if>  value="d">日</option>
+	                                		<option <if condition="$calculateList.jingdu eq h">selected=selected</if>  value="h">时</option>
+	                                		<option <if condition="$calculateList.jingdu eq i">selected=selected</if>  value="i">分</option>
+	                                		<option <if condition="$calculateList.jingdu eq s">selected=selected</if>  value="s">秒</option>
+	                                	</select>
+	                            	</td>
+	                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <br />
+                    <br />	
+			 <div class="tml-row" style="width: 96%;margin: 0 auto;">
+                    <div class="tml_search_tips">
+                    <div class="search_tips_title">友情提示：</div>
+                    <p class="search_tips_center">1、加值只能输入正整数与负整数</p>
+                    </div>
+             </div>
+			</div>	
+                   	
+			<div class="formBar">
+				<ul>
+					<li><button type="submit"  onclick=" return checkNumber()" class="tml_formBar_btn tml_formBar_btn_blue enterIndex">保存</button></li>
+					<li><button onclick="deleteRecordFormul();" class="tml_formBar_btn tml_formBar_btn_red enterIndex" type="button">删除</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div> 
+	

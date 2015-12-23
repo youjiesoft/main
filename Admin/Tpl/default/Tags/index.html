@@ -1,0 +1,26 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<div class="pageFormContent" layoutH="40">
+            <div class="new_version_page">
+                <div class="new_version_page_header pageFormContent">自定义标签</div>
+                <div class="new_version_page_content">
+                    <volist name="tags" id="vo">
+                        <div class="col_1_1 form_group_lay">
+                            <label class="label_new">{$key}：</label>
+                            <input class="required input_new" maxlength="20" name="{$key}" type="text" size="15" value="{$vo}" />
+                        </div>
+                    </volist>
+                    <div class="clear"></div>
+                    <div class="formBar">
+                        <ul>
+                            <if condition="$_SESSION.a eq 1 or $_SESSION.tags_save"><li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li></if>
+                            <li>
+                                <button type="button" class="tml_formBar_btn tml_formBar_btn_red">{$Think.lang.close}</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+		</div>
+	</form>
+</div>

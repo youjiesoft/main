@@ -1,0 +1,91 @@
+<div class="new_version_page_content">
+
+
+<table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+	<tbody>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["orderno"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['orderno']}<div class="display_none {$classNodeSettingArr['orderno']}"></div></td>
+			<td class="cell_left" width="12%">{$fields["zhuanshouren"]}:</td>
+			<td class="cell_right" width="21%" >
+								{:W('Lookup',array('1',$vo,'10343','1','1'))}
+								<div class="display_none {$classNodeSettingArr['zhuanshouren']}">{$vo['zhuanshouren']|getFieldBy='id','name','user'}</div></td>
+			<td class="cell_left" width="12%">{$fields["zhuanshougei"]}:</td>
+			<td class="cell_right" width="21%" >
+								{:W('Lookup',array('1',$vo,'10335','1','1'))}
+								<div class="display_none {$classNodeSettingArr['zhuanshougei']}">{$vo['zhuanshougei']|getFieldBy='id','name','user'}</div></td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["zhuanshoufanwei"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['zhuanshoufanwei']|getSelectlistValue='ndzsfw01'}<div class="display_none {$classNodeSettingArr['zhuanshoufanwei']}">{$vo['zhuanshoufanwei']|getSelectlistValue='ndzsfw01'}</div></td>
+			<td class="cell_left" width="12%">{$fields["shengxiaoriqi"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['shengxiaoriqi']|transtime='Y-m-d H:i'}<div class="display_none {$classNodeSettingArr['shengxiaoriqi']}">{$vo['shengxiaoriqi']|transtime='Y-m-d H:i'}</div></td>
+			<td class="cell_left" width="12%">{$fields["shixiaoriqi"]}:</td>
+			<td class="cell_right" width="21%" >{$vo['shixiaoriqi']|transtime='Y-m-d H:i'}<div class="display_none {$classNodeSettingArr['shixiaoriqi']}">{$vo['shixiaoriqi']|transtime='Y-m-d H:i'}</div></td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["miaoshu"]}:</td>
+			<td class="cell_right" width="21%" colspan="5">{$vo['miaoshu']}<div class="display_none {$classNodeSettingArr['miaoshu']}">{$vo['miaoshu']}</div></td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">{$fields["datatable6"]}:</td>
+			<td class="cell_right" width="21%" >						<a href="#attached_list_1" class="anchor_link"><span class="icon-link"></span> 附表1</a></td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+		</tr>
+	</tbody>
+</table><div class="pos_relative"><div class="attached_list_name">附表1<a name="attached_list_1"></a></div>				
+				
+				<div class="into_table_lay">
+				
+								
+				<if condition="$fields['datatable6']">
+				<div class="into_table_title">{$fields["datatable6"]}</div>
+				</if>
+				<table class="into_table_new nbm_data_table" table_data='{"formModel":"MisAutoMbw","datatableModel":"MisAutoGuikcSubDatatable6","importUrl":"__APP__/MisImportExcel/misimportexceladd"}' id="dt_datatable6Nwkfct_view" table_type="view">
+					<thead>
+						<tr class="thead_tr">
+							<th style='width:40px;' template_key="serial" >				序号			</th>
+			<th style="width:px;min-width:px;min-width:px;" template_key="lookup" 
+ 
+ 			template_name="" 
+ 
+		template_data='{"upclass":"title","callback":"lookupDataToCell","param":"lookupchoice=c45e26a9ef4a67bac90a405af311fc64&type=dt&newconditions=","condition":null,"lookupname":"orgzhuanshoumoxing","href":"__URL__\/lookupGenerals","hidden_data":[{"upclass":"name","name":"datatable[#index#][datatable6][zhuanshoumoxing]"}]}'  
+
+			template_class="  required  "  template_controll=zhuanshoumoxing>
+				转授模型
+			</th>
+							
+						</tr>
+					</thead>
+					<tbody cellpadding="0" cellspacing="1">
+			{~$key=0;}
+			<volist name="innerTabelObjdatatable6Data" id="item">
+				<tr>
+					<td>
+						<span class="serial_number">
+							{$key+1}
+						</span>
+					</td>
+					<!-- 现有数据 -->
+					
+										<td>
+											<div class='list_group_lay' style='display: none;'><div class="list_public_lay">
+											<input type="text" callback="" class="list_public_input list_lookup_input readonly org{$key}zhuanshoumoxing.title " readonly="readonly" value="{$item.zhuanshoumoxing|getFieldBy='name','title','node'}">
+											<input type="hidden" class="org{$key}zhuanshoumoxing.name  required " disabled="disabled" name="#hide#datatable[#index#][datatable6][zhuanshoumoxing]" value="{$item.zhuanshoumoxing}">
+											<a class="list_icon_elm list_mid_icon_elm icon-plus" param="lookupchoice=c45e26a9ef4a67bac90a405af311fc64&type=dt&newconditions=" href="__URL__/lookupGenerals" lookupgroup="org{$key}zhuanshoumoxing" autocomplete="off"></a>
+											<a title="清空信息" class="list_icon_elm icon-trash" href="javascript:void(0);" onclick="clearOrg('org{$key}zhuanshoumoxing');"></a>
+											</div></div>
+											<span class='datatable_show_val'>{$item.zhuanshoumoxing|getFieldBy='name','title','node'}</span>
+										</td>
+					
+				</tr>
+				{~$key++}
+			</volist>	</tbody></table></div><div class="display_none {$classNodeSettingArr['datatable6']}"></div></div>
+	{~$appendPageContentArr = getBindTabsContent('MisAutoMbw',$vo,'view')}
+	{$appendPageContentArr[2]}
+	{$appendPageContentArr[3]}
+		{:W('ShowAction')}
+</div>

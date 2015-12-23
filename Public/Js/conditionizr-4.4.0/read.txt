@@ -1,0 +1,4 @@
+浏览器检查插件。
+需要导入
+库文件：conditionizr
+浏览器注册文件：conditionizr_browser.js

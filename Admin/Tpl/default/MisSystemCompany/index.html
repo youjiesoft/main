@@ -1,0 +1,47 @@
+<script type="text/javascript">
+$(document).ready(function(){
+var zNodes = '{$companyztree}';
+if(zNodes){
+	zNodes = DWZ.jsonEval(zNodes);
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+		$.fn.zTree.init($("#MisSystemCompany_index"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("MisSystemCompany_index");
+		var valid = '{$valid}';
+	    var nodes = zTree.getNodesByParam("id", valid, null);
+	    zTree.selectNode(nodes[0]);
+}
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+    <div class="treeleft">
+	<div class="work_statement"></div>
+        <div class="collapse" layoutH="0">
+            <div class="toggleCollapse"><div></div></div>
+        </div>
+        <div class="close">
+            <if condition="$companylist">
+            	<ul id="MisSystemCompany_index" class="ztree" layoutH="10"></ul>
+           	<else/>
+            	<div layoutH="0" class="no-data">
+            		<div class="tml-mt50 p5">
+            			<span class="tml-c-red">抱歉：</span>您暂无任何信息点击<a href="__URL__/add" target="dialog" height="500"  mask="true" title="新增公司信息" rel="__MODULE__add"><span class="tml-c-blue">“新增”</span></a>按钮开始创建公司
+            		</div>
+	            </div>
+            </if>
+        </div>
+    </div>
+     <div id="MisSystemCompanyZtree" class="unitBox treeright">
+        <include file="indexview" />
+    </div>
+</div>

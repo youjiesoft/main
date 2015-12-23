@@ -1,0 +1,23 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/stop/rel/mishrbasicemployeecontract" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$_REQUEST['id']}" >
+		<input type="hidden" name="step" value="1" >
+		<input type="hidden" name="contractstatus" value="1" >
+		<div class="pageFormContent applecloth" layoutH="56">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>终止时间：</label>
+					<div class="tml-input-append">
+					    <input type="text" name="endtime" class="Wdate required" onfocus="WdatePicker()" value="{$Think.server.REQUEST_TIME|transtime}"/>
+					    <span class="input-addon input-addon-calendar"></span>
+				    </div>
+				</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

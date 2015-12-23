@@ -1,0 +1,152 @@
+<script>
+	function lookupsysremindlookup(obj,$viewid,$id,$modelname,$isaudit){
+		var linkstatus = $(obj).attr("linkstatus");
+		var box = navTab.getCurrentPanel();
+		if($id){
+			var type = $("input[name='type']",box).val();
+			$.ajax({
+				type : "POST",
+				url : "__URL__/lookupsavesend",
+				data : {
+					'id' : $id,
+					'linkstatus':linkstatus,
+				},
+				success : function(re) {
+					 if(type != 1){
+						  $("#MisSystemDataRemindView").ajaxUrl({
+								type:"post",url:"__URL__/index/jump/jump/type/0",data:{},callback:function(){
+								$("#MisSystemDataRemindView").find("[layoutH]").layoutH();}});
+					  }
+				  //跳转页面
+				  if(re){
+					 
+					  if($isaudit==0){
+						  $url="view";
+					  }else{
+						  $url="auditView";
+					  }
+					  navTab.openTab($modelname, "__APP__/"+$modelname+"/view/id/"+$viewid, { title:"查看", fresh:false, data:{} });
+				  }
+				}
+			});
+		}
+	}
+function changestatusdll(){
+	var box = navTab.getCurrentPanel();
+	var chk_value =[];
+	$('input[name="links"]:checked').each(function(){
+	chk_value.push($(this).val());
+	});
+	if(chk_value.length>0){
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookupchangestatusdll",
+			data : {
+				'ids' : chk_value,
+			},
+			success : function(re) {
+				if(re){
+					$("#MisSystemDataRemindView").ajaxUrl({
+						type:"post",url:"__URL__/index/jump/jump/type/0",data:{},callback:function(){
+						$("#MisSystemDataRemindView").find("[layoutH]").layoutH();}});
+				}
+			}
+	});
+	}
+}
+	
+</script>
+
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+<!-- 			 <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initdb" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>初始化</span></a></li> 
+			 <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initstrelation" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>strelation初始化</span></a></li>
+			  <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initrelationtable" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>关系表初始化</span></a></li>
+			  <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/initrules" target="ajax" rel="MisDataWanderBox"><span><span class="icon icon-retweet icon_lrp"></span>规则条件初始化</span></a></li>    -->	
+			  <if condition="$type neq 1">
+				<li><a class="add js-add tml-btn tml_look_btn tml_mp" href="javascript:void(0)" onclick="changestatusdll();"><span><span class="icon icon-retweet icon_lrp"></span>将勾选的全部设置为已读</span></a></li> 
+				</if>
+		</ul>
+		<form rel="pagerForm" onSubmit="return  divSearch(this,'MisSystemDataRemindView');" action="__URL__/index" method="post">
+			<input type="hidden" name="jump" value="jump" />
+			<input type="hidden" name="type" value="{$type}" />
+			<input type="hidden" name="model" value="{$modelname}" />
+	        <div class="searchBar">
+	            <table class="searchContent">
+	                <tr>
+	                    <include file="Public:quickSearchCondition" />
+	                </tr>
+	            </table>
+	        </div>
+	    </form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+			<th >  <if condition="$type neq 1"><input  class="checkboxCtrl" group="links" type="checkbox" name="" value="1"><else/>序号</if></th>
+			<volist id="vo" name="detailList">
+				<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="MisSystemCompanyZtree" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			</volist>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+		<?php $isaudit=getFieldBy($vo['modelname'],'name','isprocess',node);?>
+			<tr target="sid_node" rel="{$vo['subid']}" model="{$vo['sourcemodel']}" linkstatus="{$vo['linkstatus']}" ondblclick="lookupsysremindlookup(this,{$vo['pkey']},{$vo['subid']},'{$vo['modelname']}',{$isaudit});userRemind();">
+			<td class="tml-first-td">  <if condition="$type neq 1"><input type="checkbox" name="links" value="{$vo['subid']}"><else/>{$numPerPage*($currentPage-1)+$key+1}</if></td>
+			  <volist id="vo1" name="detailList">
+				
+					<if condition="$vo1[name] eq 'action2' " >
+						<td field="{$vo1[name]}" width="{$vo1[widths]}" class="removetronclick">
+							<a href="__URL__/lookupExchangeStatus/id/{$vo['subid']}/status/{$vo['substatus']}/type/{$vo['isread']}/jump/jump" rel="MisSystemDataRemindView" target="ajax"  ><if condition="$vo['substatus'] eq 1">终止提醒<else/>继续提醒</if></a>
+						</td>
+					<else/>
+						<td field="{$vo1[name]}" width="{$vo1[widths]}">
+							<if condition="count($vo1['func']) gt 0">
+								<volist name="vo1.func" id="nam">
+									<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+									{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+									<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+								</volist>
+							<else />
+							{$vo[$vo1['name']]}
+							</if>
+						</td>
+					</if>
+			  </volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="MisSystemDataRemindView" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>
+
+<script>
+$(function(){
+	var box=navTab.getCurrentPanel();
+	var tdc = $(".removetronclick",box);
+	console.log(tdc);
+	console.log(box);
+	if(tdc.length>0){
+		$.each(tdc,function(){
+			$(this).click(function(event){
+				event.stopPropagation();
+			});
+		});
+	}
+});
+
+
+</script>

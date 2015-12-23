@@ -1,0 +1,268 @@
+<style>
+.xyz_zu {
+margin:20px 0px;
+border:3px solid #C0C0C0;
+
+}
+</style>
+<div class="pageContent">
+	<form method="post" action="__URL__/allotgroupinsert/rel/MisSystemDataAccessBOX" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="aname" value="{$maslist.actionname}">
+		<input type="hidden" name="formid" value="{$maslist.formid}">
+		<input type="hidden" name="jump" value="jump">
+		<input type="hidden" name="masid" value="{$maslist.id}">
+		<input type="hidden" name="membersource" value="{$list['listsource']}">
+		<div class="pageFormContent" layoutH="40">
+			<div >
+			
+			<div class="tml-row">
+				<div id="checkUserObj" class="pageContent">
+					<div class="address-navTab-body">
+						<div class="tml-row">
+							<div style="height:800px;width:20%;background:#CCFFCC;float:left;">
+							<div><input class="searchzu" type="text" ><button class="searchzu" type="button">搜索组</button> 	&nbsp;&nbsp;&nbsp;&nbsp; <button class="addzu" type="button">添加组</button>  </div>
+							<div class="clear"></div>
+							<div style="display:none" class="addzu"><input type="text" name="name"> <button class="submitzu">保存</button></div>
+							<div id="zu">
+								<ul>
+									<li>1</li>
+									<li>2</li>
+									<li>3</li>
+									<li>4</li>
+								</ul>
+							</div>
+							</div>
+							<div class="grid-50 left" style="border: 1px solid #a8a8a8;border-radius: 4px;overflow: auto;width:38%;height:300px;">
+								<h3 class="tml-h3">可选列表（<span id="xyz_list_enable_choice_count">{$num}</span>）</h3> 
+								<div><input type="text" class="search"/><span onclick="searchli(this)">搜索</span></div>
+								<div class="clear"></div>
+								<div>
+								<volist name="list['list']" id="vo">
+									<li style="padding-left:50px;" class="source">
+										<span class="sourcekey" sourcekey="{$key}">{$vo}</span>
+									</li>
+								</volist>
+								</div>
+							</div>
+							<div class="grid-50 right" style="border: 1px solid #a8a8a8;border-radius: 4px;overflow: auto;width:38%;height:300px;magin-right:2%;">
+							
+							
+							<style>
+							.xyz_zu_color{background-color: #CCFFFF }
+							</style>
+								<div class="xyz_add_div xyz_zu" index="0" style="display:none;">
+								<div>
+									<h3 class="tml-h3">组名称：</h3>
+									<input type="text" class="" disabled name="name[0]"
+										value="">
+								</div>
+								<div class="clear"></div>
+								<div>
+									<h3 class="tml-h3">是否开启：</h3>
+									<input type="checkbox" disabled class="" name="startstatus[0]"
+										value="1" checked>
+								</div>
+								<div>
+									<h3 class="tml-h3">组成员（<span class="xyz_zu_member_number"></span>）：</h3>
+									<div
+										style="border: 1px solid #a8a8a8; border-radius: 4px; margin: 5px; overflow: auto; min-height: 30px; max-height: 100px;">
+
+										<ul class="xyz_zu_menber" id="" onclick="">
+
+										</ul>
+									</div>
+								</div>
+								<button type="button" class="xyz_del_zu">删除组</button>
+								</div>
+						
+						
+						
+						<if condition="count($grouplist)" >
+						<php>unset($pvindex); $pvindex=1; </php>
+						<volist name="grouplist" id="gv">
+						<div index="{$pvindex}" class="xyz_zu">
+						
+								<input class="tagindex" type="hidden" name="id[{$pvindex}]"
+									value="{$gv.id}">
+								<div class = "tml-row">
+									<div class="">
+										<h3 class="tml-h3">组名称{$pvindex}：</h3>
+										<input type="text" class="required" name="name[{$pvindex}]"	value="{$gv.name}">
+									</div>
+									<div class="clear"></div>
+									<div>
+										<h3 class="tml-h3">是否开启{$gv['startstatus']}：</h3>
+										<input type="checkbox" class="" name="startstatus[{$pvindex}]" value="1" <if condition="$gv['startstatus'] eq 1">checked</if>>
+									</div>
+								</div>
+								<div>
+									<h3 class="tml-h3">组成员（<span class="xyz_zu_member_number"></span>）：</h3>
+									<div
+										style="border: 1px solid #a8a8a8; border-radius: 4px; margin: 5px; overflow: auto; min-height: 30px; max-height: 100px;">
+
+										<ul class="xyz_zu_menber" id="" onclick="">
+											<volist name="gv['memberinfo']" id="gvv">
+											<if condition="$gvv.name">
+											<li>
+												<input type="hidden" name="member[{$pvindex}][]" value="{$gvv.name}">
+												<span>{$gvv.showname}</span>
+											</li>
+											</if>
+											</volist>
+										</ul>
+									</div>
+								</div>
+								<button type="button" class="xyz_del_zu">删除组</button>
+							</div>
+						<php> $pvindex++; </php>
+							</volist>
+					</if>
+					
+					
+					<button type="button" class="xyz_add_zu">添加组</button>
+					</div>
+					
+					
+					
+					
+				</div>					
+			</div>
+		</div>
+		<div style="border-top: 1px solid #d8d8d8; padding-top: 15px" class="formBar">
+			<ul> 
+				
+	            <li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button>
+	            	</li>
+	            
+            </ul>
+         </div>
+		</div>
+
+
+
+
+
+
+
+                
+                
+                
+                
+	</form>
+</div>
+<script>
+$(function(){
+	//var box = $.pdialog.getCurrent();
+	var box = navTab.getCurrentPanel();
+	
+	 //默认最后一个为当前组
+	var defaultindex = $("div.xyz_zu:last",box).attr("index")*1;
+	//当前块颜色
+	$("div.xyz_zu:last",box).css("background","#CCFFFF");
+	//列表选项在当前块出现就隐藏
+	 var memberarr = new Array();
+	$("div.xyz_zu:last",box).find("li input[name*=member]").each(function(i){
+		memberarr[i] = $(this).val();
+	});
+	$("div.grid-50.left li span",box).each(function(i){
+		var val = $(this).attr("sourcekey");
+		if($.inArray(val,memberarr)!= -1){
+			$(this).closest('li').hide();
+		}
+	});
+	//列表可选项数量
+	var num = $("div.grid-50.left li:visible",box).length;
+	$("#xyz_list_enable_choice_count").text(num);
+	//当前组成员数
+	$("div.xyz_zu:last",box).find("span.xyz_zu_member_number").text($("div.xyz_zu:last ul.xyz_zu_menber li",box).length);
+	//当前组处理
+	$("div.xyz_zu",box).die("click");
+	$("div.grid-50",box).on("click","div.xyz_zu",function(){
+		$("div.grid-50.left li",box).show();
+		defaultindex = $(this).attr("index")*1;
+		//当前块颜色
+		$("div.xyz_zu",box).not(this).css("background","#FFFFFF");
+		$(this).css("background","#CCFFFF");
+		//列表选项在当前块出现就隐藏
+		 var memberarr1 = new Array();
+		$(this).find("li input[name*=member]").each(function(i){
+			memberarr1[i] = $(this).val();
+		});
+		$("div.grid-50.left li span",box).each(function(i){
+			var val = $(this).attr("sourcekey");
+			if($.inArray(val,memberarr1)!= -1){
+				$(this).closest('li').hide();
+			}
+		});
+		//列表可选项数量
+		var num = $("div.grid-50.left li:visible",box).length;
+		$("#xyz_list_enable_choice_count").text(num);
+	});
+
+	//添加组
+	$("button.xyz_add_zu",box).click(function(){
+		var lastindex = $("div.xyz_zu:last",box).attr("index")*1;
+		var zubox = $("div.xyz_add_div",box).clone();
+		zubox.removeClass("xyz_add_div");
+		zubox.find("input[name*='name']").addClass("required");
+		zubox.find("input").attr("disabled",false);
+		zubox.show();
+		var writeindex = lastindex; 
+		lastindex =lastindex+1;
+		zubox.find("input[name^='name[']").attr("name","name["+lastindex+"]");
+		zubox.attr("index",lastindex);
+		var zuboxs = zubox.initUI();
+		$("div.xyz_zu[index='"+writeindex+"']",box).after(zuboxs);
+		//当前块颜色
+		defaultindex = lastindex;
+		$("div.xyz_zu",box).not(zubox).css("background","#FFFFFF");
+		zubox.css("background","#CCFFFF");
+		//左侧li全显示
+		$("li.source",box).show();
+	});
+	//删除组
+	$("button.xyz_del_zu",box).die("click");
+	$("div.grid-50",box).on("click","button.xyz_del_zu",function(){
+		$()
+		$(this).closest("div.xyz_zu").remove();		
+	});
+	//添加成员
+	$("li.source",box).die();
+	$("li.source",box).on("click",function(){
+		if($("div.xyz_zu[index='"+defaultindex+"'] ul",box)&&defaultindex!=0){
+			var val = $(this).find("span.sourcekey").attr("sourcekey");
+			var showtitle = $(this).text();
+			var lic = '<li class="ddd">';
+				lic += '<input type="hidden" name="member['+defaultindex+'][]" value="'+val+'">';
+				lic += '<span>'+showtitle+'</span>';
+				lic +='</li>';
+			$("div.xyz_zu[index='"+defaultindex+"'] ul",box).append(lic);
+			$(this).closest("li").hide();
+			$("#xyz_list_enable_choice_count").text($("#xyz_list_enable_choice_count").text()*1-1);
+			$("div.xyz_zu[index='"+defaultindex+"']").find("span.xyz_zu_member_number").text($("div.xyz_zu[index='"+defaultindex+"']").find("li").length);
+
+		}
+	});
+	//删除成员
+	$("div.grid-50.right",box).die("click");
+	$("div.grid-50.right",box).on("click","div.xyz_zu li",function(){
+		var val = $(this).find("input[name*='member']").val();
+		$("div.grid-50.left",box).find("li span[sourcekey='"+val+"']").show();
+		$("div.grid-50.left",box).find("li span[sourcekey='"+val+"']").closest('li').show();
+		$("#xyz_list_enable_choice_count").text($("#xyz_list_enable_choice_count").text()*1+1);
+		$(this).remove();
+		$("div.xyz_zu[index='"+defaultindex+"']").find("span.xyz_zu_member_number").text($("div.xyz_zu[index='"+defaultindex+"']").find("li").length);
+		
+	});
+});
+$(function(){
+	var box = navTab.getCurrentPanel();
+	//var = $(".search".box).val();
+	$("button.addzu",box).click(function(){
+		alert("ddd");
+		$("div.addzu").toggle();
+	});
+});
+
+
+</script>

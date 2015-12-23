@@ -1,0 +1,140 @@
+<script>
+function editmfem_append_Dynamicconf() {
+	var $box = $.pdialog.getCurrent();
+	var html = '<tr>'+
+		'<td><input type="text" class="gangwei_d xytdinput"  name="arr_func[]" value="" /></td>'+	
+       ' <td><input type="text" class="gangwei_d xytdinput" name="arr_funcdata[]" value="" /> </td>'+                                
+        '<td><a href="javascript:;" onclick="editmfem_delete_Dynamicconf(this);"><strong style="color:red">移除</strong></a></td>'+
+	'</tr>';
+	var $ht = $(html).initUI();
+	$("#Dynamicconf_ex_edit").append($ht);
+}
+function editmfem_delete_Dynamicconf(obj) {
+	var $box = $.pdialog.getCurrent();
+	$(obj).parent().parent().remove();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/updatelist/rel/dynamicconfBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+		<input type="hidden" name="md" value="{$md}"/>
+		<input type="hidden" name="id" value="{$id}"/>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>字段英文：</label>
+				<input type="text" class="required" name="name" value="{$vo.name}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>字段中文：</label>
+				<input type="text" class="required" name="showname" value="{$vo.showname}"/>
+			</div>				
+            <div class="tml-form-col">
+				<label>是否显示：</label>
+				<select name="shows" class="combox">
+					<option <if condition="$vo.shows eq 1">selected</if> value="1">是</option>
+					<option <if condition="$vo.shows eq 0">selected</if> value="0">否</option>
+				</select>
+			</div>
+            <div class="tml-form-col">
+				<label>宽度：</label>
+				<input type="text" name="widths" value="{$vo.widths}"/>
+			</div>
+            <div class="tml-form-col">
+				<label>sorts：</label>
+				<input type="text" name="sorts" value="0" value="{$vo.sorts}"/>
+			</div>
+            <div class="tml-form-col">
+				<label>models：</label>
+				<input type="text" name="models" value="{$vo.models}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>英文字段：</label>
+				<input type="text" name="sortname" class="required" value="{$vo.sortname}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>sortnum：</label>
+				<input type="text" name="sortnum" class="required" value="{$vo.sortnum}" />
+			</div>
+			<div class="tml-form-col">
+				<label>是否检索：</label>
+				<select name="issearch" class="combox">
+					<option <if condition="$vo.issearch eq 1">selected</if> value="1">是</option>
+					<option <if condition="$vo.issearch eq 0">selected</if> value="0">否</option>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>检索字段：</label>
+				<input type="text" name="searchField" value="{$vo.searchField}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>匹配表：</label>
+				<input type="text" name="table" value="{$vo.table}" />
+			</div>
+			<div class="tml-form-col">
+				<label>匹配字段：</label>
+				<input type="text" name="field" value="{$vo.field}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>匹配条件：</label>
+				<input type="text" name="conditions" value="{$vo.conditions}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>类型：</label>
+				<input type="text" name="type" value="{$vo.type}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>是否全局检索：</label>
+				<select name="isallsearch" class="combox">
+					<option <if condition="$vo.isallsearch eq 1">selected</if> value="1">是</option>
+					<option <if condition="$vo.isallsearch eq 0">selected</if> value="0">否</option>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>检索排序：</label>
+				<input type="text" name="searchsortnum" value="{$vo.searchsortnum}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>状态：</label>
+				<select name="status" class="combox">
+					<option <if condition="$vo.shows eq 1">selected</if> value="1">启用</option>
+					<option <if condition="$vo.shows eq -1">selected</if> value="-1">禁用</option>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>helpvalue：</label>
+				<input type="text" name="helpvalue" value="{$vo.helpvalue}"/>
+			</div>
+		</div>
+		<div class="dialog-box">
+	                <table class="data-table" cellspacing="0" id="Dynamicconf_ex_edit" width="100%">
+	                    <thead>
+	                        <tr>
+	                            <td style="width:200px;"><strong>关联操作函数</strong></td>
+	                            <td><strong>操作函数参数</strong></td>
+	                            <td style="width:30px;"><a href="javascript:;" onclick="editmfem_append_Dynamicconf();"><strong style="color:green">添加</strong></a></td>
+	                        </tr>
+	                    </thead>
+	                    <tbody>
+	                    	<volist name="func" id="fvo" key='i'>
+	                    	<tr>
+								<td><input type="text" class="gangwei_d xytdinput"  name="arr_func[]" value="{$fvo[0]}" /></td>		
+	                            <td><input type="text" class="gangwei_d xytdinput" name="arr_funcdata[]" <if condition="$funcdata[$i]">value="{$funcdata[$i]}"<else/>value="{$funcdata[2]}"</if> /> </td>                                
+	                            <td><a href="javascript:;" onclick="editmfem_delete_Dynamicconf(this);"><strong style="color:red">移除</strong></a></td>
+	                        </tr>
+	                        </volist>
+	                    </tbody>
+	                </table>
+	            </div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+

@@ -1,0 +1,35 @@
+
+
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid" > 
+	<div class="tabs">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<li><a href="javascript:;"><span>消息管理</span></a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent">
+			<div class="eagleDivOne">
+				<div layoutH="66" style="float:left; display:block; overflow:auto; width:200px; border:solid 1px #B8D0D6; line-height:21px; background:#fff">
+				    <ul class="tree treeFolder">
+					    <li><a href="__APP__/WriteLetter/writeForm" class="j-ajax" target="ajax" rel="jbsxBoxMessage"><span>撰写信件</span></a></li>
+					    <li><a href="__APP__/Inbox/index/messageType/1" class="j-ajax" target="ajax" rel="jbsxBoxMessage"><span>系统消息</span></a></li>
+					    <li><a href="__APP__/Inbox/index" class="j-ajax" target="ajax" rel="jbsxBoxMessage"><span>收件箱</span></a></li>
+					    <li><a href="__APP__/Outbox/index" class="j-ajax" target="ajax"  rel="jbsxBoxMessage"><span>发件箱</span></a></li>
+					    <li><a href="__APP__/Drafts/index" class="j-ajax" target="ajax"  rel="jbsxBoxMessage"><span>草稿箱</span></a></li>
+					    <li><a href="__APP__/Recycle/index" class="j-ajax"  target="ajax"  rel="jbsxBoxMessage"><span>回收箱</span></a></li>
+				    </ul>
+				</div>
+				
+				<div id="jbsxBoxMessage" class="unitBox" style="margin-left:210px;">
+					<include file="writeForm"  /> 
+				</div>
+			</div>
+		</div> 
+		<div class="tabsFooter">
+			<div class="tabsFooterContent"></div>
+		</div>
+	</div>
+	
+</div>

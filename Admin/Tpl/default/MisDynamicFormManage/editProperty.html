@@ -1,0 +1,589 @@
+<script>
+	var obj_name = "<?php echo $obj_name?>";
+	var $input_obj = $("input[name='" + obj_name + "']");
+	var yuan_data = $input_obj.val();
+	var obj_data = "";
+/*	if (yuan_data) {
+		obj_data = JSON.parse(yuan_data);
+		for ( var key in obj_data) {
+			$(".property_data").each(function(i) {
+				if ($(this).attr("rel") == key) {
+					$(this).val(obj_data[key]);
+				}
+			});
+		}
+	}*/
+
+	$(".save_data").click(function() {
+		var pdialog = $.pdialog.getCurrent();
+		var data = {};
+		var json = "";
+		$(".property_data").each(function(i) {
+			var val = $(this).val();
+			var name = $(this).attr("rel");
+			data[name] = val;
+			var json = JSON.stringify(data);
+			$input_obj.val(json);
+			$(".save_data_close").click();
+		});
+	});
+//lookup时 判断英文字段必须存在并带入
+function lookuporgnameeven(obj){
+	//新 删除附加条件隐藏值
+	$("#dateconditions_lookup").val('');
+	
+	var bobj = '{$obj_name}';
+    var filename = $("input[name='"+bobj+"']").closest('tr').find('input[type="text"]:first').val();
+    if(filename==''){
+    	alertMsg.error('查找带回时字段名称(英文)不能为空,请先填写唯一的字段名称');
+    	$.pdialog.closeCurrent();
+    }else{
+    	$('input[name="lookuporgname"]').val(filename);
+    }
+}
+//下拉框时 如果是数据表 将对应的表字段带入
+function choisedb(obj){
+	//$("#MisDynamicFormManageshowfield").empty();
+	//$("#MisDynamicFormManageorgfield").empty();
+	var value = $(obj).val();
+	var selctlistVal="{$selctlistVal}";
+	if(selctlistVal!=value){
+		$.ajax({
+			type : 'POST',
+			url : "__APP__/MisDynamicFormManage/comboxgetTableField",
+			data : {table:value},
+			dataType : "json",
+			cache : false,
+			success : function(response) {
+				//DWZ.ajaxDone(response);
+				var html = '<option value="">请选择</option>';
+				var valuefieldhtml = '<option value="">请选择</option>';
+				$.each(response,function(i,v){
+					html += '<option value="'+i+'">'+i+'【'+v+'】</option>';
+					valuefieldhtml += '<option value="'+i+'">'+i+'【'+v+'】</option>';
+				})
+				$("#MisDynamicFormManageshowfield").html(html);
+				$(".MisDynamicFormManageorgfield").html(valuefieldhtml);
+				initChosen();
+			},
+		});
+	}
+}
+//将本页面处理过好了的json值传递到上一个页面
+function MisDynamicFormManageeditProperty($form){
+	DWZ.ajaxDone($form);
+	if($form.statusCode==DWZ.statusCode.ok){
+		var data = $form.data;
+		controllConfig(obj_name,data); 
+	}
+	$.pdialog.closeCurrent();
+}
+//文本框时带入lookup
+//lookup 带入lookup
+//下拉框带入lookup
+
+	var tr = $("#misdynamicformmanageforfield").find("tr").not($input_obj.parents("tr"));
+	//排除本行
+	var html='<option value="">请选择</option>';
+	//文本框时默认值处理
+	
+	var phplook = '';
+	if('{$obj_type}'=='text'){
+		//文本
+		var phpval = '{$editvalue['parame'][0]}';
+		if(phpval){
+			phplook = phpval.split('.');
+			phplook = phplook[0].substr(3);
+		}
+	}else if('{$obj_type}'=='lookup'){
+		//lookup时默认值处理
+		var phplookval = '{$editvalue['ltol'][0]}';
+		if(phplookval){
+			phplook=phplookval;
+		}
+	}else if('{$obj_type}'=='select'){
+		//下拉框
+		// phplook = '{$editvalue['lookto'][0]}';
+		var phpval = '{$editvalue["parame"]["org"]}';
+		if(phpval){
+			phplook = phpval.split('.');
+			phplook = phplook[0].substr(3);
+		}
+	}else if('{$obj_type}'=='date'){
+		//文本
+		var phpval = '{$editvalue["parame"]["org"]}';
+		if(phpval){
+			phplook = phpval.split('.');
+			phplook = phplook[0].substr(3);
+		}
+	}
+	
+	
+	$("select[name='lookuporgfield']").empty();
+	var selectedtext = '';
+	tr.each(function() {
+		if($(this).find('select:last').val()=='lookup'){
+			var fieldname=$(this).find('input[type="text"]:first').val();
+			var fieldchina = $(this).find('input[name$="[fieldtitle]"]').val();
+			
+			var lookupvalue = $(this).find("input.xyz_edit").val();
+			if(phplook && phplook==fieldname){
+				selectedtext='selected';
+			}else{
+				selectedtext='';
+			}
+			html += '<option value="'+fieldname+'" lookupvalue="'+lookupvalue+'" '+selectedtext+'>'+fieldchina+'</option>';
+		}		
+	})
+	$("select[name='lookuporgfield']").html(html);
+	//initChosen();
+<if condition='$obj_type eq "text" and $editvalue[parame]'>
+$('select.nbm_textss').change();
+</if>
+<if condition='$obj_type eq "lookup" and $editvalue[ltol]'>
+$('select.nbm_textss').change();
+</if>
+<if condition='$obj_type eq "select" and $editvalue[lookto]'>
+$('select.nbm_textss').change();
+</if>
+<if condition='$obj_type eq "date" and $editvalue[parame][org]'>
+$('select.nbm_textss').change();
+</if>
+<if condition='$obj_type eq "select" and $editvalue[parame][org]'>
+$('select.nbm_textss').change();
+</if>
+//文本框 时改变绑定lookup时相应改变带回字段 
+//lookup 时改变外部lookup时相应改变带回字段 多传一个类型参数
+function lookupfieldselect(obj){
+	var fieldname = $(obj).val();
+	var lookupval=$(".lookuporg option[value="+fieldname+"]").attr("lookupvalue");
+	if(lookupval=='') {alertMsg.error('请先配置字段名称(英文)为'+fieldname+'的查找带回');}
+	try{
+	$("select[name='lookupbringfield']").empty();
+	$.ajax({
+		type : 'POST',
+		url : "__APP__/MisDynamicFormManage/lookupFieldselct",
+		data : {fieldname:fieldname,lookupval:lookupval},
+		dataType : "json",
+		cache : false,
+		success : function(response) {
+			if(response){
+				var phplook = '';
+				var phptext = '';//单独处理lookup带lookup显示值的默认
+				if('{$obj_type}'=='text'){
+					var phpval = '{$editvalue['parame'][0]}';
+					if(phpval){
+						phplook = phpval.split('.')[1];					
+					}
+				}else if('{$obj_type}'=='lookup'){
+					//lookup时默认值处理
+					phplook = '{$editvalue['ltol'][1]}';
+					phptext = '{$editvalue['ltol'][2]}';
+				}else if('{$obj_type}'=='select'){
+					//phplook = '{$editvalue['lookto'][1]}';
+					
+					var phpval = '{$editvalue["parame"]["org"]}';
+					if(phpval){
+						phplook = phpval.split('.')[1];		
+					}
+					
+				}else if('{$obj_type}'=='date'){
+					var phpval = '{$editvalue["parame"]["org"]}';
+					if(phpval){
+						phplook = phpval.split('.')[1];					
+					}
+				}
+			//DWZ.ajaxDone(response);
+				
+				var textselected='';
+				var html = '<option value="">请选择带回字段</option>';
+				var html2= '<option value="">请选择带回字段</option>';
+				$.each(response,function(i,v){
+					//文本框时默认值处理
+					if(phplook && phplook==i){
+						textselected='selected';
+					}else{
+						textselected='';
+					}
+					
+					if(phptext && phptext==i){
+						textselected2='selected';
+					}else{
+						textselected2='';
+					}
+					html2 += '<option value="'+i+'" '+textselected2+'>'+i+'【'+v+'】</option>';
+					html += '<option value="'+i+'" '+textselected+'>'+i+'【'+v+'】</option>';
+				});
+			}
+			$("select.lookupbringfield").html(html);
+			$("select.lookupToLookup").html(html2);
+			initChosen();
+		},
+	});
+	}catch(e){
+		alert(e.message);
+	}
+}
+function untilscharchange(obj){
+	var text = $(obj).find('option:selected').text();
+	$(obj).closest('div').find('input[name="untilschar"]').val(text);
+}
+function baseuntilscharchange(obj){
+	var text = $(obj).find('option:selected').text();
+	$(obj).closest('div').find('input[name="baseuntilschar"]').val(text);
+	var unils = {$unils};
+	console.log(unils);
+	var value = $(obj).find('option:selected').val();
+	var html="<option value=''>请选择</option>";
+	if(unils){		
+		$.each(unils,function(i,v){
+			//console.log(value+'___'+i);
+			if(value==i){				
+				$.each(v,function(ii,vv){
+					console.log(vv.danweidaima);
+					html += '<option value="'+vv.danweidaima+'">'+vv.danweimingchen+'</option>'
+				});
+				
+			}			
+		});
+		$("select[name='fieldunit']").html(html).initUI();
+	}
+	
+}
+//lookup 附加条件
+function setDateLook(obj){
+	var val = $('#nbmxkj_lookup_name').val();
+	if(val){
+		var hrefs = $(obj).attr('nbmhref');
+		var editdateconditions=$("#dateconditions_lookup").val();//"{$editvalue['dateconditions']}";
+		hrefs+= '/lokkupchoice/'+val;
+		var tabid = 'MisAutoDataTableConditionDialog';
+		var title = '附加条件';
+		var options={};
+		options.width="730";
+		options.height="450";
+		options.mask="true";
+		options.param={dateconditions:editdateconditions};
+		$.pdialog.open(hrefs,tabid,title,options);
+	}else{
+		alert('请先设置lookup');
+	}
+	return;
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/editProperty" class="pageForm required-validate" onsubmit="return validateCallback(this,MisDynamicFormManageeditProperty);">
+		<input type="hidden" value="{$obj_type}" name="category" />
+		<input type="hidden" name="addtype" value= "add">
+		<div class="pageFormContent " layoutH="58">
+		
+			<!-- 日期 -->
+			<if condition='$obj_type eq date'>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>日期格式:</label> <select
+						class="property_data enterIndex chosen" style="width: 250px;"
+						rel="dateformatlist" name="dateformatlist">
+						<volist name="dateformatlist" id="vdate">
+							<option value="{$vdate}" <if condition="$editvalue['parame'][0] eq $vdate">selected</if>>{$vdate}</option>
+						</volist>
+					</select class="property_data chosen enterIndex chosen" style="width: 250px;"
+						rel="dateneed" name="dateneed">
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>lookup绑定org:</label> 
+						<select class="lookuporg property_data chosen enterIndex require nbm_textss" style="width: 250px;" rel="lookuporgfield"  name="lookuporgfield" onchange="lookupfieldselect(this);">
+								<option value="">请选择映射表</option>
+	
+						</select>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>lookup选择字段:</label> 
+						<select class="property_data chosen enterIndex require nbm_textss1 lookupbringfield" style="width: 250px;" rel="lookupbringfield"  name="lookupbringfield">
+								<option value="">请选择映射表</option>
+	
+						</select>
+					</div>
+				</div>
+			</div>
+			</if>
+			<!--  -->
+			
+			
+			<!-- 下拉列表 -->
+			<if condition='$obj_type eq "select"'>
+			
+			<script>
+				$(".select_type").change(function() {
+					$(".select_type_0").hide();
+					$(".select_type_1").hide();
+					$(".select_type_"+$(this).val()).show();
+					initChosen();
+				});
+				$(".select_type").change();
+			</script>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>数据绑定类型：</label> <select
+						class="property_data chosen enterIndex select_type" style="width: 250px;"
+						rel="orgtype" name="orgtype">
+						<option>请选择</option>
+						<option value="0" <if condition="$editvalue[datasouce] eq '0'">selected</if>>配置表</option>
+						<option value="1"<if condition="$editvalue[datasouce] eq '1'">selected</if> >数据表</option>
+					</select>
+				</div>
+				<div class="tml-form-col select_type_0">
+					<label>默认选项数据：</label> 
+					<select class="property_data chosen enterIndex" style="width: 250px;"
+						rel="selecttablename" name="selecttablename">
+						<option value="">请选择映射表</option>
+						<?php $selctlistVal = $editvalue[datasouceparame][0]; ?>
+						<volist name="newselectinclist" id="vinc">
+							<option value="{$key}" <if condition="$selctlistVal eq $key">selected</if>>{$key}【{$vinc}】</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col select_type_0">
+					<label>绑定表头字段：</label> 
+					<select class="property_data chosen enterIndex" style="width: 250px;"
+						rel="selecetassignment" name="selecetassignment">
+						<option value="">请选择映射表</option>
+						<?php $sVal = $editvalue[selectassignment]; ?>
+						<volist name="selectlist" id="vinc">
+							<option value="{$vinc.fieldname}" <if condition="$sVal eq $vinc.fieldname">selected</if>>{$vinc.fieldname}【{$vinc.title}】</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>绑定数据表：</label> <select
+						class="property_data chosen enterIndex nbm_tables" style="width: 250px;"
+						rel="dbtablename"  onchange="choisedb(this);" name="dbtablename">
+						<option value="">请选择映射表</option>
+						<?php $selctVal = $editvalue[datasouceparame][0];
+							$showfield=$editvalue[datasouceparame][1]; 
+							$orgfield=$editvalue[datasouceparame][2]; 
+						 ?>
+						<volist name="newwdblist" id="vdb">
+							<option value="{$key}" <if condition="$selctVal eq $key">selected</if>>{$key}【{$vdb}】</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>绑定显示字段：</label> <select
+						class="property_data  enterIndex chosen" style="width: 250px;"
+						rel="showfield" id="MisDynamicFormManageshowfield" name="showfield">
+						<if condition="$tablelist">
+							<option value="">请选择</option>
+							<volist name="tablelist" id="tablevo">
+							<option  <if condition="$showfield eq $tablevo.COLUMN_NAME">selected="selected"</if> value="{$tablevo.COLUMN_NAME}">{$tablevo.COLUMN_NAME}【{$tablevo.COLUMN_COMMENT}】</option>
+							</volist>
+						<else/>
+							<option value="">请选择</option>
+							<option value="yyyy-MM-dd">yyyy-MM-dd</option>
+							<option value="yyyy-MM-dd HH:mm">yyyy-MM-dd HH:mm</option>
+						</if>
+					</select>
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>绑定值字段：</label> <select
+						class="property_data  enterIndex chosen MisDynamicFormManageorgfield" style="width: 250px;"
+						rel="orgfield"   name="orgfield">
+						<if condition="$tablelist">
+							<option value="">请选择</option>
+							<volist name="tablelist" id="tablevo">
+							<option  <if condition="$orgfield eq $tablevo.COLUMN_NAME">selected="selected"</if> value="{$tablevo.COLUMN_NAME}">{$tablevo.COLUMN_NAME}【{$tablevo.COLUMN_COMMENT}】</option>
+							</volist>
+						<else/>
+							<option value="">请选择</option>
+						</if>
+					</select>
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>树形-父级字段：</label> <select
+						class="property_data  enterIndex chosen MisDynamicFormManageorgfield" style="width: 250px;"
+						rel="orgfield"  name="treeparentfield">
+						<if condition="$tablelist">
+							<option value="">请选择</option>
+							<volist name="tablelist" id="tablevo">
+							<option  <if condition="$editvalue[datasouceparame]['treeparentfield'] eq $tablevo.COLUMN_NAME">selected="selected"</if> value="{$tablevo.COLUMN_NAME}">{$tablevo.COLUMN_NAME}【{$tablevo.COLUMN_COMMENT}】</option>
+							</volist>
+						<else/>
+							<option value="">请选择</option>
+						</if>
+					</select>
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>树形-是否末级操作：</label> 
+					<input type="checkbox" value="1"  <if condition="$editvalue[datasouceparame]['isnextend']  eq '1'">checked="checked"</if> name="isnextend">
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>树形-是否多选：</label>  
+					<input type="checkbox" value="1" <if condition="$editvalue[datasouceparame]['mulit'] eq '1'">checked="checked"</if>  name="mulit">
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>树形-下拉高度：</label>  
+					<input name="treeheight" value="{$editvalue[datasouceparame]['treeheight']}" type="text" >
+				</div>
+				<div class="tml-form-col select_type_1">
+					<label>树形-下拉宽度：</label>  
+					<input name="treewidth" value="{$editvalue[datasouceparame]['treewidth']}" type="text" >
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>lookup绑定org:</label> 
+						<select class="lookuporg property_data chosen enterIndex require nbm_textss" style="width: 250px;" rel="lookuporgfield"  name="lookuporgfield" onchange="lookupfieldselect(this);">
+								<option value="">请选择映射表</option>
+	
+						</select>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>lookup选择字段:</label> 
+						<select class="property_data chosen enterIndex require nbm_textss1 lookupbringfield" style="width: 250px;" rel="lookupbringfield"  name="lookupbringfield">
+								<option value="">请选择映射表</option>
+	
+						</select>
+					</div>
+				</div>
+			</div>
+			</if>
+			
+			
+			<!-- 查找带回 -->
+			<if condition='$obj_type eq lookup'>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>lookup属性选择:</label> 
+					<?php $lookupDefaultVal = $editvalue[parame][0]; ?>
+					<select class="property_data chosen enterIndex" id="nbmxkj_lookup_name" style="width: 250px;" name="lookupname" onchange="lookuporgnameeven(this);">
+							<option value="">请选择映射表</option>
+							<volist name="lookuplist" id="vlook">
+								<option value="{$key}" <if condition="$lookupDefaultVal eq $key ">selected</if>>{$vlook}</option>
+							</volist>
+					</select>
+					<input type="hidden" name="lookuporgname" value='{$editvalue[parame][1]}'>
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>外部lookup:</label> 
+					<select class="lookuporg property_data chosen enterIndex require nbm_textss" style="width: 250px;" rel="lookuporgfield"  name="lookuporgfield" onchange="lookupfieldselect(this);">
+							<option value="">请选择映射表</option>
+							
+					</select>
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>外部ORG value:</label> 
+					<select class="property_data chosen enterIndex require nbm_textss1 lookupbringfield" style="width: 250px;" rel="lookupbringfield"  name="orgvalue">
+							<option value="">请选择映射表</option>
+					</select>
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>外部ORG text:</label> 
+					<select class="property_data chosen enterIndex require nbm_textss1 lookupToLookup" style="width: 250px;" rel="lookupbringfield"  name="orgtext">
+							<option value="">请选择映射表</option>
+
+					</select>
+				</div>
+			</div>
+			<div  class="tml-row">
+				<div class="tml-form-col">
+					<label>附加条件设置:</label> <!-- nbmxkj -->
+					<!-- mask="true" width="1000" height="500" onclick="setDateLook(this)" target="dialog" -->
+					 <a style="line-height: 30px;padding-left:5px;cursor: pointer;font-size: 14px;color: #232323;" nbmhref="__URL__/additionaldateconditions/formid/{$_REQUEST['formid']}" onclick="setDateLook(this)" >设置 </a>
+					<input type="hidden" id="dateconditions_lookup" name="dateconditions" value="{$editvalue['dateconditions']}"/>
+				</div>
+			</div>
+			</if>
+			<!--  -->
+			
+			<!-- 文本框 -->
+			<if condition='$obj_type eq text'>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>lookup绑定org:</label> 
+					<select class="lookuporg property_data chosen enterIndex require nbm_textss" style="width: 250px;" rel="lookuporgfield"  name="lookuporgfield" onchange="lookupfieldselect(this);">
+							<option value="">请选择映射表</option>
+
+					</select>
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>lookup选择字段:</label> 
+					<select class="property_data chosen enterIndex require nbm_textss1 lookupbringfield" style="width: 250px;" rel="lookupbringfield"  name="lookupbringfield">
+							<option value="">请选择映射表</option>
+
+					</select>
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>选择基本单位:</label>
+					<select class="property_data chosen enterIndex require nbm_textss1" style="width: 250px;" rel="basefieldunit"  name="basefieldunit" onchange="baseuntilscharchange(this);">
+							<option value="">请选择</option>
+							<volist name="baseuntils" id="basevuntil">
+								<option value="{$basevuntil.danweidaima}" <if condition="$editvalue['baseuntils'] eq $basevuntil.danweidaima">selected</if>>{$basevuntil.danweimingchen}</option>
+							</volist>
+					</select>
+					<input type="hidden" name="baseuntilschar" value="{$editvalue.baseuntilschar}">
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>选择显示单位:</label>
+					<select class="property_data chosen enterIndex require nbm_textss1" style="width: 250px;" rel="fieldunit"  name="fieldunit" onchange="untilscharchange(this);">
+							 <option value="">请选择</option>
+							<volist name="unitls" id="vuntil">
+								<if condition="$key eq $editvalue['baseuntils']">
+									<volist name="vuntil" id="vvv">
+										<option value="{$vvv.danweidaima}" <if condition="$editvalue['untils'] eq $vvv.danweidaima">selected</if>>{$vvv.danweimingchen}</option>
+									</volist>
+								</if>
+								
+							</volist> 
+					</select>
+					<input type="hidden" name="untilschar" value="{$editvalue.untilschar}">
+				</div>
+			</div>
+			</if>
+			
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>是否必填:</label>
+					<input class="property_data enterIndex" type="checkbox" name = "dateneed" value='1' <if condition="$editvalue['required']">checked</if>/>
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>检查类型:</label>
+					<select class="property_data chosen enterIndex" style="width: 250px;"
+						rel="checktype" name="checktype">
+						<volist name="checktypearr" id="vdaty">
+							<option value="{$key}" <if condition="$editvalue['checktype'] eq $key">selected</if>>{$vdaty}</option>
+						</volist>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="formBar">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.miscarstatus_insert">
+						<li><button type="submit" class="tml_select_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+					</if>
+					<!--<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>-->
+				</ul>
+			</div>
+			
+		</form>
+	</div>
+</div>

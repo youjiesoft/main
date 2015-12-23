@@ -1,0 +1,120 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/auditProcess/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+	<input type="hidden" name="id" value="{$vo['id']}" />
+	<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__">
+	<input type="hidden" name="refreshtabs[url]" value="__APP__/CrmSaleCostForm/index">
+	<input type="hidden" name="refreshtabs[data]" value="{ ntdata:1}">
+	<input type="hidden" name="refreshtabs[title]" value="销售费用">
+	<input type="hidden" name="refreshtabs[type]" value="navtab">
+	<input type="hidden" name="pid" value="{$vo['ptmptid']}">
+	<input type="hidden" name="ostatus" value="{$vo['ostatus']}">
+	<input type="hidden" name="backprocess" value="流程回退">
+	<input type="hidden" name="auditprocess" value="流程审核">
+	<input type="hidden" name="endprocess" value="流程结束">
+	<input type="hidden" name="alreadyAuditUser" value="{$vo['alreadyAuditUser']}">
+	<input type="hidden" name="auditUser" value="{$vo['auditUser']}">
+		<div class="pageFormContent applecloth" layoutH="56">
+				<div class="keepContentCenter">
+					<H2 class="contentTitle contentTitle_center">销售费用申请单
+						<span class="auto_code">
+                            <if condition="$updataid">
+                                <a href="javascript:;" class="xyPrevButton" onclick="changeTheDocNum('__MODULE__','auditEdit',{$updataid})"></a>
+                            <else/>
+                                <span class="xyPrevButtonDisable"></span>
+                            </if>
+                            <b>No. </b>
+							<input type="text" name="orderno" value="{$vo.orderno}" readonly="readonly" class="xycodedata_read" />
+						    <if condition="$downdataid">
+                                <a href="javascript:;" class="xyNextButton" onclick="changeTheDocNum('__MODULE__','auditEdit',{$downdataid})"></a>
+                            <else/>
+                                <span class="xyNextButtonDisable"></span>
+                            </if>
+                        </span>
+					</H2>
+					<fieldset>
+						<legend>...</legend>
+						<!-- <p>
+							<label>{$fields["orderno"]}：</label>
+							<input type="text" name="orderno" value="{$vo.orderno}" readonly="readonly" class="required alphanumeric textInput" />
+						</p> -->
+						<p>
+							<label>{$fields["typeid"]}：</label>
+							<input type="text" class="" readonly="readonly" name="typeid" value="{$vo['typeid']|getFieldBy='id','name','mis_order_types'}" />
+						</p>
+						<P>
+							<label>{$fields["customerid"]}：</label>
+							<input type="text" readonly="readonly" name="customerid"  value="{$vo['customerid']|getFieldBy='id','name','MisSalesCustomer'}" />
+						</P>
+						<p>
+							<label>{$fields["companyid"]}名称：</label>
+							<input type="text" readonly="readonly" name="companyid" readonly value="{$vo['companyid']|getFieldBy='id','name','MisSystemCompany'}" />
+						</p>
+						<p>
+							<label>{$fields["projectid"]}：</label>
+							<input type="text" readonly="readonly" name="projectid" value="{$vo['projectid']|getFieldBy='id','name','MisSalesProject'}"/>
+						</p>
+						<p>
+							<label>{$fields["sacnoid"]}：</label>
+							<input type="text" readonly="readonly" name="sacnoid" value="{$vo['sacnoid']|getFieldBy='id','code','MisSalesContractmas'}" />
+						</p>
+						<p>
+							<label>{$fields["cappid"]}：</label>
+							<input type="text" readonly="readonly" name="cappid" value="{$vo['cappid']|getFieldBy='id','name','CrmApplication'}" />
+						</p>
+						<p>
+							<label>{$fields["rqdate"]}：</label>
+                            <input type="text" value="{$vo['rqdate']|transTime}" name="rqdate"  readonly="readonly" size="17" class="tml-border-r0 Wdate" />
+                            <span class="xyInputWithUnitButton inputDateGrayButton"></span>
+						</p>
+						<p>
+							<label>{$fields["userid"]}：</label>
+							<input type="text" readonly="readonly" name="userid" value="{$vo.userid|getFieldBy='id','name','User'}"  />
+						</p>
+						<p>
+							<label>{$fields["apamount"]}：</label>
+							<input type="text" class="required number" readonly="readonly" value="{$vo.apamount|getDigits}" name="apamount" />
+						</p>
+						<div class="clear"></div>
+						<div class="unit">
+							<label>{$fields["sumary"]}：</label>
+							<textarea cols="60" rows="2" name="sumary" readonly="readonly">{$vo.sumary}</textarea>
+						</div>
+						<div class="clear"></div>
+						<div class="unit">
+							<label>{$fields["remark"]}：</label>
+							<textarea cols="60" rows="2" name="remark" readonly="readonly">{$vo.remark}</textarea>
+						</div>
+						<div class="unit">
+							<label>审核意见：</label>
+							<textarea cols="60" rows="2" name="doinfo">{$vo.remark}</textarea>
+						</div>
+						<!-- <br />
+						<div class="unit">
+							<label>上传附件：</label>
+							<input id="swfupload_applymas_add" type="file" uploader="true" name="applymasfile" formData="{ uploadpath:'Purchasing' }" />
+							<input type="image" onclick="$('#swfupload_applymas_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+						</div>
+						 -->
+						<!--此处为上传列表-->
+						<!-- <div class="unit nowrap">
+							<label>&nbsp;</label>
+							<span id="swfupload_applymas_add-queue" class="info uploadify-queue"></span>
+						</div> -->
+					</fieldset>
+				</div>
+			</div>
+		<div class="formBar">
+			<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.crmsalecostform_auditprocess">
+					<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.auditprocess}</button></li>
+				</if>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.crmsalecostform_backprocess">
+					<li><button type="button" class="tml-btn tml-btn-primary" onclick="BackProcess(this.form,'__MODULE__');">{$Think.lang.backprocess}</button></li>
+				</if>		
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

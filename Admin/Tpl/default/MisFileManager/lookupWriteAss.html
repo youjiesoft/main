@@ -1,0 +1,172 @@
+<script>
+function MisFileManager_WriteAccess(id, name){
+    //定义一个内容是否重复标志。如果内容重复。则不继续往html里面加内容
+    if( $("#writeAccess").find("tr[rel='"+id+"']").length >0 ){
+	return ;
+    }
+    //定义一个html
+    var html ="<tr class='checkedbox selected'>";
+    html +="<td width='22'><div title=''><input type='checkbox' value='"+id+"' checked='checked' name='idarr[]' class='writeAccessCheckbox'/></div></td>";
+    html +="<td width='200'><div title='"+name+"'><input type='hidden' name='userid[]' value='"+id+"'/>"+name+"</div></td>";
+    html +="<td width='50'><div title=''><input type='checkbox' checked='checked' name='ifread["+id+"]'/></div></td>";
+    html +="<td width='50'><div title=''><input type='checkbox' checked='checked' name='ifprint["+id+"]'/></div></td>";
+    html +="<td width='50'><div title=''><input type='checkbox' checked='checked' name='ifexecute["+id+"]'/></div></td>";
+    html +="</tr>";
+    
+    //向指定的作用于内加入html
+    $("#writeAccess").append(html).initUI();
+    //给html绑定一个行选中事件  hover
+    var $trs =$("#divWriteAccess").find("table tbody tr");
+    var $grid=$("#divWriteAccess").parent();
+    
+    $trs.hoverClass().each(function(){
+	var $tr=$(this);
+	var $ftdfirst=$tr.find("td").eq(0);
+	var $ftdfisrtcheckbox = $ftdfirst.find("input[type='checkbox']:first");
+	var cbox=$ftdfisrtcheckbox.length;
+	if( cbox>0 ){
+	    $ftdfisrtcheckbox.click(function(){
+		var cboxchecked=$ftdfisrtcheckbox.is(':checked');
+		$ftdfisrtcheckbox.attr("checked",cboxchecked);
+		if(cboxchecked){
+		    $tr.addClass("checkedbox");
+		}else{
+		    $tr.removeClass("checkedbox");
+		}
+		 
+		$trs.filter(".selected").removeClass("selected");
+		$trs.filter(".checkedbox").addClass("selected");
+	    });
+	}
+	$(this).click(function(){
+	    if( cbox>0 ){
+		var cboxchecked=$ftdfisrtcheckbox.is(':checked');
+
+		$ftdfisrtcheckbox.attr("checked",!cboxchecked);
+		if(!cboxchecked){
+		    $(this).addClass("checkedbox");
+		}else{
+		    $(this).removeClass("checkedbox");
+		}
+	    }
+	    $trs.filter(".selected").removeClass("selected");
+	    $trs.filter(".checkedbox").addClass("selected");
+	    if( cbox<=0 ) $(this).addClass("selected");
+	});
+    });
+}
+	
+	
+	 
+function MisFileManager_WriteAccess_Select(arg,obj){
+    var useridarr = arg.userid.split(",");
+    var usernamearr = arg.name.split(",");
+    for(var i=0;i<useridarr.length;i++){
+		MisFileManager_WriteAccess(useridarr[i],usernamearr[i]);
+    }
+}
+
+function writeAccessRemove(){
+    var l=$("#writeAccess").find("input:checked").filter(".writeAccessCheckbox").length;
+    if( l <=0 ) alertMsg.error("请选择删除用户");
+    $("#writeAccess").find("input:checked").filter(".writeAccessCheckbox").each(function(){
+	$(this).parents("tr").remove();
+    });
+}
+</script>
+
+
+<div class="tabs"  currentIndex="0" eventType="click">
+    <div class="tabsHeader">
+	<div class="tabsHeaderContent">
+	    <ul>
+		<li class="selected"><a href="javascript:;" rel="allowaccessuserfile"><span>授权</span></a></li>
+		<if condition="!($vo['category'] eq 1 || $vo['category'] eq 5)">
+		<if condition="$_SESSION.a eq 1 or ($allow eq 1 && $_SESSION.misfilemanager_update)">
+		<li><a href="__URL__/lookupsetfileManager/id/{$id}" rel="setfilemanager" class="j-ajax" ><span>指定管理员</span></a></li>
+		</if>
+		</if>
+	    </ul>
+	</div>
+    </div>
+    <div class="tabsContent" style="padding:0px;">
+	<div id="allowaccessuserfile">
+	    <div id="divWriteAccess">
+		<!--<div style="padding:18px 6px;">
+		    <img src="__PUBLIC__/Images/nav_new_bz.png" />&nbsp;当前文件/文件夹：<strong>{$vo['name']}</strong>
+		</div>-->
+		<div class="panelBar">
+		    <ul class="toolBar">
+			<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/lookupmanage/multi/1" lookupGroup="org1" title="点击添加进行授权"><span><span class="icon icon-plus icon_lrp"></span>添加</span></a></li>
+			<li><a class="delete tml-btn tml_look_btn tml_mp" onclick="writeAccessRemove();" warn="选择删除用户"><span><span class="icon icon-trash icon_lrp"></span>删除</span></a></li>
+		    </ul>
+		</div>
+		<form action="__URL__/lookupWriteAss/rel/myfileManagerBox" method="post" id="lookupaccess" onsubmit="return validateCallback(this, dialogAjaxDone);">
+		    <input type="hidden" name="step" value="1"/>
+		    <input type="hidden" name="id" value="{$id}"/>
+		    <input type="hidden" name="org1.userid" value="" callback="MisFileManager_WriteAccess_Select"/>
+		    <input type="hidden" name="arrUserid" value="{$arrUserid}"/><!-- 保存原有的共享人员 -->
+		    <table class="table" width="100%" layoutH="165">
+			<thead>
+				<tr>
+					<th width="22"><input type="checkbox" class="checkboxCtrl" group="idarr[]" /></th>
+					<th >被授权对象</th>
+					<th >查看</th>
+					<th >打印</th>
+					<th >下载</th>
+				</tr>
+			</thead>
+			<tbody id="writeAccess">
+			    <tr rel="0">
+				<td><input type="checkbox" <if condition="$alluser ">checked="checked"</if> name="idarr[]" value="0" class="writeAccessCheckbox"/></td>
+				<td><input type="hidden" name="userid[]" value="0"/>所有人</td>
+				<td><input type="checkbox" name="ifread[0]" <if condition="($alluser && $alluser['ifread'] eq 1 )|| $ifread gt 0">checked="checked"</if> />
+				    <if condition="$ifread && $ifread neq $id">
+					<a href="javascript:void(0)" title="继承【{$ifread||getFieldBy='id','name','mis_file_manager'}】权限">已继承上级权限
+				    </if>
+				</td>
+				<td><input type="checkbox" name="ifprint[0]" <if condition="($alluser && $alluser['ifprint'] eq 1 )|| $ifprint gt 0">checked="checked"</if> />
+				    <if condition="$ifprint && $ifprint neq $id">
+					<a href="javascript:void(0)" title="继承【{$ifprint||getFieldBy='id','name','mis_file_manager'}】权限">已继承上级权限
+				    </if>
+				</td>
+				<td><input type="checkbox" name="ifexecute[0]" <if condition="($alluser && $alluser['ifexecute'] eq 1 )|| $ifexecute gt 0">checked="checked"</if> />
+				    <if condition="$ifexecute && $ifexecute neq $id">
+					<a href="javascript:void(0)" title="继承【{$ifexecute||getFieldBy='id','name','mis_file_manager'}】权限">已继承上级权限
+				    </if>
+				</td>
+			    </tr>
+			    <volist name="list" id="vo">
+				<if condition="$vo.userid gt 0">
+				    <tr rel="{$vo.userid}">
+					<td><input type="checkbox" name="idarr[]" checked="checked" value="{$vo.userid}" class="writeAccessCheckbox"/></td>
+					<td><input type="hidden" name="userid[]" value="{$vo.userid}"/>{$vo.userid|getFieldBy='id','name','User'}</td>
+					<td><input type="checkbox" name="ifread[{$vo.userid}]" <if condition="$vo['ifread'] eq 1">checked="checked"</if>/></td>
+					<td><input type="checkbox" name="ifprint[{$vo.userid}]" <if condition="$vo['ifprint'] eq 1">checked="checked"</if>/></td>
+					<td><input type="checkbox" name="ifexecute[{$vo.userid}]" <if condition="$vo['ifexecute'] eq 1">checked="checked"</if>/></td>
+				    </tr>
+				</if>
+			    </volist>
+			</tbody>
+		    </table>
+		    <div class="formBar">
+			<ul>
+			    <li>
+					<button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button>
+			    </li>
+			    <!--<li>-->
+					<!--<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>-->
+			    <!--</li>-->
+			</ul>
+		    </div>
+		</form>
+	</div>
+	</div>
+	<if condition="$_SESSION.a eq 1 or ($allow eq 1 && $_SESSION.misfilemanager_update)">
+	<div id="setfilemanager" targetType="dialog"></div>
+	</if>
+    </div>
+    <div class="tabsFooter">
+	<div class="tabsFooterContent"></div>
+    </div>
+</div> 

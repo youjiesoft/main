@@ -1,0 +1,96 @@
+<style>
+	.tml_num_table thead th:not(first-child) span{width:20px;}
+	.tml_num_table tbody td input.number_input,.tml_num_table tbody td input.number_input.focus{width:70%;text-align:center;background:none;border:none;}
+	.tml_num_table tbody td.gray{background:#e8e8e8;}
+</style>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+				<div class="keepContentCenter form-affix-content">
+					<div class="contentTitle contentTitle_center form-affix-title">编码方案</div>
+					<table class="tml_set_table tml_num_table" id="indexlist" width="100%" layoutH="58">
+						<thead>
+							<tr>
+								<th><span>项目</span></th>
+								<th width="40px" ><span style="display:inline-block;">最大级数</span></th>
+								<th width="40px" ><span style="display:inline-block;">最大长度</span></th>
+								<th width="40px" ><span style="display:inline-block;">单级最大长度</span></th>
+								<th width="40px" ><span style="display:inline-block;">第1级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第2级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第3级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第4级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第5级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第6级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第7级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第8级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第9级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第10级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第11级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第12级</span></th>
+								<th width="40px" ><span style="display:inline-block;">第13级</span></th>							
+							</tr>
+						</thead>
+						<tbody>
+							 <volist name="volist" id="vo">
+							 	<tr>
+									<td class="">
+										<span>{$vo.tablename|getFieldBy='name','title','node'}</span>
+										<input type="hidden" name="tablename[]" value="{$vo.tablename}"/>
+									</td>
+									<td class="">{$vo['maxlevels']}</td>
+									<td class="">{$vo['maxlenght']}</td>
+									<td class="">{$vo['singlelenght']}</td>
+									<td <if condition="$vo['levelreadonly'] egt 1">class="gray"</if>>
+										<span><input class="number_input digits" name="one[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 1">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['one']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 2">class="gray"</if>>
+										<span><input class="number_input digits" name="two[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 2">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['two']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 3">class="gray"</if>>
+										<span><input class="number_input digits" name="three[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 3">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['three']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 4">class="gray"</if>>
+										<span><input class="number_input digits" name="four[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 4">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['four']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 5">class="gray"</if>>
+										<span><input class="number_input digits" name="five[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 5">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['five']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 6">class="gray"</if>>
+										<span><input class="number_input digits" name="six[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 6">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['six']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 7">class="gray"</if>>
+										<span><input class="number_input digits" name="seven[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 7">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['seven']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 8">class="gray"</if>>
+										<span><input class="number_input digits" name="eight[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 8">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['eight']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 9">class="gray"</if>>
+										<span><input class="number_input digits" name="nine[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 9">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['nine']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 10">class="gray"</if>>
+										<span><input class="number_input digits" name="ten[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 10">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['ten']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 11">class="gray"</if>>
+										<span><input class="number_input digits" name="eleven[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 11">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['eleven']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 12">class="gray"</if>>
+										<span><input class="number_input digits" name="twelve[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 12">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['twelve']|transition}" type="text"></span>
+									</td>
+									<td <if condition="$vo['levelreadonly'] egt 13">class="gray"</if>>
+										<span><input class="number_input digits" name="thirteen[{$vo['tablename']}]" <if condition="$vo['levelreadonly'] egt 13">readonly="readonly"</if> maxlength="1" min="1" max="{$vo['singlelenght']}" value="{$vo['thirteen']|transition}" type="text"></span>
+									</td>
+							 	</tr>
+							 </volist>
+						</tbody>
+					</table>
+					<div class="formBar">
+						<ul>
+							<li><button type="submit" class="tml_formBar_btn tml_formBar_btn_blue enterIndex">保存</button></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

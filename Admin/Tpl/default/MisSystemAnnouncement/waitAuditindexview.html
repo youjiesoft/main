@@ -1,0 +1,61 @@
+<form id="pagerForm" action="__URL__/index/jump/2/waitAudit/3" method="post">
+    <input type="hidden" name="pageNum" value="1"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <if condition="$_SESSION.a eq 1 or $_SESSION.missystemannouncement_auditupdate"><li><a class="redo tml-btn tml_look_btn tml_mp" href="__URL__/audit/id/{sid_node}" warn="请选择一条记录" rel="__MODULE__audit" target="navTab"  title="公告审核" ><span><span class="icon icon-camera-retro icon_lrp"></span>审核</span></a></li></if>
+        </ul>
+        <form rel="pagerForm" onsubmit="return divSearch(this,'missystemannouncementwaitaudittype');" action="__URL__/index/jump/2/waitAudit/3" method="post">
+            <div class="searchBar">
+                <table class="searchContent">
+                    <tr>
+                        <include file="Public:quickSearchCondition" />
+                    </tr>
+                </table>
+            </div>
+    	</form>
+    </div>
+    <table class="table" width="100%" layoutH="126">
+        <thead ename="{$ename}">
+        <tr>
+            <th width="24">序号</th>
+            <volist id="vo" name="detailList">
+                <if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="missystemannouncementwaitaudittype"  orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if> <!--类型-->
+            </volist>
+        </tr>
+        </thead>
+        <tbody>
+            <volist id="vo" name="list" key="key2">
+                <tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')"  title="公告审核" ondblclick="ondblclick_navTab(this,'__MODULE__edit','__URL__/audit/id/{$vo['id']}/');">
+                	<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+                <volist id="vo1" name="detailList">
+                    <td field="{$vo1[name]}" width="{$vo1[widths]}">
+                        <if condition="count($vo1['func']) gt 0">
+                            <volist name="vo1.func" id="nam">
+                                <if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+                                {:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+                                <if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}
+                                </if>
+                            </volist>
+                        <else />
+                        <if condition="$vo1['name'] eq 'title' && $vo['top'] ==1">
+                        <span style="color:red">{$vo[$vo1['name']]}</span>
+                        <img src="__PUBLIC__/Images/hot.png"/>
+                        <else/>
+                        {$vo[$vo1['name']]}
+                        </if>
+                        </if>
+                    </td>
+                </volist>
+                </tr>
+            </volist>
+        </tbody><!-- <a title="确实要删除这些记录吗?" target="ajaxTodo" rel="id" posttype="string" href="__URL__/delete/id/{$vo.id}" class="delete"><span>XX删除</span></a></if>追加的一个操作,通过ajax实现,请求的方法为delete并且传递个参数id-->
+    </table>
+    <div class="panelBar panelPageBar">
+        <div class="pages"><span>共{$totalCount}条</span></div>
+        <div class="pagination" rel="missystemannouncementwaitaudittype" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+    </div>
+</div>

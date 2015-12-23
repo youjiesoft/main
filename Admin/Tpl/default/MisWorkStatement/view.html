@@ -1,0 +1,75 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+	<div class="pageContent applecloth" layoutH="40" >
+		<input type="hidden" name="id" value="{$vo.id}"/>
+		<div class="keepContentCenter" style="border:none;background:none;">
+			<div class="tml_woke_view">
+                <div class="them_header_wrap">
+                    <div class="them_header_lay">
+                        <div class="them_header">{$vo.summary}</div>
+                        <div class="them_time_inf">
+                            <span>报告人：</span><span class="tml-mr5 author_color">{$vo.createid|getFieldBy='id','name','user'}</span>&nbsp;&nbsp;
+                            <span>报告时间：</span><span class="tml-mr5 author_color">{$vo.createtime|transTime}</span>
+                        </div>
+                    </div>
+                </div>
+				<div class="article-body">
+					<div class="article-content">
+						<div class="article_content">{$vo.content|htmlspecialchars_decode}</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<if condition="$attarry">
+					<div class="xyMessageAttach">
+	                    <div class="file_name">附件</div>
+                        <div class="tml_style_line tml_slb_red"></div>
+	                    <div class="xyMessageAttachItems">
+	                        <volist name="attarry" id="att">
+	                            <div class="xyMessageAttachItem">
+	                                <span class="file_count_left file_count">附件{$key+1}</span>
+	                                <a class="attlink file_count_center file_count" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}"><span>{$att['upname']|subStrsToHtml=21}</span></a>
+									<if condition="$att.isplay eq 1">
+										<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);">在线查看</a>
+									</if>
+									<a class="file_count_right file_count" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog">
+	                                    <span class="">归档</span>
+	                                </a>
+								</div>
+	                        </volist>
+	                    </div>
+	                </div>
+                </if>
+			</div>
+			<if condition="$pglist">
+				<!--<a name="bcd"></a>-->
+				<div class="tml_woke_view">
+					<div class="review_header">
+                        <span>评论</span>
+                        <div class="tml_style_line tml_slb_blue"></div>
+                    </div>
+				<volist name="pglist" id="plist">
+					<if condition="$plist.commentuserid">
+						<div class="article-body review_body">
+                            <div class="review_body_left left">
+                                <img width="50" src="/systemui/Public/css/tmlstyle/img/photo/photo.jpg"/>
+                            </div>
+                            <div class="review_body_right left">
+                                <div class="p5 review_per">
+                                    <span class="tml-mr5 author_color">{$plist.commentuserid|getFieldBy='id','name','mis_hr_personnel_person_info'}</span>
+                                    <span class="tml-mr5 time_color"></span><span class="tml-mr5">{$plist.commenttime|transTime}</span>
+                                </div>
+                                <div class="article-content review_con">
+                                    <div>{$plist.comment|htmlspecialchars_decode}</div>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+						</div>
+					</if>
+				</volist>
+				</div>
+			</if>
+		</div>
+	</div>
+	{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

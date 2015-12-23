@@ -1,0 +1,27 @@
+<include file="Public:pagerForm" />
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/commentsConclusions/type/1/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="type" value="1" />
+			<div class="pageFormContent xyEmployee" layoutH="58">
+				<div class="tml-form-row">
+					<label>评语：</label>
+					<textarea name="comments" style="width:310px;height:150px" class="required">{$vo.comments}</textarea>
+				</div>
+				<div class="tml-form-row">
+					<label>总结：</label>
+					<textarea name="conclusions" style="width:310px;height:150px" class="required">{$vo.conclusions}</textarea>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.misperformanceassess_update">
+					<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+				</if>
+					<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

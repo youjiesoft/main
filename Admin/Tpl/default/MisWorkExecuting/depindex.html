@@ -1,0 +1,113 @@
+<form id="pagerForm" action="__URL__/index">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+<div class="panelBar">
+    <ul class="toolBar">
+	    <if condition="$md eq 'MisOaItems'">
+	    	<!-- <li><a class="add tml-btn tml_look_btn tml_mp" rel="MisOaItemsadd" title="协同事项_新增" target="navTab" href="__APP__/MisOaItems/add/type/{$type}"><span><span class="icon icon-plus icon_lrp"></span>新增</span></a></li>
+	    	<if condition="$type eq 3">
+	    		<li><a class="redo tml-btn tml_look_btn tml_mp" rel="MisOaItemsedit" title="协同事项_审核" target="navTab" href="__APP__/MisOaItems/audit/id/{sid_node}"><span><span class="icon icon-camera-retro icon_lrp"></span>审核</span></a></li>
+	    	<elseif condition="$type eq 4 || $type eq 1"/>
+	    		<li><a class="redo tml-btn tml_look_btn tml_mp" rel="MisOaItemsedit" title="协同事项_查看" target="navTab" href="__APP__/MisOaItems/view/id/{sid_node}"><span><span class="icon icon-eye-open icon_lrp"></span>查看</span></a></li>
+	    	<elseif condition="$type eq 2"/>
+	    		<li><a class="redo tml-btn tml_look_btn tml_mp" rel="MisOaItemsedit" title="协同事项_编辑" target="navTab" href="__APP__/MisOaItems/edit/id/{sid_node}"><span><span class="icon icon-edit icon_lrp"></span>编辑</span></a></li>
+	    	</if> -->
+	    	<li><a class="add tml-btn tml_look_btn tml_mp" rel="MisAutoShbadd" title="协同事项_新增" target="navTab" href="__APP__/MisAutoShb/add/type/{$type}"><span><span class="icon icon-plus icon_lrp"></span>新增</span></a></li>
+	    	<if condition="$type eq 3">
+	    		<li><a class="redo tml-btn tml_look_btn tml_mp" rel="MisAutoShbedit" title="协同事项_处理" target="navTab" href="__APP__/MisAutoShb/audit/id/{sid_node}"><span><span class="icon icon-camera-retro icon_lrp"></span>处理</span></a></li>
+	    	<elseif condition="$type eq 4 || $type eq 1"/>
+	    		<li><a class="redo tml-btn tml_look_btn tml_mp" rel="MisAutoShbedit" title="协同事项_查看" target="navTab" href="__APP__/MisAutoShb/view/id/{sid_node}"><span><span class="icon icon-eye-open icon_lrp"></span>查看</span></a></li>
+	    	<elseif condition="$type eq 2"/>
+	    		<li><a class="redo tml-btn tml_look_btn tml_mp" rel="MisAutoShbedit" title="协同事项_编辑" target="navTab" href="__APP__/MisAutoShb/edit/id/{sid_node}"><span><span class="icon icon-edit icon_lrp"></span>编辑</span></a></li>
+	    	</if>
+	    </if>
+		<volist name="toolbarextension" id="toolb">
+			<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+				<li>{$toolb['html']}</li>
+			</if>
+		</volist>
+    </ul>
+    <form rel="pagerForm" onsubmit="return divSearch(this, '{$rel}');" action="__URL__/index" method="post">
+	<input type="hidden" name="jump" value="jump">
+	<input type="hidden" name="md" value="{$md}"/>
+	<input type="hidden" name="worktype" value="{$worktype}"/>
+	<input type="hidden" name="type" value="{$type}"/>
+	<input type="hidden" name="tablename" value="{$tablename}"/>
+	<input type="hidden" name="rel" value="{$rel}"/>
+	<div class="searchBar">
+		<table class="searchContent">
+			<tr>
+				<include file="Public:quickSearchCondition" />
+				<td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index/md/{$md}/worktype/{$worktype}','__URL__/exportBysearchHtml/md/{$md}/worktype/{$worktype}');">导出</button></td>
+			</tr>
+		</table>
+	</div>
+	</form>
+   </div>
+<table class="table" width="100%" layoutH="146">
+    <thead ename="{$ename}">
+	    <tr>
+	    	<th width="24">序号</th>
+			<volist id="vo" name="detailList">
+		    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="{$rel}" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+		    </volist>
+		</tr>
+    </thead>
+    <tbody>
+    <volist id="vo" name="list" key="key2">
+	    <tr target="sid_node" <if condition="$type eq 3 && $md eq 'MisOaItems'">rel="{$vo['id']}"<else/>rel="{$vo['id']}"</if>  onclick="onTrClickCheckbox(this,'id')"
+	    <if condition="$md eq 'MisWorkMonitoring'">
+	    	drel="__MODULE__edit"
+		    <if condition="$worktype eq 1">
+		    	<if condition="$dialogList[$vo['tablename']]">
+		    		dwidth="{$dialogList[$vo['tablename']]['width']}" dheight="{$dialogList[$vo['tablename']]['height']}" title="{$vo['tablename']|getFieldBy='name','title','node'}_审核" ondblclick="ondblclick_dialog(this,'{$vo['tablename']}auditEdit','__APP__/{$vo['tablename']}/auditEdit/myworkInit/1/id/{$vo['tableid']}');"
+		    	<else/>
+		    		title="{$vo['tablename']|getFieldBy='name','title','node'}_审核" ondblclick="ondblclick_navTab(this,'{$vo['tablename']}auditEdit','__APP__/{$vo['tablename']}/auditEdit/myworkInit/1/id/{$vo['tableid']}');"
+				</if>
+			<else/>
+				<if condition="$dialogList[$vo['tablename']]">
+					dwidth="{$dialogList[$vo['tablename']]['width']}" dheight="{$dialogList[$vo['tablename']]['height']}" title="{$vo['tablename']|getFieldBy='name','title','node'}_查看" ondblclick="ondblclick_dialog(this,'{$vo['tablename']}auditView','__APP__/{$vo['tablename']}/auditView/id/{$vo['tableid']}');"
+				<else/>
+					title="{$vo['tablename']|getFieldBy='name','title','node'}_查看" ondblclick="ondblclick_navTab(this,'{$vo['tablename']}auditView','__APP__/{$vo['tablename']}/auditView/id/{$vo['tableid']}');"
+				</if>
+			</if>
+		</if>
+		<if condition="$md eq 'MisOaItems'">
+			drel="MisOaItemsedit"
+			<if condition="$type eq 2">
+			 ondblclick="ondblclick_navTab(this,'MisOaItemsview','__APP__/MisAutoShb/edit/id/{$vo['id']}');" title="协同事项_查看"
+			<elseif condition="$type eq 1 or $type eq 4"/>
+			ondblclick="ondblclick_navTab(this,'MisOaItemsView','__APP__/MisAutoShb/view/id/{$vo[id]}');" title="协同事项_查看"
+			<elseif condition="$type eq 3"/>
+			ondblclick="ondblclick_navTab(this,'MisOaItemsedit','__APP__/MisAutoShb/audit/id/{$vo[id]}');" title="协同事项_处理"
+			</if>
+		</if>
+		>
+			<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+			   <volist id="vo1" name="detailList">
+			   		<if condition="$vo1[shows] eq 1">
+					<td width="{$vo1[widths]}" field="{$vo1['name']}" <if condition="$mytodoname && $vo['tablename'] eq $mytodoname">style="color:red;"</if> >
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+							{$vo[$vo1['name']]}
+						</if>
+					</td>
+					</if>
+				</volist>
+		    </tr>
+	    </volist>
+	    </tbody>
+    </table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="{$rel}" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

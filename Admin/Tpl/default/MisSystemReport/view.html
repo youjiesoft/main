@@ -1,0 +1,67 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+	    <div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<input type="hidden" name="id" value="{$vo.id}" >
+			<if condition='$fields["name"]'>
+				<div class="tml-form-col">
+					<if condition='$fields["name"]'>
+						<label>{$fields["name"]}：</label>
+						<input type="text" class="required" name="name" value="{$vo.name}">
+					</if>
+				</div>
+			</if>
+			<if condition='$fields["methodname"]'>
+				<div class="tml-form-col">
+					<if condition='$fields["methodname"]'>
+						<label>{$fields["methodname"]}：</label>
+						<input type="text" class="required" name="methodname" value="{$vo.methodname}">
+					</if>
+				</div>
+			</if>
+			<if condition='$fields["sort"]'>
+				<div class="tml-form-col">
+					<if condition='$fields["sort"]'>
+						<label>{$fields["sort"]}：</label>
+						<input type="text" class="required" name="sort" value="{$vo['sort']}">
+					</if>
+				</div>
+			</if>
+			<if condition='$fields["isbasepanel"]'>
+				<div class="tml-form-col">
+					<if condition='$fields["isbasepanel"]'>
+						<label>{$fields["isbasepanel"]}：</label>
+						<select name="isbasepanel" class="combox">
+							{:getSelectByHtml('debit','select',$vo['isbasepanel'])}
+						</select>
+					</if>
+				</div>
+			</if>
+			</div>
+			<if condition='$fields["color"]'>
+				<div class="tml-form-row">
+					<label>{$fields["color"]}：</label>
+					<volist id="colorvo" name="panelcolor">
+					<div class="left tml-radio tml-w60">
+						<label>
+							<input type="radio" name="color" value="{$colorvo.color}" <if condition="$colorvo.checked eq 1">checked</if>>
+								&nbsp;<span class="tml-label {$colorvo.color} tml-w30">&nbsp;</span>
+						</label>
+					</div>
+					</volist>
+				</div>
+			</if>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystempanel_edit">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

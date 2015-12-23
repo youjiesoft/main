@@ -1,0 +1,119 @@
+<script>
+//合同类型为协议 显示协议类型
+function protocoltypeisdisplayedit() {
+	var $box=$.pdialog.getCurrent();
+	var $contracttype = $box.find("#contracttypeedit").val();
+	if ($contracttype == "协议") {
+		$box.find("#protocoltypeptageedit").show();
+	} else {
+		$box.find("#protocoltypeptageedit").hide();
+	}
+}
+</script>
+<form method="post" action="__URL__/update/rel/mishrbasicemployeecontract" class="pageForm required-validate" onsubmit="return iframeCallback(this, dialogAjaxDone)">
+	<input type="hidden" name="id" value="{$vo.id}" >
+	<input type="hidden" name="ide" value="{$ide}" >
+	<input type="hidden" name="employeeid" value="{$vo.employeeid}" >
+	<input type="hidden" name="jump" value="1">
+	<input type="hidden" name="multi_lookup_reset">
+	<div class="pageFormContent applecloth" layoutH="55">
+		<div class="keepContentCenter keepContentCenterCondensed">
+			<div class="contentTitle contentTitle_center">员工合同管理
+				
+			</div>
+			<fieldset>
+				<legend class="">基本信息</legend>
+				<div class="tml-row">
+				{:W('ShowOrderno',array(1,'mis_hr_personnel_person_info_contract',$vo['orderno']))}
+					<div class="tml-form-col">
+							<label><span style="letter-spacing:26.4px;">姓</span>名：</label>
+						    <div class="tml-input-append">
+						    <input type="text" class="required org.name" name="name" readonly="readonly" value="{$vo.name}"/>
+							<input type="hidden" name="employeeid" class="org.mangid" value="{$vo.employeeid}"/>
+							<a class="input-addon   input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label><span style="letter-spacing:26.4px;">性</span>别：</label>
+						<if condition="$vo.sex eq 0"><input type="text" class="org.sex" name="sex"  readonly="readonly" value="女"/></if>
+						<if condition="$vo.sex eq 1"><input type="text" class="org.sex" name="sex"  readonly="readonly" value="男"/></if>
+					</div>
+					<div class="tml-form-col">
+						<label>合同类型：</label>
+						<select class="combox" onchange="protocoltypeisdisplayedit()" id="contracttypeedit"  name="contracttype">
+							{:getSelectByHtml('employeecontracttype','select',$vo['contracttype'])}
+						</select>
+					</div>
+					<div class="clear"></div>
+					<div <if condition="$vo.contracttype eq '合同'"> style="display:none"</if> class="tml-form-col" id="protocoltypeptageedit">
+							<label>协议类型：</label>
+							<select class="combox"  name="protocoltype">
+								{:getSelectByHtml('agreetypeid','select',$vo['protocoltype'],'1')}
+							</select>
+					</div>
+					<div class="tml-form-col">
+						<label>联系电话：</label>
+					    <input type="text"  name="tel" class="org.tel" value="{$vo.tel}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>身份证号：</label>
+					    <input type="text"  name="cardid" class="org.chinaid" readonly="readonly" value="{$vo.cardid}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>户口类型：</label>
+						<input type="text"   class="org.accounttypename" readonly="readonly" value="{:getSelectByname('accounttype',$vo['accounttype'])}"/>
+						<input type="hidden"  class="org.accounttype"  name="accounttype" value="{$vo.accounttype}">
+					</div>
+				</div>	
+				<div class="tml-form-row">
+					<label>家庭住址：</label>
+				    <input type="text"  name="familyaddress" class="org.address" value="{$vo.familyaddress}"/>
+				</div>
+				<div class="tml-form-row">
+					<label>通迅地址：</label>
+				    <input type="text"  name="newsleaddress" class="org.nativeaddress"  value="{$vo.newsleaddress}"/>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend class="">合同期限</legend>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>期限类型：</label>
+					    <input type="radio" name="limittype" <eq name="vo.limittype" value="固定期">checked="checked"</eq> value="固定期" onclick="ContractTypeCheckedEdit(2)" />&nbsp;固定期&nbsp;&nbsp;
+					    <input type="radio" name="limittype" <eq name="vo.limittype" value="无固定期">checked="checked"</eq> value="无固定期" onclick="ContractTypeCheckedEdit(1)" />&nbsp;无固定期
+					</div>
+				</div>
+				<div class="tml-row">
+	  				<div class="tml-form-col">
+						<label>开始日期：</label>
+						<div class="tml-input-append">
+						    <input type="text"  name="starttime" class="tml-border-r0 Wdate required" onfocus="WdatePicker()"  value="{$vo.starttime|transtime}"/>
+						    <span class="input-addon input-addon-calendar"></span>
+					    </div>
+					</div>
+					<div class="divdisplay tml-form-col" <eq name="vo.limittype" value="无固定期"> style="display: none;" </eq> >
+						<label>结束日期：</label>
+						<div class="tml-input-append">
+						    <input type="text"  name="endtime" class="tml-border-r0 Wdate" onfocus="WdatePicker()" value="{$vo.endtime|transtime}"/>
+						    <span class="input-addon input-addon-calendar"></span>
+					    </div>
+					</div>
+					<div class="divdisplay_notime tml-form-col" <neq name="vo.limittype" value="无固定期"> style="display: none;" </neq>>
+						<div class="tml-form-col">
+							<label>结束日期：</label>  <span class="tml-form-text"><span class="tml-c-darken"><b>待定</b></span></span>
+						</div>
+					</div>
+				</div>
+			  	<div class="tml-form-row" >
+	                   <label>备注：</label>
+	                   <textarea name="remark" minlength="0" maxlength="100" class="textInput">{$vo.remark}</textarea>
+	          	</div>
+			</fieldset>
+			<fieldset>
+				<legend class="">附件信息</legend>
+				{:W('ShowUpload',$attarry)}
+			</fieldset>
+		</div>
+	</div>
+	 {:W('ShowAction',array('data'=>$vo))}
+</form>

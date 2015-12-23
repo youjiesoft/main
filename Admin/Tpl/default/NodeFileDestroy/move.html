@@ -1,0 +1,91 @@
+<script type="text/javascript">
+	function nodegroupchange(obj) {
+		var valu = $(obj).val();
+		var $ref = $("#nodemovepnode");
+		$.ajax({
+			type : 'POST',
+			dataType : "json",
+			url : "__URL__/lookupgetpnode/",
+			cache : false,
+			data : {
+				valu : valu
+			},
+			success : function(json) {
+				var html = '';
+				$.each(json, function(i) {
+					if (json[i] && json[i].length > 1) {
+						html += '<option value="'+json[i][0]+'">' + json[i][1]
+								+ '</option>';
+					}
+				});
+				var $refCombox = $ref.parents("div.combox:first");
+				$ref.html(html).insertAfter($refCombox);
+				$refCombox.remove();
+				$ref.combox();
+			},
+			error : DWZ.ajaxError
+		})
+	};
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/move/rel/jbsxNodeBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo[id]}" >
+        <input type="hidden" name="optiontype" value="1" >
+        <div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-row">
+					<label>图标：</label>
+					<input type="text" class="required" style="width:170px;" maxlength="25" name="icon" value="{$vo.icon}">
+				</div>
+				<div class="tml-form-row">
+					<label>
+					<if condition="($vo['type'] eq 2)">
+						{$p_name[3]}：
+					<else />
+						{$p_name[$vo['level']]}：
+					</if>
+					</label>
+					<input type="text" class="alphanumeric" style="width:170px;" readonly name="name" value="{$vo.name}">
+				</div>
+				<div class="tml-form-row">
+					<label>名称：</label>
+					<input type="text" class="" style="width:170px;" readonly="readonly" name="title" maxlength="25"  value="{$vo.title}">
+				</div>
+	            <div class="tml-form-row">
+					<label>原组名称：</label>
+					<input type="text" class="" readonly style="width:170px;" value="{$list[$vo['group_id']]['name']}">
+				</div>
+				<div class="tml-form-row">
+					<label>移动组名称：</label>
+					<select name="group_id"  class="combox" <if condition="$vo['level'] eq 3"> onchange="nodegroupchange(this)"</if> >
+							<volist name="list" id="group">
+	                            <option value="{$group.id}" <eq name="group.id" value="$vo['group_id']">selected</eq>>{$group.name}</option>
+							</volist>
+					</select>
+				</div>
+	            <if condition="$vo['level'] eq 3">
+	                <div class="tml-form-row">
+	                    <label>移动面板名称：</label>
+	                    <select name="pid" id="nodemovepnode" class="combox">
+	                        <option value="">--请选择--</option>
+	                            <volist name="pnodelist" id="nodevo">
+	                            <option value="{$nodevo.id}" <eq name="nodevo.id" value="$vo['pid']">selected</eq>>{$nodevo.title}</option>
+	                            </volist>
+	                    </select>
+	                </div>
+	            </if>
+	         </div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.node_move">
+					<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">{$Think.lang.save}</button></li>
+				</if>
+				<li><button type="button" class="close   tml_formBar_btn tml_formBar_btn_blue enterIndex">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

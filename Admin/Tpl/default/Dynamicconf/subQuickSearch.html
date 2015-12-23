@@ -1,0 +1,75 @@
+<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+	<input type="hidden" name="model" value="{$model}" >
+	<input type="hidden" name="step" value="subQuickSearch" >
+	<input type="hidden" name="jump" value="1">
+	<div class="pageContent">
+		<table class="table" width="100%" layoutH="58">
+			<thead>
+			<tr>
+				<th>英文标识</th>
+				<th>中文显示</th>
+				<th>检索字段</th>
+				<th>匹配表</th>
+				<th>匹配字段</th>
+				<th>匹配条件</th>
+				<th>类型</th>
+				<th>
+					<input type="checkbox" onclick="all_selectquickSearch(this,'quickSearchCss');" />搜索
+				</th>
+				<th>
+					<input type="checkbox" onclick="all_selectquickSearch(this,'quickSearchAllCss');" />全局
+				</th>
+				<th>顺序</th>
+			</tr>
+			</thead>
+			<tbody>
+			<volist id="vo" name="list">
+				<if condition="$vo['name'] neq 'nd'">
+					<tr name="fields">
+						<td>{$vo['name']}<input type="hidden" name="pkeys[{$key}]" value="{$vo['name']}" /></td>
+						<td>{$vo['showname']}<input type="hidden" name="showname[{$key}]" value="{$vo['showname']}" /></td>
+						<td>
+							<if condition="isset($vo['searchField'])">
+								<input type="text" name="searchField[{$key}]" size="24" value="{$vo['searchField']}" />
+							<else/>
+								<input type="text" name="searchField[{$key}]" size="24" value="{$vo['name']}" />
+							</if>
+						</td>
+						<td>
+							<input type="text" name="table[{$key}]" size="15" value="{$vo['table']}" />
+						</td>
+						<td>
+							<input type="text" name="field[{$key}]" size="6" value="{$vo['field']}" />
+						</td>
+						<td><input type="text" name="conditions[{$key}]" size="8" value="{$vo['conditions']}" /></td>
+						<td>
+							<if condition="isset($vo['type'])">
+								<input type="text" name="type[{$key}]" size="10" value="{$vo['type']}" />
+							<else/>
+								<input type="text" name="type[{$key}]" size="10" value="text" />
+							</if>
+						</td>
+						<td>
+							<if condition="isset($vo['issearch'])">
+								<input type="checkbox" class="quickSearchCss" name="issearch[{$key}]" value="1" <eq name="vo.issearch" value="1">checked</eq> />
+							<else/>
+								<input type="checkbox" class="quickSearchCss" name="issearch[{$key}]" value="1" <eq name="vo.shows" value="1">checked</eq> />
+							</if>
+						</td>
+						<td><input type="checkbox" class="quickSearchAllCss" name="isallsearch[{$key}]" value="1" <eq name="vo.isallsearch" value="1">checked</eq> /></td>
+						<td><input type="text" name="searchsortnum[{$key}]" value="{$vo['searchsortnum']}" size="6"/></td>
+					</tr>
+				</if>
+			</volist>
+			</tbody>
+		</table>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button type="reset" class="tml-btn">{$Think.lang.reset}</button></li>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.duty_update">
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</if>
+		</ul>
+	</div>
+</form>

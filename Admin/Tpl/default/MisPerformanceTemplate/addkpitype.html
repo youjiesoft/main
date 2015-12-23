@@ -1,0 +1,195 @@
+<script>
+//指标区域全局变量
+var thiskpi = null;
+//修改指标分类
+function insertkpitype(){
+	//获取指标分类ID
+	var kpitypeid = $("#KPITypeHidden").find("input[name='kpitypeid']").val();
+	//获取指标分类权重
+	var kpitypeqz = $("#addkpitype_tbody").find("input[name='kpitypeqz["+kpitypeid+"]']").val();
+	//获取指标分类名称
+	var kpitypename =$("#KPITypeHidden").find("input[name='kpitypename']").val();
+	if(!kpitypeid){
+		alertMsg.error('请选择分类！');
+		return false;
+	}
+	if(!kpitypeqz){
+		alertMsg.error('请填写权重！');
+		return false;
+	}
+	if(kpitypeqz==0){
+		alertMsg.error('权重不能为0,请更正！');
+		return false;
+	}
+	  var sumqz=0;
+	 //循环累加当前区域指标分类权重
+	  $("#addkpitype_tbody").find('tr').each(function(){
+		  $kpitypeidForqz=$(this).find("input[name='kpitypeid']").val();
+		 var typechecked=$(this).find("input[name='kpitypeid']").attr("checked");
+		 var typedisabled=$(this).find("input[name='kpitypeid']").attr("disabled");
+		 if(typechecked||typedisabled){
+			 sumqz+=Number($(this).find("input[name^=kpitypeqz]").val());
+		 }
+	 });
+	 //判断指标分类权重之和是否超过100
+	  if(sumqz>100){
+			alertMsg.error('权重之和必须等于100，请重新分配权重！');
+			return false;
+	  }else{
+	 	var html="<tr>"+
+			     "<td ondblclick='ondblclickkpitype("+kpitypeid+","+kpitypeqz+",this)' class='MisPerformanceTemplate_tbody_each' >"+
+			     "<input type='hidden' name='add_kpitypeid[]'  value='"+kpitypeid+"'/><input type='hidden'  name='add_kpitypeqz[]' value='"+kpitypeqz+"'/>"+
+		         "<span class='add_kpitypeqz'>"+kpitypename+"("+kpitypeqz+"%)</span>"+
+		         "</td>" + 
+				 "<td colspan='2' style='padding:0;'>" +
+					"<table class='tml-table-w'>"+
+						"<tr>"+
+							"<td  ondblclick='MisPerformanceTemplate_addkpi("+kpitypeid+",this)'><span style='color:red'>&nbsp;</span></td>"+
+							"<td style='width: 100px;'></td>"+
+						"</tr>"+
+					"</table>"+
+				"</td>"+
+				"<td><a href='javascript:;' class='btnDel' onclick='MisPerformanceTemplate_del(this)'></td>"+
+				 "</tr>";
+				 //添加到指标分类区域
+				 $("#MisPerformanceTemplate_d").before(html).initUI();
+				 $.pdialog.closeCurrent();
+	  }
+}
+//修改指标或权重修改隐藏域的值 便于取值
+function rc(obj){
+	var tr = $(obj).parents('tr');
+	var str = "";
+	var inp = tr.find('.kpitypeqz');
+	var h = $('#KPITypeHidden').find('input');
+	inp.each(function(i ,e){
+		if($(e).is('input')){
+			h[i].value = $(e).val();
+		} else {
+			h[i].value = $(e).html();
+		}
+	});
+}
+//修改指标分类权重
+function changekpiqz(){
+	//获取指标分类ID
+	var kpitypeid = $("#KPITypeHidden").find("input[name='kpitypeid']").val();
+	//获取指标分类名称
+	var kpitypename = $("#KPITypeHidden").find("input[name='kpitypename']").val();
+	//获取指标分类权重
+	var kpitypeqz = $("input[name='kpitypeqz["+kpitypeid+"]']").val();
+	if(!kpitypeid){
+		alertMsg.error('请选择分类！');
+		return false;
+	}
+	if(!kpitypeqz){
+		alertMsg.error('请填写权重！');
+		return false;
+	}
+	if(kpitypeqz==0){
+		alertMsg.error('权重不能为0,请更正！');
+		return false;
+	}
+	var sumqz=0;
+	//累加当前区域指标分类权重
+	$("#addkpitype_tbody").find('tr').each(function(){
+		 var typechecked=$(this).find("input[name='kpitypeid']").attr("checked");
+		 var typedisabled=$(this).find("input[name='kpitypeid']").attr("disabled");
+		 if(typechecked||typedisabled){
+		 	sumqz+=Number($(this).find("input[name^=kpitypeqz]").val());
+		 }
+	});
+		//判断权重是否超过100
+	 if(sumqz>100){
+		alertMsg.error('权重之和必须等于100，请重新分配权重！');
+		return false;
+	 }else{
+	 //覆盖指标区域信息
+		$(addkpitypetd).find('input[name^=add_kpitypeqz]').val(kpitypeqz);
+		$(addkpitypetd).find('input[name^=add_kpitypeid]').val(kpitypeid);
+		var kpityhtml=""+kpitypename+"("+kpitypeqz+"%)";
+		$(addkpitypetd).find('.add_kpitypeqz').html(kpityhtml);
+		$(addkpitypetd).attr("ondblclick","ondblclickkpitype("+kpitypeid+","+kpitypeqz+",this)");
+		$(addkpitypetd).find('.add_kpitypeqz');
+		//$(addkpitypetd).next('td').attr("ondblclick","MisPerformanceTemplate_addkpi("+kpitypeid+",this111)")
+		$.pdialog.closeCurrent();
+	 }
+  }
+$(function(){
+	//获得当前选择分类ID
+	var result ='{$typeid}';
+	//循环指标分类区域
+	$("#MisPerformanceTemplate_tbody").find('.MisPerformanceTemplate_tbody_each').each(function(i,e){
+		//获得指标分类ID
+		var val= $(e).find("input[name^=add_kpitypeid]").val();
+		//获得指标分类权重
+		var qz= $(e).find("input[name^=add_kpitypeqz]").val();
+		//循环当前区域的tr
+		$("#addkpitype_tbody").find('tr').each(function(){
+			//获得tr上的rel 
+			var typeid=$(this).attr('rel');
+			//如果指标区域分类ID 等于当前区域指标分类ID
+			 if(typeid==val){
+				 //权重赋值给该指标
+				 $(this).find("input[name='kpitypeqz["+typeid+"]']").attr("value",qz);
+				 if(result!=typeid){
+				 	//权重为只读
+					 $(this).find("input[name='kpitypeqz["+typeid+"]']").attr("readonly","readonly");
+					 $(this).find("input[name='kpitypeqz["+typeid+"]']").attr("class","kpitypeqz");
+				 	//指标分类为只读 
+				 	$(this).find("input[name='kpitypeid']").attr("disabled","disabled");
+				 }
+			 } 
+		 });
+	});
+	var spinner = $("#addkpitype_tbody").find( ".spinner" ).spinner({min:1,max:100});
+});
+</script>
+<div>
+	<div class=" xyEmployee">
+	<div class="xyEmployeeBasicInfo">
+		<div class="clear"></div>
+		<span id="KPITypeHidden">
+		<input type="hidden" name="kpitypeid" value="{$typeid}" />
+		<input type="hidden" name="kpitypename" value="{$typeid|getFieldBy='id','name','mis_performance_type'}" />
+		<input type="hidden" name="result" value="{$typeid}" />
+		</span>
+		<table class="list" width="100%">
+			<thead>
+				<tr>
+					<th style="width: 26px;">选择</th>
+					<th style="width: 150px;">分类名称</th>
+					<th style="width: 150px;">备注</th>
+					<th>权重</th>
+				</tr>
+			</thead>
+		</table>
+		<table class="list" width="100%" layoutH="66">
+			<tbody id="addkpitype_tbody">
+				<volist name="typelist" id="tlist">
+					 <tr  rel="{$tlist.id}" >
+						<td style="width: 26px;"><input class="kpitypeqz" type="radio"  <if condition="$typeid eq $tlist.id"> checked="checked" onchange="changekpitypeqz(this)" </if> <if condition="$isedit">disabled="disabled"</if>  name="kpitypeid" onclick="rc(this)" value="{$tlist.id}" /></td>
+						<td style="width: 150px;"> <span class="kpitypeqz">{$tlist.name}</span></td>
+						<td style="width: 150px;"> <span>{$tlist.remark}</span></td>
+					<if condition="$isedit"> 
+						<td><input type="text" maxlength="3"  name="kpitypeqz[{$tlist.id}]"   <if condition="$typeid eq $tlist.id">  value="{$kpitypeqz}" class="kpitypeqz number  spinner " <else/> readonly="readonly"  class="kpitypeqz number"  </if>  /> </td>
+					<else/>
+						<td>
+							<input type="text" maxlength="3"  class="kpitypeqz number  spinner" name="kpitypeqz[{$tlist.id}]"/>
+						</td>
+					</if>
+					</tr>
+				 </volist>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misordertypes_insert">
+				<li><button class="tml-btn tml-btn-primary" <if condition="$typeid">onclick="changekpiqz()" <else/>onclick="insertkpitype()"</if>   type="button">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+</div>

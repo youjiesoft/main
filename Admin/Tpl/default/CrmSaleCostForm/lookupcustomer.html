@@ -1,0 +1,78 @@
+<form id="pagerForm" action="__URL__/lookupcustomer">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="name" value="{$name}" />
+	<input type="hidden" name="typeid" value="{$typeid}" />
+	
+</form>
+<form rel="pagerForm" onsubmit="return dialogSearch(this);" action="__URL__/lookupcustomer" method="post">
+	<div class="pageHeader">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox"  name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option  value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option  value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.subsearch}</button></div></div></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</form>
+<div class="pageContent">
+	<table class="table" layoutH="112" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>客户代码</th>
+				<th>客户名称</th>
+				<th>公司地址</th>
+                <th>联系人</th>
+                <th>电话</th>
+                <th>业务人员</th>
+                <th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody>
+            <volist id="vo" name="list">
+	            <tr>
+					<td>{$vo['id']}</td>
+					<td>{$vo['code']}</td>
+					<td>{$vo['name']}</td>
+					<td>{$vo['caddr']}</td>
+	                <td>{$vo['linkman']}</td>
+	                <td>{$vo['tel']}</td>
+	                <td>{$vo['userid']|getFieldBy='id','name','User'}</td>
+					<td>
+	                	<a class="btnSelect" href="javascript:$.bringBack({ customerid:'{$vo.id}', customercode:'{$vo.code}' ,customername:'{$vo.name}'})" title="查找带回">选择</a>
+					</td>
+				</tr>
+            </volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

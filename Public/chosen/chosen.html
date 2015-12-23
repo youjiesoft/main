@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+"http://www.w3.org/TR/html4/strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>chosen测试</title>
+		<meta name="author" content="Administrator" />
+		<link href="Public/chosen/chosen.css" rel="stylesheet" />
+		<script src="Public/Js/jquery-1.7.1.js"></script>
+		<script src="Public/Js/tml.min.js"></script>
+		<script src="Public/chosen/chosen.jquery.js"></script>
+		<!-- Date: 2014-10-22 -->
+		
+<script>
+	function init(){
+		$('select').chosen({
+			no_results_text : "未找到此选项!",
+			search_contains:true
+		});
+	}
+	$(function(){
+		$('select.chosen').attr('data-placeholder','没有可用数据');
+		init();
+		
+		$('#ca').click(function(){
+			if($('#dept').attr('disabled')){
+				$('#dept').attr('disabled',false);
+			}else{
+				$('#dept').attr('disabled',true);
+			}
+			$("#dept").chosen('destroy');
+			init();
+		});
+		$("#ca1").click(function(){
+			$("#job option").remove();
+			$("#job").html('<option>我是测试数据1</option><option>你妹哦</option>');
+			$("#job").chosen('destroy');
+			init();
+		});
+	});
+	
+</script>
+	</head>
+	<body>
+		
+<a id="ca">改变select状态 </a>
+<a id="ca1">改变select的值数据 </a>
+<select name="dept" id="dept" style="width:150px;"  class="dept_select chosen">
+	<option value="">请选择</option>
+	<option value="部门1">总经办</option>
+	<option value="部门2">财务部</option>
+	<option value="部门3">销售部</option>
+	<option value="部门4">销后部</option>
+	<option value="部门5">技术部</option>
+</select>
+<select name="job" id="job" style="width:150px;" class="dept_select chosen">
+	<option value="">请选择</option>
+	<option value="文案">文案</option>
+	<option value="销售员">销售员</option>
+	<option value="程序员">程序员</option>
+	<option value="技术员">技术员</option>
+</select>
+		
+		
+		
+		<select style="width: 150px;"></select>
+	</body>
+</html>
+

@@ -1,0 +1,42 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/MisPerformanceKpiZnodes" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-form-row">
+				<label class="tml-form-label">指标分类:</label>
+				<select name="typeid" class="combox" >
+					<volist name="mptList" id="vos">
+						<option value="{$key}" <eq name="key" value="$vo.typeid">selected</eq>>{$vos}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="tml-form-row">
+				<label class="tml-form-label">{$fields["code"]}：</label>
+				<input type="text" name="code" value="{$vo.code}" readonly="readonly" />
+			</div>
+			<div class="tml-form-row">
+				<label class="tml-form-label">{$fields["name"]}：</label>
+				<input type="text" class="required" name="name" value="{$vo.name}" />
+			</div>
+			<div class="tml-form-row">
+				<label class="tml-form-label">备&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+				<textarea name="remark" maxlength="200" >{$vo['remark']}</textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancekpi_update">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+            <if condition="$_SESSION.a eq 1 or $_SESSION.misperformancekpi_delete">
+                <li>
+                    <button class="tml-btn tml-btn-orange" type="button" onclick='deleteRecord(this,"{$vo.id}","MisPerformanceKpi","dialog")'>{$Think.lang.del}</button>
+                </li>
+            </if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

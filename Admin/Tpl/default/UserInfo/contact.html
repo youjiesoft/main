@@ -1,0 +1,41 @@
+<div class="page">
+    <div class="pageContent">
+    <form method="post" action="__URL__/index/step/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+        <input type="hidden" name="id" value="{$ul.id}">
+        <div class="pageFormContent" layoutH="58" >
+            <div class="tml-row">
+                <div class="tml-form-col">
+                    <label>联系电话：</label>
+                    <input type="text" class="required" name="phone" value="{$ul.phone}" size="20">
+                </div>
+                <div class="tml-form-col">
+                    <label>手机短号：</label>
+                    <input type="text" class="" name="shortNumber" value="{$ul.shortNumber}"  size="10">
+    			</div>
+    			<div class="tml-form-col">
+                    <label>分机号码：</label>
+                    <input type="text" class="" name="officeNumber" value="{$ul.officeNumber}"  size="10">
+    			</div>
+    			<div class="tml-form-col">
+                    <label>家属电话：</label>
+                    <input type="text" class="phone" name="urgentphone" value="{$ul.urgentphone}"  size="20">
+    			</div>
+            </div>
+			<div class="tml-form-row">
+                <label>邮箱：</label>
+                <input type="text" class="email" name="email" value="{$ul.email}"  size="40">
+            </div>
+            <div class="tml-form-row">
+                <label>户籍地址：</label>
+                <input type="text" name="nativeaddress" value="{$ul.nativeaddress}">
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+                <li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+            </ul>
+        </div>
+    </form>
+    </div>
+</div>

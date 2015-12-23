@@ -1,0 +1,74 @@
+<script>
+function addApp(){
+	var $box= $.pdialog.getCurrent();
+	var title=$box.find("input[name='title']").val();
+	var height=$box.find("input[name='height']").val();
+	var src=$box.find("input[name='src']").val();
+	var imgsrc=$box.find("input[name='imgsrc']").val();
+	var type=$box.find("#type").val();
+	$.ajax({
+		url : "__URL__/lookupappinsert",// 通过Ajax取数据的目标页面userConstantly
+		type : 'post',// 方法，还可以是"post"
+		dataType:"json",
+		data:{title:title,height:height,src:src,imgsrc:imgsrc,type:type},
+		success:function(json){
+			DWZ.ajaxDone(json);
+			$.pdialog.close($box);
+			if(json.statusCode==DWZ.statusCode.ok){
+				$("#appUserConstantly_div").loadUrl("__APP__/MisSystemApp/lookupuserSetApp/typeid/6");
+			}
+		},
+		error:DWZ.ajaxError
+	});
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="logo"/>
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>名称：</label>
+					<input type="text" name="title" class="required" value=""
+						maxlength="50" />
+				</div>
+				<div class="tml-form-col">
+					<label>高度：</label>
+					<input type="text" name="height" class="required" value=""
+						maxlength="50" />
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>地址：</label>
+                    <div class="tml-checkbox">
+						<input name="src" placeholder="例如：http://www.baidu.com"  type="text"/>
+                    </div>
+				</div>
+				<div class="tml-form-col">
+					<label>logo地址：</label>
+                    <div class="tml-checkbox">
+						<input name="imgsrc"   type="text"/>
+                    </div>
+				</div>
+				<div class="tml-form-col">
+					<label>类别：</label>
+					<select name='type' id="type" class="combox" >
+						 {:getSelectByHtml('apptype','select','','6,7')}
+					</select>
+				</div>
+				</div>
+				</div>
+			<div class="formBar">
+				<ul>
+					<li>
+						<button class="tml-btn tml-btn-primary"  onclick="addApp()" type="button">{$Think.lang.save}</button>
+					</li>
+					<li>
+						<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+					</li>
+				</ul>
+			</div>
+	</div>
+</div>

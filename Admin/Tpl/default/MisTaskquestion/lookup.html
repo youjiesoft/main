@@ -1,0 +1,69 @@
+<form id="pagerForm" method="post" action="__URL__/lookup">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<div class="pageHeader">
+	<div class="searchBar">
+		<form rel="pagerForm" onsubmit="return dialogSearch(this);" action="__URL__/lookup" method="post">
+		<table class="searchContent">
+			<tr>
+				<td>
+					请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+				</td>
+				<td>
+					<select class="combox"  name="searchby">
+						<volist id="vou" name="searchbylist">
+							<option value="{$vou['id']}" <eq name="searchby" value="$vou.id">selected</eq> >{$vou['val']}</option>
+						</volist>
+					</select>
+				</td>
+				<td>
+					<select class="combox" name="searchtype">
+						<volist id="voty" name="searchtypelist">
+							<option value="{$voty['id']}" <eq name="searchtype" value="$voty.id">selected</eq> >{$voty['val']}</option>
+						</volist>
+
+					</select>
+				</td>
+			</tr>
+		</table>
+		<div class="subBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.subsearch}</button></div></div></li>
+			</ul>
+		</div>
+		</form>
+	</div>
+</div>
+<div class="pageContent">
+	<table class="table" layoutH="114" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<th>编号</th>
+				<th>分类</th>
+				<th>专家名称</th>
+				<th>专家介绍</th>
+				<th width="75">查找带回</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="list" name="list">
+				<tr target="sid_node" rel="{$list['id']}">
+				<td>{$list['code']}</td>
+				<td>{$list['typename']}</td>
+				<td>{$list['name']}</td>
+				<td>{$list['text']}</td>
+				<td><a class="btnSelect" href="javascript:$.bringBack({ id :'{$list.id}',userid:'{$list.id}',name:'{$list.name}' })" title="查找带回">选择</a></td>
+			</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

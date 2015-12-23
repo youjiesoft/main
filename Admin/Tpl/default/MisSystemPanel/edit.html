@@ -1,0 +1,248 @@
+<script>
+$(function(){
+	var conf = new Object();
+	var data = '{$nodelist}';
+	conf.data =eval("("+data+")");//$.parseJSON(data);
+	conf.ids = '#nbm1,#nbm2',
+	conf.tag = 'group,node'; 
+	conf.pid = 'group_id';
+	conf.tex = 'name'; 
+	conf.val = 'id';  
+	conf.container=$.pdialog.getCurrent() ;
+	conf.defaultVal='{$vo.group_id},{$vo.modelid}';
+	$.linkage(conf); 
+	changecheckbox();
+}); 
+function panelDeleteRole(obj){
+	var $box=$.pdialog.getCurrent();
+	$box.find(obj).parents("div.removediv").remove();
+	$box.find("._itemIndex").each(function(i){
+		 $(this).text(i+1);
+	 });
+}
+function changedetail(obj){
+	var $box= $.pdialog.getCurrent();
+    var showvoid=$box.find(".showvoid").val();
+	if(!showvoid){
+	  var $id=$(obj).val();
+	  $.ajax({
+			type : "POST",
+			url : "__URL__/lookupdetail",
+			global:false,
+			data : {
+				'modelid' : $id
+			},
+			success : function(response) {
+				$('#seshowfield span').remove();
+				$('#seshowfield1 span').remove();
+				response=DWZ.jsonEval(response);
+				 $("#PanelResultdiv").loadUrl("__URL__/lookupdetail/type/1/modelname/"+response.modelname,{},function(){
+			         $("#PanelResultdiv").find("[layoutH]").layoutH();},false);
+				
+				$box.find(".input-addon-add").attr("attjson",response);
+				//如果更换节点 之前设置的条件将会清空
+				var $ref = $box.find("#sfieldpaneladd1");
+ 				var html =  '<option value="0">--请选择--</option>';
+				$.each(response, function(i) {
+					if (response[i]) {
+						html += '<option value="'+response[i]['name']+'">' + response[i]['showname']
+								+ '</option>';
+					}
+				}); 
+				$('#seshowfield').html('');
+				var html3 = '';
+				$.each(response, function(i) {
+					if (response[i] != response.modelname && response[i]) {
+						html3 += '<input type="checkbox" name="checkboxs"  onchange="changecheckbox();"  curname="'+response[i]['showname']+'"  value="'+response[i]['name']
+								+'"><label class="tmp_label">'
+								+response[i]['showname']+'</label>';
+					}
+				});
+				var $refCombox = $ref.parents("div.combox:first");
+				$ref.html(html).insertAfter($refCombox);
+				$refCombox.remove();
+				$ref.combox();
+				if($box.find(".deletediv")){
+					$box.find(".deletediv").remove();	
+				}
+				var $refshow = $box.find("#showtitleselect");
+					$refshow.html(html3);
+				$box.find("#roleexpdiv1").show();
+				$box.find("#roleexpinputstartspan1").hide();
+				$box.find("#roleexpinputendspan1").hide();
+				$box.find("#roleexpselectadddiv1").show();
+			}
+		});
+	}	
+	$box.find(".showvoid").attr("value",'');
+}
+function changecheckbox(){
+	var $box= $.pdialog.getCurrent();
+	var $refshow = $box.find("#showtitleselect");
+	$("#showtitleselect .enterIndex").die();
+	$("#showtitleselect .enterIndex").live("change",function(){
+		var val= $(this).val();
+		// 添加 
+		var _this = this;
+		 	len = $("input[name='checkboxs']:checkbox:checked").length; 
+		 if($(this).is(':checked')){
+			 if(len==1){
+				$('#seshowfield').append(' <span style="color:red">['+$(this).attr('curname')+']&nbsp;&nbsp;<input type="hidden" name="showtitle[]" value='+val+'></span>');
+				$('#seshowfield1').append('<span style="color:red">'+$(this).attr('curname')+'...&nbsp;&nbsp;</span>');
+											 
+				 
+				}else if(len==2||len==3){
+				$('#seshowfield').append(' <span>'+$(this).attr('curname')+'&nbsp;&nbsp;<input type="hidden" name="showtitle[]" value='+val+'></span>');
+				$('#seshowfield1').append('<span>'+$(this).attr('curname')+'&nbsp;&nbsp;</span>');
+			}else{
+				alert("最多选择3项");
+				$(this).attr('checked',false);
+			} 
+			
+		}else{
+			// 删除 现有 
+			$('#seshowfield span').each(function(){
+				if($(this).text().trim() == '['+$(_this).attr('curname')+']'||$(this).text().trim() == $(_this).attr('curname')+'...'||$(this).text().trim() == $(_this).attr('curname')){
+					$(this).remove();								
+				}
+			});
+			$('#seshowfield1 span').each(function(){
+				if($(this).text().trim() == '['+$(_this).attr('curname')+']'||$(this).text().trim() == $(_this).attr('curname')+'...'||$(this).text().trim() == $(_this).attr('curname')){
+					$(this).remove();
+				}
+			});
+		}	
+	});
+}
+/* $("#seshowfield").click(function(){
+	var showfields=$("input[name='showtitle']");
+	var showfieldshtml = '';
+	for (var i=0;i<showfields.length;i++)
+	{
+		showfieldshtml += '<input type="text" value="'+showfields[i].val()+'">'; 
+	}
+	
+}); */
+
+</script>
+<style>
+	.tml-form-row label.tmp_label{margin-left:0px;width: 120px;float: none;font: 14px/30px "Microsoft Yahei","微软雅黑",sans-serif;}
+	.tml-form-row label.tmp_label:hover{color:#006699;}
+	</style>
+		
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/missystempanellookupindex" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+            <if condition='$fields["name"]'>
+				<div class="tml-form-col">
+					<if condition='$fields["name"]'>
+						<label>{$fields["name"]}：</label>
+						<input type="text" class="required" name="name" value="{$vo.name}">
+					</if>
+				</div>
+			</if>
+				<div class="tml-form-col">
+				<label>组名称：</label>
+					<select name="group_id"   class="select2" id="nbm1"><option>--请选择--</option></select>
+				</div>
+			<div class="tml-form-col">
+				<label>所属模块：</label>
+				 <select  name="modelid"  class="select2" onchange="changedetail(this)" id="nbm2"><option>--请选择--</option></select>
+			</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-row ">				
+					<label>内容类型：</label>
+					<input name="type" <if condition="$vo.type eq '1'">checked="checked"</if> type="radio" value="1"/>系统内部
+					<input name="type" <if condition="$vo.type eq '2'">checked="checked"</if> type="radio" value="2"/>url地址
+				</div>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-row ">				
+					<label>外部url地址：</label>
+					<input type="text" name="url" placeholder="外部url请加http://" value="{$vo.url}">				 
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-row ">				
+					<label>显示字段：</label>
+					<div id="showtitleselect">
+					<input type="hidden" class="showvoid"  value="{$vo.id}"/>
+					<volist name="detailList" id="vd">
+					<input type="checkbox" name="checkboxs" curname="{$vd.showname}" onchange="changecheckbox();"  value="{$vd.name}" <if condition="in_array($vd.name,$vo.showtitle)">checked="checked"</if>>{$vd.showname}
+					</volist> 
+					</div>
+				</div>
+			</div>
+			<div class="tml-row">
+				<div     class="tml-form-col">
+					<label>预览1： </label>
+					<div>
+						<input type="radio" class="secShowfields1" name='showtitletype'  value='1' <if condition="$vo['showtitletype'] eq 1">checked</if>/>
+						<div id="seshowfield">
+						<if condition="$showtitle[0]">
+						<span style="color:red">[{$showtitle.0}]&nbsp;&nbsp;<input type="hidden" name="showtitle[]" value='{$vo.showtitle.0}'></span>
+						<span>{$showtitle.1}&nbsp;&nbsp;<input type="hidden" name="showtitle[]" value='{$vo.showtitle.1}'></span>
+						<span>{$showtitle.2}&nbsp;&nbsp;<input type="hidden" name="showtitle[]" value='{$vo.showtitle.2}'></span>
+						</if>
+						</div>
+					</div>
+										
+				</div>
+			</div>
+			<div class="tml-row">
+				<div    class="tml-form-col">
+					<label>预览2：</label>
+					<div>
+						<input type="radio" class="secShowfields2" name='showtitletype' value='2' <if condition="$vo['showtitletype'] eq 2">checked</if> />
+						<div id="seshowfield1">
+						<if condition="$showtitle[0]">
+						<span style="color:red">{$showtitle.0}...&nbsp;&nbsp;</span>
+						<span>{$showtitle.1}&nbsp;&nbsp;</span>
+						<span>{$showtitle.2}&nbsp;&nbsp;</span>
+						</if>
+						</div>
+					</div>
+										
+				</div>
+			</div>
+			<div class="tml-row">
+			<div class="tml-form-row" id="PanelResultdiv">
+				 <include file="lookupdetail"  />
+			</div>
+			</div>			
+			<div class="tml-row">
+			<if condition='$fields["sort"]'>
+				<div class="tml-form-col">
+					<if condition='$fields["sort"]'>
+						<label>{$fields["sort"]}：</label> 
+						<input type="text" class="required" name="sort" value="{$vo.sort}">
+					</if>
+				</div>
+			</if>			
+			<div class="tml-form-col">
+				<label>是否滚动：</label>
+				<select name="issroll" class="combox">
+					{:getSelectByHtml('debit','select',$vo['issroll'])}
+				</select>
+			</div>
+			<if condition='$fields["isbasepanel"]'>
+				<div class="tml-form-col">
+					<if condition='$fields["isbasepanel"]'>
+						<label>{$fields["isbasepanel"]}：</label>
+						<select name="isbasepanel" class="combox">
+							{:getSelectByHtml('debit','select',$vo['isbasepanel'])}
+						</select>
+					</if>
+				</div>
+			</if>
+			</div>      
+		</div>
+        {:W('ShowAction')}		  
+	</form>
+	
+	</div>
+</div>
+

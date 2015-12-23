@@ -1,0 +1,90 @@
+<script src="__PUBLIC__/Js/highcharts.js"></script>
+<script>
+$(function () {
+    $('#wfDistributeChart').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '{$title}'
+        },
+        xAxis: {$xAxis},
+        yAxis: {
+            min: 0,
+            title: {
+                text: '数量'
+            }
+        },
+       exporting:{ 
+            enabled:false //用来设置是否显示‘打印’,'导出'等功能按钮，不设置时默认为显示 
+       },
+       credits: {
+           enabled: false
+       },
+       tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: {$series}
+    });
+});
+function hJqGridDoSearch(obj){
+	var $box=navTab.getCurrentPanel();
+	var form = obj.form;
+	var data = $(form).serializeArray();
+	url="__URL__/wfDistributeChart/";
+	 var equipmenttype=$box.find("#equipmenttype").val();
+	 if(equipmenttype){
+		 url+= "equipmenttype/"+equipmenttype;
+	 }
+ 	var manageid=$box.find("input[name='manageid']").val();
+ 	 if(manageid){
+		 url+= "/manageid/"+manageid;
+	 }
+	$("#wfDistributeChart").loadUrl(url,{},function(){
+    	$("#wfDistributeChart").find("[layoutH]").layoutH();});
+}
+</script>
+ 	<form target="_blank">
+			<input type="hidden" name="sidx">
+			<input type="hidden" name="sord">
+			<input type="hidden" name="rows">
+			<input type="hidden" name="page">
+			<input type="hidden" name="exportType">
+			<fieldset class="side-catalog-anchor"  >
+				<div class="xyEditForm"  id="jsonmaplookupcontractalarmacform">
+					<div class="xyEditFormCon">
+						<div class="tml-row pt5">
+							<div class="edit-form-col">
+								<label>类别：</label>
+								<select name=equipmenttype id="equipmenttype" class="combox">
+									<option value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+									<volist name="MisWorkFacilityTypeList" id="MisWorkFacilityDistributeVo">
+									<option  <if condition="$key eq $equipmenttype">selected="selected"</if> value="{$key}">{$MisWorkFacilityDistributeVo}</option>
+									</volist>
+								</select>
+							</div>
+							<div class="edit-form-col">
+								<label>设备名称：</label>
+								<input type="text" class="checkByInput" map="array('status'=>1);" fields="array('id'=>'0','equipmentname'=>'名称');" checkfor="mis_work_facility_manage" show="equipmentname"  />
+								<input type="hidden" name="manageid">
+							</div>
+						</div>
+						<div class="tml-text-r" style="padding-right: 15px;" >
+							<button class="tml-btn tml-btn-green" type="button" name="showgrid"  onclick="hJqGridDoSearch(this)">检索</button>
+						</div>
+					</div>
+				</div>
+			</fieldset>
+			</form>
+<div id="wfDistributeChart" style="overflow: hidden;height: 50%"></div>

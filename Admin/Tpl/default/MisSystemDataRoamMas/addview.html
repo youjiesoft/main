@@ -1,0 +1,170 @@
+<script type="text/javascript">
+function changefields(obj){
+	var value = $(obj).val();
+	var bom = $(obj).parents('div').find('select[name*="tfield"]');
+	var inp = $(obj).parents('div').find('input[name*="tname"]');
+	 $.ajax({
+		type:"POST",
+		data:{modelname:value},
+		url:"__URL__/changefield",
+		datatype:"JOSN",
+		success:function(data){			
+			var datas=jQuery.parseJSON(data);
+			var html='<option value=""></option>';
+			$.each(datas,function(i,val){
+				html += '<option value="'+val.name+'" china="'+val.showname+'">'+val.name+'【'+val.showname+'】</option>'
+			});
+			 bom.each(function(){
+				 $(this).html('');
+				 $(this).append(html); 
+			 });
+			 inp.each(function(){
+				 $(this).val('');
+			 })
+		},
+	}) ;
+}
+function changefield(obj){
+	var $this=$(obj);
+	var $value = $this.val();
+	console.log($value);
+	var $china = $this.find('option:selected').attr('china');
+	var $model = $("input[name='targetmodel']").val();
+	if($value==''){
+		$this.closest('td').next().find('input').val('');
+	}else{
+		$this.closest('td').next().find('input').val($china);
+	}
+	
+	$this.parents("tr").addClass("changed");
+	//$this.parents("tr").find('input[name*="tname"]').val($china);
+}
+function getDataRoamRaletion(modelname){
+	var $selectval = $("#mymodelabc").val();
+	if($selectval == '-1'){
+		alertMsg.error("请先选择漫游model");
+		return false;
+	}
+	var title="关联关系";
+	var rel="roamMasRealtion";
+	var options={};
+	options.width="700";
+	options.height="400";
+	options.mask=true;
+    var url="__URL__/lookupDataRoamRaletion/sourcemodel/"+modelname+"/mymodel/"+$selectval;
+	DWZ.debug(url);
+	if(!url.isFinishedTm()){
+	alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+	return false;}
+	$.pdialog.open(url,rel,title,options);
+}
+function clearRaletion($order){
+	$("."+$order).html('');
+	var $box=navTab.getCurrentPanel();
+	$box.find("input[name='relation']").val("");
+	//移除添加按钮中list
+}
+</script>
+<style>
+.grid .gridTbody .changed {
+    background: none repeat scroll 0 0 #F0F8FF;
+}
+</style>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/MisSystemDataRoamMasadd" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone)">
+		<input type="hidden" name="refreshtabs[data]" value="{ data:{ ntdata:0 }}" />
+		<input type="hidden" name="refreshtabs[type]" value="navtab">
+		<input type="hidden" name="sourcemodel" value="{$modelname}">
+		<input type="hidden" name="relation" value="">
+		<div class="pageFormContent" layoutH="40">
+		<div class="tml-row">	
+			<div class="tml-form-col">
+				<label>漫游model：</label>
+				<select name="targetmodel" class="chosen" id="mymodelabc" onchange="changefields(this)">
+				<option value='-1'>请选择漫游model</option>
+				<volist name="targetmodel" id="vo">
+					<option value="{$vo.modelname}" title="{$vo.title}">{$vo.title}</option>
+				</volist>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>类型：</label>
+				<select name="type">
+					<option value='0'>请选择类型</option>
+					<option value="1">新增</option>
+					<option value="2">修改</option>
+					<option value="3">删除</option>
+					<option value="4">生成单据</option>
+				</select>
+			</div>					
+		</div>
+		<div class="tml-row">	
+			<label>关联关系：</label>
+			<button class="condition_btn condition_add" onclick="getDataRoamRaletion('{$modelname}');" type="button">
+				<span class="icon-plus"></span>添加
+			</button>
+			<a class="condition_clear condition_btn" href="javascript:;" onclick="clearRaletion('js-relation-class');">
+				<span class="icon-trash"></span>
+				清除
+			</a>
+			<span class="js-relation-class"></span>
+		</div>
+		<div class="tml-row">
+            <label>规则条件：</label>
+            {:W('ShowAddResult', array('model'=>$modelname) )}
+        </div>	
+		<table class="table" width="100%">
+			<thead ename="{$ename}">
+				<tr>
+				<th width="12">来源字段</th>
+				<th width="12">来源字段中文名</th>
+				<th width="12">目标字段</th>
+				<th width="12">目标字段中文名</th>
+				<th width="12">定位条件</th>
+				<th width="12">定位描述</th>
+				<th width="12">操作方式</th>
+				<th width="14">操作描述</th>
+				</tr>
+			</thead>
+		<tbody>
+			<volist id="vo" name="fieldarr" key="key2">
+			<tr>
+				<td >
+					{$vo.name}
+					<input type="hidden" name="sfield[]" value="{$vo.name}" />
+				</td>
+				<td>
+					{$vo.showname}
+					<input type="hidden" name="sname[]" value="{$vo.showname}"/>
+				</td>
+				<td>
+				<select name="tfield[]" onchange="changefield(this);">
+					
+				</select>
+					<!-- <input type="text" name="tfield[]" onblur="havevalue(this);"/> -->
+				</td>
+				<td>
+					<input type="text" name="tname[]" onblur="havevalue(this);"/>
+				</td>
+				<td>
+					<input type="text" name="condo[]" onblur="havevalue(this);"/>
+				</td>
+				<td>
+					<input type="text" name="conremark[]" onblur="havevalue(this);"/>
+				</td>
+				<td>
+					<input type="text" name="expdo[]" onblur="havevalue(this);"/>
+				</td>
+				<td>
+					<input type="text" name="expremark[]" onblur="havevalue(this);"/>
+				</td>			 	
+			</tr>
+		</volist>
+		</tbody>
+		</table>
+		{:W('ShowAction')}
+		</div>
+	</form>
+	</div>
+</div>

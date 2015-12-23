@@ -1,0 +1,81 @@
+<script>
+	function showworkmessage(ob){
+		var $box=navTab.getCurrentPanel();
+		$box.find("#"+ob).siblings("li").hide();
+		$box.find("#"+ob).show();
+	}
+</script>
+<div class="work_shortcut" layouth="40">
+    <div class="work_shortcut_top"></div>
+    <div class="work_shortcut_content" layouth="80">
+        <if condition="($isoftenwork eq 1)">
+        <dl class="work_group_sort">
+        <dt>常用</dt>
+        <div class="tml_style_line tml_slb_blue work_lmb"></div>
+        <volist id="often" name="oftenwork" >
+            <dd>
+            {$often['html']}
+            </dd>      
+        </volist>
+        <div class="clear"></div>
+        </dl>
+        <else />
+  		<div class="tml-text-r tml-pos-abs" style="right: 10px;top: 10px;z-index: 2;">
+			<a class="tml-btn tml-btn-default"   href="__APP__/UserOftenMenu/oftenadd" target="dialog" rel="__MODULE__add" width="770" height="530" title="常用功能添加">常用<span class="icon icon-plus"></span>  </a>
+		</div>
+        </if>
+        
+        <volist id="vo" name="dowork" >
+        <dl class="work_group_sort">
+            <!-- 类型分组 -->
+			<dt>{$key}</dt>
+		<div class="tml_style_line tml_slb_blue work_lmb"></div>
+        <foreach name="vo" item="vo1">
+			<dd>
+				{$vo1['html']}
+			</dd>
+		</foreach>
+		<div class="clear"></div>
+		</dl>	      
+        </volist>
+        
+ <!--
+        <dl class="work_group_sort">
+            <dt>常用</dt>
+            <div class="tml_style_line tml_slb_blue work_lmb"></div>
+            <dd><a href="#">借款申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <dd><a href="#">工作报告</a></dd>
+            <div class="clear"></div>
+        </dl>
+        <dl class="work_group_sort">
+            <dt>人事</dt>
+            <div class="tml_style_line tml_slb_blue work_lmb"></div>
+            <dd><a href="#">借款申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <dd><a href="#">工作报告</a></dd>
+            <dd><a href="#">借款申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <dd><a href="#">工作报告</a></dd>
+            <dd><a href="#">借款申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <dd><a href="#">工作报告</a></dd>
+            <dd><a href="#">借款申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <div class="clear"></div>
+        </dl>
+        <dl class="work_group_sort">
+            <dt>财务</dt>
+            <div class="tml_style_line tml_slb_blue work_lmb"></div>
+            <dd><a href="#">借款申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <dd><a href="#">工作报告</a></dd>
+            <dd><a href="#">借款申请</a></dd>
+            <dd><a href="#">采购申请</a></dd>
+            <dd><a href="#">工作报告</a></dd>
+            <div class="clear"></div>
+        </dl>
+         -->
+    </div>
+</div>

@@ -1,0 +1,89 @@
+<script>
+//添加计划模板分类指标
+function insertplankpi(){
+	//获取指标分类
+	 var $kpitypeid=$("input[name='kpitypeid']").val();
+	var html = "<table border='0' class='tml-table-w PlanKPIeditHidden_table'>";
+	if($("#PlanKPIeditHidden").find('input:checkbox:checked').length>0){
+	$("#PlanKPIeditHidden").find('input:checkbox:checked').each(function(){
+		var $this = $(this);
+		var $score = $(this).prev().prev("input[name='kpiscore']").val();
+		var $edit_id = $(this).prev("input[name='edit_id']").val();
+		var $val = $this.val();
+		var $name = $this.parent().parent().next().next().text();
+		html += "<tr class='PlanKPIeditHidden_table_each'>";
+		html += "<td ondblclick='MisPerformanceTemplate_editplankpi("+$kpitypeid+",this)'><input type='hidden' name='plan_kpi"+$kpitypeid+"[]' value='"+$val+"'/>"+$name+"</td>";
+		html += "<td style='width: 100px;'><input style='width: 50px;' onblur='planeditchangescore()'  class='counteditscore required number spinner' type='text' name='plan_kpiscore"+$kpitypeid+"["+$val+"]' value='"+$score+"' /></td>";
+		html += "</tr>";
+	});
+	}else{
+		html += "<tr class='PlanKPIeditHidden_table_each'>";
+		html += "<td ondblclick='MisPerformanceTemplate_editplankpi("+$kpitypeid+",this)'>&nbsp;</td>";
+		html += "<td style='width: 100px;'></td>";
+		html += "</tr>";
+	}
+	html += "</table>";
+	//加入指标区域
+	$(thisplankpi).html(html);
+	MisPerformancePlan_editspinner();
+	//重新计算指标分值总和
+	planeditchangescore();
+	$("#editsum").show();
+	$.pdialog.closeCurrent(); 
+}
+//窗体加载获取已选指标分类及指标分值
+$(function(){
+	$("#MisPerformancePlanedit_tbody").find('.PlanKPIeditHidden_table_each').each(function(i,e){
+		 var val= $(e).find("input[name^=plan_kpi]").val();
+		 var kpiscore= $(e).find("input[name^=plan_kpiscore]").val();
+		 var edit_id= $(e).find("input[name^=edit_id]").val();
+		 $("#PlanKPIeditHidden").find('tr').each(function(){
+			 var typeid=$(this).attr('rel');
+			 if(typeid==val){
+				 	$(this).find("input[name='kpitypeid']").attr("checked","checked");
+				 	$(this).find("input[name='kpiscore']").attr("value",kpiscore);
+				 	$(this).find("input[name='edit_id']").attr("value",edit_id);
+			 }
+		 });
+	});
+});
+</script>
+<div>
+	<div class="xyEmployee" layoutH="32" style="position:relative;">
+	<input name="kpitypeid" type="hidden" value="{$kpitypeid}">
+	<div class="xyEmployeeBasicInfo">
+		<div class="clear"></div>
+		<table class="table" width="100%">
+			<thead>
+				<tr>
+					<th>选择</th>
+					<th>指标编码</th>
+					<th>指标名称</th>
+					<th>备注</th>
+				</tr>
+			</thead>
+			<tbody id="PlanKPIeditHidden">
+				<volist name="kpilist" id="klist">
+				 <tr rel="{$klist.id}">
+					<td class="PlanKPIeditHidden_td">
+					<input type="hidden" name="kpiscore" />
+					<input type="hidden" name="edit_id" />
+					<input class="kpiid" type="checkbox"  name="kpitypeid" value="{$klist.id}"></td>
+					<td> <span>{$klist.code}</span></td>
+					<td> <span class="kpiid">{$klist.name}</span></td>
+					<td> <span>{$klist.remark}</span></td>
+					</tr>
+				 </volist>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformanceplan_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button onclick="insertplankpi()"   type="button">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+</div>

@@ -1,0 +1,13 @@
+﻿<chart   yAxisName="数量" animation="0" showAboutMenuItem="0" unescapeLinks="0">
+<set label="销售费用" value="2"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/CrmSaleCostForm/index/ntdata/1',{title:'销售费用'});"/>
+<set label="销售报价" value="6"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisSalesQuotationmas/index/ntdata/1',{title:'销售报价'});"/>
+<set label="销售订单" value="2"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisSalesOrdermas/index/ntdata/1',{title:'销售订单'});"/>
+<set label="采购申请" value="2"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisPurchaseApplymas/index/ntdata/1',{title:'采购申请'});"/>
+<set label="采购订单" value="3"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisPurchaseOrdermas/index/ntdata/1',{title:'采购订单'});"/>
+<set label="物料入库" value="5"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisInventoryIntoMas/index/ntdata/1',{title:'物料入库'});"/>
+<set label="财务入库" value="1"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisInventoryIntoFmas/index/ntdata/1',{title:'财务入库'});"/>
+<set label="物料出库" value="6"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisInventoryOutMas/index/ntdata/1',{title:'物料出库'});"/>
+<set label="财务出库" value="4"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisInventoryOutFmas/index/ntdata/1',{title:'财务出库'});"/>
+<set label="物料转移" value="3"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisInventoryMoveMas/index/ntdata/1',{title:'物料转移'});"/>
+<set label="财务调整" value="2"  link="JavaScript:navTab.openTab('MisTodo','/mis/Admin/index.php/MisInventoryAdjustFmas/index/ntdata/1',{title:'财务调整'});"/>
+</chart>

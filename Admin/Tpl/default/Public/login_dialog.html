@@ -1,0 +1,44 @@
+<script>
+	var $box =$.pdialog.getCurrent();
+	$box.find(".dialog_verify_img img").attr("src",TP_APP+"/Public/verify/"+new Date().getTime());
+	$box.find(".dialog_login_form").attr("action",TP_APP+"/Public/signin/");
+</script>
+<div class="pageContent">
+	<form method="post" action="" class="dialog_login_form pageForm" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="rsignin" value="1"/>
+		<input type="hidden" name="login_type" value="dialog"/>
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>用户名：</label>
+					<input type="text" name="account" class="required" />
+				</div>
+			</div>
+			<if condition="!$verificationcode">
+				<div class="tml-form-row">
+				</div>
+			</if>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>密码：</label>
+					<input type="password" name="password" class="required" />
+				</div>
+			</div>
+			<if condition="$verificationcode">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>验证码：</label>
+						<input type="text" name="verify" id="verify" class="required ad_log_input w2" />
+						<span class="dialog_verify_img"><img id="verifyImg" src="" onClick="fleshVerify()" border="0" alt="点击刷新验证码" style="cursor:pointer;margin:0 0 0 6px;" align="absmiddle"></span>
+					</div>
+				</div>
+			</if>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">提交</button></li>
+				<li><button type="button" class="tml_select_btn tml_formBar_btn_red" onClick="$.pdialog.closeCurrent();">取消</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

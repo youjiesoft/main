@@ -1,0 +1,102 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="dotype" value="流程新建" />
+		<input type="hidden" name="beforeInsert" value="1" />
+		<input type="hidden" name="refreshtabs[closeall]" value="1" />
+		<input type="hidden" class="org.mangid" value="{$MisHrBasicEmployeeVO['id']}" name="personid"/>
+		<input type="hidden" name="trantype" value="{$MisHrBasicEmployeeVO['workstatus']}"/>
+		<div class="pageFormContent " layoutH="58">
+			<H2 class="contentTitle contentTitle_center">调职申请单 
+			 {:W('ShowOrderno',array(0,'mis_hr_personnel_train_info'))}
+			</H2>
+			<p>
+				<label>姓名：</label>
+                <input type="text" name="name" value="{$MisHrBasicEmployeeVO['name']}" readonly="readonly" />
+			</p>
+			 <p>
+				<label>异动类型：</label>
+				<SELECT name="typeid" class="combox">
+					<volist name="tranlist" id="volist">
+						<option value="{$volist.id}">{$volist.name}</option>
+					</volist>
+				</SELECT>
+			</p>
+			<p>
+				<label>入职日期：</label>
+                <input type="text" value="{$MisHrBasicEmployeeVO['indate']|transTime}" readonly="readonly" />
+			</p>
+			<p>
+				<label>转正日期：</label>
+                <input type="text" value="{$MisHrBasicEmployeeVO['transferdate']|transTime}" readonly="readonly" />
+			</p>
+			
+			<p>
+				<label>调前部门：</label>
+	            <input type="text" class="org.deptname" value="{$deptVO['name']}" readonly="readonly" />
+				<input type="hidden" class="org.deptid" value="{$deptVO.id}"  name="deptid"/>
+			</p>
+			<p>
+				<label>调往部门：</label>
+				<select name="newdeptid" class="combox" style="width: 200px;">
+					{$depthtml}
+				</select>
+			</p>
+			<p>
+				<label>调前职级：</label>
+		        <input type="text" class="org.dutylevelname" value="{$dutyVO.name}" readonly="readonly" />
+				<input type="hidden" class="org.dutylevelid" value="{$dutyVO.id}" name="dutylevelid"/>
+			</p>
+			<p>
+				<label>调后职级：</label>
+	            <select name="newdutylevelid" class="combox">
+					<volist name="zhiwei" id="zhiweilist">
+						<option value="{$key}">{$zhiweilist}</option>
+					</volist>
+				</select>
+			</p>
+			<p>
+				<label>调前岗位：</label>
+				<input type="text"    readonly="readonly" value="{$MisHrBasicEmployeeVO.worktype|getFieldBy='id','name','mis_hr_job_info'}"/>
+				<input type="hidden" name="worktype"   class="org.worktype"  value="{$vo.worktype}"  />
+			</p>
+			<p>
+				<label>调后岗位：</label>
+				<select name="newworktype" class="combox">
+					<volist name="worktypeList" id="worktypLname">
+						<option value="{$key}" <if condition="$vo.newworktype eq $key">selected="selected"</if>>{$worktypLname}</option>
+					</volist>
+				</select>
+			</p>
+			<div class="unit">
+				<label>详细描述：</label>
+				<textarea class="required textInput" style="width: 433px; height: 64px;" name="transfer"></textarea>
+			</div>
+			<div class="clear"></div>
+			<hr />
+			<p>
+				<label>申&nbsp;请&nbsp;人：</label>  
+				<input type="text" readonly="readonly" value="{$MisHrBasicEmployeeVO['name']}"/>
+			</p>
+			<p>
+				<label>申请时间：</label>
+				<input type="text" readonly="readonly" value="{$time|transTime}"/>
+			</p>
+		</div>
+		<div class="formBar">
+			<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonneltraininfo_startprocess ">
+					<if condition="$vo.auditState eq 0 || $vo.auditState eq -1">
+						<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="StartProcess_dialog(this.form,'__MODULE__');">{$Think.lang.startprocess}</button></div></div></li>
+					</if>
+				</if>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.cancel}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

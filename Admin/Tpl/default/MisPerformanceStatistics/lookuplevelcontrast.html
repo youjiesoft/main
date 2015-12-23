@@ -1,0 +1,62 @@
+<script>
+$(function(){
+	var url = "__URL__/lookupLevelChart";
+	var swf = 'MSColumn3D';
+	chart("__PUBLIC__/Charts/"+swf+".swf","levelChart",url,"1500", "400");
+	$('#selectLevelChart').selectButton().change(function(){
+		var swf = $(this).val();
+		chart("__PUBLIC__/Charts/"+swf+".swf","levelChart",url,"1500", "400");
+	});
+});
+</script>
+<div class="pageContent">
+	<table class="table" style="width: 500px;" layoutH="450">
+		<thead>
+			<tr>
+				<th>部门</th>
+				<th>参加考核人数</th>
+				<volist id="plvo" name="pllist">
+					<th>{$plvo['name']}</th>
+				</volist>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="dept" name="deptlist">
+				<tr>
+					<td>{$dept['name']}</td>
+					<td>{$dept['sumNum']}</td>
+					<volist id="plvo" name="pllist">
+						<td>{$dept['pnum'][$plvo[id]]}</td>
+					</volist>
+				</tr>
+			</volist>
+			<tr>
+				<td>合计</td>
+				<td>{$totalArr['total']}</td>
+				<volist id="plvo" name="pllist">
+					<td>{$totalArr['pl'][$plvo[id]]}</td>
+				</volist>
+			</tr>
+			<tr>
+				<td>百分比</td>
+				<td></td>
+				<volist id="plvo" name="pllist">
+					<td>
+						<if condition="$totalArr['pl'][$plvo['id']]">
+							{:sprintf("%.2f", $totalArr['pl'][$plvo[id]]/$totalArr['total']*100)}%
+						</if>
+					</td>
+				</volist>
+			</tr>
+		</tbody>
+	</table>
+	<div class="clearfix tml-m10">
+		<select name="select" id="selectLevelChart" class="">
+			<option value="MSColumn2D">2D柱图</option>
+			<option value="MSColumn3D" selected="selected">3D柱图</option>
+		</select>
+	</div>
+	<div layoutH="238">
+		<div id="levelChart"></div>
+	</div>
+</div>

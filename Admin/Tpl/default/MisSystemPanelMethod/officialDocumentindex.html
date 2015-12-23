@@ -1,0 +1,19 @@
+<if condition="$selist">
+<div class="data">
+	<ul class="company_content_ul">
+		<if condition="$type eq 2">
+		<volist id="sevo" name="selist">
+			<li><a href="__APP__/MisOfficialdocumentIn/edit/id/{$sevo['id']}"  rel="MisOfficialdocumentIn"  title="收文信息_查看" target="navTab">{$sevo['referencenum']}&nbsp;&nbsp;&nbsp;{$sevo['filename']}</a></li>
+		</volist>
+		<else/>
+		<volist id="sevo" name="selist">
+			<li><a href="__APP__/MisOfficialdocumentOut/edit/id/{$sevo['id']}" rel="MisOfficialdocumentOut"  title="发文信息_查看"  target="navTab">{$sevo['orderno']}&nbsp;&nbsp;&nbsp;{$sevo['title']}</a></li>
+		</volist>
+		</if>
+	</ul>
+</div>
+<else/>
+<div class="noData">
+	没有公文
+</div>
+</if>

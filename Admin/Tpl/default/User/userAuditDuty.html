@@ -1,0 +1,33 @@
+<style>
+.dutyul{margin-left: 50px;}
+.dutyul >li{float:left;width:100px;}
+.deptul{margin-left: 50px;}
+.deptul >li{float:left;width:120px;}
+</style>
+<div class="pageContent">
+	<form method="post" action="__URL__/setUserAuditDuty/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" class="textInput" name="uid" value="{$uid}"/>
+		<div class="pageFormContent" layoutH="58">
+			<div class="testDiv">
+				<div class='textInput' style='margin-top:5px;width: 98%;'>
+              		<label>审核职级选择：</label><div class="divider"></div>
+               		<ul class="dutyul">
+               			<volist name="sdlist" id="vo">
+               				<li>
+	               				<input type="checkbox" class="parentCls" name="auditduty[]" value="{$vo['id']}" <eq name="vo.checked" value="true"> checked="checked" </eq> />
+	               				<span>{$vo['name']}</span>
+	               			</li>
+               			</volist>
+               		</ul>
+              	</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.processtemplate_ProcessInfo">
+					<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+				</if>
+			</ul>
+		</div>
+	</form>
+</div>

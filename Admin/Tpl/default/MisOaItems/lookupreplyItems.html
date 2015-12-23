@@ -1,0 +1,53 @@
+<script type="text/javascript">
+	function auditProcessFlowsAjaxDone(json){
+		DWZ.ajaxDone(json);
+		if (json.statusCode == DWZ.statusCode.ok) {
+			//by 杨东 刷新根据ID进行
+			if (json.rel) {
+				navTabPageBreak({realnavTab:true,refreshtabs:1}, json.rel);
+			}
+			$.pdialog.closeCurrent();
+			navTab.closeCurrentTab("MisOaItemsedit");
+		}
+	}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/lookupReply/rel/MisWorkExecutingbox" class="pageForm required-validate" onsubmit="return validateCallback(this, auditProcessFlowsAjaxDone)">
+		<input type="hidden" name="instanceid" value="{$_REQUEST['instanceid']}" />
+		<input type="hidden" name="itemsid" value="{$_REQUEST['id']}" />
+		<input type="hidden" name="reply" value="{$_REQUEST['replyid']}" />
+		<input type="hidden" name="step" value="{$_REQUEST['step']}" />
+		<input type="hidden" name="model" value="MisOaItems" />
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-form-row">
+				<label>发送至：</label>
+				<if condition="$_REQUEST['step']">
+					<span style="line-height:26px;">{$_REQUEST['instanceid']|getFieldBy='id','flowsuser','mis_oa_flows_instance'|getFieldBy='id','name','user'}</span>
+					<else/><span style="line-height:26px;">{$_REQUEST['id']|getFieldBy='id','createid','mis_oa_items'|getFieldBy='id','name','user'}</span>
+				</if>
+			</div>
+			<div class="tml-form-row">
+				<label>回复内容：</label>
+				<textarea class="required" name="content" style="width: 330px;height: 120px;"></textarea>
+			</div>
+			<div class="tml-form-row">
+				<label>上传附件:</label>
+				<input id="swfupload_misoaitemsreply_add" type="file" uploader="true" name="misoaitemsreply_add_file" formData="{ uploadpath:'misoaitemsreply' }" auto="true" />
+			</div>
+			<div class="tml-form-row"><!--此处为上传列表-->
+				<span id="swfupload_misoaitemsreply_add-queue" class="info uploadify_queue"> </span>
+			</div>
+			<div class="tml-form-row" style="padding-left:60px;">
+				<span class="tml-c-blue">
+					如果对此协同有任何疑问。可以编辑回复内容，点击发送。将会和协同发起人员交流。
+				</span>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-blue">发送</button></li>
+				<li><button type="button" class="close tml-btn">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

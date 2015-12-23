@@ -1,0 +1,552 @@
+<script>
+function changeapp($page){
+	 changehref="__APP__/MisSystemPanelMethod/lookupmyRemind/maxlimit/{$maxcount}/minlimit/{$mincount}/page/"+$page;
+	 $("#remind_div").loadUrl(changehref,{},function(){
+        $("#remind_div").find("[layoutH]").layoutH();},false);
+}
+function getMyWorkflow($this,type){
+	$($this).addClass('active');
+	$($this).siblings('.active').removeClass('active');
+	$("#lookupmyWorkflow").loadUrl(TP_APP+"/MisSystemPanelMethod/lookupmyWorkflow/type/"+type,{},function(){
+		$("#lookupmyWorkflow").find("[layoutH]").layoutH();});
+}
+function getSchedule($this,type){
+	$($this).addClass('active');
+	$($this).siblings('.active').removeClass('active');
+	//$("#schedule").loadUrl("__URL__/schedule/type/"+type,{},function(){
+    $("#schedule").loadUrl(TP_APP+"/MisSystemPanelMethod/schedule/type/"+type,{},function(){
+	$("#schedule").find("[layoutH]").layoutH();});
+}
+function getDoc($this,type){
+	$($this).addClass('tml-btn-hover');
+	$($this).siblings('.tml-btn-hover').removeClass('tml-btn-hover');
+	//$("#schedule").loadUrl("/system/Admin/index.php/Index/schedule/type/"+type,{},function(){
+	$("#work").loadUrl(TP_APP+"/MisSystemPanelMethod/workplatform/type/"+type,{},function(){
+	$("#work").find("[layoutH]").layoutH();});
+}
+function getOfficialDocument($this,type){
+	$($this).addClass('active');
+	$($this).siblings('.active').removeClass('active');
+    $("#officialDocument").loadUrl(TP_APP+"/MisSystemPanelMethod/officialDocument/type/"+type,{},function(){
+	$("#officialDocument").find("[layoutH]").layoutH();});
+}
+function getmistaskinfo($this,type){
+	$($this).addClass('active');
+	$($this).siblings('.active').removeClass('active');
+	$("#mistaskinfo").loadUrl(TP_APP+"/MisSystemPanelMethod/mistaskinfo/mistasktype/"+type,{},function(){
+	$("#mistaskinfo").find("[layoutH]").layoutH();});
+}
+//指定15分钟刷新一次
+/* var sysTimeout = setTimeout(function(){
+	var $this=$("#xywrap");
+	$.ajax({
+		type:'POST',
+		url:'__APP__/index/lookupuserindex/workbench/1',
+		async:true,
+		global:false,
+		success:function(response){
+			var json=DWZ.jsonEval(response);
+			if(json.statusCode==DWZ.statusCode.timeout) {
+				alertMsg.error(json.message||DWZ.msg("sessionTimout"),{okCall:function(){
+				if($.pdialog)$.pdialog.checkTimeout();
+				if(navTab)navTab.checkTimeout();
+				DWZ.loadLogin();}});
+			}
+			if(json.statusCode==DWZ.statusCode.error){
+				if(json.message)alertMsg.error(json.message);
+			}else{
+				if(json.statusCode==DWZ.statusCode.timeout){
+					$this.html(json.message+'<div style="display:none;">'+response+'</div>').initUI();
+				} else {
+					$this.html(response).initUI();
+				}
+		}},
+		error:DWZ.ajaxError
+	});
+	//$("#xywrap").loadUrl("__URL__/lookupuserindex/workbench/1");
+},900000); */
+/*添加模块可拖动*/
+$("#partList").dragsort({ dragSelector: "li .part_title", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+function saveOrder(){
+	var panelindex = "0";
+	$("#partList").find("input[name='panelsort[]']").each(function(){
+		panelindex += ","+$(this).val();
+	});
+	if (panelindex == "0") {
+		return false;
+	}
+	$.ajax({
+		type:"POST",
+		url: TP_APP+"/MisSystemPanelMethod/savepanelsort",
+		data:{panelindex:panelindex},
+		async:true,
+		global:false
+	});
+	return false;
+}
+//日程
+$(document).ready(function () {
+	option = new Array(true,false,false,true);//[0]:是否显示节日;[1]:是否显示天干地支;[2]:是否显示农历;[3]:是否显示法定节日;
+	var json_val = '{$myEvents}';
+	//传入日程json
+	var calendar = PL_rili("#calendarIndexWork",option,json_val);
+	// 构造滚动
+	//$("#privatetask").kxbdMarquee({direction:"up",scrollDelay:"70"});
+});
+</script>
+<div class="xypanel xysystem clearfix" id="waitingfor">
+<div class="tml-row">
+		<!--<div style="float:left;margin-right:1%;width:72%;">
+            <div class="tml-row">
+                <div style="float:left;width:50%;">
+                    <div class="entry-box entry-box-large">
+                        <div class="entry-box-header">
+                            <h2>待办事务</h2>
+                        </div>
+                        <div class="entry-box-body">
+                            <div class="entry-box-data" >
+                                <if condition="$msgs['mytodo']">
+                                    <div class="data"  >
+                                         <div class="tml-text-r">
+                                         <a class="  tml-btn tml-btn-default"   rel="MisWorkExecuting"  href="__APP__/MisWorkExecuting/index"  mask="true" target="navTab">进入工作中心<span class="tml-badge tml-bg-orange">{$daibanNum}</span> </a>
+                                        </div>
+                                        <div class="clear"></div>
+                                        <ul style="height:130px;overflow:hidden;">
+                                            <volist id="mytodo" name="msgs['mytodo']">
+                                                <li>
+                                                    <a class="clearfix" href="{$mytodo['url']}" target="navTab" rel="MisWorkExecuting">
+                                                        <span>{$mytodo['title']}</span>
+                                                        <em>共{$mytodo['count']}条</em>
+                                                        <em class="tml_em_w" style="">{$mytodo['auditTimeOut']}</em>
+                                                    </a>
+                                                </li>
+                                            </volist>
+                                        </ul>
+                                    </div>
+                                <else/>
+                                    <div class="tml-m30 tml-text-c" >
+                                        <img width="64" height="64" src="__PUBLIC__/Images/xyicon/MisWorkExecuting.png">
+                                         <div style="font-size:14px;" >暂无待办事项<br/>
+                                         <if condition="$_SESSION.a eq 1 ">
+                                         <a class="  tml-btn tml-btn-blue" rel="MisWorkExecuting"  href="__APP__/MisWorkExecuting/index"  mask="true" target="navTab">进入工作中心 </a>
+                                         <else />
+                                         <a class="  tml-btn tml-btn-orange" href="__APP__/MisWorkExecuting/index/jump/7/rel/MisWorkExecuting" mask="true" target="navTab">发起工作</a>
+                                         </if>
+                                        </div>
+                                    </div>
+                                </if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="float:right;width:49%;">
+                    <div class="entry-box  entry-box-large">
+                        <div class="entry-box-header tml-bg-f5f5f5">
+                            <h2>提醒中心</h2>
+                        </div>
+                            <if condition="$remindAllList">
+                        <div class="entry-box-body">
+                            <div class="entry-box-data">
+                             <div class="tml-text-r"> 
+                                 <a class="  tml-btn tml-btn-default"    target="dialog" width="508" height="344" mask="true" rel="missystempanelmethod_lookupchangeremind" href="__APP__/MisSystemPanelMethod/lookupchangeremind">进入提醒中心<span class="tml-badge tml-bg-orange">{$remindnum}</span> </a>
+                            </div>
+                             <ul class="tml_wake">
+                                <volist  name="remindAllList"  id="remindAll" key="h">
+                                    <if condition="$h elt 6 ">
+                                    <li>
+                                        <span class="tml-label tml-bg-info tml-ml3"><span class='icon  {$remindAll.span} tml-mr3"' ></span>&nbsp;{$remindAll.title}：</span>
+                                        <volist name="remindAll['list']" id="rtvo">
+                                         {$rtvo.rtitle}(<a href="__APP__/{$rtvo.relhref}" target="navTab" rel="{$rtvo.relhref}"><span class="tml_tip_color">{$rtvo['count']}</span></a>)；&nbsp;
+                                        </volist>
+                                    </li>
+                                    </if>
+                                </volist>
+                            </ul>
+                        </div>
+                        </div>
+                        <else/>
+                            <div class="entry-box-body" >
+                          <div class="noData">
+                                  没有提醒事项
+                          </div>
+                          </div>
+                        </if>
+                        </div>
+                </div>
+            </div>
+            <div class="tml-row">
+                    <div class="entry-box  entry-box-small">
+                        <div class="entry-box-header tml-bg-f5f5f5">
+                            <h2>我的常用</h2>
+                        </div>
+                        <div class="entry-box-body">
+                               <div class="xystartmenu_con clearfix">
+                                    <div class="xypreferences clearfix tml-pos-rel" id="userConstantly_div">
+                                    <div class="tml-text-r tml-pos-abs" style="right: 10px;top: 10px;z-index: 2;">
+                                     <a class="tml-btn tml-btn-default tml_add_btn"   href="__URL__/lookupuserindex/type/2" target="dialog" rel="__MODULE__add" width="770" height="530"><span class="icon icon-plus">常用</span>  </a>
+                               </div>
+                                    <ul class="clearfix xyuseapp tml-mt5">
+                                        <volist id="workvo" name="workoftenList">
+                                            <if condition="$workvo['rel'] && $workvo['title'] && $workvo['url'] && $workvo['icon']">
+                                                <li>
+                                                    <a href="__APP__/{$workvo['url']}" target="navTab" rel="{$workvo['rel']}" >
+                                                        <img alt="{$workvo['title']}" width="50" src="__PUBLIC__/Images/xyicon/{$workvo['icon']}" />
+                                                        <span>{$workvo['title']}</span>
+                                                    </a>
+                                                    <if condition="!$workvo.isdefault"><a id="{$workvo['id']}" class="delapp" href="#" onclick="delOften(this);"></a></if>
+                                                </li>
+                                            </if>
+                                        </volist>
+                                    </ul>
+                               </div>
+                            </div>
+                    </div>
+                </div>
+            </div>
+		</div>-->
+
+
+<div style="float:left;margin-right:1%;width:72%;">
+    <div class="tml-row">
+        <div style="float:left;width:40%;">
+            <div class="entry-box entry-box-large">
+                <div class="entry-box-header">
+                    <div class="tml_box_title">待办工作统计</div>
+                </div>
+                <div class="entry-box-body">
+                    <div class="entry-box-data" >
+                        <if condition="$oaitemdoing|| $myworkwait || $Allnum || $Allinfonum">
+                            <div class="tml_box_content">
+                                <ul class="tml_box_content_ul">
+                                    <li class="tml_box_content_li">
+                                        <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/5/md/MisOaItems/type/3/rel/MisWorkExecutingbox" title="工作中心" mask="true" target="navTab">
+                                            <span class="tml_box_content_title">工作协同</span></br>
+                                            <span class="tml_box_content_count tml_box_content_number">{$oaitemdoing}</span>
+                                        </a>
+                                    </li>
+                                    <li class="tml_box_content_li">
+                                    <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/3/md/MisWorkMonitoring/worktype/1/rel/MisWorkExecutingbox" title="工作中心" mask="true" target="navTab">
+                                            <span class="tml_box_content_title">工作审批</span></br>
+                                            <span class="tml_box_content_count tml_box_content_number">{$myworkwait}</span>
+                                        </a>
+                                    </li>
+                                    <li class="tml_box_content_li">
+                                     <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/4/md/MisWorkExecuting/istep/1" title="工作中心" mask="true" target="navTab">
+                                            <span class="tml_box_content_title">工作执行</span></br>
+                                            <span class="tml_box_content_count tml_box_content_number">{$Allnum}</span>
+                                        </a>
+                                    </li>
+                                    <li class="tml_box_content_li">
+                                       <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/6/md/MisWorkExecuting/istepperson/1" title="工作中心" mask="true" target="navTab">
+                                            <span class="tml_box_content_title">工作知会</span></br>
+                                            <span class="tml_box_content_count tml_box_content_number">{$Allinfonum}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <else/>
+                            <div class="tml-m30 tml-text-c" >
+                                <img width="64" height="64" src="__PUBLIC__/Images/xyicon/MisWorkExecuting.png">
+                                <div style="font-size:20px;" >暂无待办事项<br/>
+                                    <if condition="$_SESSION.a eq 1 ">
+                                        <a class="  tml-btn tml-btn-blue" rel="MisWorkExecuting"  href="__APP__/MisWorkExecuting/index"  mask="true" target="navTab">进入工作中心 </a>
+                                        <else />
+                                        <a class="  tml-btn tml-btn-orange" href="__APP__/MisWorkExecuting/index/jump/7/rel/MisWorkExecuting" mask="true" target="navTab">发起工作</a>
+                                    </if>
+                                </div>
+                            </div>
+                        </if>
+                    </div>
+                </div>
+            </div><!-- end entry-box -->
+        </div>
+        	<div id="remind_div">
+        <div style="float:right;width:58.2%;">
+            <div class="entry-box  entry-box-large">
+                <div class="entry-box-header">
+                    <div class="tml_box_title">
+                        <span>提醒中心</span>
+                        <span class="tml_remind_btn">
+                            <span class="remind_btn tml_remind_left icon-angle-left" <if condition="$prevlist">style="cursor: pointer; background: #d8483a;" onclick="changeapp('prevpage')" </if> ></span>
+                            <a class="remind_btn tml_remind_center" target="dialog" width="508" height="344" mask="true" rel="missystempanelmethod_lookupchangeremind" title="更改提醒模块" href="__APP__/MisSystemPanelMethod/lookupchangeremind">设置<span class="tml-badge tml-bg-orange">{$remindnum}</span></a>
+                            <span class="remind_btn tml_remind_right icon-angle-right" <if condition="$nextlist">style="cursor: pointer;background: #d8483a;"onclick="changeapp('nextpage')" </if> ></span>
+                        </span>
+                    </div>
+                </div>
+                <if condition="$remindAllList">
+                    <div class="entry-box-body">
+                        <div class="entry-box-data">
+                            <ul class="tml_wake">
+                                <volist  name="remindAllList"  id="remindAll" key="h">
+                                    <if condition="$h elt 6 ">
+                                        <li>
+                                            <span class="tml-label tml-bg-info tml-ml3"><span class='icon  {$remindAll.span} tml-mr3"' ></span>&nbsp;{$remindAll.title}：</span>
+                                            <volist name="remindAll['list']" id="rtvo">
+                                                {$rtvo.rtitle}(<a href="__APP__/{$rtvo.relhref}" target="navTab" rel="{$rtvo.relhref}"><span class="tml_tip_color">{$rtvo['count']}</span></a>)；&nbsp;
+                                            </volist>
+                                        </li>
+                                    </if>
+                                </volist>
+                            </ul>
+                        </div>
+                    </div>
+                    <else/>
+                    <div class="entry-box-body" >
+                        <div class="noData">
+                            没有提醒事项
+                        </div>
+                    </div>
+                </if>
+            </div>
+        </div><!-- end entry-box -->
+        </div>
+    </div>
+    <div class="tml-row">
+        <div class="entry-box  entry-box-small">
+            <div class="entry-box-body">
+                <div class="xystartmenu_con clearfix">
+                    <div class="xypreferences clearfix tml-pos-rel" id="userConstantly_div">
+                        <!--<div class="tml-text-r tml-pos-abs" style="right: 10px;top: 10px;z-index: 2;">
+                            <a class="tml-btn tml-btn-default tml_add_btn"   href="__URL__/lookupuserindex/type/2" target="dialog" rel="__MODULE__add" width="770" height="530"><span class="icon icon-plus">常用</span>  </a>
+                        </div>-->
+                        <!-- <h3>常用</h3> -->
+                        <ul class="clearfix xyuseapp tml-mt5">
+                            <volist id="workvo" name="workoftenList">
+                                <if condition="$workvo['rel'] && $workvo['title'] && $workvo['url'] && $workvo['icon']">
+                                    <li>
+                                        <a href="__APP__/{$workvo['url']}" target="navTab" rel="{$workvo['rel']}" >
+                                            <img alt="{$workvo['title']}" width="50" src="__PUBLIC__/Images/xyicon/{$workvo['icon']}" />
+                                            <span>{$workvo['title']}</span>
+                                        </a>
+                                        <if condition="!$workvo.isdefault"><a id="{$workvo['id']}" class="delapp" href="#" onclick="delOften(this);"></a></if>
+                                    </li>
+                                </if>
+                            </volist>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+		<div class="calendar-box" style="display: none;position:relative;">
+			<if condition="$remindUserReportList">
+			<div class="p5 right">
+				<a class="more" target="dialog" mask="true"  width="508"  height="250"
+					rel="missystempanelmethod_lookupchangeremind"
+					href="__APP__/MisSystemPanelMethod/lookupchangereport"  style="color:#999999">更改</a>
+			</div>
+			<div class="clear"></div>
+			</if>
+			<!-- 报表中心 -->
+			<div>
+				<div id="hrNewandoldEmployeeChart_index" style="overflow: hidden;width:276px;height:250px;"></div>
+			</div>
+		</div>
+		<!-- 日历 -->
+		<div class="calendar-box" style="position:relative;">
+            <div id='calendarIndexWork' ></div>
+            <div class="calendar-tips hide" id="calendar-tips">
+                <div>
+                    <ul class="calendar-tips-list" id="calendar-tips-list">
+                        <!-- start calendar-tips-alt -->
+
+                        <!-- end calendar-tips-alt -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+		<!-- 日历 结束 -->
+    </div>
+<script>
+    $(function(){
+        $('ul.tml_new_live li').mouseleave(function(){
+            $('div.tml_new_lay',$(this)).stop().animate({width:$('ul.tml_new_live li').outerWidth(true)-2});
+        });
+        $('ul.tml_new_live li').mouseenter(function(){
+            $('div.tml_new_lay',$(this)).stop().animate({width:""},800);
+        });
+        $(window).resize(function(){
+            $('div.tml_new_lay').width('100%');
+        });
+    });
+    function getquestions($this,type){
+        $($this).addClass('active');
+        $($this).siblings('.active').removeClass('active');
+        $(".expert_cell_warp").loadUrl(TP_APP+"/MisSystemPanelMethod/expertQuestions/type/"+type,{},function(){
+            $("#lookupMyQuestion").find("[layoutH]").layoutH();},false);
+    }
+    function getDocIndex($this,type){
+        $($this).addClass('active');
+        $($this).siblings('.active').removeClass('active');
+        //$("#schedule").loadUrl("/system/Admin/index.php/Index/schedule/type/"+type,{},function(){
+        $("#work").loadUrl(TP_APP+"/MisSystemPanelMethod/workplatform/type/"+type,{},function(){
+            $("#work").find("[layoutH]").layoutH();},false);
+    }
+        
+        $(function(){
+        	/*$('div.data').myScroll({
+        		speed:40,
+        		rowHeight:32
+        	});*/
+        	
+        	$("div.data").kxbdMarquee({direction:"up",scrollDelay:"70"});
+       	});
+</script>
+    <div class="clear"></div>
+    <div class="tml-row">
+        <ul class="tml_new_live">
+            <li>
+                <div class="tml_new_lay com_news"></div>
+                <div class="tml_live_header"><a href="#">重庆人大首次专题询问财政工作</a></div>
+                <div class="tml_live_content">
+                    <p class="tml_par">重庆市四届人大常委会31日召开联组会议，就2013年市级财政决算工作进行专题询问。重庆市财政局、市发改委、市经信委等12部门相关负责人到会应询。</p>
+                    <p class="tml_par">作为重庆市四届人大常委会首次对政府财政工作进行专题询问地方政府性债务、生态环境等问题备受重庆市四届人大常委关注……<a href="#">继续阅读»</a></p>
+                </div>
+                <a href="#" class="tml_new_live_link">更多公司新闻</a>
+            </li>
+            <li>
+                <div class="tml_new_lay office_cell">这里是办公平台</div>
+                <div class="expert_btn">
+                    <a class="active" onclick="getDocIndex(this,1)" href="#">最新文档</a>&nbsp;&nbsp;
+                    <a title="文档管理" onclick="getDocIndex(this,2)" href="#">个人文档</a>&nbsp;&nbsp;
+                    <a title="文档管理" rel="MisFileManager" target="navTab" href="/system/product/Admin/index.php/MisFileManager/index/pid/5/cid/5/share/share" >共享文档</a>&nbsp;&nbsp;
+                    <a title="文档管理" rel="MisFileManager" target="navTab" href="/system/product/Admin/index.php/MisFileManager/index/pid/2/cid/2/share/share" >单位文档</a>
+                </div>
+                <ul class="expert_cell_warp" id="work">
+                    <li>
+                        <a href="#"><span>【共享文档】</span>任务进度.doc</a>
+                        <button class="file_download">下载<span class="icon-download-alt"></span></button>
+                    </li>
+                    <li>
+                        <a href="#"><span>【共享文档】</span>系统测试报告.xls</a>
+                        <button class="file_download">下载<span class="icon-download-alt"></span></button>
+                    </li>
+                    <li>
+                        <a href="#"><span>【共享文档】</span>首页改版方案.jpg</a>
+                        <button class="file_download">下载<span class="icon-download-alt"></span></button>
+                    </li>
+                    <li>
+                        <a href="#"><span>【单位文档】</span>特米洛简介.doc</a>
+                        <button class="file_download">下载<span class="icon-download-alt"></span></button>
+                    </li>
+                </ul>
+                <div class="letter_mb"><a href="#" class="tml_new_live_link">更多</a></div>
+            </li>
+            <li>
+                <div class="tml_new_lay know_cell">这里是知识库</div>
+                <div class="tml_ka_header"><span>知识库</span><a class="tml_ka_header_btn" href="#">发表文章 <span class="icon-edit"></span></a></div>
+                <ul class="know_cell_warp">
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                </ul>
+                <div class=""><a href="#" class="tml_new_live_link">更多</a></div>
+            </li>
+            <li>
+                <div class="tml_new_lay action_cell">这里是通知公告</div>
+                <div class="tml_ka_header"><span>通知公告</span><a class="tml_ka_header_btn" href="#">发布通知公告 <span class="icon-volume-up"></span></a></div>
+                <ul class="know_cell_warp">
+                    <li><a href="#"><span>【08月06日】</span>下午16：30分在第四会议室开会</a></li>
+                    <li><a href="#"><span>【08月04日】</span>下午16：30分在第四会议室开会</a></li>
+                    <li><a href="#"><span>【08月01日】</span>下午16：30分在第四会议室开会</a></li>
+                    <li><a href="#"><span>【07月31日】</span>下午16：30分在第四会议室开会</a></li>
+                </ul>
+                <div class=""><a href="#" class="tml_new_live_link">更多通知公告</a></div>
+            </li>
+            <li>
+                <div class="tml_new_lay expert_cell">这里是专家库</div>
+                <div class="expert_btn">
+                    <a class="active"  href="javascript:void(0)" onclick="getquestions(this,1)">最新提问</a>&nbsp;&nbsp;
+                    <a href="#" onclick="getquestions(this,2)" class="">等我来答</a>&nbsp;&nbsp;
+                    <a href="#" onclick="getquestions(this,3)" class="">问题列表</a>&nbsp;&nbsp;
+                    <a href="/system/product/Admin/index.php/MisSystemNoticeMethod/expertlist" target="_blank">专家问答</a>
+                </div>
+                <ul class="expert_cell_warp">
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                    <li><a href="#"><span>【工程技术】</span>美军为省开支拟除役空军昔日…</a></li>
+                </ul>
+                <div class="letter_mb"><a href="#" class="tml_new_live_link">更多</a></div>
+            </li>
+        </ul>
+    </div>
+    <div class="clear"></div>
+    </br>
+    
+	<ul id="partList">
+	<volist id="pnnelhtmllistvo" name="panlist" >
+          <li class="xypart">
+	    <input type="hidden" name="panelsort[]" value="{$pnnelhtmllistvo.sort}">
+	    <div class="part_title">
+	        <h3  ><a class="more" rel="{$pnnelhtmllistvo.modelname}_index"  href="__APP__/{$pnnelhtmllistvo.modelname}/index"  title="{$pnnelhtmllistvo.modelname|getFieldBy='name','title','node'}"  target="navtab" ><span>更多</span></a><a class="expand" href="#"></a><span class="expand">{$pnnelhtmllistvo.name}</span></h3>
+	    </div>
+	    <!--<div class="tml_bottom_style"></div>-->
+	    <div class="part_content">
+	    <if condition="$pnnelhtmllistvo['list']">
+	            <div class="data tml_uli_show4">
+	                <ul <if condition="$pnnelhtmllistvo.issroll  neq '1'" >class="tml_uli_show4"</if>>
+	                    <volist id="psubvo" name="pnnelhtmllistvo['list']">
+	                            <li><a class="clearfix" target="navtab" href="__APP__/{$pnnelhtmllistvo.modelname}/view/id/{$psubvo.id}" title="{$pnnelhtmllistvo.modelname|getFieldBy='name','title','node'}_查看"><span class="hellip">{$psubvo[$pnnelhtmllistvo['showtitle']]}</span></a></li>
+	                    </volist>
+	                </ul>
+	            </div>
+	        <else/>
+	        <div class="noData">
+	            没有{$pnnelhtmllistvo['name']}
+	        </div>
+	        </if>
+	    </div>
+	    <div class="part_foot">
+	        <div class="part_footer"></div>
+	    </div>
+	</li>
+        </volist>
+	</ul>
+</div>
+
+<script type="text/javascript">
+;(function(){
+	$('.xypart_workflow').bind('click', function(e){
+		var $target = $(e.target);
+		if($target.hasClass('expanddl')){
+			$target.parent('dt').siblings('dd').slideDown(200);
+			$target.siblings('.expanddl').removeClass('expanddl').addClass('collapsedl');
+			e.target.className = 'collapsedl';
+		} else if($target.hasClass('collapsedl')){
+			$target.parent('dt').siblings('dd').slideUp(200);
+			$target.siblings('.collapsedl').removeClass('collapsedl').addClass('expanddl');
+			e.target.className = 'expanddl';
+		}
+	});
+})();
+
+/* 
+ *常用功能删除按钮显示
+ */
+
+/*  function addHover(){
+		$(".xyuseapp li").hoverClass("hover");
+	} */
+$(document).ready(function(){
+	$(".xyuseapp li").hoverClass("hover");
+});
+function delOften($this){
+	$obj = $($this);
+	$id = $obj.attr('id');
+	$.ajax({
+		url : "__URL__/lookupuserindex/type/3",// 通过Ajax取数据的目标页面
+		type : 'post',// 方法，还可以是"post"
+		data:{id:$id},
+		success : function(res){
+			// 成功后执行的语句，这里是一个函数，“locals”是返回的数据
+			if(res){
+				//$obj.parent().remove();
+				$("#userConstantly_div").loadUrl("__URL__/lookupuserindex/type/1");
+			}
+		}
+	});
+}
+</script>

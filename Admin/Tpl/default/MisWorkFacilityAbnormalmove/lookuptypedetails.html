@@ -1,0 +1,128 @@
+<script>
+function MisEquipmentApplication_del(obj,$subid){
+	alertMsg.confirm("您确定移除此设备吗？", {
+		okCall: function(){
+			if($subid){
+				$.ajax({
+					type : 'POST',
+					url : "__URL__/lookupsubdelete",
+					data : {
+						id : $subid,
+					},
+					cache : false,
+					global : false,
+					success : function(msg) {
+						if(msg){
+							$(obj).parents('tr').remove();
+						}
+					}
+				});
+			}else{
+				$(obj).parents('tr').remove();
+			}
+			//重新计算ND
+			$("._itemIndexmove").each(function(i){
+				 $(this).text(i+1);
+			 });
+		}
+	});
+}
+function appendappaddHtml(id,manageid, orderno, name,type,deptname, qty, unit, kymove,etype) {
+		var lg=$("#MisWorkFacilityAbnormalmove_tbody .applications").length;
+		var divleng = Number(lg+1);
+		var isTrue = true;
+		$("#MisWorkFacilityAbnormalmove_tbody").find("input[name^='submanageid']").each(function() {
+			if ($(this).val() == (id+manageid)) {
+				isTrue = false;
+			}
+		});
+		var $str = "";
+		if (isTrue) {
+			$str += "<tr>";
+			$str+="<td class='_itemIndexmove'>"+divleng+"</td>"
+			$str += "<td>";
+			$str += "<input type='hidden' name='manageid[]' value='"+manageid+"'> <input type='hidden' name='appsubid[]' value='"+id+"'> <input type='hidden' class='applications' name='submanageid[]' value='"+(id+manageid)+"'>"+ orderno;
+			$str += "</td>";
+			$str += "<td  >" + etype + "</td>";
+			$str += "<td  >" + name + "</td>";
+			$str += "<td>" + type + "</td>";
+			$str += "<td>" + deptname + "</td>";
+			$str += "<td>" + qty + "</td>";
+			$str += "<td>" + unit + "</td>";
+			$str += "<td>" + kymove + "</td>";
+			$str += "<td><input type='text'  style='width:50px;'  onblur='FormatNumber(this)' max="+Number(kymove.replace(/,/g,""))+" name='appqty[]'></td>";
+			$str += "<td><a href='javascript:;' class='btnDel' onclick='MisEquipmentApplication_del(this)' ></a>";
+			$str += "</td>";
+			$str += "</tr>";
+			$("#MisWorkFacilityAbnormalmove_tbody").append($str);
+		}
+	}
+	function misworkfacilityabnormalmove_addwf(id,manageid, orderno, name,type,deptname, qty, unit, kymove,etype) {
+		appendappaddHtml(id,manageid,orderno, name,type,deptname, qty, unit, kymove,etype);
+	}
+	function misworkfacilityabnormalmove_selectinto() {
+		var $dialog = $.pdialog.getCurrent();
+		if ($(".MisWorkFacilityAbnormalmovelist").find("input[type='checkbox']:checked").length < 1) {
+			alertMsg.error('请选择设备！');
+			return false;
+		}
+		var $boolname = false;
+		$(".MisWorkFacilityAbnormalmovelist").find("input[type='checkbox']:checked").each(function() {
+			var val = DWZ.jsonEval($(this).attr('value'));
+			misworkfacilityabnormalmove_addwf(val.id,val.manageid, val.orderno,val.equipmentname, val.version,val.deptid, val.qty,val.unit,val.kymove,val.etype);
+		});
+		$.pdialog.close($dialog);
+	}
+</script>
+<div class="layoutBox">
+<div class="panelBar">
+<ul class="toolBar">
+		<li>
+			<a class="add" href="__URL__/lookupworkfacilityabnormalmove" lookupGroup="org" title="选择设备"><span>添加</span></a>
+		</li>
+</ul>
+</div>
+<table class="tml-table" width="100%">
+    <thead>
+        <tr>
+       		<th width="40">序号</th>
+			<th width="120">设备编号</th>
+			<th >设备类型</th>
+			<th width="100">设备名称</th>
+			<th>设备型号</th>
+			<th>现存部门</th>
+			<th>申请总数量</th>
+			<th width="40">单位</th>
+			<th>可异动数量</th>
+			<th>需异动数量</th>
+			<th>操作</th>
+		</tr>
+    </thead>
+    <tbody id="MisWorkFacilityAbnormalmove_tbody">
+    <if condition="$sublist">
+    <volist name="sublist" id="subvo" key="i">
+    <tr>
+    <td class="_itemIndexmove">{$i}</td>
+    <td>
+		<input   type="hidden"   value="{$subvo.manageid}" name="manageid[]">
+		<input type="hidden"  name="subid[]" value="{$subvo.id}"/>
+		<input type="hidden"  name="oldqty[]" value="{$subvo.qty}"/>
+		<input type="hidden"  name="appsubid[]" value="{$subvo.appsubid}"/>
+		<input class="applications" type="hidden" value="{$subvo.appsubid}{$subvo.manageid}" name="submanageid[]">
+		{$subvo.manageid|getFieldBy='id','orderno','mis_work_facility_manage'}
+	</td>
+ 	<td>{$subvo.manageid|getFieldBy='id','equipmenttype','mis_work_facility_manage'|getFieldBy='id','name','mis_work_facility_type'}</td>
+  	<td>{$subvo.manageid|getFieldBy='id','equipmentname','mis_work_facility_manage'}</td>
+   	<td>{$subvo.manageid|getFieldBy='id','version','mis_work_facility_manage'}</td>
+   	<td>{$subvo.appsubid|getFieldBy='id','masid','mis_work_facility_apply_sub'|getFieldBy='id','applydepartmentid','mis_work_facility_apply_mas'|getFieldBy='id','name','mis_system_department'}</td>
+    <td>{$subvo.appsubid|getFieldBy='id','appqty','mis_work_facility_apply_sub'|getDigits}</td>
+    <td>{$subvo.manageid|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}</td>
+    <td>{$subvo.sumkymove|getDigits}</td>
+    <td>  <input type="text" name="appqty[]"  onblur='FormatNumber(this)' style="width:50px;" max="{$subvo.sumkymove}" value="{$subvo.qty|getDigits}"></td>
+    <td><a href='javascript:;' class='btnDel' onclick='MisEquipmentApplication_del(this,{$subvo.id})' ></a> </td>
+    </tr>
+    </volist>
+    </if>
+    </tbody>
+</table>
+</div>

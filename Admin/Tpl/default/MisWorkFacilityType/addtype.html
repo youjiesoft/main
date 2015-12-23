@@ -1,0 +1,52 @@
+<div class="page">
+<div class="pageContent">
+	<form method="post" class="pageForm required-validate" 
+		<if condition="$vo['id']">
+				 action="__URL__/updatetype/navTabId/__MODULE__" onsubmit="return refreshTreeEdit(this,'name','misworkfacilitytypetree');" 
+			<else/>
+		 		action="__URL__/savetype/navTabId/__MODULE__" 
+				onsubmit="return refreshTreeAdd(this,'name','misworkfacilitytypetree','misworkfacilitytype_index','__URL__/index/md/MisWorkFacilityType/jump/2',0);"
+		</if>
+	>
+		<input type="hidden" name="pid" value="{$pid}" >
+		<input type="hidden" name="ajax" value="1">
+		<input type="hidden" name="typeid" value="2"/>
+       	<input type="hidden" name="rel" value="unitBox" />
+      	<if condition="$vo.id">
+      		<input type="hidden" name="id" value="{$vo.id}" />
+      	</if>
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden"  name="typeid" value="0" />
+		<div class="pageFormContent" layoutH="58">
+		   <div class="tml-form-row">
+				<label class="tml-form-label">名称：</label>
+				<input type="text" name="name" class="required" <if condition="$vo.name"> value="{$vo.name}"</if> maxlength="50"/>
+			</div>
+			<div class="tml-form-row">
+				<label class="tml-form-label">备注：</label>
+				<textarea rows="2" cols="30" name="remark"> <if condition="$vo.remark">  {$vo.remark} </if></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misworkfacilitytype_insert">
+				<li>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="submit">{$Think.lang.save}</button>
+						</div>
+					</div>
+				</li>
+			</if>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.close}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>
+</div>

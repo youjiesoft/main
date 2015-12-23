@@ -1,0 +1,60 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/rel/misoaitemsview" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="refreshtabs[data]" value="1">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="56">
+				<div class="keepContentCenter">
+					<h2 class="contentTitle contentTitle_center">协同事项</h2>
+					<fieldset class="side-catalog-anchor">
+					<div class="tml-form-row">
+						<label>{$fields["title"]}:</label>
+						<input type="text" name="title" class="required" value="">
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>{$fields["secretlevel"]}:</label>
+							<select name="secretlevel" class="combox">
+								{:getSelectByHtml('secretlevel')}
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["urgentlevel"]}:</label>
+							<select name="urgentlevel" class="combox">
+								{:getSelectByHtml('urgentlevel')}
+							</select>
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>{$fields["flowid"]}:</label>
+							<select name="flowid" class="combox">
+								<option value="0">--请选择流程--</option>
+								{:getDataBaseByHtml('mis_oa_flows',array('name'=>'title','conditions'=>'(createid = '.$_SESSION[C("USER_AUTH_KEY")].' or isshare = 1)'))}
+							</select>
+						</div>
+					</div>
+					<div class="tml-form-row">
+						<label>上传附件:</label>
+						<input id="swfupload_misoaitems_add" type="file" uploader="true" name="misoaitems_add_file" formData="{ uploadpath:'MisOaItems' }" auto="true" />
+					</div>
+					<div class="tml-form-row">
+						<label>{$fields["content"]}:</label>
+						<textarea class="editor textInput" style="height: 280px;" tools="mini" name="content"></textarea>
+					</div>
+					<div class="tml-form-row">
+						<label>{$fields["description"]}:</label>
+						<textarea name="description"></textarea>
+					</div>
+					</fieldset>
+				</div>	
+			</div>
+			<div class="formBar">
+				<ul>
+					<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+					<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

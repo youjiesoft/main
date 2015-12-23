@@ -1,0 +1,72 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$typeTree};
+		var setting = {
+				view: {
+	               selectedMulti: false,
+	               fontCss: getFontCss
+	           },
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#User_index_left"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("User_index_left");
+        var valid='{$MisSystemCompanyid}';
+        var nodes = zTree.getNodesByParam("id", valid, null);
+        zTree.selectNode(nodes[0]);
+	});
+	function SubsidiaryRole(obj,trs){
+		var $box=navTab.getCurrentPanel();
+		var classval =$("#"+obj).attr("class");
+		if(classval == "control_display_none"){
+			$("#"+obj).attr("class","control_display_block");
+		}else{
+			$("#"+obj).attr("class","control_display_none");
+			$box.find("#"+trs).find("li").each(function(){
+				$(this).remove();
+			});
+		}
+	}
+	//添加辅助部门JS
+	function addDeptDuty(){
+		//获取对象的html内容 
+		var ht=$("#detpHtml").html();
+		var html="";
+			html+= "<div class='unit'><label>辅助部门：</label>"; 
+			html+=ht;
+			html+="<span class='helpInline'><a onclick='DelDepDuty(this);''>取消辅助部门</a></span>";
+			html+="</div>";
+		$("#newDeptHtml").append(html).initUI();
+	}
+	//删除辅助部门JS 
+	function DelDepDuty(obj){
+		$(obj).parent().parent().remove();
+	}
+	function changeUrl(obj,id){
+		var role_id=$(obj).val();
+		var url=$("#"+id).attr("oldhref");
+		var newurl = url+"/"+role_id;
+		$("#"+id).attr("href",newurl);
+	}
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+    <div class="treeleft">
+	<div class="work_statement"></div>
+        <div class="close">
+            <div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="User_index_leftNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('User_index_left','User_index_leftNodeKeys')" type="button"></button>
+				</div>
+			</div>
+            <ul id="User_index_left" class="ztree" layoutH="148"></ul>
+        </div>
+    </div>
+     <div id="userindexjbsxBox" class="unitBox treeright">
+        <include file="indexlist" />
+    </div>
+</div>

@@ -1,0 +1,158 @@
+<script type="text/javascript">
+//生成联系人树
+$(document).ready(function(){
+    var zNodes = {$usertree};
+    var zNodesProcessRole = {$sysCompanytree};
+    var zNodesrolegroup = {$rolegrouptree};
+    var setting = {
+        view: {
+            selectedMulti: false,
+            fontCss: getFontCss
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onClick: zTreeFlowOnClick
+        }
+    };
+    $.fn.zTree.init($("#FlowUserTree"), setting, zNodes);
+    $.fn.zTree.init($("#FlowProcessRoleTree"), setting, zNodesProcessRole);
+    $.fn.zTree.init($("#FlowRolegroupTree"), setting, zNodesrolegroup);
+});
+// 选 择 接收人
+function zTreeFlowOnClick(event, treeId, treeNode) {
+	if (treeNode.id > 0) {
+		var isTrue = true;
+		// 生成多选用户
+		var str = "<li>",results="";
+		// 构造 隐藏值
+		str += "<input type='hidden' name='userid' value='"+treeNode["userid"]+"'>";
+		str += "<input type='hidden' name='username' value='"+treeNode["username"]+"'>";
+		// 设置显示值
+		str += "<span>"+treeNode["title"]+"</span>";
+		// 添加删除
+		str += "</li>";
+		$("#js-selectUserFlowList").find("input[name='userid[]']").each(function(){
+			if($(this).val() === treeNode["userid"]) {
+				isTrue = false;
+			}
+		});
+		// 判断是否存在这个用户，存在才会添加
+		if(isTrue){
+			results = str;
+		}
+		// 往显示位置添加结果集
+		$("#js-selectUserFlowList").html(results);
+	}
+}
+// 保存所选的人
+function saveSelectUserFlowList(){
+	var selectUserFlow = $("#js-selectUserFlowList").find("li");
+	if(selectUserFlow.length < 1){
+		alertMsg.error('请先选择左边数据再点确认按钮！');
+		return false;
+	}
+	$.ajax({
+		type:"POST",
+		url:"__APP__/CommonFlows/lookupSetflow/type/replace",
+		data:$("#selectUserFlowForm").serializeArray(),
+		dataType:"JSON",
+		global: true,
+		cache:false,
+		success:function(response){
+			//alert(response);
+			console.log(response);
+	    	var data = response.data.data;
+	    	var conditions = response.data.condition;
+			pr.fnInit("prcslist", data, nodeClick = function() {
+			}, labelClass = 'aLabel', labelFunction = function(e) {
+				var label = e.getElement();//获得label元素
+				var lineIndex = $(label).index('.aLabel');//获取线的索引
+				label.style.display = 'none';
+				return (lineIndex + 1).toString();//只能返回字符串
+			});
+			$.pdialog.closeCurrent();
+		},
+		error:DWZ.ajaxError
+	});
+}
+// 清除已选的人
+function clearSelectUserFlowList(){
+	$("#js-selectUserFlowList").html("");
+}
+// 删除一个选择的人
+function removeSelectUserFlow(){
+	$("#js-selectUserFlowList").find("li:hover").remove();
+}
+</script>
+<div id="checkUserObj" class="pageContent">
+	<div class="address-dialog-body">
+		<form id="selectUserFlowForm">
+		<div class="tml-row">
+			<div class="grid-50 left">
+				<h3 class="tml-h3">人员列表</h3>
+				<div class="address-dialog-box">
+					<div class="tabs" currentindex="0" eventtype="click" style="margin: 1px;">
+						<div class="tabsHeader">
+							<div class="tabsHeaderContent">
+								<ul>
+									<li><a href="#"><span>部门</span></a></li>
+									<li><a href="#"><span>用户组</span></a></li>
+									<li><a href="#"><span>公司</span></a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="tabsContent" style="background: none repeat scroll 0 0 #FFFFFF;border: none;">
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="FlowUserTreeSearchNodeKeys"/>
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('FlowUserTree','FlowUserTreeSearchNodeKeys')"/>
+								</div>
+								<ul id="FlowUserTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="FlowRolegroupTreeSearchNodeKeys" />
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('FlowRolegroupTree','FlowRolegroupTreeSearchNodeKeys')"/>
+								</div>
+								<ul id="FlowRolegroupTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="FlowProcessRoleTreeeSearchNodeKeys" />
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('FlowProcessRoleTree','FlowProcessRoleTreeeSearchNodeKeys')"/>
+								</div>
+								<ul id="FlowProcessRoleTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="grid-50 right">
+				<h3 class="tml-h3">已选人员</h3>
+				<div class="address-dialog-box">
+					<input type="hidden" name="ids" value="{$_REQUEST['ids']}"/>
+					<input type="hidden" name="key" value="{$_REQUEST['key']}"/>
+					<ul class="address-dialog-list" id="js-selectUserFlowList" onclick="removeSelectUserFlow();">
+						<li>
+							<input type='hidden' name='userid' value='{$user["id"]}'>
+							<input type='hidden' name='username' value='{$user["name"]}'>
+							<span>{$user['name']}</span>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		</form>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml-btn tml-btn-blue" onclick="saveSelectUserFlowList();">确定</button></li>
+			<li><button class="tml-btn tml-btn-primary" onclick="clearSelectUserFlowList();">清除</button></li>
+			<li><button class="tml-btn close">取消</button></li>
+		</ul>
+	</div>
+</div>

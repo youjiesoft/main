@@ -1,0 +1,212 @@
+<script type="text/javascript">
+	function btnAddProcess(){
+		var $box =$.pdialog.getCurrent();
+		var container = $('table.js-process_manage');
+		var obj = $('input[type="radio"]:checked' , container);
+		//获取批次顺序
+		var sort = $(".condition_batch_input").val();
+		
+		//获取条件组件随机生成的标记
+		var order = $box.find(".js_condition_batch input[name='order']").val();
+		//获取显示条件
+		var showrules = $box.find("."+order+" input[name='showrules']").val();
+		if(!isNullorEmpty(showrules)){
+			showrules = "";
+		}
+		//获取数组条件
+		var rulesinfo = $box.find("."+order+" input[name='rulesinfo']").val();
+		if(!isNullorEmpty(rulesinfo)){
+			rulesinfo = "";
+		}
+		//获取sql条件
+		var rules = $box.find("."+order+" input[name='rules']").val();
+		if(!isNullorEmpty(rules)){
+			rules = "";
+		}
+		var condition_index = parseInt($('input.condition_batch_input').val(),10);
+		var userobjid = obj.val();
+		var userobjidname = obj.attr("rel");
+		if(isNullorEmpty(userobjid)){
+			var userobjname=$("#userobjStr"+userobjid).text(); //获取文本内容
+			var userobj = $("#userobjStr"+userobjid+" input[name='userobjStr']").val(); //获取隐藏域的内容
+			//批次条件
+			var rulename = "";
+			var rule = "";
+			
+			if(userobjname == null || userobjname == ''){
+				alertMsg.error("请选择对象值");
+			}else if(condition_index == 0 ){
+				alertMsg.error("请填写批次号");
+			}else{
+				var html = '<tr><td><input type="checkbox" name="userCheckbox[]"/></td>';
+				    html +='<td><input type="hidden" name="userobjidname[]" value="'+userobjidname+'"/><input type="hidden" name="userobjid[]" value="'+userobjid+'"/>'+userobjidname+'</td>';
+				    html +='<td><input type="hidden" name="userobjname[]" value="'+userobjname+'"/><input type="hidden" name="userobj[]" value="'+userobj+'"/>'+userobjname+'</td>';
+					html +='<td><input type="hidden" name="rulesinfo[]" value="'+rulesinfo+'"/><input type="hidden" name="rulename[]" value="'+showrules+'"/><input type="hidden" name="rule[]" value="'+rules+'"/>'+showrules+'</td>';
+					html +='<td><input type="text" name="bactch[]" value="'+sort+'"/></td>';
+					html +='<td><input type="text" class="" name="bactchname[]" value=""/></td></tr>';
+					$("table.js-addprocess_manage_table:first").append(html);
+					$('input.condition_batch_input').val('0');
+			}
+		}else{
+			alertMsg.error("请选择对象值");
+		}
+	}
+	$(function(){
+		$('#btnDel').click(function(){
+			// 获取所有checkbox 
+			$('.js-addprocess_manage_table input[type="checkbox"]:checked').each(function(){
+				$(this).closest('tr').remove();
+			});
+		});
+	});
+	// 保存所选的人
+	function saveSelectUserFlowList(json){
+		var response = json.data;
+		var conditions = json.condition;
+		var connectkey = json.connectkey;
+		// 等待所有script加载完再执行这个代码块
+		pr.fnInit("prcslist",response,conditions,connectkey);
+		$.pdialog.closeCurrent();
+	}
+	//清除联系人
+	/**
+	 * number 表示选择的是收件人还是抄送人，ullid表示的是收件人或抄送人的ulid  
+	 */
+	function clearreceverMismessage(number,ulId){
+	    if(number == '1'){
+	        $("#"+ulId).empty();
+	        var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" show="" class="checkByInput" inputName="recipient" chainname="recipientname" emailName="email" tabindex="1" autocomplete="off"></li>';
+	        
+	    }else{
+	        $("#"+ulId).empty();
+	        var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput" inputName="copytopeopleid" chainname="copytopeoplename" emailName="emailCopy" tabindex="1" autocomplete="off"></li>';
+	    }
+	    $('#'+ulId).append($string);
+	    $('#'+ulId).find('input').focus();
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupInsert/rel/ProcessManageBox" class="pageForm required-validate" onsubmit="return validateCallback(this,saveSelectUserFlowList)">
+		<div class="pageFormContent" layoutH="60">
+			<div class="tml-row pmt_warp">
+				<input type="hidden" name="modelname" value="{$modelname}"/><!-- 当前模型名称 -->
+				<input type="hidden" name="choose" value="2"/><!-- 审批节点 -->
+				<input type="hidden" name="ids" value="{$row['ids']}"/><!-- 父级节点ID -->
+				<input type="hidden" name="prcsid" value="{$row['prcsid']}"/><!-- 序号 -->
+				<input type="hidden" name="nextId" value="{$row['processto']}"/><!-- 当前节点的下级节点 -->
+				<input type="hidden" name="nextAll" value="{$row['processall']}"/><!-- 当前节点的下级综合所有节点ID -->
+				<input type="hidden" name="nextChoose" value="{$row['choose']}"/><!-- 当前节点的类别 -->
+	            <div class="process_warp_header left" style="width:auto; padding-left:15px;">节点名称：</div>
+	            <div style="margin-top:16px;">
+					<input type="text" class="required textInput node_name_input" minlength="2" value="" maxlength="25" name="process_relation_name" placeholder="必填，请输入节点名称" size="30" />
+		        	<span style="margin-left: 35px;"><input type="checkbox" value="1" name="document"/> 是否生成审批文档</span>
+	       			<span style="margin-left: 15px;"><input type="checkbox" value="1" name="ismobile"/> 是否手机审批</span>
+	       		</div>
+	        </div>
+	        <div class="tml-row pmt_warp">
+	            <div class="process_warp_header left" style="width:auto; padding-left:15px;">流程回退至：</div>
+				 <!-- select组件 start -->
+				<div class="col_1_2 form_group_lay field_issourcemodel" style="margin-top:12px;">
+					<select name="istuihui" class="select2">
+						<option value="">请选择</option>
+						<volist name="datalist" id="dt">
+							<option value="{$dt.ids}">{$dt.processname}</option>
+						</volist>
+					</select>
+				</div>
+				<!-- select组件 end -->
+	        </div>
+	        <div class="tml-row pmt_warp">
+	            <div class="process_warp_header left" style="width:auto; padding-left:15px;">知会人员：</div>
+				<div class="" style="margin-top:10px;">						
+					<ul class="addressee left checkTo" id="Mismessage_add" style="width:70%;"></ul>
+                    <!-- checkFor带回来的值 -->
+                    
+                    <a  class="input-addon input-addon-addon input-addon-userplus checkUser"  href="javascript:;" ulid="Mismessage_add"  sysUser="sysfields" 
+                    	data="recipientname,username,text;recipient,userid,hidden,1" data-group="groupname,title,text;groupid,id,hidden,1" width="800" height="800">查找带回</a>&nbsp; 
+						<input type="hidden" name="sysselectuser[]" value="sysfields"/>
+					<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverMismessage('1','Mismessage_add');" title="清空用户"></a>
+				</div>
+	        </div>
+	        <if condition="$row['choose'] eq 1">
+	        	<div class="tml-row pmt_warp">
+		            <div class="process_warp_header">流程分支条件：</div>
+		            <div class="condition_batch js-processcondition_batch">
+						<div style="display: inline-block;float: left;">
+							<button class="condition_btn condition_add p_addresultprocesscondition_batch " type="button"  rel="{$modelname}_addresult"  order="processcondition_batch" modelname="{$modelname}" listarr="" onclick="openRule(this);"><span class="icon-plus"></span> 添加</button>
+							<a class="condition_clear condition_btn" onclick="clearAllinforpresult('processcondition_batch');" href="javascript:;"><span class="icon-trash"></span> 清除</a>
+						</div>
+						<div class="processcondition_batch">
+							<input type="text" name="processcondition_batch" readonly="readonly" class="required textInput node_name_input" placeholder="必填，添加分子条件"/>
+						</div>
+		            </div>
+		        </div>
+	        </if>
+	        <div class="pmt_warp">
+	            <div class="process_warp_header">分支批复人：</div>
+	            <table class="process_manage_table js-process_manage">
+	            	<volist name="userObj" id="uobj">
+	            		<tr>
+		                    <td width="20%">
+		                    	<input id="" type="radio" name="nameas" value="{$uobj.id}" rel="{$uobj.name}"/>
+		                    	<label class="process_radio" for="">{$uobj.name}</label>
+		                    </td>
+		                    <td width="40%">
+		                    	<if condition="$uobj['id'] eq 1">
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetUser/switch/1" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选择用户"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 2"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetDuty/switch/2" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="按职级"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 3"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetRoleGroup/switch/3" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选角色"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 4"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetDeptRole/switch/4" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选组织架构"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 5"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetField/switch/5/modelname/{$modelname}" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选表单字段"><span class="icon-search"></span>查找</a>
+		                    	<elseif condition="$uobj['id'] eq 6"/>	
+		                    		<a href="__APP__/MisSystemUserBactch/lookupGetField/switch/6/modelname/{$modelname}" class="condition_search_btn" width="800" height="580" lookupgroup="org" title="选表单字段"><span class="icon-search"></span>查找</a>
+		                    	</if>
+		                    	<span class="pl5" id="userobjStr{$uobj.id}"></span>
+		                    </td>
+		                </tr>
+	            	</volist>
+	            </table>
+	            <div class="process_warp_header">批次条件：</div>
+	            <div class="condition_batch js_condition_batch">
+	            	{:W('ShowAddResult', array('model'=>$modelname) )}
+	            	<span class="right"><input class="condition_batch_input" type="text" value="0"/></span>
+	            </div>
+	            <div class="condition_batch_button">
+	            	<span style="line-height: 28px; font-size: 14px; margin-left: 10px;">
+	            		<input type="radio" value="0" checked="checked" name="parallel"/>非并行</span>
+	            	<span style="line-height: 28px; font-size: 14px; margin-left: 10px;">
+		        		<input type="radio" value="1" name="parallel"/>单批次并行
+		        	</span>
+	            	<span style="line-height: 28px; font-size: 14px; margin-left: 10px;">
+	            		<input type="radio" value="2" name="parallel"/> 多批次并行
+	            	</span>
+	            	<button type="button" class="right condition_search_btn csb_red" id="btnDel">删除条件</button>
+	            	<button type="button" onclick="btnAddProcess();" class="right condition_search_btn mr5">添加条件</button>
+	            </div>
+	            <table class="process_manage_table js-addprocess_manage_table">
+	                <theader>
+	                    <tr>
+	                        <th width="8%">选中</th>
+	                        <th width="10%">类型</th>
+	                        <th width="20%">名称</th>
+	                        <th width="32%">批次/协办人条件</th>
+	                        <th width="10%">批次</th>
+	                        <th width="20%">批次名称</th>
+	                    </tr>
+	                </theader>
+	        	</table>
+	        </div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

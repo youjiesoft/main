@@ -1,0 +1,25 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/misworkfacilitytype" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);" >
+		<input type="hidden" name="md" value="MisProductUnit"/>
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>{$fields["code"]}：</label>
+				<input type="text"  maxlength="10" name="code" value="" />
+				
+			</div>
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required" maxlength="25" name="name" value="" />
+			</div>
+			<div class="unit"  style="width:500px;">
+				<label>{$fields["remark"]}：</label>
+				<textarea name="remark" rows="2" maxlength="200" cols="40"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			 {:W('ShowAction')}
+		</div>
+	</form>
+	</div>
+</div>

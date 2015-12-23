@@ -1,0 +1,48 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" rel="__MODULE__add" target="navTab" title="新增搜索模板"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li>
+			<li><a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li>
+			<li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}" rel="__MODULE__edit" target="navTab" title="修改搜索模板"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span></a></li>
+			<!-- {sid_node} -->
+		</ul>
+	</div>
+
+	<table class="table" width="100%" layoutH="75" >
+		<thead>
+		<tr>
+		<th><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+		<th>英文名</th>
+		<th>中文名</th>
+		<th>动态配置名</th>
+		<th>备注</th>
+		<th>操作</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')" ondblclick='ondblclick_dialog("a.edit",navTab.getCurrentPanel(),"__URL__/edit/id/{$vo[id]}");'>
+			<td><input type="checkbox" name="id"  value="{$vo.id}"/></td>
+			<td>{$vo['ename']}</td>
+			<td>{$vo['cname']}</td>
+			<td>{$vo['dynamicname']}</td>
+			<td>{$vo['remark']}</td>
+			<td>{$vo['status']|showStatus=$vo['id']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

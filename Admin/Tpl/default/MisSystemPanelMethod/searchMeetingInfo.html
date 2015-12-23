@@ -1,0 +1,42 @@
+<form id="pagerForm" action="__APP__/MisSystemPanelMethod/searchMeetingInfo" method="post">
+	<input type="hidden" name="pageNum" value="{$currentPage}"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this,'searchMeetingInfo');" action="__APP__/MisSystemPanelMethod/searchMeetingInfo" method="post">
+</form>
+<if condition="$meetingList">
+<div class="data">
+	<ul>
+		<volist id="meetingVo" name="meetingList">
+			<li class="clearfix">
+				<a class="clearfix" target="navTab" rel="MisOaMeetingPersonedit" title="会议信息_查看"
+					<if condition="$meetingVo['isattend']">
+						href="__APP__/MisOaMeetingPerson/view/id/{$meetingVo.id}"
+					<else/>
+						href="__APP__/MisOaMeetingPerson/edit/id/{$meetingVo.id}"
+					</if>>
+					<span class="hellip">
+						【{$meetingVo.name}】(
+							<if condition="$meetingVo['isattend']">
+								未决定
+							<else/>
+								已参与
+							</if>
+						)
+						<if condition="$meetingVo['newdata']">
+							<sup><img src="__PUBLIC__/Images/xyimages/article_new.png" /></sup>
+						</if>
+						&nbsp;&nbsp;{$meetingVo.personname}
+					</span>
+					<em class="hellip">[{$meetingVo.starttime|transTime=###,'Y-m-d H:i'}]</em>
+				</a>
+			</li>
+		</volist>
+	</ul>
+</div>
+<else/>
+<div class="noData">
+	没有会议
+</div>
+</if>
