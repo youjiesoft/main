@@ -1,0 +1,80 @@
+<div class="page">
+	<div class="pageContent">
+
+
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)" target="callbackframe">
+		<input type="hidden" name="user_id" value="<?php echo $_SESSION[C('USER_AUTH_KEY')] ?>"/>
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent" layoutH="58">
+
+<!--
+<div class="unit">
+	<label>重置密码：</label>
+	<input type="text" name="resetPwd" > <INPUT type="button" value="重置密码" onclick="resetPwd()" class="submit" style="height:25px">
+</div>
+-->
+
+<div class="unit">
+				<label>姓名：</label>
+				<input type="text" class="required" size="20" maxlength="10" name="manname" value="{$vo.manname}"/>
+				<label>性别：</label>
+				<select name="sex"  class="combox">
+					<option <eq name="vo.sex" value="1" >selected</eq> value="1">男</option>
+					<option <eq name="vo.sex" value="0" >selected</eq> value="0">女</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>入职时间:</label>
+				<input type="text"  name="workdate" onfocus="WdatePicker()" class="tml-border-r0 Wdate" value="{$vo.workdate|transTime}"/>
+                <span class="input-addon input-addon-calendar"></span>
+				<label>职务ID:</label>
+
+					<select name="dutyid" class="combox">
+                                        <option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+                                        <volist id="alist" name="alist">
+                                            <if condition="$vo.dutyid eq $alist['id']">
+                                                <option value="{$alist['id']}" selected="selected">{$alist['name']}</option>
+                                            <else />
+                                                <option value="{$alist['id']}">{$alist['name']}</option>
+                                            </if>
+                                        </volist>
+                                </select>
+			</div>
+			<div class="unit">
+				 <label>联系邮箱:</label>
+				<input type="text" name="email" size="20" maxlength="20" class="required email" value="{$vo.email}"/>
+				<label>状 态：</label>
+				<select name="status"  class="combox">
+					<option <eq name="vo.status" value="1" >selected</eq> value="1">启用</option>
+					<option <eq name="vo.status" value="0" >selected</eq> value="0">禁用</option>
+				</select>
+			</div>
+			<div class="unit">
+		<label>备注：</label>
+   				  <textarea rows="2" cols="17" name="remark" class="textInput">{$vo.remark}</textarea>
+				<label>部门ID:</label>
+				<select name="deptid">
+                                        <option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+                                        <volist id="vlist" name="vlist">
+                                            <if condition="$vo.deptid eq $vlist['id']">
+                                                <option value="{$vlist['id']}" selected="selected">{$vlist['name']}</option>
+                                            <else />
+                                                <option value="{$vlist['id']}">{$vlist['name']}</option>
+                                            </if>
+                                        </volist>
+                                </select>
+			</div>
+
+</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemuser_update">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>

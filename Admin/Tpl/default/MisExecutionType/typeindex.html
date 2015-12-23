@@ -1,0 +1,66 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<div class="panelBar">
+	    <ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misexecutiontype_add "><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add/type/{$type}" target="dialog" mask="true" title="新增信息"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misexecutiontype_delete">
+				<li><a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li>
+			</if>
+			<!-- <if condition="$_SESSION.a eq 1 or $_SESSION.misexecutiontype_edit "><li><a class="edit tml-btn tml_look_btn tml_mp"  mask="true"  href="__URL__/edit/id/{sid_node}" target="dialog"  warn="请选择信息" title="修改信息"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.edit}</span></a></li></if> -->
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this, 'misexecutiontype');" action="__URL__/index" method="post">
+			<input type="hidden" name="type" value="{$type}" />
+			<input type="hidden" name="jump" value="1">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="84" style="border-top: 1px solid #D0D0D0">
+	    <thead  ename="{$ename}">
+	    <tr>
+		    <th style="border-left: 1px solid #D0D0D0" width="15"><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+		    <volist id="vo" name="detailList">
+		    	<if condition="$vo[shows]"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="misexecutiontype" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+		    </volist>
+	    </tr>
+	    </thead>
+	    <tbody>
+	    <volist id="vo" name="list" key="key2">
+		    <tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')" title="执行状态配置_编辑" drel="__MODULE__edit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/modelname/MisHrPersonnelPersonInfo/method/subEditBaseInfoForm/id/{$vo.id}");'>
+			    <td><input type="checkbox" name="id" value="{$vo['id']}" /></td>
+			    <volist id="vo1" name="detailList">
+					<td field="{$vo1['name']}" width="{$vo1[widths]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+				</volist>
+		    </tr>
+	    </volist>
+	    </tbody>
+    </table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="misexecutiontype" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

@@ -1,0 +1,72 @@
+<form id="pagerForm" action="__URL__/lookupworkfacilityreturn" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'lookupworkfacilityreturnlistli');" action="__URL__/lookupworkfacilitymanage" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="equipmenttype" value="{$equipmenttype}">
+		
+		<div class="searchBar">
+				 <table class="searchContent"> 
+					<tr>
+						<include file="Public:quickSearchCondition" />
+						 <td><button class="xyBack" type="button" onclick="misworkfacilityreturnmas_selectinto(this)" warn="请选择人员">选择带回</button></td>  
+					</tr>
+				</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="102">
+		<thead>
+			<tr>
+			<th width="20"><input type="checkbox"  class="checkboxCtrl" group="orgId" /></th> 
+			<th width="120">设备编号</th>
+			<th width="100">设备名称</th>
+			<th>设备型号</th>
+			<th>分布数量</th>
+			<th>可归还数量</th>
+			<th width="40">单位</th>
+			<th>存放地点</th>
+			<th>存放人</th>
+			<th>申请类型</th>
+			<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="MisWorkFacilityReturnMaslist">
+		<volist id="vo" name="list">
+			<tr>
+				<td  width="20"><input type="checkbox" name="orgId"   value="{ name:'{$vo.managename}',objid:'{$vo.objid}',objmodel:'{$vo.objmodel}',id:'{$vo.id}',orderno:'{$vo['manageid']|getFieldBy='id','orderno','mis_work_facility_manage'}',version:'{$vo['manageid']|getFieldBy='id','version','mis_work_facility_manage'}',appqty:'{$vo['appqty']|getDigits}',returnqty:'{$vo['returnqty']|getDigits}',unit:'{$vo['manageid']|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}',place:'{$vo.place}',createname:'{$vo.createid|getFieldBy='id','name','user'}',opeartion:'{:getSelectByName('operationdis',$vo['operation'])}',etype:'{$vo['equipmenttype']|getFieldBy='id','name','mis_work_facility_type'}'}"/></td>
+				<td>{$vo['manageid']|getFieldBy='id','orderno','mis_work_facility_manage'}</td>
+				<td>{$vo['managename']}</td>
+				<td>{$vo['manageid']|getFieldBy='id','version','mis_work_facility_manage'}</td>
+				<td>{$vo['appqty']|getDigits}</td>
+				<td>{$vo['returnqty']|getDigits}</td>
+				<td>{$vo['manageid']|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}</td>
+				<td>{$vo.place}</td>
+				<td>{$vo.createid|getFieldBy='id','name','user'}</td>
+				<td>{:getSelectByName('operationdis',$vo['operation'])}</td>
+				<td>
+					<a class="btnSelect" onclick="misworkfacilityreturnmas_addwf('{$vo.managename}','{$vo.objid}','{$vo.objmodel}',{$vo.id},'{$vo['manageid']|getFieldBy='id','orderno','mis_work_facility_manage'}','{$vo['manageid']|getFieldBy='id','version','mis_work_facility_manage'}','{$vo['appqty']|getDigits}','{$vo['returnqty']|getDigits}','{$vo['manageid']|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}','{$vo.place}','{$vo.createid|getFieldBy='id','name','user'}','{:getSelectByName('operationdis',$vo['operation'])}','{$vo['equipmenttype']|getFieldBy='id','name','mis_work_facility_type'}')"
+						href="javascript:$.bringBack({
+						 mangid:'{$vo.id}',
+						 orderno:'{$vo.orderno}',
+						 equipmentname:'{$vo.equipmentname}',
+						 version:'{$vo.version}',
+						  unit:'{$vo['unit']|getDigits}',
+						 qty:'{$vo['qty']|getFieldBy='id','name','mis_product_unit'}',
+						  kyqty:'{$vo['kyqty']|getDigits}'})" title="查找带回">选择</a>
+				</td>
+	  		</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="lookupworkfacilityreturnlistli" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

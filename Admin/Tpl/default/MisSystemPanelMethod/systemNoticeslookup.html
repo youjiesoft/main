@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>公告中心</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/normalize.css" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/main.css" />
+        <script type="text/javascript" src="__PUBLIC__/Js/jquery-1.7.1.js"></script>
+		<style>
+			.current {
+			    background: none repeat scroll 0 0 #0091BF;
+			    border: 1px solid #1F77C0;
+			    border-radius: 4px;
+			    color: #FFFFFF;
+			    display: inline-block;
+			    font-family: "宋体";
+			    font-weight: 700;
+			    height: 20px;
+			    line-height: 20px;
+			    padding: 0 6px;
+			}
+		</style>
+    </head>
+    <body>
+		<div class="header">
+			<div class="container">
+				<h1 class="logo">
+					<if condition="$Copany_Info['picture']">
+							<img alt="logo" src="__PUBLIC__/Uploads/{$Copany_Info['picture']}" />
+							<else/>
+							<img alt="logo" src="__PUBLIC__/Images/sysAnnouncement/logo.png" />
+					</if>
+				</h1>
+				<h2 class="title">&nbsp;公告中心</h2>
+				<div class="search header-search">
+					<form action="__URL__/systemNoticeslookup" class="form search-form" method="post">
+						<input class="search-input" type="text" name="titleseach" style="color:black;" <if condition="$titleseach">value="{$titleseach}"<else/>placeholder="搜索关键字：标题，发布人，发布时间" </if>  />
+						<input type="hidden" name="type" value="{$type}"/>
+						<button class="search-btn" type="submit" >搜索</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<!-- end header -->
+		<div class="container clearfix">
+			<div class="main">
+				<div class="box">
+					<div class="box-header">
+						<ul class="breadcrumb">
+							<li>
+								<span>当前位置:</span>
+							</li>
+							<li class="breadcrumb-history">
+								<a href="__URL__/systemNoticeslookup/type/{$type}">公告中心</a>
+							</li>
+							<li>
+								<if condition="$seach eq 1">
+								<span>搜索列表</span>
+								<else/>
+								<span>{$typename}</span>
+								</if>
+							</li>
+						</ul>
+					</div>
+					<div class="box-body">
+						<div class="box-content">
+							<ul class="main-list">
+								<volist name="AnnouncementList" id="Tlist">
+								<li>
+									<if condition="$Tlist.ptype">
+										<span style="color:blue;">【{$Tlist.ptype|getFieldBy='id','name','MisSystemAnnouncementSet'}】</span>&nbsp;
+									</if>
+									<a href="__URL__/systemNoticesview/id/{$Tlist.id}/type/{$type}">
+									{$Tlist.title}</a>
+									<if condition="$Tlist.top eq 1">
+									<span><img alt="hot" src="__PUBLIC__/Images/sysAnnouncement/hot.png" /></span>
+									</if>
+									<if condition="$Tlist['new'] eq 1"><span class="i-new"></span></if>
+									<span class="main-list-time"<if condition="$Tlist.top eq 1"> style="color:red;" </if> ><time datetime="{$Tlist.createtime|transTime}">[{$Tlist.sendtime|transTime}]</time></span>
+								</li>
+								</volist>
+							</ul>
+						</div>
+						<div class="pagination">
+							{$page}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="sidebar">
+				<volist name="typelist" id="Typelist">
+					<div class="box">
+						<div class="box-header">
+							<h2 class="box-title"><a href="__URL__/systemNoticeslookup/type/{$Typelist}">{$Typelist|getFieldBy='id','name','MisSystemAnnouncementSet'}</a></h2>
+						</div>
+						<div class="box-body">
+							<ul class="side-list">
+								<volist name="amlist[$Typelist]" id="titlelist"  >
+									<li>
+										<a href="__URL__/systemNoticesview/id/{$titlelist.id}/type/{$titlelist.type}">{$titlelist.title}</a>
+									</li>
+								</volist>
+							</ul>
+						</div>
+					</div>
+				</volist>
+				<ul class="link-list">
+					<li><a class="link link-1" target="_blank" href="__APP__/MisSystemNoticeMethod/knowledge">知识库</a></li>  
+					<li><a class="link link-2" target="_blank" href="__APP__/MisSystemNoticeMethod/expertquestion">专家问答</a></li>
+					<li><a class="link link-3" target="_blank" href="{$url}">公司网站</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- end container -->
+
+		<div class="footer">
+			<p>Copyright © 2014 {:C('COPYRIGHT')}</p>
+		</div>
+    </body>
+</html>

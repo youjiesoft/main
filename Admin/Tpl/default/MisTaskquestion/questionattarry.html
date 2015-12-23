@@ -1,0 +1,35 @@
+<div class="page">
+	<div class="pageContent">
+        <div class="pageFormContent" layoutH="95">
+            <form method="post" action="__URL__/insert/navTabId/__MODULE__view" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+                <div class="unit">
+                    <label>上传附件：</label>
+                    <input id="swfupload_mistaskquestion_edit" type="file" uploader="true" name="mistaskquestion_edit_file" formData="{ uploadpath:'Mistaskquestion' }" />
+                    <input type="image" onclick="$('#swfupload_mistaskquestion_edit').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                </div>
+                <dl class="nowrap"><!--此处为上传列表-->
+                    <dt><label>&nbsp;</label></dt>
+                    <dd>
+                        <span id="swfupload_mistaskquestion_edit-queue" class="info uploadify_queue">
+                            <if condition="$attarry">
+                                <volist name="attarry" id="att">
+                                    <div class="uploadify-queue-item">
+                                        <div class="cancel">
+                                            <a  class="dellink" href="__URL__/lookupdelatt/id/{$att['id']}" rel="{$att['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swfupload_mistaskquestion_edit-queue" >X</a>
+                                        </div>
+                                        <span class="fileName"><a href="__PUBLIC__/{$att.attached}" target="_blank">{$att['upname']}</a></span>
+                                        <span class="data"> - 已经传</span>
+                                        <div class="uploadify-progress">
+                                        <div class="uploadify-progress-bar" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                     
+                                </volist>
+                            </if>
+                        </span>
+                    </dd>
+                </dl>
+            </form>
+        </div>
+    </div>
+</div>

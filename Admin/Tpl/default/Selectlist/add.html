@@ -1,0 +1,71 @@
+<script>
+function addmfem_append_Selectlist() {
+	var $box = $.pdialog.getCurrent();
+	var html = '<tr>';
+	html += '<td><input type="text" class="gangwei_d xytdinput"  name="arr_key[]" value="" /></td>';		
+    html += '    <td><input type="text" class="gangwei_d xytdinput" name="arr_val[]" value="" /> </td> ';                               
+    html += '    <td><a href="javascript:;" onclick="addmfem_delete_Selectlist(this);"><strong style="color:red">移除</strong></a></td>';
+	html += '</tr>';
+	var $ht = $(html).initUI();
+	$("#Selectlist_ex_add").append($ht);
+}
+function addmfem_delete_Selectlist(obj) {
+	var $box = $.pdialog.getCurrent();
+	$(obj).parent().parent().remove();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>编码：</label>
+					<input type="text" class="required alphanumeric" name="name" />
+				</div>
+				<div class="tml-form-col">
+					<label>标题：</label>
+					<input type="text" class="required" name="title" />
+				</div>
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select name="status" class="combox">
+						<option value="1">开启</option>
+						<option value="0">禁用</option>
+					</select>
+				</div>
+				 <div class="tml-form-col" >
+						<label title="">配置类型：</label>
+						<input type="radio" name="conftype" value="0" checked>用户自定义
+	                    <input type="radio" name="conftype" value="1">系统配置
+					</div>
+			</div>
+			<div class="tml-form-row">
+				<label>描述：</label>
+				<input type="text" class="" name="remark" />
+			</div>
+			<div class="dialog-box">
+                <table class="data-table" cellspacing="0" id="Selectlist_ex_add" width="100%">
+                    <thead>
+                        <tr>
+                            <td style="width:200px;"><strong>键</strong></td>
+                            <td><strong>值</strong></td>
+                            <td style="width:30px;"><a href="javascript:;" onclick="addmfem_append_Selectlist();"><strong style="color:green">添加</strong></a></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+							<td><input type="text" class="gangwei_d xytdinput"  name="arr_key[]" value="" /></td>		
+                            <td><input type="text" class="gangwei_d xytdinput" name="arr_val[]" value="" /> </td>                                
+                            <td><a href="javascript:;" onclick="addmfem_delete_Selectlist(this);"><strong style="color:red">移除</strong></a></td>
+                        </tr>
+                    </tbody>
+               </table>
+            </div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+
+	</div>
+</div>
+

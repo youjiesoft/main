@@ -1,0 +1,28 @@
+<script>
+$(document).ready(function(){
+	table_rowspan("userpermissionstable",1);
+	table_rowspan("userpermissionstable",2,1);
+});
+</script>
+<div class="right" style="width: 100%">
+	<table width="100%">
+		<tr style="background-color: #66C8E8;text-align: center;font-size: 14px;line-height:25px;">
+			<td colspan="4"><strong>权限列表</strong></td>
+		</tr>
+	</table>
+	<?php $arr = array(1=>"全部",2=>"部门及子部门",3=>"部门",4=>"个人",5=>"禁用"); ?>
+	<div style="border-left: 1px solid #99bbe8;background: none repeat scroll 0 0 #F9F9F9;" class="pageContent" layoutH="95">
+		<table class="tml-table" width="100%" id="userpermissionstable">
+			<tbody>
+				<volist id="permissionsvo" name="permissionslist">
+					<tr>
+						<td style="width: 25%">{$permissionsvo['model']}</td>
+						<td style="width: 15%">{$permissionsvo['nodeidcategory']}</td>
+						<td style="width: 35%">{$permissionsvo['method']}</td>
+						<td style="width: 25%">{$arr[$permissionsvo['plevels']]}</td>
+					</tr>
+				</volist>
+			</tbody>
+		</table>
+	</div>
+</div>

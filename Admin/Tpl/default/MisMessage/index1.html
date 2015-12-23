@@ -1,0 +1,126 @@
+<script type="text/javascript">
+$("#file_upload").uploadify({
+    'height'        : 20,
+    'formData'      : {'upload' : '1','public':"__PUBLIC__",'type':'13'},
+    'swf'           : "__PUBLIC__/uploadify/uploadify.swf",
+    'uploader'      : "__URL__/uploads/",
+    'width'         : 120,
+    'queueID'  : 'some_fjxxfile_queuead_writeletter_add',
+    'onUploadSuccess' : function(file, data, response) {
+		$("#inner_html_writeletter_add").append(data);
+    }
+});
+function unique4(data)
+{
+     data = data || [];
+     var a = {};
+     for (var i = 0, len = data.length; i < len; i++)
+     {
+         var v = data[i];
+         if ('undefined' == typeof(a[v]))
+        {
+             a[v] = 1;
+         }
+     }
+     data.length = 0;
+     for (var i in a)
+     {
+         data[data.length] = i;
+     }
+     return data;
+ }
+ var usernames=new Array();
+ function addleteruser4(obj){
+	name=$(obj).attr("rel");
+	usernames.push(name);
+	unique4(usernames);
+	var recever_user4=usernames.join(",");
+	$("#recever_user4").val(recever_user4);
+ }
+function clearrecever4(){
+	$("#recever_user4").val("");
+	usernames.splice(0,usernames.length);
+}
+function getstatus4(value){
+	$("#Msgstatus").val(2);
+	
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<div style="width:100%;">
+		<div class="pageFormContent" layoutH="45">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="status" value="1" id="Msgstatus"/>
+			<div style=" float:left; width:75%;">
+				<table width="100%" border="0" cellspacing="0">
+					<tr>
+					  <td><div class="unit"><label>收件人：</label>
+					  <input type="text"  name="receverid" value="" class="textInput" readonly="readonly" id="recever_user4" size="80" />(<a href="javascript:;" onclick="clearrecever4();">清空</a>)</div></td>
+					</tr>
+					<tr>
+					  <td><div class="unit"><label>主题：</label>
+					  <input type="text" value="{$vo[title]}" name="title" class="textInput" size="80" /></div></td>
+					</tr>
+					<tr>
+					  <td><label>附件：</label>
+					  <input type="file" value="" id="file_upload"/></td>
+					</tr>
+					<tr>
+						<td>
+							<label>附件详情：</label>
+                            <div id="inner_html_writeletter_add" style="width:400px;height:auto;margin-left:120px;"></div>
+						</td>
+					</tr>
+					<tr>
+					  <td ><div class="unit"><label>正文：</label>
+					  <textarea class="editor" name="content" rows="12" cols="80">{$vo[content]}</textarea>
+						</div></td>
+					</tr>
+					<tr>
+						<td>
+						<fieldset>
+							<dl class="nowrap">
+								<dd style="width:60px;float:left;"><div class="button" onclick="submitform4();"><div class="buttonContent"><button>发送</button></div></div></dd>
+								<dd style="width:60px;float:left;"><div class="button" onclick="getstatus4(this.form);"><div class="buttonContent"><button>存草稿</button></div></div></dd>
+								<dd style="width:60px;float:left;"><div class="button"><div class="buttonContent"><button class="close">关闭</button></div></div></dd>
+							</dl>
+						</fieldset>
+					    </td>
+				    </tr>
+				</table>
+			</div>
+			</form>
+			<form action="__URL__/index" method="post"  onsubmit="return navTabSearch(this);">
+			<input type="hidden" name="msgid" value="{$msgid}" />
+			<div  style="float:right; display:block; overflow:auto; width:200px; border:solid 1px #CCC; line-height:21px; background:#fff">
+			    <div class="lx_header">联系人</div>
+			    <div class="lm_sbar">
+			    <input type="submit" class="lm_sopen" value="">
+			    <div><input type="text" id="contactkey" autocomplete="off" value="" class="txt" onfocus=this.value='' name="keyword"></div>
+			    </div>
+			    <ul class="tree treeFolder collapse" style="height:300px;overflow:scroll;" id="contact">
+					<volist id="depart4" name="contact">
+					<li>
+						<a href="javascript:;">{$key}</a>
+						<if condition="count($depart4)">
+						<ul>
+							<volist id="vo" name="depart4">
+								<li> <a href="javascript:;" onclick="addleteruser4(this);" rel="{$vo['name']}">{$vo['name']}</a></li>
+							</volist>
+						</ul>
+						</if>
+					</li>
+					</volist>
+			     </ul>
+			</div>
+			</form>
+		</div>
+
+	</div>
+	<div class="clear"></div>
+	</div>
+</div>
+
+

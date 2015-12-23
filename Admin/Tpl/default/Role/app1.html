@@ -1,0 +1,196 @@
+<style>
+.unitExchangeBox{ margin-left:200px;}
+</style>
+<script type="text/javascript">  
+    var aid = 0, treeid = 0;
+    var zNodes = {$str};
+    var setting = {
+           view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+           check: {
+               enable: true,
+               chkboxType: {"Y":"ps","N":"ps"}
+           },
+           data: {
+               simpleData: {
+                   enable: true,
+                   idKey: "id",
+                   pidKey: "pid",
+                   rootPid: 0
+               }
+           },
+           callback: {
+        	   beforeCheck: zTreeBeforeCheck,
+        	   onCheck: zTreeOnCheck,
+        	   onClick: zTreeOnClick
+           }
+        };
+    
+    function zTreeBeforeCheck(event,treeId, treeNode) {
+    	
+    }
+    
+    function zTreeOnClick(event, treeId, treeNode) {
+        treeid = treeId;
+        aid = treeid + "_a";
+    } 
+    
+    function zTreeOnCheck(event, treeId, treeNode) {
+    	refreshByHalfCheck(treeNode);
+    	var rooleid = $("#gpid").val();
+        var type = 0;
+        if(treeNode.checked) {
+        	type = 1;
+        }
+        if(treeNode.id < 0) {
+        	for(var i = 0; i < treeNode.children.length; i++) {
+        		$.ajax({
+                    type:"POST",
+                    url:"__URL__/nodeSaveNew",
+                    data:{roleid:rooleid,nodeid:treeNode.children[i].id,type:type},
+                    cache:false,
+                    success:function(res){
+                        //alert(res);
+                    },
+                    error:DWZ.ajaxError
+                });
+        	}
+        } else {
+        	$.ajax({
+                type:"POST",
+                url:"__URL__/nodeSaveNew",
+                data:{roleid:rooleid,nodeid:treeNode.id,type:type},
+                cache:false,
+                success:function(res){
+                    //alert(res);
+                },
+                error:DWZ.ajaxError
+            });
+        }
+        
+        checkTreeNode();
+    }
+
+    function myclick(mya) {
+    	aid = $(mya).attr("id");
+    	treeid = aid.substring(0,aid.lastIndexOf("_"));
+    }
+    
+    function checkTreeNode() {
+        if(aid == 0) {
+        	return;
+        }
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = zTree.getSelectedNodes();
+        if(nodes.length <= 0) {
+          return;  
+        } 
+        var node = nodes[0];
+        node.halfCheck = false;
+        if(node.checked) {
+            $("#checkTruePS").attr("checked","checked");
+            $(".mychk").attr("checked","checked");
+        } else {
+            $("#checkFalsePS").attr("checked","checked");
+            $(".mychk").removeAttr("checked","checked");
+        }
+        zTree.updateNode(node,true);
+    }
+    function refreshByHalfCheck(treeNode) {
+    	var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+    	if(treeNode.isParent) {
+    		var nodes = treeNode.children
+    		for(var i = 0; i < nodes.length; i++) {
+    			nodes[i].halfCheck = false;
+    			zTree.updateNode(nodes[i],true);
+                refreshByHalfCheck(nodes[i]);
+    		}
+    	}
+    }
+    
+    function getFontCss(treeId, treeNode) {
+        return (!!treeNode.highlight) ? {color:"#A60000", "font-weight":"bold"} : {color:"#333", "font-weight":"normal"};
+    }
+    var nodeList = [], fontCss = {};
+    function searchNode(e) {
+        var zTree = $.fn.zTree.getZTreeObj("treeDemo");
+        var value = $.trim(rolekey.get(0).value);
+        var keyType = "name";
+        if (rolekey.hasClass("empty")) {
+            value = "";
+        }
+        if (value === "") return;
+        zTree.expandAll(false);
+        var zTreeNodes = zTree.getNodes()[0];
+        zTree.expandNode(zTreeNodes, true, false);
+        if(nodeList){
+            for( var i=0, l=nodeList.length; i<l; i++) {
+                nodeList[i].highlight = false;
+                zTree.updateNode(nodeList[i]);
+            }
+        }
+        nodeList = zTree.getNodesByParamFuzzy(keyType, value);
+        for( var i=0, l=nodeList.length; i<l; i++) {
+            nodeList[i].highlight = true;
+            zTree.updateNode(nodeList[i]);
+            zTree.expandNode(nodeList[i].getParentNode(), true, false);
+           // expandNode(nodeList[i]);
+        }
+    }
+    function expandNode(node){
+    	var parent = node.getParentNode();
+    	zTree.expandNode(parent, true, true);
+    	if (parent.id) {
+    		zTree.expandNode(parent, true, false);
+    		expandNode(parent);
+    	}
+    }
+    
+    var rolekey;
+    function focusKey(e) {
+        if (rolekey.hasClass("empty")) {
+            rolekey.removeClass("empty");
+        }
+    }
+    function blurKey(e) {
+        if (rolekey.get(0).value === "") {
+            rolekey.addClass("empty");
+        }
+    }
+    
+    $(document).ready(function(){
+        $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getNodes()[0].children;
+        for(var i = 0; i < nodes.length; i++) {
+        	if(nodes[i].open) {
+        		treeObj.expandNode(nodes[i],false,true);
+        	}
+        }
+        
+        rolekey = $("#rolekey");
+        rolekey.bind("focus", focusKey)
+        .bind("blur", blurKey)
+        .bind("propertychange", searchNode)
+        .bind("input", searchNode);
+      });
+    
+    
+    
+    </script>
+    <input id="gpid" type="hidden" value="{$groupId}"/>
+    <div class="pageContent" layouth="0" style="height: 349px; overflow: auto;">
+        <div layoutH="2" class="accordionContent" style="float:left; display:block; overflow:auto; width:auto; border:solid 1px #CCC; line-height:21px; background:#fff">
+		   <div class="zTreeDemoBackground left">
+           <input type="text" id="rolekey" value="" class="empty" style="margin-top:5px; margin-left:5px;"/><br/>
+            <ul id="treeDemo" name="treeDemo" class="ztree"></ul>
+           </div>
+		</div>
+	    <div id="unitExchangeBox" class="unitExchangeBox">
+	       
+	    </div>
+          
+    </div>
+  

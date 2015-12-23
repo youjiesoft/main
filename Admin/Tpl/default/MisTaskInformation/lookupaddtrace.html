@@ -1,0 +1,44 @@
+<div class="tabsContent" style="padding:0px;">
+    <div class="pageContent">
+        <form method="post" action="__URL__/auditTask/navTabId/mistaskinfolookupTraceIdea" class="pageForm required-validate" onsubmit="return validateCallback(this, mistaskinfo_refreshdialog)">
+            <input type="hidden" name="callbackType" value="closeCurrent">
+            <input type="hidden" name="refreshtabs[ntdata]" value="3">
+            <input type="hidden" name="refreshtabs[ids]" value="{$task['id']}">
+            <input type="hidden" name="refreshtabs[closeall]" value="1">
+            <input type="hidden" name="taskid" value="{$task['id']}">
+            <input type="hidden" name="id" value="{$vo['id']}" >
+            <div class="pageFormContent" layoutH="55">
+                <div class="unit">
+                    <label>任务名称：</label>
+                    <span class="fontGray">{$task['title']}</span>
+                </div>
+                <div class="clear"></div>
+                <div style="margin-top:20px;">
+                    <label >跟踪/查看意见:</label>
+                    <textarea cols='42' rows='4' placeholder="请填写审核意见" name="remark" class="required" style="width:500px;"></textarea>
+                    <!-- 7结束 4关闭 5暂停  1继续  3修改 -->
+                </div>
+                <div class="unit">
+                    <label>推送系统消息：</label>
+                    <input type="radio" name="ispushmsg" checked value="1">是
+		    <input type="radio" name="ispushmsg"  value="0">否
+                </div>
+                <div class="clear"></div>
+                <p>
+                    <label>任务状态:</label>
+                    <input type="radio" checked="checked" name="executingstatus" value="3">修改
+                    <input type="radio" <eq name="vo.executingstatus" value="4">checked</eq> name="executingstatus" value="4">关闭
+                    <input type="radio" name="executingstatus" value="0">继续
+                    <input type="radio" <eq name="vo.executingstatus" value="5">checked</eq> name="executingstatus" value="5">暂停
+                    <input type="radio" name="executingstatus" value="7">结束
+                </p>
+            </div>
+            <div class="formBar">
+                <ul>
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+                    <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</div>

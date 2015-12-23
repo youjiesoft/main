@@ -1,0 +1,107 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		},
+		callback: {
+			onClick: zTreeOnClick
+		}
+	};
+	$.fn.zTree.init($("#MisSystemDataControlSqlMas"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("MisSystemDataControlSqlMas");
+	var valid='{$check}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+(function ($) { 
+    $.fn.extend({ 
+        insertAtCaret: function (myValue) { 
+            var $t = $(this)[0]; 
+            if (document.selection) { 
+                this.focus(); 
+                sel = document.selection.createRange(); 
+                sel.text = myValue; 
+                this.focus(); 
+            } else 
+                if ($t.selectionStart || $t.selectionStart == '0')
+{ 
+                    var startPos = $t.selectionStart; 
+                    var endPos = $t.selectionEnd; 
+                    var scrollTop = $t.scrollTop; 
+                    $t.value = $t.value.substring(0, startPos) + myValue + $t.value.substring(endPos,$t.value.length); 
+                    this.focus(); 
+                    $t.selectionStart = startPos + myValue.length;
+                    $t.selectionEnd = startPos + myValue.length; 
+                    $t.scrollTop = scrollTop; 
+                } else { 
+                    this.value += myValue; 
+                    this.focus(); 
+                } 
+        } 
+    }) 
+})(jQuery) ; 
+function zTreeOnClick(e,treeId,treeNode) {
+	var treeObj=$.fn.zTree.getZTreeObj("MisSystemDataControlSqlMas");
+	 nodes = treeObj.getSelectedNodes(true);
+	 $(".sqltxt").insertAtCaret(nodes[0]['tableinfo']);
+}
+function appendtxt(val){
+	 $(".sqltxt").insertAtCaret(val);
+}
+function addSqlresultcback(){
+	var val=$(".sqltxt").val();
+	var order='{$order}';
+	$(".p_addresultsql"+order).attr("listarr",val);
+	$(".sqlcondition_value"+order).val(val);
+	$.pdialog.closeCurrent();
+}
+</script>
+<div class="pageContent">
+<div class="treeleft add_result_left">
+    <div class="close">
+        <div class="clearfix p5">
+            <div class="member_searcher">
+                <input class="add_key left" id="MisSystemDataControlSqlMasSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+                <button class="btn_member icon-search right" onclick="SearchZTreeNode('MisSystemDataControlSqlMas','MisSystemDataControlSqlMasSearchNodeKeys')" type="button"></button>
+            </div>
+        </div>
+        <ul id="MisSystemDataControlSqlMas" class="ztree" layoutH="118"></ul>
+    </div>
+</div>
+<div id="MisSystemIntercalateMasBox" class="unitBox treeright arc_right">
+    <div class="add_result_center">
+        <ul class="add_result_ul">
+            <li><span onclick="appendtxt('+')"> + </span></li>
+            <li><span onclick="appendtxt('-')"> - </span></li>
+            <li><span onclick="appendtxt('*')"> * </span></li>
+            <li><span onclick="appendtxt('/')"> / </span></li>
+            <li><span onclick="appendtxt('()')"> ()</span></li>
+            <li><span onclick="appendtxt('===')"> = </span></li>
+            <li><span onclick="appendtxt('&&')"> && </span></li>
+            <li><span onclick="appendtxt('||')">||</span></li>
+            <li><span onclick="appendtxt('>')"> > </span></li>
+            <li><span onclick="appendtxt('>=')"> >= </span></li>
+            <li><span onclick="appendtxt('<')"> < </span></li>
+            <li><span onclick="appendtxt('<=')"> <= </span></li>
+            <li><span onclick="appendtxt('<>')"> <> </span></li>
+             <li><span onclick="appendtxt('<eval></eval>')">eva</span></li>
+        </ul>
+    </div>
+    <div class="add_result_right">
+        <textarea class="sqltxt" >{$listArr}</textarea>
+    </div>
+</div>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml_select_btn tml_formBar_btn_blue" onclick="addSqlresultcback()" >{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+</div>

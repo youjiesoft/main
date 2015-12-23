@@ -1,0 +1,48 @@
+<div class="pageContent">
+    <form method="post" action="__URL__/lookupFeedback" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <input type="hidden" name="id" value="{$vo['id']}">
+        <input type="hidden" name="refreshtabs[data]" value="1">
+        <div class="pageFormContent applecloth" layoutH="95">
+            <div class="keepContentCenter">
+                <H2 class="contentTitle contentTitle_center">
+                   信息反馈
+                </H2>
+                <div class="unit">
+                    <label>任务名称：</label>
+                    <input type="text" class="required" readonly style="width:500px;"  value="{$task['title']}" />
+                </div>
+                <div class="clear"></div>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>反馈信息列表</b>
+                    </legend>
+                    <table class="xyDataTable" cellspacing="0" id="mistaskadFeedback_add" width="100%" border="1" bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">
+                        <thead>
+                            <tr>
+                                <td><strong>序号</strong></td>
+                                <td><strong>内容</strong></td>
+                                <td><strong>创建人</strong></td>
+                                <td><strong>创建日期</strong></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <volist id="feedvo" name="feedbacklist">
+                            <tr>
+                                <td style="width: 10px;"><input type="text" value="{$feedvo['id']}" readonly/></td>
+                                <td>{$feedvo['remark']}</td>
+                                <td style="width: 10px;"><input type="text" value="{$feedvo['createid']|getFieldBy='id','name','User'}" readonly/></td>
+                                <td style="width: 10px;"><input type="text" value="{$feedvo['createtime']|date='Y-m-d H:i',###}" readonly/></td>
+                                </tr>
+                                </volist>
+                        </tbody>
+                    </table>
+                </fieldset>
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+            </ul>
+        </div>
+    </form>
+</div>

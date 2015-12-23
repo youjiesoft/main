@@ -1,0 +1,38 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misworkfacilitymanagetree"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+            <div class="toggleCollapse" ><h2></h2><div></div>
+            </div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="MisWorkFacilityManageSearchNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('misworkfacilitymanagetree','MisWorkFacilityManageSearchNodeKeys')">搜索</button>
+				</div>
+			</div>
+			<ul id="misworkfacilitymanagetree" class="ztree" layoutH="43"></ul>
+		</div>
+	</div>
+	<div id="misworkfacilitymanage" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

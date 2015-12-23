@@ -1,0 +1,125 @@
+<script>
+$(function(){
+	$("#pppbyusers").find("input[name='byusers[]']").each(function(){
+		var id = $(this).val();
+		$("#lookbyusers").find('tr').each(function(){
+			var rel = $(this).attr('rel');
+			if(id == rel){
+				$(this).addClass("selected");
+				$(this).addClass("checkedbox");
+				$(this).find("input[type='checkbox']:first").attr("checked","checked");
+			}
+		});
+	});
+});
+function addByusers($this,type){
+	var istrue = false;
+	if(type == 'tr'){
+		$this = $($this);
+		if(!$this.find("input:checkbox").attr("checked")) {
+			istrue = true;
+		}
+	} else {
+		if($($this).attr("checked")) {
+			istrue = true;
+		}
+		$this = $($this).parents("tr:first");
+	}
+	if(istrue){
+		var lookbyusers = "lookbyusers";
+		var code = $this.find("td.byusercode").text();
+		var name = $this.find("td.byusername").text();
+		var deptname = $this.find("td.byuserdept").text();
+		var dutyname = $this.find("td.byuserduty").text();
+		var html = "<tr><td style='width: 70px;'>";
+		html += "<input type='hidden' name='byusers[]' value='"+$this.attr('rel')+"' />"+code+"</td>";
+		html += "<td style='width: 90px;'>"+name+"</td>";
+		html += "<td style='width: 110px;'>"+deptname+"</td>";
+		html += "<td style='width: 90px;'>"+dutyname+"</td>";
+		html += "<td><a href='javascript:;' onclick='dellookputusers(this,"+$this.attr('rel')+","+'"lookbyusers"'+");' title='删除' class='btnDel'>x</a></td>";
+		html += "</tr>";
+		$("#pppbyusers").append(html);
+		$("#pppbyusers").parents("table:first").cssTable();
+	} else {
+		var id = $this.attr('rel');
+		$("#pppbyusers").find("input[name='byusers[]']").each(function(){
+			if($(this).val() == id){
+				$(this).parents("tr:first").remove();
+			}
+		});
+	}
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupmanage" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar" style="border: 1px #B8D0D6 solid;">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'MisPerformancePlanPutList');" action="__URL__/lookupmanage" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<input type="hidden" id="putid" name="putid" value="{$putid}">
+		<div class=" searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div class="unit">
+							请输入关键字：
+							<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+					</td>
+					<td>
+						<select class="combox" name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />
+						<!-- <select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select> -->
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="100%" layoutH="300">
+		<thead>
+			<tr>
+				<th width="15"><input type="checkbox" onclick="groupCheckAllPlanUsers(this,'lookbyusers')" /></th>
+				<th width="70">员工编号</th>
+				<th width="90">员工姓名</th>
+				<th width="110">部门</th>
+				<th>职级</th>
+				<th>职务</th>
+			</tr>
+		</thead>
+		<tbody id="lookbyusers">
+		<volist id="vo" name="list">
+			<tr onclick="addByusers(this,'tr');" rel="{$vo.id}">
+				<td><input type="checkbox" name="orgmsg" value="{$vo.id}" onclick="addByusers(this,'td');"/></td>
+				<td class="byusercode">{$vo['orderno']}</td>
+				<td class="byusername">{$vo['name']}</td>
+				<td class="byuserdept">{$vo['deptname']}</td>
+				<td class="byuserduty">{$vo['dutyname']}</td>
+				<td>{$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="MisPerformancePlanPutList" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

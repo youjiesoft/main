@@ -1,0 +1,43 @@
+<div class="entry-box-body nbm_work_container">
+                    <div class="entry-box-data" >
+                        <if condition="!$userOaitemlist['count'] && !$userAuditlist['count'] && !$userWorkExecutList['count'] && !$userZhuilist['count']">
+                            <a target="navTab" href="__APP__/MisWorkExecuting/index/jump/7" rel="MisWorkExecutingbox" title="工作中心">
+                                <div class="index_work_lay">
+                                    <div><img src="__PUBLIC__/Css/tmlstyle/images/icon_start_work.png" alt=""/></div>
+                                    <div>
+                                        <p style="color: #34495e; font-size: 14px;line-height: 30px;">点击进入工作中心</p>
+                                        <button class="start_work_btn">发起工作</button>
+                                    </div>
+                                </div>
+                            </a>
+                        </if>
+                        <div class="tml_box_content">
+                            <ul class="tml_box_content_ul">
+                                <li class="tml_box_content_li">
+                                    <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/5/md/MisOaItems/type/3/wjump/1/rel/MisWorkExecutingbox" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作协同</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userOaitemlist['count']}</span>
+                                    </a>
+                                </li>
+                                <li class="tml_box_content_li">
+                                <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/3/md/MisWorkMonitoring/worktype/1/rel/MisWorkExecutingbox" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作审批</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userAuditlist['count']}</span>
+                                    </a>
+                                </li>
+                                <li class="tml_box_content_li">
+                                 <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/4/md/MisWorkExecuting" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作执行</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userWorkExecutList['count']}</span>
+                                    </a>
+                                </li>
+                                <li class="tml_box_content_li">
+                                   <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/6/md/MisWorkExecuting/istepperson/1" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作知会</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userZhuilist['count']}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>

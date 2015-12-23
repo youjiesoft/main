@@ -1,0 +1,22 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <if condition="$myToDo">
+            <div class="data">
+                <ul>
+                    {$myToDo}
+                </ul>
+            </div>
+        <else/>
+            <div class="noData">
+               	 没有待办事项
+            </div>
+        </if>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

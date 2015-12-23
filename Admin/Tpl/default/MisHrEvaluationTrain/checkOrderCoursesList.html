@@ -1,0 +1,102 @@
+<style>
+#report_car_oil FIELDSET{	background-color: #ffffff;height:60px;}
+#report_car_oil FIELDSET legend{margin:5px;}
+#report_car_oil .xyformunit{float:left; display:block; width:230px; margin:0;min-height:20px;overflow:hidden;padding:5px 0;position:relative;_height:20px;margin:2px;background-color:#f8fcff ;}
+#report_car_oil .xyformunit2{float:left; display:block; width:180px; margin:0;min-height:20px;overflow:hidden;padding:5px 0;position:relative;_height:20px;margin:2px;background-color:#f8fcff ;}
+#report_car_oil .xyformunit3{float:left; display:block; width:150px; margin:0;min-height:20px;overflow:hidden;padding:5px 0;position:relative;_height:20px;margin:2px;background-color:#f8fcff ;}
+#report_car_oil .xyformunitButton{float:left; display:block; width:80px; margin:0;min-height:20px;overflow:hidden;padding:5px 0;position:relative;_height:20px;margin:2px;background-color:#fff ;}
+#report_car_oil .xyformunit label{display:block;float:left;width:60px;text-align: right;padding-top:5px;}
+#report_car_oil .xyformunit3 select{height:19px;font-size: 1em;}
+.panel .buttonActive{float:left;}
+
+.cotentUnit {padding-top:5px;padding-left:5px;color:#555555;text-align: left;}
+.datalistsection .dataitem,.knowledgeimgarea{border:0;margin:0; float:left;}
+.datalistsection .dataitem {border: 2px solid #ecebeb;width:220px;margin:5px;float:left;background-color: #ecf1f1;text-align: center;}
+.datalistsection .dataitem .knowledgeimgarea{text-align: center;clear:both;border: 2px solid #cdcdcd;width:80px;height:60px;margin:8px 5px;background-color:white;}
+.datalistsection .dataitem .headerright{margin:5px;}
+.datalistsection .dataitem .headerright span.labletitle{color: #10874a;	font-size:0.8em;}
+.datalistsection .dataitem .titlerow{font-size:1em;}
+.datalistsection .itemcontent {float:left;margin-top:20px;}
+ 
+.headerbottom{ margin-top:10px;font-size:0.9em}
+.headerbottom a{ margin:3px;}
+.headerbottom a:link,a:visited{color:#03ad6f;}
+.headerbottom a:hover{color:#056944;}
+
+</style>
+
+<div class="pageContent" selector="h1" style="width:auto;margin:0 auto;text-align:left;">
+	<div class="panel collapse" defH="70" minH="65" >
+		<h1>选择课程</h1>
+		<div>
+		<form name="checkCoures" method="post" action="__URL__/checkOrderCoursesList/rel/mishrevaluationtrainmodel/jump/1" onsubmit="return divSearch(this,'mishrevaluationtrainmodel');">
+			<div id="report_car_oil">
+				<FIELDSET>
+					<div class="xyformunit">
+						<label>课程年份：</label>							
+						<span class="xyInputWithUnit">
+							<input name="yearDate" type="text" class="Wdate js-wdate">
+							<a href="javascript:;" class="tml-icon tml-icon-calendar js-inputCheckDate">选择</a>
+						</span>
+					</div>
+					<div class="xyformunit3">
+						<label>课程类型：</label>
+						<select name="type">
+							<option value="">全部课程</option>
+							<option value="1">共公课程</option>
+							<option value="2">部门课程</option>
+							<option value="3">外派课程</option>
+							<option value="4">其它课程</option>
+						</select>
+					</div>
+					<div class="xyformunit2">
+						<label>关键字：</label>
+						<input type="text" name="keyword" size="12"/>
+					</div>
+					<div class="xyformunitButton">						
+						<button class="tml-btn tml-btn-primary" name="submit">检索</button>
+					</div>
+					<div class="clear"></div>
+					<div class="cotentUnit"><b>注:</b>请选筛选年份，课程名称，等关键信息，来查找课程；</div>
+				</FIELDSET>
+			</div>
+		</form>
+		</div>
+	</div>
+	<div class="panel">
+		<h1>课程列表</h1>
+		<div layoutH="165" style="background-color:#fff;" class="datalistsection">
+			<!-- 数据区开始  -->     
+			<volist id="vo" name="list" key="key2">
+				<div class="dataitem">
+			        <div class="knowledgeimgarea">
+			           <a href="__URL__/showOrderList/trainid/{$vo['id']}/" title="订课名单-《{$vo['name']}》" target="dialog" rel="showOrderList" width="800" height="480"> 
+			           		<img title="云学堂的使用说明" src="__PUBLIC__/Images/course.jpg" width="75" height="58">
+			           </a>
+			        </div>
+			        <div class="itemcontent">
+			            <div class="itemheader clearfix">
+			                <div class="headerleft">
+			                    <div class="titlerow">
+			                    	<a href="__URL__/showOrderList/trainid/{$vo['id']}/" title="订课名单-《{$vo['name']}》" target="dialog" rel="showOrderList" width="800" height="480">{$vo['name']}</a>
+			                    </div>
+			                </div>
+			                <div class="headerright">
+			                    <span class="labletitle">
+			                    	<b>人数：</b>{$vo['id']|getTotalNumber=###,'trainid','MisHrPersonnelTrainManageRelation'}人
+			                    	<img src="__PUBLIC__/Images/point_img.png" />{$vo['traintime']|date='Y-m-d',###}
+				                </span>
+			                </div>
+			                <div class="headerbottom">
+				                <a href="__URL__/showCommitMessage/trainid/{$vo['id']}/" target="dialog" title="{$vo['name']}-反馈列表" width="800" height="500">反馈信息</a>
+				                <a href="__URL__/coursesReport/trainid/{$vo['id']}/" target="dialog" title="{$vo['name']}-评估报表" width="800" height="500">评估报告</a>
+			                </div>
+			            </div>
+			         </div>
+			         <div class="clear"></div>
+				</div>
+			</volist>
+			<!-- 数据区结束  -->   
+		</div>
+	</div>
+</div>

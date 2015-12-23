@@ -1,0 +1,62 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$tree};
+		var setting = {
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#indexOftenTreeDemo"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("indexOftenTreeDemo");
+		var valid='{$valid}';
+		var nodes = zTree.getNodesByParam("id", valid, null);
+		zTree.selectNode(nodes[0]);
+	});
+	function addOften($this){
+		$obj = $($this);
+		var url=$obj.attr("url");
+		url = url.split("index.php/")[1];//取得有效的url like  
+		var relname = $obj.attr("tabid");
+		var titlename = $obj.attr("title");
+		$.ajax({
+			url : "__URL__/insert",// 通过Ajax取数据的目标页面userConstantly
+			type : 'post',// 方法，还可以是"post"
+			dataType:"json",
+			data:{url:url,rel:relname,title:titlename},
+			success:function(json){
+				DWZ.ajaxDone(json);
+				if(json.statusCode==DWZ.statusCode.ok){
+					$obj.remove();
+					if("{$mdname}"=="MisWorkExecuting"){
+						$("#oftenindexexecuting").loadUrl("__APP__/MisWorkExecuting/index/jump/2");
+						$("#userConstantly_div").loadUrl("__URL__/oftenindex");
+					}else{
+ 						$("#userConstantly_div").loadUrl("__URL__/oftenindex");
+					}
+				}
+			},
+			error:DWZ.ajaxError
+		});
+	}
+</script>
+<div class="pageContent clearfix">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse">
+				<h2></h2>
+				<div></div>
+			</div>
+			<ul id="indexOftenTreeDemo" class="ztree" layoutH="10"></ul>
+		</div>
+	</div>
+	<div id="indexOften" class="index_often unitBox treeright" style="position: relative; border-left: 1px solid #d8d8d8; " layoutH="0">
+		<include file="oftenlist" />
+	</div>
+</div>

@@ -1,0 +1,202 @@
+<script>
+	function dialogAjaxDone(json) {
+		navTabAjaxDone(json);
+		if (json.statusCode == DWZ.statusCode.ok) {
+			var urls = '__URL__/export_error_excel/';
+			var list = json.data;
+			if (list.errorStr) {
+				navTab.openTab("__MODULE__export_error_excel_view", urls, {
+					title : '错误报告(导入)',
+					fresh : true,
+					data : {
+						errorStr : list.errorStr,
+						filename : list.filename,
+						yuan_fileName : list.yuan_fileName,
+						sqlCount : list.sqlCount
+					}
+				});
+			}else{
+				alertMsg.success("成功执行数据"+list.sqlCount+"条");
+			}
+		}
+	}
+	
+	function isArrRepeat(arr){
+		var hash = {};
+		for(var i in arr) {
+			if(hash[arr[i]]){
+				return true;
+			}
+			hash[arr[i]] = true;
+		}
+	
+		return false;
+	}
+	$(function() {
+		$box = navTab.getCurrentPanel();
+		$('[group="data_row_id"]').click(function() {
+			if ($(this).attr("checked") == undefined) {
+				$(".import_excel_checkbox").attr("checked", false);
+			} else {
+				$(".import_excel_checkbox").attr("checked", true);
+			}
+		});
+		
+		$('.excel_import_btn', $box).click(function(){
+			$("#misimportexcelsubeditpage_wrapper .dataTables_scrollBody table thead select").attr("disabled",true);
+			var select = $("#misimportexcelsubeditpage_wrapper .dataTables_scrollHead .excel_import_select",$box);
+			var arr = new Array();
+			select.each(function(){
+				if($(this).val()!=""){
+					arr.push($(this).val());
+				}
+			});
+			var ifmustArr = $.parseJSON('{$dataList["ifmustArr"]|json_encode}');
+			var msg = new Array();
+			for(key in ifmustArr){
+				var isGo = false;
+				$("[name='import_field[]']").each(function(){
+					if($(this).val()==ifmustArr[key]){
+						isGo = true;
+						return;
+					}
+				});
+				if( ! isGo){
+					msg.push($("[name='import_field[]']").eq(0).find("option[value='"+ifmustArr[key]+"']").text());
+				}
+			}
+			if(msg.length>0){
+				alertMsg.error(msg.join("、")+" 为导入必选字段");
+				return false;
+			}
+			if(arr.length){
+				if(isArrRepeat(arr)){
+					alertMsg.confirm("导入的字段有重复的选择，系统自动以前者为准，是否继续导入?",{okCall:function(){
+						$("#import_excel_form").submit();
+					}});
+				}else{
+					$("#import_excel_form").submit();
+				}
+			}else{
+				alertMsg.error("请选择要导入的列！");
+			}
+		});
+		
+		$(".show_excel_input_span").die("dblclick");
+		$(".show_excel_input_span").live("dblclick", function(){
+			var html = $(this).html();
+			$(this).hide();
+			$(this).parents("td").find(".show_excel_input").show();
+			var val = $(this).parents("td").find(".show_excel_input input").val();
+			$(this).parents("td").find(".show_excel_input input").val("").focus().val(val); 
+		});
+		
+		$(".show_excel_input input").die("focusout");
+		$(".show_excel_input input").live("focusout", function(){
+			var val = $(this).val();
+			$(this).parents(".show_excel_input").hide();
+			$(this).parents("td").find(".show_excel_input_span").html(val);
+			$(this).parents("td").find(".show_excel_input_span").show();
+		});
+		
+		$("#misimportexcelsubeditpage tbody")
+		.dragsort({
+			dragSelector : "div.dragsort_setOrder",
+			dragBetween : true,
+			dragEnd : saveThOrder
+		});
+
+		function saveThOrder(obj) {
+			var input_list = $("#misimportexcelsubeditpage tbody tr td:eq(0)").find(".import_excel_checkbox");
+			input_list.each(function(i) {
+				$(this).val(i + 1);
+			});
+		};
+	});
+</script>
+<style>
+.show_excel_input_span {
+	width:100%;
+	height:100%;
+}
+</style>
+<div class="page">
+	<form id="import_excel_form" method="post"
+		action="__URL__/misimportexcelinsert_add"
+		class="pageForm required-validate"
+		onsubmit="return iframeCallback(this,dialogAjaxDone);"
+		enctype="multipart/form-data">
+		<div class="pageContent">
+			<table class="into_table_new nbm_data_table"
+				table_data='{"paging":false,"searching":false}' id="misimportexcelsubeditpage"
+				table_type="list">
+				<thead>
+					<th><input type="checkbox" class="checkboxCtrl"
+						group="data_row_id"/></th>
+						<th>序号</th>
+<!-- 						<th>顺序</th> -->
+					<foreach name="dataList.title" item="vv" key="key1">
+					<th>
+					<select class="select2 excel_import_select" name="import_field[]" style="width:150px" name="importcatalog">
+							<option value="">--此列不导入--</option>
+							<foreach name="dataList.cl_list.title" item="v2" key="key2">
+							<option
+								value="{$v2['fieldname']}"
+								<if condition="!empty($dataList['cl_list']['title'][$key1]['name']) and (str_replace('*','',$vv) eq $v2['name'])">selected</if>>
+								<if condition="$v2['ifmust'] eq 1">*</if>{$v2['name']}</option>
+							
+							</foreach>
+					</select>
+					</th>
+					</foreach>
+				</thead>
+				<tbody>
+					<foreach name="dataList.cl_list.data" key="k1" item="v1">
+
+					<tr>
+						<td><input type="checkbox" class="import_excel_checkbox"
+						<if condition='$dataList["row_show"][$k1] eq 1'>checked</if>
+							value="{$k1}" name="data_row_id[{$k1}]"/></td>
+						<td>
+						{$k1}
+						</td>
+<!-- 						<td> -->
+<!-- 							<div class="dragsort_setOrder"> -->
+<!-- 								<input class="js-sortnum" type="hidden" style="width: 8px;" value="{$k1}" /> <a -->
+<!-- 									class="" href="javascript:;"> -->
+<!-- 									<span class="icon-move"></span> -->
+<!-- 								</a> -->
+<!-- 							</div> -->
+<!-- 						</td> -->
+						<foreach name="v1" key="k2" item="v2">
+						<td>
+						<div class="show_excel_input" style="display:none;"><input type="text" value="<if condition='$v2 neq "null"'>{$v2}</if>" name="dataList[{$k1}][{$k2}]"></div>
+						<div class="show_excel_input_span"><if condition='$v2 neq "null"'>{$v2}</if></div>
+						</td>
+						</foreach>
+					</tr>
+
+					</foreach>
+				</tbody>
+			</table>
+			<div class="formBar">
+<!-- 				<div class="unit"> -->
+<!-- 					<label style="width: auto; float: left;">操作类型：</label> <select -->
+<!-- 						name="catalog" class="select2 required"> -->
+<!-- 						<option value="1">新增</option> -->
+<!-- 						<option value="2">更新</option> -->
+<!-- 						<option value="3">新增及更新</option> -->
+<!-- 					</select> -->
+<!-- 				</div> -->
+				<input type="hidden" name="catalog" value="1">
+				<input type="hidden" name="filename" value="{$dataList.filename}">
+				<input type="hidden" name="model" value="{$dataList.model}">
+				<input type="hidden" name="yuan_fileName" value="{$dataList.yuan_fileName}">
+				<input type="hidden" name="jd_id" value="{$dataList.jd_id}">
+				<ul>
+					<li><button type="button" class="tml_formBar_btn tml_formBar_btn_blue excel_import_btn">{$Think.lang.save}</button></li>
+				</ul>
+			</div>
+	</form>
+</div>
+</div>

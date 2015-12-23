@@ -1,0 +1,35 @@
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+<form id="pagerForm" action="__URL__/edit/type/edu/id/{$id}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+	<table class="table" width="99%" layoutH="60">
+		<thead>
+		<tr>
+			<th width="30">序号</th>
+			<th>开始时间</th>
+			<th>结束时间</th>
+			<th>毕业院校/培训机构</th>
+			<th>专业/所获证书</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr>
+				<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+				<td>{$vo['startDate']|transTime}</td>
+				<td>{$vo['finishDate']|transTime}</td>
+				<td>{$vo['school']}</td>
+				<td>{$vo['skillAndCertificate']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmEduForm" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

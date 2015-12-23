@@ -1,0 +1,118 @@
+<script>
+function MisHrBasicEmployee_lookupmanagelist(){
+	var val = "0";
+	
+	$("#Basicsaleprojectlist").find("input[type='checkbox']").each(function(){
+		if($(this).attr("checked")=='checked'){
+			 var result= DWZ.jsonEval($(this).attr('value'));
+			val += '_' +result.id;
+		}
+	});
+	//var oldval = $("input[name='hrsearchlist']").val();
+	$("input[name='lookuphrsearchlist']").val(val);
+	//alert($("input[name='hrsearchlist']").val());
+}
+function  changeInput(obj){
+	var $box=navTab.getCurrentPanel();
+	$val=$(obj).val();
+	if($val=='name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索姓名");
+	}
+	if($val=='mis_system_department-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索部门");
+	}
+	if($val=='duty-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职位");
+	}
+	if($val=='dutyname'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职级");
+	}
+	if($val=='all'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索员工姓名,部门,职位,职级");
+	}
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupmanage" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'MisHrPersonnelManagement_positiveBox');" action="__URL__/lookupmanage" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="step" value="{$step}">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="lookuphrsearchlist" value="{$lookuphrsearchlist}"/>
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+							<input type="text"  <if condition="$placeholder">placeholder="{$placeholder}"<else/>placeholder="搜索员工姓名,部门,职位,职级"</if> name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox"  onchange="changeInput(this)"  name="searchby">
+							   <option value="all"   <if condition="$searchby eq 'all'">selected</if> >全部</option>
+								<option value="name"  <if condition="$searchby eq 'name'">selected</if> >姓名</option>
+								<option value="mis_system_department-name"     <if condition="$searchby eq 'mis_system_department-name'">selected</if> >部门</option>
+								<option value="dutyname"   <if condition="$searchby eq 'dutyname'">selected</if> >职级</option>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />			
+						<!-- <select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select> -->
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div>
+	<table class="table" width="99%" layoutH="146">
+		<thead>
+			<tr>
+				<!-- <th>ID</th> -->
+				<th>员工姓名</th>
+				<!-- <th>年龄</th> -->
+				<th>部门</th>
+				<th>职级</th>
+				<th>岗位</th>
+				<th>联系方式</th>
+				<!-- <th>身份证号</th> -->
+				<th>入职时间</th>
+				<th>转正时间</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody   id="Basicsaleprojectlist">
+		<volist id="vo" name="list">
+			<tr onclick="onTrClickCheckbox(this,'orgId');MisHrBasicEmployee_lookupmanagelist()">
+				<!-- <td>{$vo['id']}</td> -->
+				<td>{$vo['name']}</td>
+				<!-- <td>{$vo['chinaid']|getAgeByToCarIdForList}</td> -->
+				<td>{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+				<td>{$vo['dutylevelid']|getFieldBy='id','name','duty'}</td>
+				<td>
+				 {$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}
+				</td>
+				<td>{$vo['phone']}</td>
+				<!-- <td>{$vo['chinaid']}</td> -->
+				<td>{$vo['indate']|transTime}</td>
+				<td>{$vo['transferdate']|transTime}</td>
+				<td>
+				<a class="btnSelect" href="javascript:$.bringBack({ id:'{$vo.id}',orderno:'{$vo.orderno}',sex:'{$vo.sex}',age:'{$vo.chinaid|getAgeByToCarIdForList}',worktype:'{$vo['worktype']}',worktypename:'{$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}',dutyname:'{$vo['dutylevelid']|getFieldBy='id','name','duty'}',phone:'{$vo.phone}',deptid:'{$vo.deptid}',deptname:'{$vo['deptid']|getFieldBy='id','name','mis_system_department'}',dutylevelid:'{$vo.dutylevelid}',worktype:'{$vo.worktype}',chinaid:'{$vo.chinaid}',name:'{$vo.name}',transferdate:'{$vo.transferdate|transtime}',transferdatetime:'{$vo.transferdate}',indate:'{$vo.indate|transtime}',indatetime:'{$vo.indate}'})" title="查找带回">选择</a>
+				</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="MisHrPersonnelManagement_positiveBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

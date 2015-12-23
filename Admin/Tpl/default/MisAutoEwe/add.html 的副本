@@ -1,0 +1,44 @@
+<script>$(function(){	var box = navTab.getCurrentPanel();	$("select[name='danjumingchen']",box).change(function(){		var value = $(this).val();		var controll = '';		var controll2 = '';		$.ajax({			url:'__URL__/msginfo/inputname/tixingtiaojian',			data:{modelid:value},			type:'post',			dataType:'html',			async:false,			success:function(msg){				controll = msg;			}		});		$.ajax({			url:'__URL__/msginfo/inputname/tixingnarong',			data:{modelid:value},			type:'post',			dataType:'html',			async:false,			success:function(msg2){				controll2 = msg2;			}		});		$('#misAutoEweRole').html(controll);		$("#misAutoEweInfo").html(controll2);	});});</script><div class="page">
+	<div class="pageContent">
+			<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME"> <if condition="!$_REQUEST['bindaname']"> layoutH="40"</if> </if>>
+				<div class="new_version_page ">
+		<form  id="MisAutoEwe_add" {$appendPageContentArr[5]} {$formautosetting[3]} method="post" action="__APP__/MisAutoEwe/{$formautosetting[2]}/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="{$appendPageContentArr[0]}">
+			<!-- 表单组合模式下的关联ID -->
+			<input type="hidden" name="bindid" value="{$_GET['bindid']}" />
+			<input type="hidden" name="relationmodelname" value="{$_GET['bindaname']}" /><a class='xyz_anchornavi_top' name='MisAutoEwe_add_top'></a>
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			{:W('HiddenInput',$vo)}
+			{$formautosetting[1]}
+					<if condition="$_GET['viewtype'] neq 'view'">
+					<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">单据提醒</span>
+			{:W('ShowRightToolBar',array('add','MisAutoEwe'))}{:W('ShowAnchorNavi',array('MisAutoEwe' , 'add'))}{$formautosetting[0]}					</div>
+					</if>					<div class="new_version_page_content">{:W('ShowOrderno',array(4,'mis_auto_oyljp',$vo['orderno'],array('contentcls'=>'col_1_3 form_group_lay field_orderno', 'inputcls'=>'class="input_new " ','title'=>$fields["orderno"],'isshow'=>1)))}
+							<!-- text组件 start -->							<div class="col_1_3 form_group_lay field_chufadongzuo " >
+								<label>触发动作:</label>																<div>									<input type="checkbox" name="option[]" value="1">保存									<input type="checkbox" name="option[]" value="2">删除									<input type="checkbox" name="option[]" value="3">审核									<input type="checkbox" name="option[]" value="4">撤销									<input type="checkbox" name="option[]" value="5">退回								</div>							</div>							<div class="col_1_3 form_group_lay field_danjumingchen " >
+								<label class="label_new">{$fields["danjumingchen"]}:</label>
+								<select class="select2" style="width:150px;" name="danjumingchen">
+									<option value="">请选择单据</option>
+									<volist name="nodelist" id="nv">
+									<option value="{$nv.id}">{$nv.title}</option>
+									</volist>
+								</select>
+							</div>
+							<!-- text组件 end -->
+							<!-- text组件 start -->
+							<div class="col_1_3 form_group_lay field_tixingtiaojian " >
+								<label class="label_new">提醒条件:</label>								<div id="misAutoEweRole">								{:W('ShowSqlResult', array('inputname'=>"tixingtiaojian",'model'=>$model,'table'=>array($model=>array($table))) )}								</div>
+							</div>
+							<!-- text组件 end -->
+							<!-- text组件 start -->
+							<div class="col_1_3 form_group_lay field_tixingnarong " >
+								<label class="label_new">{$fields["tixingnarong"]}:</label>								<div id="misAutoEweInfo">									{:W('ShowSqlResult', array('inputname'=>"tixingnarong",'model'=>$model,'table'=>array($model=>array($table))) )}								</div>
+								
+							</div>
+							<!-- text组件 end -->
+		<if condition="!$appendPageContentArr[4]">{:W('ShowAction',array('data'=>$vo))}</if>
+					</div>
+					<div class="clear">					<span style="display:none;" class="anchornaviforshow">MisAutoEwe_add</span>					<a class='xyz_anchornavi_buttom' name='MisAutoEwe_add_bottom'></a>					</div>
+		</form>
+				</div>
+			</div>
+	</div></div>

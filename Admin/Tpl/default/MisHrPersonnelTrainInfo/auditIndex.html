@@ -1,0 +1,64 @@
+<div class="pageContent">	
+	<form id="pagerForm" action="__URL__/{$jumpUrl}" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$audit eq 0">
+			<li><a class="redo tml-btn tml_look_btn tml_mp" href="__URL__/auditEdit/id/{sid}" target="dialog" title="调职单_审核" rel="__MODULE__auditEdit" height="480" width="700" mask="true" warn="请选择节点"><span><span class="icon icon-camera-retro icon_lrp"></span>{$Think.lang.auditprocess}</span></a></li>
+			</if>
+			<if condition="$audit eq 1">
+			<li><a class="icon tml-btn tml_look_btn tml_mp" href="__URL__/auditView/id/{sid}" target="dialog" title="调职单_查看" rel="__MODULE__auditEdit" height="480" width="700" mask="true" warn="请选择节点"><span><span class="icon icon-eye-open icon_lrp"></span>查看</span></a></li>
+			</if>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this, '__MODULE__indexview')" action="__URL__/{$jumpUrl}" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead>
+		<tr>
+			<th>序号</th>
+			<volist id="vo" name="detailList">
+				<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			</volist>
+		</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list" key="key2">
+				<tr target="sid" rel="{$vo['id']}" dheight="480" dwidth="700" onclick="onTrClickCheckbox(this,'id')" <if condition="$audit eq 1">  title="员工调职__查看" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/auditView/id/{$vo['id']}');"</if><if condition="$audit eq 0">title="员工调职__审核" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/auditEdit/id/{$vo['id']}');"</if>>
+					<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<volist id="vo1" name="detailList">
+						<if condition="$vo1[shows] eq 1">
+							<td width="{$vo1[widths]}">
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+										<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+											{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+										<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+									{$vo[$vo1['name']]}
+								</if>
+							</td>
+						</if>
+					</volist>
+				</tr>
+			</volist>
+		</tbody>
+	  </table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="__MODULE__indexview" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

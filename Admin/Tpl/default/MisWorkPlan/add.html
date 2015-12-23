@@ -1,0 +1,91 @@
+<script>
+	$(function() {
+		misworkstastement_onblurAdd();
+	});
+	function misworkstastement_onblurAdd(){
+		var $box=navTab.getCurrentPanel();
+		var oldname = "{$username}";
+		var d =  $("#misworkplan_add_changedate").val();
+		var type = $("#workplantypeid option:selected").text();
+		var title = "";
+		if(type == "日计划"){
+			title = d + '_' + oldname + '_' +type;
+		} else if(type == "周计划"){
+			var timeTemp = d.replace("年","-").replace("月","-").replace("日","");
+			var dateArr = timeTemp.split('-');
+    		var date = new Date();
+    		var week = getIso8601Week(date);
+    		date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+    		title = date.getFullYear() + "年第" + week + "周" + '_' + oldname + '_' +type;
+			
+		} else if(type == "月计划"){
+			var timeTemp = d.replace("年","-").replace("月","-").replace("日","");
+            var dateArr = timeTemp.split('-');
+            var date = new Date();
+            date.setFullYear(parseInt(dateArr[0]));
+            date.setMonth(parseInt(dateArr[1])-1);
+            date.setDate(parseInt(dateArr[2]));
+			//var date = new Date(d.replace("年","-").replace("月","-").replace("日",""));
+			var month = (date.getMonth()+1);
+			if(month<10) month = "0" + month;
+			title = date.getFullYear() + "年" + month + "月" + '_' + oldname + '_' +type;
+		}
+		$("#misworkplan_add_changetitle").text(title);
+		$box.find("input[name='title']").val(title);
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="iseditor" value="1">
+			<input type="hidden" name="stepType" value="0">
+			<input type="hidden" name="title" value="">
+			<div class="pageFormContent applecloth" layoutH="56">
+				<div class="keepContentCenter kkuupp form-affix-content">
+					<H2 class="contentTitle contentTitle_center form-affix-title"><span  style="color:red;">[工作计划]</span><span id="misworkplan_add_changetitle">
+						{$strdate}_{$username}_{$worktype}
+					</span></H2>
+					<fieldset>
+					<div class="tml-form-row">
+						<label>计划摘要：</label>
+						<input type="text" maxlength="200" name="summary" />
+					</div>
+					<div class="tml-form-row">
+	                    <label>查阅人：</label>
+	                    <ul id="MisWorkPlan_one" class="addressee left checkTo" style="width:563px;">
+						<li class="addresseeText">
+							<input class="checkByInput addresseeTextInput textInput" type="text" autocomplete="off" tabindex="1" callback="addresseeInput" chainname="lookpeoplename" inputname="lookpeople" show="" checkfor="MisMessage" autofocus="autofocus" onfocus="addressee.clearVal(this);" onkeydown="addressee.del(this, event);" onclick="addressee.unselect(this);">
+						</li>
+						</ul>
+						<a class="input-addon input-addon-addon input-addon-userplus checkUser" data="lookpeoplename,username,text;lookpeople,userid,hidden,1" ulid="MisWorkPlan_one" href="javascript:;">查找带回</a>
+						<a class="input-addon input-addon-recycle" title="清空接收用户" onclick="clearreceverMismessage('1','MisWorkPlan_one');" href="javascript:;"></a>
+	                </div>
+                    <div class="tml-row">
+						<div class="tml-form-col">
+							<label style="width:86px;">计划类型：</label>
+							<select name="typeid" id="workplantypeid" class="combox" onchange="misworkstastement_onblurAdd();">
+								{:getSelectByHtml('workplan','select',$typeid)}
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label style="width:123px;">计划时间：</label>
+							<div class="tml-input-append">
+								<input type="text" id="misworkplan_add_changedate" class="Wdate js-wdate" name="plantime" value="{$time|transTime}" />
+	                        	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+	                        </div>
+                        </div>
+					</div>
+					<div class="tml-form-row">
+						<label>计划内容：</label>
+						<textarea class="ueditor" name="content" style="height:240px;width:630px;"></textarea>
+					</div>
+					<!-- 附件信息 -->
+					{:W('ShowUpload')}
+					</fieldset>
+				</div> 
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

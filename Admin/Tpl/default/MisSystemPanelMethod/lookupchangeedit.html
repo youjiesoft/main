@@ -1,0 +1,157 @@
+<script>
+function addRole(){
+	var $box=$.pdialog.getCurrent();
+	var lg=$("#rolediv .removediv").length;
+	var divleng = Number(lg+1);
+	var $html="";
+	$html+="<div class='removediv tml-form-row'><input type='hidden' name='rolecount[]' value='1' ><div class='clear'></div><label style='float:left'>条件(<span class='_itemIndex'>"+divleng+"</span>)：</label><select name='sfield[]' id='sfieldadd"+divleng+"' class='combox' onchange='changeregulationadd("+divleng+")'><option value='0'>--请选择--</option>";
+	$html+="<volist  name='detailList' id='detail'><option value='{$detail.name}'>{$detail.showname}</option></volist></select>";
+	$html+="<select name='roleexp[]' class='combox'><option value='0'>--请选择--</option>";
+	$html+="{$html}</select> <div class='tml-input-append'><input type='text' style='width:140px; display: none' id='roleexpinputday"+divleng+"' name='roledayinput[]' /><input type='text' style='width:140px; display: none' id='roleexpinputadd"+divleng+"' name='roleexpinput[]' /><div  id='aadd"+divleng+"'> <select name='roleexpinput[]' id='roleexpselectadd"+divleng+"' class='combox'><option value='0'>请选择</option></select></div><div class='input-addon-unit'> <a href='javascript:;' class='tml-icon tml-icon-cross mt7' onclick='Remind_editProcessInfo(this)' ></a></div> </div></div>";
+	$box.find("#rolediv").append($html);
+	$box.find("#rolediv").initUI();
+}
+function Remind_editProcessInfo(obj){
+	var $box=$.pdialog.getCurrent();
+	$box.find(obj).parents("div.removediv").remove();
+	$box.find("._itemIndex").each(function(i){
+		 $(this).text(i+1);
+	 });
+}
+function changeregulationadd(ob){
+	var $ref = $("#roleexpselectadd"+ob);
+	var $box=$.pdialog.getCurrent();
+	var name=$box.find("#sfieldadd"+ob).val();
+	var defaultId=$box.find("input[name='defaultId']").val();
+	$.ajax({
+		type : 'POST',
+		dataType : "json",
+		url : "__APP__/Public/lookupcomboxregulation",
+		cache : false,
+		global:false,
+		data : {
+			name : name ,
+			md:'{$md}',
+			defaultId : defaultId
+		},
+		success : function(response) {
+			if(response != '-1'){
+				$box.find("#aadd"+ob).show();
+				$box.find("#roleexpselectadd"+ob).attr("name","roleexpinput[]");
+				$box.find("#roleexpinputadd"+ob).hide();
+				$box.find("#roleexpinputadd"+ob).attr("name","");
+				var html = '';
+				$.each(response, function(i) {
+					if (response[i] && response[i].length > 1) {
+						html += '<option value="'+response[i][0]+'">' + response[i][1]
+								+ '</option>';
+					}
+				});
+				$box.find("#roleexpinputadd"+ob).hide();
+				 if(response[0][0]=="day"){
+					 $box.find("#roleexpinputday"+ob).show();
+					 $box.find("#roleexpselectadddiv"+ob).show();
+				 }else{
+					 $box.find("#roleexpinputday"+ob).hide();
+					 $box.find("#roleexpselectadddiv"+ob).hide();
+				 }
+				var $refCombox = $ref.parents("div.combox:first");
+				$ref.html(html).insertAfter($refCombox);
+				$refCombox.remove();
+				$ref.combox();
+			}else{
+				$box.find("#roleexpinputday"+ob).hide();
+				$box.find("#aadd"+ob).hide();
+				$box.find("#roleexpselectadd"+ob).attr("name","");
+				$box.find("#roleexpselectadd"+ob).siblings("a").attr("name","");
+				$box.find("#combox_roleexpselectadd"+ob).hide();
+				$box.find("#roleexpinputadd"+ob).show();
+				$box.find("#roleexpinputadd"+ob).attr("name","roleexpinput[]");
+			}
+		},
+		error : DWZ.ajaxError
+	});
+}
+function clearinformpersoneditMismessageadd(ulId){
+    if(ulId){
+        $("#"+ulId).empty();
+        var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput" inputName="informpersonid" chainname="informpersonname" emailName="email" tabindex="1" autocomplete="off"></li>';
+    }  
+    $('#'+ulId).append($string);
+    $('#'+ulId).find('input').focus();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__APP__/Public/lookupremindinsert/rel/missystempanelmethod_lookupchangeremind" class="pageForm required validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="md" value="{$md}" />
+		<input type="hidden" name="id" value="{$remindAllList[0]['id']}"/>
+		<input type="hidden" name="type" value="2" />
+		<input type="hidden" name="listkey" value="{$listkey}"/>
+		<div class="pageFormContent" layoutH="57">
+			<div class="tml-row">
+			<div class="tml-form-col">
+				<label>提醒标题：</label>
+				<input type="text" class="required textInput" minlength="2" value="{$remindAllList[0]['list'][$listkey]['rtitle']}" maxlength="25" name="title" size="30"/>
+			</div>
+			</div>
+			<div  id="rolediv">
+			<volist name="remindAllList[0]['map'][$listkey]" id="remindAll" key="k">
+				<?php $remindAll=explode(",",$remindAll);$istext=""; $typelist=array();?>
+				<div class="removediv tml-form-row">
+				<label>条件(<span class='_itemIndex'>{$k}</span>)：</label>
+				<select name="sfield[]"  class="combox" id="sfieldadd{$k}" onchange="changeregulationadd({$k})">
+				<option value="0">--请选择--</option>
+				<volist  name="detailList" id="detail">
+					<option <if condition="$remindAll[0] eq $detail['name']"> <if condition="$detail['func'][0][0] eq 'transtime'|| $detail['func'][0][0] eq 'transTime'">   <?php $istext="time";?> </if> <if condition="$detail['func'][0][0] eq 'getFieldBy'">
+					<?php $istext="select"; $fmodel=M($detail['funcdata'][0][0][3]); $typelist=$fmodel->where("status=1")->getField("id,name");?> </if>
+					<if condition="$detail['func'][0][0] neq 'transtime'|| $detail['func'][0][0] neq 'transTime' ||$detail['func'][0][0] neq 'getFieldBy' ">   <?php $istext="text";?> </if>  selected="selected"</if> value="{$detail.name}">{$detail.showname}</option>
+				</volist>
+				</select>
+				<select name="roleexp[]" class="combox">
+				<option value="0">--请选择--</option>
+				{:getSelectByHtml('roleinexp','select',$remindAll[1])}
+				</select>
+				 <input type="text" <if condition="$istext neq 'time'">  style="width:140px; display:none;"<else/>style="width:140px; " id="roleexpinputday{$k}" value="{$remindAllList[0]['list'][$listkey]['timemap'][$remindAll[2]]['key']}" name="roledayinput[]" </if>  />
+				 <input type="text"     <if condition="$istext neq 'text'"> style="width:140px;display:none;" <else/>     style="width:140px;" value="{$remindAll[2]}"  name="roleexpinput[]"</if> id="roleexpinputadd{$k}"   />
+				 <if condition="$istext eq 'time'">
+				 <select class="combox"  id="roleexpselectadd{$k}"  name="roleexpinput[]">
+				 	{:getSelectByHtml('roleinday','select',$remindAllList[0]['list'][$listkey]['timemap'][$remindAll[2]]['name'])}
+				 </select>
+				 <else/>
+				  <input type="text" style="width:140px; display: none;" name="roledayinput[]" id="roleexpinputday{$k}"/>
+				 </if>
+					 <if condition="$istext eq 'select'">
+				<div class="tml-input-append">
+				<div>
+					<select name="roleexpinput[]"  id="roleexpselectadd{$k}" class="combox">
+						<volist name="typelist" id="typevo">
+							<option value="{$key}" <if condition="$key  eq $remindAll[2]">selected="selected"</if>>{$typevo}</option>
+						</volist>
+					</select>
+				</div>
+				</div>
+			 	<else/>
+			 	<div class="tml-input-append">
+				<div  id="roleexpselectadddiv{$k}" style="display: none;">
+					<select id="roleexpselectadd{$k}"  class="combox">
+					</select>
+				</div>
+				</div>
+				</if>
+				<if condition="$k eq '1'"><a class="input-addon input-addon-add" href="javascript:;" onclick="addRole()"></a><else/> <span class="input-addon-unit">
+					<a href='javascript:;' class='tml-icon tml-icon-cross mt7' onclick="Remind_editProcessInfo(this)" ></a> 
+					</span></if>
+			</div>
+			</volist>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

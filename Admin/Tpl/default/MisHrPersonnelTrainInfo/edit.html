@@ -1,0 +1,97 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<input type="hidden" name="dotype" value="流程启动" />
+		<input type="hidden" name="ostatus" value="{$vo.ostatus}" />
+		<input type="hidden" name="refreshtabs[closeall]" value="1" />
+		<input type="hidden" name="oldtrantype" value="{$vo.trantype}"/>
+		<input type="hidden" name="refreshtabs[type]" value="dialog" />
+		<input type="hidden" class="org.workstatus" name="trantype" value="{$vo.trantype}"/>
+			<div class="contentTitle contentTitle_center">调职申请单{:W('ShowFlow')}
+				
+			</div>
+			<div class="pageFormContent" layoutH="105">
+			<div class="tml-row">
+			{:W('ShowOrderno',array(1,'mis_hr_personnel_train_info',$vo['orderno']))}
+				<div class="tml-form-col">
+						<label>姓名：</label>
+		                <div class="tml-input-append">
+		                <input type="text"  name="name" callback="MisHrPersonnelTrainInfoisexits"    value="{$MisHrBasicEmployeeVO['name']}"    autocomplete="off" class="org.name  " readonly="readonly" show="name" insert="id"    />
+						 <input type="hidden" value="{$MisHrBasicEmployeeVO.id}" check_key="id" class="org.id" name="personid"/>
+						<a class="input-addon input-addon-userplus" href="__URL__/lookupmanage"  lookupGroup="org">查找带回</a>
+					</div>
+				</div>
+				<div class="tml-form-col">
+					<label>异动类型：</label>
+					<SELECT name="typeid" class="combox">
+						<volist name="tranlist" id="volist">
+							<option <if condition="$vo.typeid eq $volist.id">selected="selected"</if> value="{$volist.id}">{$volist.name}</option>
+						</volist>
+					</SELECT>
+				</div>
+				<div class="tml-form-col">
+					<label>入职日期：</label>
+	                <input type="text" class="org.indate" check_key="otherindate" value="{$MisHrBasicEmployeeVO['indate']|transTime}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>转正日期：</label>
+	                <input type="text" class="org.transferdate" name="transferdate"  check_key="othertransferdate"  value="{$MisHrBasicEmployeeVO['transferdate']|transTime}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>调前部门：</label>
+					<input type="text" class="org.deptname"   check_key="otherdeptname"  readonly="readonly" value="{$vo.deptid|getFieldBy='id','name','mis_system_department'}" />
+					<input type="hidden" class="org.deptid" check_key="otherdeptid" name="deptid" value="{$vo.deptid}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>调往部门：</label>
+					<SELECT name="newdeptid"  class="combox" onchange="chooiseWorkType(this,'js-employeetransferedit');">
+						<option value="0">请选择</option>
+						{$depthtml}
+					</SELECT>
+				</div>
+				<div class="tml-form-col">
+					<label>调前职级：</label>
+					<input type="text" class="org.dutyname" check_key="otherdutyname" readonly="readonly" value="{$vo.dutylevelid|getFieldBy='id','name','duty'}" />
+					<input type="hidden" class="org.dutylevelid" check_key="otherdutylevelid" name="dutylevelid" value="{$vo.dutylevelid}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>调后职级：</label>
+					<SELECT name="newdutylevelid" class="combox">
+						<volist name="zhiwei" id="zhiweilist">
+							<option <if condition="$key eq $vo['newdutylevelid']">selected</if> value="{$key}">{$zhiweilist}</option>
+						</volist>
+					</SELECT>
+				</div>
+				<div class="tml-form-col">
+					<label>调前岗位：</label>
+					<input type="text" class="org.worktypename"  check_key="otherworktypename"  readonly="readonly" value="{$vo.worktype|getFieldBy='id','name','mis_hr_job_info'}"/>
+					<input type="hidden" name="worktype" check_key="otherworktyp" class="org.worktype"  value="{$vo.worktype}"  />
+				</div>
+				<div class="tml-form-col">
+					<label>调后岗位：</label>
+					<select name="newworktype" class="combox" id="js-employeetransferedit">
+						<option value="0">请选择</option>
+						<volist name="worktypeList" id="worktypLname">
+							<option value="{$key}" <if condition="$vo.newworktype eq $key">selected="selected"</if>>{$worktypLname}</option>
+						</volist>
+					</select>
+				</div>
+			</div>
+			<div class="tml-form-row">
+				<label>详细描述：</label>
+				<textarea name="transfer">{$vo.transfer}</textarea>
+			</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>申&nbsp;请&nbsp;人：</label>
+					<input type="text" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>填表日期：</label>
+					<input type="text" class="date"  value="{$vo.createtime|transTime}" readonly="readonly" />
+				</div>
+			</div>	
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

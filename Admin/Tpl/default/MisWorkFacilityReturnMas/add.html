@@ -1,0 +1,88 @@
+<div class="page">
+    <div class="pageContent">
+    <form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+   	<input type="hidden" name="dotype" value="流程新建" />
+	<input type="hidden" name="beforeInsert" value="1">
+    <input type="hidden" name="callbackType" value="closeCurrent">
+			
+        <div class="pageFormContent applecloth" layoutH="55">
+            <div class="keepContentCenter form-affix-content">
+                <div class="contentTitle contentTitle_center  form-affix-title">办公设备退还
+                    
+                </div>
+                <fieldset class="zlqk_1">
+                    <legend class="zlqk_2">
+                        <b>基本信息</b>
+                    </legend>
+                     <div class="tml-row"> 
+                     {:W('ShowOrderno',array(1,'mis_work_facility_return_mas'))}
+                    <if condition='$fields["returndate"]'>
+                    <div class="tml-form-col"> 
+                        <label>{$fields["returndate"]}：</label>
+                        <span class="xyInputWithUnit">
+                        <input type="text"  name="returndate" onfocus="WdatePicker()" class="tml-border-r0 Wdate" value="{$curday}"/>
+                		<span class="input-addon input-addon-calendar"></span>
+                        </span>
+                    </div>
+                    </if>
+                    <if condition='$fields["returndeptid"]'>
+                   <div class="tml-form-col"> 
+                        <label>{$fields["returndeptid"]}：</label>
+                        <select name="returndeptid" class="combox">
+                            {$deptidlist}
+                        </select>    
+                    </div>
+                    </if>
+                    </div>
+                    <if condition='$fields["remark"]'>
+                    <div class="tml-form-row"> 
+                          <label>{$fields["remark"]}：</label>
+                          <textarea   name="remark"  style="height:50px;" class="textInput"></textarea>
+                    </div>
+                    </if>
+                </fieldset>
+                <fieldset>
+                    <legend>
+                        <b>设备明细</b>
+                    </legend>
+                       <div id="misworkfacilityapplymas_add"  >
+						<include file="lookuptypedetails" />
+					</div>
+                </fieldset>
+                <fieldset class="zlqk_1">
+                    <legend class=fieldset_legend_toggle>
+                        <b>上传附件</b>
+                    </legend>
+                    <div class="tml-row">
+                   <div class="tml-form-col"> 
+                        <label>上传附件：</label>
+                        <input id="swfupload_misworkfacilityapplymas_add" type="file" uploader="true" name="misworkfacilityapplymas_add_file" formData="{ uploadpath:'MisWorkFacilityApplyMas' }" />
+                        <input type="image" onclick="$('#swfupload_misworkfacilityapplymas_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                        <dl class="nowrap"><!--此处为上传列表-->
+                            <dt><label>&nbsp;</label></dt>
+                            <dd>
+                                <span id="swfupload_misworkfacilityapplymas_add-queue" class="info uploadify-queue"></span>
+                            </dd>
+                        </dl>
+                    </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle"><b>页脚</b></legend>
+                    <div class="tml-row"> 
+                    <div class="tml-form-col"> 
+                        <label>申请人：</label>
+                        <input type="text" readonly="readonly" class="textInput" value="{$Think.SESSION.loginUserName}" />
+                    </div>
+                    <div class="tml-form-col"> 
+                        <label>申请时间：</label>
+                        <input  class="textInput" readonly="readonly" value="{$createtime|transTime}" />
+                    </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+       	{:W('ShowAction')}
+    </form>
+</div>
+</div>

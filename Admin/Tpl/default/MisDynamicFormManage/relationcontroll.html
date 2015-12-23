@@ -1,0 +1,415 @@
+<!-- 组件关联设置面板 -->
+<script>
+var filedOprate = {
+		run : function() {
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			this.insertCol();
+			// 删除当前选中行
+			this.deleteCol();
+		},
+		get : function() {
+			//return navTab.getCurrentPanel();
+			return $.pdialog.getCurrent();
+			//return $(document);
+		},
+		insertCol : function() {
+			var box = this.get();
+			var _this = this;
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			var obj = $('button.nbm_add_col', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				//var tr = $(this).closest('tr').prev('tr');
+				var tr = $(this).closest('table').find('tbody:first>tr:last');
+				var index = tr.closest('table').attr('index');
+				try {
+					index = parseInt(index, 10);
+				} catch(e) {
+					index = 0;
+				}
+				
+				var cloneTr = tr.clone();
+				// 将复制的tr项中	lookupitemindex 自增
+				// 将lookup参数中的index也自增
+				// condition_add
+				var lookupitemindex = cloneTr.find('td[lookupitemindex]').attr('lookupitemindex');
+				var lookupitemshowindex = cloneTr.find('td[lookupitemshowindex]').attr('lookupitemshowindex');
+				cloneTr.find('a[lookupitems]').attr("lookupitems","");
+				cloneTr.find('td[lookupitemindex]').attr('lookupitemindex', parseInt(lookupitemindex,10)+2);
+				cloneTr.find('td[lookupitemshowindex]').attr('lookupitemshowindex', parseInt(lookupitemshowindex,10)+2);
+				
+				var lookupParamObj = cloneTr.find('a.condition_add');
+				// 遍历lookup对象 
+				lookupParamObj.each(function(){
+					console.log('param: '+$(this).attr('param'));
+					var lookupParamStr = $(this).attr('param');
+					var curnIndexTag = lookupParamStr.replace(/(\&index=)+\d+/g , function(va){
+						var curIndex = va.match(/\d+/g);
+						var i = parseInt(curIndex , 10);
+						var lookupIndexTag = '&index=' + (i + 2);
+						return lookupIndexTag;
+					});
+					$(this).attr('param' , curnIndexTag);
+				});
+				//　lookupParamObj.attr('param' , curnIndexTag);
+				
+				
+				
+				
+				var lookupOrg = lookupParamObj.attr('lookupgroup');
+				var lookupCurOrg = lookupOrg.replace(/(ORG)+\d+/g , function(va){
+					var curIndex = va.match(/\d+/g);
+					var i = parseInt(curIndex , 10);
+					var lookupIndexTag = 'ORG' + (i + 1);
+					console.log(lookupIndexTag);
+					return lookupIndexTag;
+				});
+				
+				
+				lookupParamObj.attr('lookupgroup' , lookupCurOrg);
+				cloneTr.find('div.returna').html('');
+				cloneTr.find('div.showreturna').html('');
+				cloneTr.find('input[type="hidden"]').remove();
+				cloneTr.find(':input').each(function() {
+					var ids = $(this).attr('name');
+					// 当前组件的name值
+					if ( typeof (ids) == "string") {
+						var curNames = ids.replace(/(\[)+(\d)+(\])/g,  function(va) {
+								var curIndex = va.match(/\d+/g);
+								var i = parseInt(curIndex , 10);
+								var tabIds = '[' + (i + 1)+']';
+								return tabIds;
+							});
+						$(this).attr('name',curNames);
+					}
+					
+					if ($(this).attr('type') != "checkbox") {
+						$(this).val('');
+					}
+					if ($(this)[0].tagName == "SELECT") {
+						var curTag = $(this);
+						//curTag.addClass('combox');
+						curTag.show();
+						// 加样式
+						var td = curTag.closest('td');
+						// 获取td
+						td.html('');
+						//移除现有td内容
+						td.append(curTag);
+						//追加当前select
+					}
+				});
+				tr.after(cloneTr);
+				$('div.tableItem>table', box).find('select').initChosen();
+				_this.run();
+				$(this).closest('table').find('tbody:first>tr:last').find('a[lookupgroup]').lookup();
+				//cloneTr.find('select').change();
+			});
+		},
+		deleteCol : function() {
+			var box = this.get();
+			// 删除当前选中行
+			var obj = $('a.nbm_del_col', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				 var id=$(this).attr("recrodid");
+				 if(id){
+					 //Ajax删除数据
+					 $.ajax({
+							type : "POST",
+							url : "__URL__/lookupdelRec",
+							data : {
+								'id' : id
+							},
+							success : function(re) {
+								if(re){
+									alertMsg.correct("移除成功！");
+								}
+							}
+						});
+				 }
+				var tbObj = $(this).closest('table');
+				if (tbObj.find('tbody:first>tr').length > 1) {
+					$(this).closest('tr').remove();
+				}
+			});
+		}
+	};
+//移除select
+function clearinforpresult(obj,type){
+	if(type){
+		$(obj).closest('span').next("div.showreturna:first").html('');
+	}else{
+		$(obj).closest('span').next("div.returna:first").html('');
+	}
+	$(obj).prev().attr("lookupitems","");
+}
+$(function() {
+	var id = '{$id}';
+	var check = '{$check}'; 
+	var asciiCode = 96;
+	var asciiCodeArr=Array();
+	var reserved='{$reserved}';
+	var originalData='';
+	// 反写回拖动布局页的标签ID值 。
+	//getTag(getContainer(check) , 'hidden' , id).val(json.data);
+	// formid 
+	var formid = $('input[type="hidden"][name="dynamicformid"]').val();
+	// curnode 
+	var curnode = $('input[type="hidden"][name="curnode"]').val();
+	var curTableFiled = getTag(getContainer(check) , 'hidden' , id).val();
+	// 当前组件在property表中的ID 
+	var curPropertyId = getTag(getContainer(check) , 'hidden' , 'id').val();
+	filedOprate.run();
+});
+function getreturndata(data){
+	console.log(data);
+	 var fileds = Array();
+	 var show = data.filed[0];
+	 var hiden = data.filed[1];
+	 var index = data.index;
+	 $html='';
+	 var idStr = '';
+	 var resultvalshow='';
+	 var item = data.data;
+	 for(var i in item){
+		 resultvalshow+=item[i][show]+',';
+		idStr+=item[i][hiden]+',';
+	 }
+	 var groupItem = Math.floor(index/2);
+	 if(data.showtype==1){
+		 
+		 
+		 
+		 $html="<input type='hidden' name='resultshowval["+groupItem+"]' value="+idStr+">"+
+		 	"<input type='hidden' name='resultshowvalrules["+groupItem+"]' value="+resultvalshow+">"+
+		 	resultvalshow;
+		 $('td[lookupitemshowindex="'+index+'"]' ).find("div.showreturna").html($html);
+		 $('td[lookupitemshowindex="'+index+'"]' ).find("a[lookupitems]").attr('lookupitems',idStr);
+		 $('td[lookupitemshowindex="'+index+'"]' ).find("a[lookupitems]").attr('lookupkey',hiden); 
+	 }else{
+		 $html="<input type='hidden' name='resultval["+groupItem+"]' value="+idStr+">"+
+		 	"<input type='hidden' name='resultvalshow["+groupItem+"]' value="+resultvalshow+">"+
+		 	resultvalshow;
+		 $('td[lookupitemindex="'+index+'"]' ).find("div.returna").html($html);
+		 $('td[lookupitemindex="'+index+'"]' ).find("a[lookupitems]").attr('lookupitems',idStr);
+		 $('td[lookupitemindex="'+index+'"]' ).find("a[lookupitems]").attr('lookupkey',hiden); 
+	 }
+}
+</script>
+<link href="__PUBLIC__/Css/tmlstyle/model.css" rel="stylesheet" type="text/css" media="screen" />
+<div class="page">
+	<div class="pageContent">
+	 	<form method="post" action="__URL__/relationcontroll" class="pageForm" method="post"onsubmit="return iframeCallback(this,dialogAjaxDone);">
+	    <div class="pageFormContent" layoutH="58">
+	<div class="tableItem">
+	<input  type="hidden" name="properyid" value="{$propertyid}"/>
+	<input  type="hidden" name="formid" value="{$formid}"/>
+	<table class="new_table" index="1">
+		<colgroup>
+			<col width="15%"></col>
+			<col width="15%"></col>
+			<col width="20%"></col>
+			<col width="10%"></col>
+			<col width="10%"></col>
+			<col width="10%"></col>
+			<col></col>
+		</colgroup>
+		<thead>
+		<tr>
+			<th>当前字段名称</th>
+			<th>运算符</th>
+			<th>值</th>
+			<th>隐藏字段</th>
+			<th>显示字段</th>
+			<th>操作</th>
+		</tr>
+		</thead>
+		<tbody id="misdynamicformmanageforfield">
+		<if condition="$MisDynamicControllRecordList">
+		 {~$nbmkey=0;}
+		<volist name="MisDynamicControllRecordList" id="MisDynamicControllRecordVo">
+  		<tr>
+			<td>
+				<input type="hidden" name="reids[]" value="{$MisDynamicControllRecordVo.id}" />
+				 <span>{$propertyid|getFieldBy='id','title','mis_dynamic_form_propery'}</span>
+			</td>
+			<td>
+                <div class="list_group_lay">
+                    <select name="roleinexp[]" class="chosen list_select2" style="width:160px" >
+                          {:getSelectByHtml('roleinexp','select',$MisDynamicControllRecordVo['roleinexp'])}
+                     </select>
+                </div>
+			</td>
+			<td>
+                <div class="list_group_lay">
+                    <select name="typeval[]" class="requie select2 list_select2" style="width:160px" >
+                        <if condition="!$sList"><option>--请先设置数据源--</option><else/><option value="0"> --请选择--</option></if>
+                       	<volist name='sList' id="sVo">
+                       	<if condition="$skey">
+                       		 <option  <if condition="$MisDynamicControllRecordVo['typeval'] === $sVo[$skey]">selected="selected"</if> value="{$sVo[$skey]}">{$sVo[$ekey]}<if condition="$sVo.orderno">【{$sVo['orderno']}】</if></option>
+                       <else/>
+                         <option  <if condition="$MisDynamicControllRecordVo['typeval'] == $key">selected="selected"</if> value="{$key}">{$sVo}</option>
+                       </if>
+                        </volist>
+                    </select>
+                </div>
+			</td>
+			<!-- 方便lokup回写的标识 -->
+			<td lookupitemindex="{:$nbmkey*2}">
+			<!-- 
+			lookupgroup="ORG{$i}"
+			
+			 --> 
+			 	<span style="position: relative; top: 7px">
+                    <a lookupitems="{$MisDynamicControllRecordVo.resultval}"  
+                    lookupkey="fieldname" 
+                    class="condition_btn condition_add" 
+                    
+                    title="请选择{$rlistVo.showname}" 
+                    width="460"  
+                    height="500" 
+                    mask="true"  
+                    lookupgroup="ORG{$nbmkey}"  
+                    href="__URL__/lookupSingle" 
+                    rel="__MODULE__lookupSingle_asdasdsa" 
+                    param="model=MisDynamicFormProperyView&conditions=status,1;formid,{$formid};fieldname,{$fieldname},not in;tplname,{$curnode}&showtitle=组件列表&show=title&hidden=fieldname&callback=getreturndata&showname=title&index={:$nbmkey*2}"
+                    >添加</a>
+                    <a class="condition_clear condition_btn" onclick="clearinforpresult(this);" href="javascript:;">清除</a>
+                </span>
+                <div class="returna">
+                	<input type="hidden" value="{$MisDynamicControllRecordVo.resultval}" name="resultval[{$nbmkey}]">
+					<input type="hidden" value="{$MisDynamicControllRecordVo.resultvalshow}" name="resultvalshow[{$nbmkey}]">
+					{$MisDynamicControllRecordVo.resultvalshow}
+                </div>
+			</td>
+			<td lookupitemshowindex="{:$nbmkey*2+1}">
+			<!-- 
+			lookupgroup="ORG{$i}"
+			
+			 --> 
+			 	<span style="position: relative; top: 7px">
+                    <a lookupitems="{$MisDynamicControllRecordVo.resultshowval}"  
+                    lookupkey="fieldname" 
+                    class="condition_btn condition_add" 
+                    
+                    title="请选择{$rlistVo.showname}" 
+                    width="460"  
+                    height="500" 
+                    mask="true"  
+                    lookupgroup="ORG{$nbmkey}"  
+                    href="__URL__/lookupSingle" 
+                    rel="__MODULE__lookupSingle_asdasdsa" 
+                    param="model=MisDynamicFormProperyView&conditions=status,1;formid,{$formid};fieldname,{$fieldname},not in;tplname,{$curnode}&showtitle=组件列表&show=title&hidden=fieldname&callback=getreturndata&showname=title&index={:$nbmkey*2+1}&showtype=1"
+                    >添加</a>
+                    <a class="condition_clear condition_btn" onclick="clearinforpresult(this,1);" href="javascript:;">清除</a>
+                </span>
+                <div class="showreturna">
+                	<input type="hidden" value="{$MisDynamicControllRecordVo.resultshowval}" name="resultshowval[{$nbmkey}]">
+					<input type="hidden" value="{$MisDynamicControllRecordVo.resultshowvalrules}" name="resultshowvalrules[{$nbmkey}]">
+					{$MisDynamicControllRecordVo.resultshowvalrules}
+                </div>
+			</td>
+			<td><a class="nbm_del_col" recrodid="{$MisDynamicControllRecordVo.id}" href="javascript:void(0);">移除行</a></td>
+		</tr>
+		   {~$nbmkey++;}
+		</volist>
+		<else/>
+		<tr>
+			<td>
+				 <span>{$propertyid|getFieldBy='id','title','mis_dynamic_form_propery'}</span>
+			</td>
+			<td>
+			   	<select name="roleinexp[0]" class="chosen" style="width:160px" >
+                      {:getSelectByHtml('roleinexp','select')}
+                 </select>
+			</td>
+			<td>
+                <div class="list_group_lay">
+                    <select name="typeval[]" class="requie select2 list_select2" style="width:160px" >
+                        <if condition="!$sList"><option>--请先设置数据源--</option><else/><option value="0"> --请选择--</option></if>
+                       	<volist name='sList' id="sVo">
+                       	<if condition="$skey">
+                       		 <option <if condition="$MisDynamicControllRecordVo['typeval'] eq $sVo[$skey]">selected="selected"</if> value="{$sVo[$skey]}">{$sVo[$ekey]}<if condition="$sVo.orderno">【{$sVo['orderno']}】</if></option>
+                       <else/>
+                           <option <if condition="$MisDynamicControllRecordVo['typeval'] eq $key">selected="selected"</if> value="{$key}">{$sVo}</option>
+                       </if>
+                        </volist>
+                    </select>
+                </div>
+			</td>
+			<!-- 方便lokup回写的标识 -->
+			<td lookupitemindex="0">
+			<!-- 
+			lookupgroup="ORG{$i}"
+			
+			 --> 
+			 	<span style="display: inline-block;">
+                    <a lookupitems="{$vals}"  
+                    lookupkey="id" 
+                    class="condition_btn condition_add" 
+                    
+                    title="请选择{$rlistVo.showname}" 
+                    width="460"  
+                    height="500" 
+                    mask="true"  
+                    lookupgroup="ORG{$i}"  
+                    href="__URL__/lookupSingle" 
+                    rel="__MODULE__lookupSingle_asdasdsa" 
+                    param="model=MisDynamicFormProperyView&conditions=status,1;formid,{$formid};fieldname,{$fieldname},not in;tplname,{$curnode}&showtitle=组件列表&show=title&hidden=fieldname&callback=getreturndata&showname=title&index=0"
+                    >添加</a>
+                    <a class="condition_clear condition_btn" style="height: 28px;" onclick="clearinforpresult(this);" href="javascript:;">清除</a>
+                </span>
+                <div class="returna">
+                
+                </div>
+			</td>
+			<td lookupitemshowindex="1">
+			<!-- 
+			lookupgroup="ORG{$i}"
+			
+			 --> 
+			 	<span style="display: inline-block;">
+                    <a lookupitems="{$MisDynamicControllRecordVo.resultval}"  
+                    lookupkey="fieldname" 
+                    class="condition_btn condition_add" 
+                    
+                    title="请选择{$rlistVo.showname}" 
+                    width="460"  
+                    height="500" 
+                    mask="true"  
+                    lookupgroup="ORG{$nbmkey}"  
+                    href="__URL__/lookupSingle" 
+                    rel="__MODULE__lookupSingle_asdasdsa" 
+                    param="model=MisDynamicFormProperyView&conditions=status,1;formid,{$formid};fieldname,{$fieldname},not in;tplname,{$curnode}&showtitle=组件列表&show=title&hidden=fieldname&callback=getreturndata&showname=title&index=1&showtype=1"
+                    >添加</a>
+                    <a class="condition_clear condition_btn" style="height: 28px;" onclick="clearinforpresult(this,1);" href="javascript:;">清除</a>
+                </span>
+                <div class="showreturna">
+                </div>
+			</td>
+			<td><a class="nbm_del_col"  href="javascript:void(0);">移除行</a></td>
+		</tr>
+		</if>
+		</tbody>
+		<tfoot>
+		<tr>
+			<td colspan="6" style="text-align: right;">
+				<button type="button" class="new_col_btn nbm_add_col">
+					新建一行
+				</button>
+			</tr>
+			</tfoot>
+			</table>
+	</div>
+<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystempanel_edit">
+				<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<!--<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>-->
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

@@ -1,0 +1,41 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisSystemCompanytree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("MisSystemCompanytree");
+	var valid = '0';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="MisSystemCompanyNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('MisSystemCompanytree','MisSystemCompanyNodeKeys')">搜索</button>
+				</div>
+			</div>
+			<ul id="MisSystemCompanytree" class="ztree" layoutH="43"></ul>
+		</div>
+	</div>
+	<div id="MisSystemCompanyJobInfoBox" class="treeright">
+		<include file="MisSystemCompany:indexjoblist"/>
+	</div>
+</div>

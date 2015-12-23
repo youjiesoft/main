@@ -1,0 +1,39 @@
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid;">
+<form id="pagerForm" action="__URL__/edit/type/employeeleave/id/{$id}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+	<table class="table" width="99%" layoutH="60">
+		<thead>
+		<tr>
+			<th width="30">序号</th>
+			<th>请假编号</th>
+			<th>请假类型</th>
+			<th>请假时间</th>
+			<th>开始时间</th>
+			<th>结束时间</th>
+			<th>请假原因</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr>
+				<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+				<td>{$vo.orderno}</td>
+				<td>{$vo.leavetype|getFieldBy='id','name','mis_hr_typeinfo'}</td>
+				<td>{$vo.hours}</td>
+				<td>{$vo.beginleavedate|transTime='Y-m-d H:i'}</td>
+				<td>{$vo.endleavedate|transTime='Y-m-d H:i'}</td>
+				<td>{$vo['remark']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmEmployeeLeave" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

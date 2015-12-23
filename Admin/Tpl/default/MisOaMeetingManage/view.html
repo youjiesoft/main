@@ -1,0 +1,96 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="iseditor" value="1">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<input type="hidden" name="stepType" value="0"/>
+		<div class="pageFormContent applecloth" layoutH="55">
+			<div class="keepContentCenter form-affix-content">
+				<H2 class="contentTitle contentTitle_center form-affix-title">
+					会议信息
+					{:W('ShowOrderno',array(0,'mis_oa_meeting_manage',$vo['orderno']))}
+				</H2>
+				<fieldset class="zlqk_1">
+					<legend class="fieldset_legend_toggle">
+						<b>基本信息</b>
+					</legend>
+					<if condition='$fields["name"]'>
+					<div class="tml-form-row">
+						<label>{$fields["name"]}：</label>
+						<input type="text" name="name" class="required textInput" value="{$vo['name']}"/>
+					</div>
+					</if>
+					<div class="tml-row">
+						<if condition='$fields["personname"]'>
+						<div class="tml-form-col">
+							<label>{$fields["personname"]}：</label>
+							<input type="text" name="personname" class="required textInput" value="{$vo['personname']}"/>
+						</div>
+						</if>
+						<if condition='$fields["typename"]'>
+						<div class="tml-form-col">
+							<label>{$fields["typename"]}：</label>
+							<input type="text" name="typename" class="textInput" value="{$vo['typename']}"/>
+						</div>
+						</if>
+						<if condition='$fields["starttime"]'>
+							<div class="tml-form-col">
+								<label>{$fields["starttime"]}：</label>
+								<div class="tml-input-append">
+									<input type="text" class="Wdate js-wdate required" name="starttime" value="{$vo.starttime|transTime=###,'Y-m-d H:i'}" format="{dateFmt:'yyyy-MM-dd HH:mm'}"/>
+		                        	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+		                        </div>
+							</div>
+						</if>
+						<if condition='$fields["endtime"]'>
+							<div class="tml-form-col">
+								<label>{$fields["endtime"]}：</label>
+								<div class="tml-input-append">
+									<input type="text" class="Wdate js-wdate" name="endtime" value="{$vo.endtime|transTime=###,'Y-m-d H:i'}" format="{dateFmt:'yyyy-MM-dd HH:mm'}"/>
+		                        	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+		                        </div>
+							</div>
+						</if>
+						<div class="tml-form-col">
+							<label>会议纪要人</label>
+							<input type="text" readonly="readonly" name="summaryname" value="{$vo.summaryname}"/>
+						</div>
+					</div>
+					<div class="tml-form-row">
+	                    <label>查阅人：</label>
+	                    <ul id="misworkplan_one_edit" class="addressee left checkTo" style="width:563px;">
+		                    <volist name="joinpeople" id="pvo">
+			                    <li>
+									<input type="hidden" value="{$pvo|getfieldby='id','name','user'}" name="lookpeoplename[]">
+									<span>{$pvo|getfieldby='id','name','user'}</span>
+									<input type="hidden" value="{$pvo}" name="lookpeople[]">
+									<a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除">x</a>
+								</li>
+							</volist>
+							<li class="addresseeText">
+								<input class="checkByInput addresseeTextInput textInput" type="text" autocomplete="off" tabindex="1" callback="addresseeInput" chainname="lookpeoplename" inputname="lookpeople" show="" checkfor="MisMessage" autofocus="autofocus" onfocus="addressee.clearVal(this);" onkeydown="addressee.del(this, event);" onclick="addressee.unselect(this);">
+							</li>
+						</ul>
+						<a class="input-addon input-addon-addon input-addon-userplus checkUser" data="lookpeoplename,username,text;lookpeople,userid,hidden,1" ulid="misworkplan_one_edit" href="javascript:;">查找带回</a>
+						<a class="input-addon input-addon-recycle" title="清空接收用户" onclick="clearreceverMismessage('1','misworkplan_one_edit');" href="javascript:;"></a>
+	                </div>
+					<if condition='$fields["address"]'>
+						<div class="tml-form-row">
+							<label>{$fields["address"]}：</label>
+							<input type="text" name="address" class="required textInput" value="{$vo['address']}"/>
+						</div>
+					</if>
+					<if condition='$fields["content"]'>
+						<div class="tml-form-row">
+							<label>{$fields["content"]}：</label>
+							<textarea style="width: 624px; height: 200px" name="content" class="ueditor" readonly="readonly">{$vo['content']}</textarea>
+						</div>
+					</if>
+					<!-- 附件信息 -->
+					{:W('ShowUpload',$attarry)}
+				</fieldset>
+			</div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

@@ -1,0 +1,29 @@
+<div class="pageContent">
+		<form id="pagerForm" action="__URL__/index" method="post">
+		</form>
+		<form rel="pagerForm" onsubmit="return  divSearch(this,'ToolBarConfigBox')" action="__URL__/index" method="post">
+			<input type="hidden" name="jump" value="jump">
+			<input type="hidden" name="model" value="{$modelname}">
+		</form>
+		<div class="panelBar">
+				<ul class="toolBar">
+								<volist name="toolbarextension" id="toolb">
+									<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+										<li>{$toolb['html']}</li>
+									</if>
+								</volist>
+							</ul>
+						</div>
+						<table class="table" width="100%" layoutH="146">
+							<thead ename="{$ename}">
+								<tr>
+									<volist id="vo" name="detailList">
+										<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">  orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+									</volist>
+								</tr>
+							</thead>
+							<tbody>
+								<include file="dwzloadindex" />
+							</tbody>
+						</table>
+					</div>

@@ -1,0 +1,75 @@
+<script type="text/javascript">
+	function lookupDetailUserAccess($nodename,$nodeid,$userid,$group_id,$divrel){
+		var options = {};
+		options.param={nodeid:$nodeid,userid:$userid,group_id:$group_id};
+		options.mask = "true";
+		options.width = "770";
+		options.height = "450";
+		var url = "__URL__/lookupDetailUserAccess/divrel/"+$divrel;
+		$.pdialog.open(url,"lookupDetailUserAccess", $nodename,options);
+	}
+	function comboxUpdate(obj){
+		var $obj = $(obj);
+		var rel = $obj.find("option:selected").attr("rel");
+		var $parent = $obj.closest("div.tml-form-row");
+		$parent.find("input.js-liulan").val(rel);
+	}
+</script>
+<form id="pagerForm" action="__URL__/{$mA}" method="post">
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this,'{$divrel}');" action="__URL__/{$mA}" method="post">
+	<input type="hidden" name="userid" value="{$userid}">
+    <input type="hidden" name="group_id" value="{$group_id}">
+</form>
+<form method="post" action="__URL__/writeRoleUser/rel/{$divrel}" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+<input type="hidden" name="userid" value="{$userid}">
+<div class="pageContent" layoutH="35">
+	<div class="pageFormContent keepContentCenter">
+		<h2 class="contentTitle contentTitle_center">{$group_id|getFieldBy='id','name','group'}</h2>
+		<volist name="nodelist" id="nlt">
+		<fieldset>
+			<legend class="fieldset_legend_toggle">
+				<b>{$nlt.title}</b>
+			</legend>
+			<volist name="nlt.threeNode" id="tnd">
+				<div id="rel{$tnd.id}">
+					<div class="tml-form-row">
+						<label>{$tnd.title}</label>
+						<input type="hidden" name="groupModel[]" value="{$tnd.id}"/><!-- 根据modelID来判断选中的模块 -->
+						<input type="hidden" name="oldliulan[{$tnd.id}]" value="{$tnd.liulan}"/>
+						<input type="hidden" class="js-liulan" name="liulan[{$tnd.id}]" value="{$tnd.liulan}"/>
+						<input type="hidden" name="zhidan[{$tnd.id}]" value="{$tnd.zhidan}"/>
+						<input type="hidden" name="tesu[{$tnd.id}]" value="{$tnd.tesu}"/>
+						<input type="hidden" name="delAccess[{$tnd.id}]" <if condition="$tnd.selected eq 1">value="{$tnd.id}"<else/>value="0"</if>/>
+						
+						<div class="left tml-checkbox tml-w100">
+							<label>
+								<input type="checkbox" name="coreAcess[{$tnd.id}]" value="{$tnd.id}" <if condition="$tnd.selected eq 1">checked="checked"</if>>一键授权
+							</label>
+						</div>
+						<button class="left tml-btn tml-btn-primary" type="button" onclick="lookupDetailUserAccess('{$tnd.title}',{$tnd.id},{$userid},{$group_id},'{$divrel}')">明细授权</button>
+						<div class="right">
+							<span class="tml-form-text">浏览级别：</span>
+							<select name="plevels[{$tnd.id}]" id="plevels{$tnd.id}" class="combox" onchange="comboxUpdate(this);">
+								<option rel="{$tnd.geren}" value="4" <if condition="$tnd.geren eq $tnd.liulan">selected</if>>个人</option>
+								<option rel="{$tnd.bumen}" value="3" <if condition="$tnd.bumen eq $tnd.liulan">selected</if>>部门</option>
+								<option rel="{$tnd.zibumen}" value="2" <if condition="$tnd.zibumen eq $tnd.liulan">selected</if>>公司</option>
+								<option rel="{$tnd.quanbu}" value="1" <if condition="$tnd.quanbu eq $tnd.liulan">selected</if>>全部</option>
+							</select>
+							<div> 
+							<a target="dialog" width="800" height="350" mask="true" rel="__URL__addAccessResult" href="__APP__/AuthorizeCore/lookupAccessResult/type/1/typeval/{$userid}/modelname/{$tnd['id']|getFieldBy='id','name','node'}">设置浏览权限</a>   
+							</div>
+						</div>
+					</div>
+				</div>
+			</volist>
+		</fieldset>
+		</volist>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-blue">{$Think.lang.save}</button></li>
+			</ul>
+		</div>
+	</div>
+</div>
+</form>

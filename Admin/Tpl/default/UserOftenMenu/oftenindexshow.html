@@ -1,0 +1,53 @@
+<script>
+function delOften($this){
+	$obj = $($this);
+	$id = $obj.attr('id');
+	$.ajax({
+		url : "__APP__/UserOftenMenu/delOften",// 通过Ajax取数据的目标页面
+		type : 'post',// 方法，还可以是"post"
+		data:{id:$id},
+		success : function(res){
+			// 成功后执行的语句，这里是一个函数，“locals”是返回的数据
+			if(res){
+				//$obj.parent().remove();
+				$("#userConstantly_div").loadUrl("__APP__/UserOftenMenu/oftenindex");
+			}
+		}
+	});
+}
+</script>
+
+<div class="entry-box  entry-box-small">
+            <div class="entry-box-body">
+                <div class="xystartmenu_con clearfix">
+                    <div class="xypreferences clearfix tml-pos-rel" id="userConstantly_div">
+						<!-- 
+						<div class="tml-text-r tml-pos-abs" style="right: 10px;top: 10px;z-index: 2;">
+                            <a class="tml-btn tml-btn-default tml_add_btn"   href="__URL__/lookupuserindex/type/2" target="dialog" rel="__MODULE__add" width="770" height="530"><span class="icon icon-plus">常用</span>  </a>
+                        </div>
+                         -->
+                        <!-- <h3>常用</h3> -->
+                        <ul class="clearfix xyuseapp tml-mt5">
+                            <volist id="workvo" name="workoftenList">
+                                <if condition="$workvo['rel'] && $workvo['title'] && $workvo['url'] && $workvo['icon']">
+                                    <li>
+                                        <a href="__APP__/{$workvo['url']}" target="navTab" rel="{$workvo['rel']}" >
+                                            <img alt="{$workvo['title']}" width="50" height="50px" src="__PUBLIC__/Images/xyicon/{$workvo['icon']}" />
+                                            <span>{$workvo['title']}</span>
+                                        </a>
+                                        <if condition="!$workvo.isdefault"><a id="{$workvo['id']}" class="delapp" href="#" onclick="delOften(this);"></a></if>
+                                    </li>
+                                </if>
+                            </volist>
+                            <li>
+                                <a href="__APP__/UserOftenMenu/oftenadd" target="dialog" rel="__MODULE__add" width="770" height="530">
+                                    <img width="50" height="50px" src="__PUBLIC__/Images/xyicon/set_icon.png" alt=""/>
+                                    <span>常用设置</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                
+        </div>

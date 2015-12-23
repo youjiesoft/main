@@ -1,0 +1,26 @@
+<script type="text/javascript">
+	//检查用户的选择分类层级
+</script>
+<include file="Public:pagerForm" />
+	<div class="page">
+		<div class="pageContent">
+			<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+				<div class="pageFormContent" layoutH="58">
+                    <div class="tml-row">
+                        <div class="tml-form-col">
+                            <label>编&nbsp;&nbsp;&nbsp;&nbsp;码：</label><input  type="text" name="code" class="required"  value="{$code}" <if condition='$writable eq 0'> readonly="readonly" </if> value="{$code}">
+                        </div>
+                        <div class="tml-form-col">
+                            <label>名&nbsp;&nbsp;&nbsp;&nbsp;称：</label><input type="text" name="name" class="required" value="">
+                        </div>
+                    </div>
+                   <div class="tml-form-row">
+                        <label>备&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+                        <textarea name="remark"></textarea>
+                    </div>
+				</div>
+				{:W('ShowAction')}
+			</form>
+		</div>
+	</div>
+</div>

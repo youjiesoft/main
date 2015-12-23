@@ -1,0 +1,59 @@
+<script>
+function getexecutingtypename(ob){
+	var $this=$(ob);
+	var val=$this.val();
+	if(val == 0){
+		$("#setTypename2").hide();
+	}else{
+		$("#setTypename2").show();
+	}
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__"
+			class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<h2 class="contentTitle contentTitle_center">工作执行设置</h2>
+			<div class="pageFormContent applecloth" layoutH="102">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>模块名：</label>
+						<input type="text" name="name" />
+					</div>
+					<div class="tml-form-col">
+						<label>名称：</label>
+						<input type="text" name="cname" />
+					</div>
+					<div class="tml-form-col">
+						<label>是否显示处理中：</label>
+						<select name="isshow" class="combox" onchange="getexecutingtypename(this);">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>状态</label>
+						<select name="status" class="combox">
+							<option value="1">启用</option>
+							<option value="0">禁用</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>分类1名称：</label>
+						<input type="text" name="typenameone" value="未处理"/>
+					</div>
+					<div class="tml-form-col" id="setTypename2">
+						<label>分类2名称：</label>
+						<input type="text" name="typenametow" value="处理中"/>
+					</div>
+					<div class="tml-form-col">
+						<label>分类3名称：</label>
+						<input type="text" name="typenamethree" value="已完成"/>
+					</div>
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

@@ -1,0 +1,141 @@
+<script>
+    $(function() {
+        misworkstastement_onblurAdd();
+    });
+    function misworkstatement_add(){
+        var $box=navTab.getCurrentPanel();
+        var title = $("#workstatementtypeid option:selected").attr("cnname");
+        var oldstrdate = "{$strdate}";
+        var oldname = "{$username}";
+        $("#misworkstatement_add_changetitle").text(oldstrdate + '_' + oldname + '_' +title);
+
+        if(title=='会议纪要'){
+            $box.find(".control_display_none").attr("class","control_display_block");
+            $box.find("input[name='stepType']").val('1');
+
+        }else{
+            $box.find(".control_display_block").attr("class","control_display_none");
+            $box.find("input[name='stepType']").val('0');
+        }
+    }
+    function misworkstastement_onblurAdd(){
+        var $box=navTab.getCurrentPanel();
+        var oldname = "{$username}";
+        var d =  $("#misworkstatement_add_changedate").val();
+        var type = $("#workstatementtypeid option:selected").attr("cnname");
+        var title = "";
+        if(type == "日报"){
+            title = d + '_' + oldname + '_' +type;
+        } else if(type == "周报"){
+            var timeTemp = d.replace("年","-").replace("月","-").replace("日","");
+            var dateArr = timeTemp.split('-');
+            var date = new Date();
+            date.setFullYear(parseInt(dateArr[0]));
+            date.setDate(parseInt(dateArr[1])-1);
+            date.setMonth(parseInt(dateArr[2]));
+
+            var week = getIso8601Week(date);
+            date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+            title = date.getFullYear() + "年第" + week + "周" + '_' + oldname + '_' +type;
+
+        } else if(type == "月报"){
+            var timeTemp = d.replace("年","-").replace("月","-").replace("日","");
+            var dateArr = timeTemp.split('-');
+            var date = new Date();
+            date.setFullYear(parseInt(dateArr[0]));
+            date.setMonth(parseInt(dateArr[1])-1);
+            date.setDate(parseInt(dateArr[2]));
+            //var date = new Date(d.replace("年","-").replace("月","-").replace("日",""));
+            var month = (date.getMonth()+1);
+            if(month<10) month = "0" + month;
+            title = date.getFullYear() + "年" + month + "月" + '_' + oldname + '_' +type;
+        }
+        $("#misworkstatement_add_changetitle").text(title);
+        $box.find("input[name='title']").val(title);
+    }
+    function workstate_addpeople(id,name,step){
+        if(step=="MisWorkStatement_one"){
+            var $strHtml = appendUserHtml(step,'lookpeoplenew',id,name,'lookpeoplenamenew');
+        }
+        if(step=="MisWorkStatement_two"){
+            var $strHtml = appendUserHtml(step,'copytopeople',id,name,'copytopeoplename');
+        }
+        $("#"+step).append($strHtml);
+    };
+    function workstate_selectinto(step){
+        var id;
+        var name;
+        $(".tbodylist").find("input[type='checkbox']").each(function(){
+            if($(this).attr("checked")=='checked'){
+                id = $(this).attr("userid");
+                name = $(this).attr("username");
+                workstate_addpeople(id,name,step);
+            }
+        });
+    }
+</script>
+<div class="page">
+    <div class="pageContent">
+        <form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+            <input type="hidden" name="callbackType" value="closeCurrent">
+            <input type="hidden" name="iseditor" value="1">
+            <input type="hidden" name="stepType" value="0">
+            <input type="hidden" name="title" value="">
+            <div class="pageFormContent applecloth" layoutH="40">
+                <div class="keepContentCenter kkuupp form-affix-content">
+                    <div class="contentTitle contentTitle_center form-affix-title">
+                        <span id="misworkstatement_add_changetitle">{$strdate}_{$username}_{$worktype}</span>
+                        <!--<span class="no_numBer">{:W('ShowOrderno',array(0,'mis_work_statement'))}</span>-->
+                    </div>
+                    <fieldset>
+                        <div class="tml-form-row">
+                            <label>摘要：</label>
+                            <input type="text" maxlength="200" name="summary" />
+                        </div>
+                        <div class="tml-form-row">
+                            <label>查阅人：</label>
+                           	<ul class="addressee left checkTo" id="MisWorkStatement_add" style="width:70%;"></ul>
+                            	<a 
+						class="input-addon input-addon-addon input-addon-userplus checkUser" 
+						href="javascript:;" ulid="MisWorkStatement_add" 
+						sysUser="sysfields" 
+						data="recipientname,username,text;recipient,userid,hidden,1" 
+						data-group="groupname,title,text;groupid,id,hidden,1"
+						width="800" 
+						height="800">查找带回</a>&nbsp; 
+						<input type="hidden" name="sysselectuser[]" value="sysfields"/>
+					<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverMismessage('1','Mismessage_add');" title="清空用户"></a>
+				
+                        </div>
+                        <div class="tml-row">
+                            <div class="tml-form-col">
+                                <label>{$fields["typeid"]}：</label>
+                                <select name="typeid" id="workstatementtypeid" class="combox" onchange="misworkstastement_onblurAdd();">
+                                    <volist name="extypelist" id="elist">
+                                        <option value="{$elist.id}" cnname="{$elist['name']}" <if condition="$typeid eq $elist.id">selected="selected"</if>>{$elist['name']}</option>
+                                    </volist>
+                                </select>
+                            </div>
+                            <div class="tml-form-col">
+                                <label style="width:123px;">{$fields["createtime"]}：</label>
+                                <div class="tml-input-append">
+                                    <input type="text" id="misworkstatement_add_changedate" class="Wdate js-wdate" data="{dateFmt:'yyyy年MM月dd日',onpicked:misworkstastement_onblurAdd}" name="createtime" size="17" <if condition="$datetime">value="{$datetime}"<else/>value="{$time|transTime='Y年m月d日'}"</if> />
+                                    <a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+                                    <input type="hidden" name="createid" value="{$userid}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tml-form-row">
+                            <label>内容：</label>
+                            <!-- <script type="text/plain" name="content" id="content"></script> -->
+                            <textarea class="ueditor" name="content" style="height:240px;width:787px;"></textarea>
+                        </div>
+                        <!-- 附件信息 -->
+                        {:W('ShowUpload')}
+                    </fieldset>
+                    {:W('ShowAction')}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<div class="keepContentCenter" style="width: auto;margin:0;" layoutH="125">
+    <if condition="$questionlist">
+        <fieldset>
+            <legend class="fieldset_legend_toggle">
+                <b>问题列表</b>
+            </legend>
+            <table class="xyDataTable" cellspacing="0" id="mistaskadFeedback_add" width="100%" border="1" bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">
+                <thead>
+                    <tr>
+                        <td><strong>标题</strong></td>
+                        <td style="width: 80px;"><strong>是否回答</strong></td>
+                        <td style="width: 80px;"><strong>提问对象</strong></td>
+                        <td style="width: 110px;"><strong>创建日期</strong></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <volist id="questionvo" name="questionlist">
+                    <tr target="sid_node" rel="{$questionvo['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="500" dwidth="800" title="查看问题" drel="MisTaskquestionedit"
+                        ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__APP__/MisTaskquestion/edit/id/{$questionvo.id}/type/execute");'>
+                        <td>{$questionvo['title']|missubstr=###, 80,true}</td>
+                        <td>{$questionvo['isanswer']|excelTplselected='1:已回答,0:未回答'}</td>
+                        <td>{$questionvo['expertid']|getFieldBy='id','name','User'}</td>
+                        <td>{$questionvo['createtime']|transTime=###,'Y-m-d H:i'}</td>
+                    </tr>
+                    </volist>
+                </tbody>
+            </table>
+        </fieldset>
+    <else/>
+        <div class="timeLine">
+            <div class="timeLineData">
+                <ul>
+                    <li class="timeLineNode-top23 clearfix">
+                        <div class="timeLineTime-ptop12">
+                            <span>{$vo["begindate"]|date='Y-m-d',###}</span>
+                        </div>
+                    </li>
+                    <li class="timeLineNodeArrow-top23 clearfix">
+                        <div class="taskdivbordernodata">
+                            无问题数据
+                        </div>
+                    </li>
+                    <li class="timeLineNode-top23 clearfix">
+                        <div class="timeLineTime-ptop12">
+                            <span>{$taskendtime|date='Y-m-d',###}</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </if>
+</div>

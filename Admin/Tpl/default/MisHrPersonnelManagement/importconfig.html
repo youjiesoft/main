@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<title>导入配置</title>
+<script>
+	//全选
+	function allcheck() {
+		var a = document.getElementById('Checkall_dutyindex');
+		var cks = document.getElementsByTagName("input");
+		for ( var i = 0; i < cks.length - 1; i++) {
+			if (cks[i].type == "checkbox") {
+				cks[i].checked = a.checked;
+			}
+		}
+	}
+</script>
+</head>
+<body>
+	<div class="page">
+		<div class="pageContent">
+			<form method="post" action="__URL__/guiHrImportConfig/" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+				<input type="hidden" name="importconfig" value="1">
+				<input type="hidden" name="id" value="{$MisImportFieldconfigList.id}">
+				<div class="pageFormContent " layoutH="60">
+					<table class="xyDataTable" width="100%" cellspacing="0" bordercolor="#B8D0D6" border="1" style="text-align: center;">
+						<tr>
+							<td>
+								<strong>序列</strong>
+							</td>
+							<td>
+								<strong>导入项</strong>
+							</td>
+							<td>
+								<strong>
+									导入项
+									<input type="checkbox" id="Checkall_dutyindex" style="margin-left: 12px;" value="1" onclick="allcheck()">
+									全选
+								</strong>
+							</td>
+						</tr>
+						<tr>
+							<td>1</td>
+							<td>编码</td>
+							<td>
+								<input type="checkbox" name="A" <if condition="in_array('A',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td>姓名</td>
+							<td>
+								<input type="checkbox" name="B" <if condition="in_array('B',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td>性别</td>
+							<td>
+								<input type="checkbox" name="C" <if condition="in_array('C',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td>出生年月</td>
+							<td>
+								<input type="checkbox" name="D" <if condition="in_array('D',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>5</td>
+							<td>籍贯</td>
+							<td>
+								<input type="checkbox" name="E" <if condition="in_array('E',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>6</td>
+							<td>婚姻状况</td>
+							<td>
+								<input type="checkbox" name="F" <if condition="in_array('F',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>7</td>
+							<td>政治面貌</td>
+							<td>
+								<input type="checkbox" name="G" <if condition="in_array('G',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>8</td>
+							<td>学历</td>
+							<td>
+								<input type="checkbox" name="H" <if condition="in_array('H',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>9</td>
+							<td>专业</td>
+							<td>
+								<input type="checkbox" name="I" <if condition="in_array('I',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>10</td>
+							<td>职务</td>
+							<td>
+								<input type="checkbox" name="J" <if condition="in_array('J',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>11</td>
+							<td>部门</td>
+							<td>
+								<input type="checkbox" name="K" <if condition="in_array('K',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+						<tr>
+							<td>12</td>
+							<td>电子邮件</td>
+							<td>
+								<input type="checkbox" name="L" <if condition="in_array('L',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+							<tr>
+							<td>13</td>
+							<td>手机</td>
+							<td>
+								<input type="checkbox" name="M" <if condition="in_array('M',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="true"</if> value="1">
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="formBar">
+					<ul>
+						<if condition="$_SESSION.a eq 1 or $_SESSION.missystemdepartment_importconfig">
+						<li>
+							<div class="buttonActive">
+								<div class="buttonContent">
+									<button type="submit">{$Think.lang.save}</button>
+								</div>
+							</div>
+						</li>
+						</if>
+						<li>
+							<div class="button">
+								<div class="buttonContent">
+									<button type="button" class="close">{$Think.lang.close}</button>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

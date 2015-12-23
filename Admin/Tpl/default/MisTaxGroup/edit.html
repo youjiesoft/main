@@ -1,0 +1,58 @@
+<!--
+*@author:yangxi
+*@date:2012-1-5
+*@remark:税金组模板--修改
+-->
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__"  class="pageForm required-validate" onsubmit="return iframeCallback(this,dialogAjaxDone);">
+		<div class="pageFormContent"  layoutH="43">
+			<table width="100%" border="0" cellspacing="0">
+				<tr>
+				  <td><div class="unit"><label>{$fields["code"]}：</label>
+				  <input type="hidden" name="id" value="{$TaxGroupInfo['id']}" />
+				  <input type="text"  name="code" value="{$TaxGroupInfo['code']}" class="required alphanumeric" maxlength="25"  /></div></td>
+				</tr>
+				<tr>
+				  <td><div class="unit"><label>{$fields["name"]}：</label>
+				  <input type="text" value="{$TaxGroupInfo['name']}" name="name" class="required" maxlength="25" /></div></td>
+				</tr>
+				<tr>
+				  <td><div class="unit"><label>{$fields["taxdetail"]}：</label>
+				  <input type="text"  name="taxdetail" value="<?php echo number_format($vo['taxdetail'],2,'.','');?>" class="number required" /></div></td>
+				</tr>
+				<tr>
+				  <td><div class="unit"><label>{$fields["cmethod"]}：</label>
+				  <select name="cmethod" class="combox">
+					<option <eq name="vo.type" value="01" >selected</eq> value="01">增值税税率算法</option>
+					<option <eq name="vo.type" value="02" >selected</eq> value="02">营业税税率算法</option>
+				  </select>
+				</tr>
+				<tr>
+				  <td><div class="unit"><label>{$fields["type"]}：</label>
+				  <select name="type" class="combox">
+					<option <eq name="vo.type" value="01" >selected</eq> value="01">未指定</option>
+					<option <eq name="vo.type" value="02" >selected</eq> value="02">未税</option>
+					<option <eq name="vo.type" value="03" >selected</eq> value="03">普通税</option>
+					<option <eq name="vo.type" value="04" >selected</eq> value="04">增值税</option>
+				  </select>
+				</tr>
+				<tr>
+				  <td ><div class="unit"><label>{$fields["remark"]}：</label>
+				  <textarea  name="remark" cols="40" rows="1" maxlength="125">{$TaxGroupInfo['remark']}</textarea></div></td>
+				</tr>
+			</table>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mistaxgroup_update">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+
+

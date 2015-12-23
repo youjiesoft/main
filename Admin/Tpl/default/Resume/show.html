@@ -1,0 +1,34 @@
+<div class="pageContent">
+	<div class="pageFormContent" layoutH="58">
+		<div class="unit">
+			<label style="width:350px;padding-top:5px;"><font color='red'>友情提醒：
+			<br/>1.请慎重还原，此操作不可逆。
+            <br/>2.确保无其他用户做系统操作。</font>
+            <font color='blue'><br/>3.{$modelInfo}</font>
+            </label>
+		</div>
+		<div class="unit">
+			<label>还原对象：</label>
+			<input onclick="hide_tables();" type="radio" name="resume_type" value="all" checked /> 还原所有
+			<input onclick="javascript:void(document.getElementById('part_tables').style.display='block');" type="radio" name="resume_type" value="part" /> 还原部分表
+		</div>
+		<div>
+			<p>
+				<label style="width:350px;">还原提示：<font id="resume_notic" color="green">暂无。</font></label>
+			</p>
+		</div>
+		<div id="part_tables" style="display:none;float:left;">
+			<p>
+				<label><b>请选择表：</b></label><input type="checkbox" class="checkboxCtrl" group="table" /> 全选
+				<div>{$html_show}</div>
+				<input id="file" type="hidden" value="{$file}" />
+				<input id="folder" type="hidden" value="{$folder}" />
+			</p>
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><div class="buttonActive"><div class="buttonContent"><button onclick="start_to_resume();" type="button">{%resume}</button></div></div></li>
+		</ul>
+	</div>
+</div>

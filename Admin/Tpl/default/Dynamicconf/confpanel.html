@@ -1,0 +1,260 @@
+<style>
+tr[data-origstyle] td{
+	background-color: #d8d8d8 !important;
+}
+</style>
+<script>
+$(function(){
+	setTimeout(function(){
+		onresizeTables();
+	}, 0);
+});
+	
+function onresizeTables(){
+	var cheight = $("#onresizetables").outerHeight(true);
+	var grid = $("#onresizetables").find("div.gridScroller");
+	var count = grid.length;
+	var height = $("#onresizetables").find("div.panelBar").height();
+	$("#onresizetables").find("div.gridHeader").each(function(){
+		height += $(this).height();
+	});
+	var h = (cheight - height - 4)/count;
+	$("#onresizetables").find("div.gridScroller").height(h);
+}
+$(window).resize(function() {
+	setTimeout(function() {
+		onresizeTables();
+	}, 100);
+});
+/* function dynamicconftable(ob){
+	$("#"+ob).slideToggle();
+} */
+$("#dynamicconftable tbody")
+.dragsort(
+		{
+			dragSelector : "div.dt_setOrder",
+			dragBetween : true,
+			dragEnd : saveThOrder
+		});
+
+function saveThOrder() {
+var input_list = $("#dynamicconftable tbody tr input.js-sortnum");
+input_list.each(function(i) {
+$(this).val(i + 1);
+});
+};
+</script>
+<form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+	<input type="hidden" name="model" value="{$model}" >
+	<input type="hidden" name="jump" value="1">
+	<div class="pageContent" style="background: #fff;">
+		<div class="panelBar">
+			<div class="dynamic_display_title">{$name}</div>
+			<div class="dynamic_display_operate">
+				<a class="dynamic_display_operate_btn" href="__URL__/setDynamiccof/model/{$model}" target="ajaxTodo" title="注意：如果非首次生成，重新生成会覆盖原文件，你确定要执行吗？" >生成配置文件</a>
+				<a class="dynamic_display_operate_btn" href="__URL__/setListFromData/model/{$model}" rel="{$model}quickSearch" target="navTab"  title="数据字典生成列表" >根据数据字典生成列表</a>
+				<a class="dynamic_display_operate_btn" href="__URL__/quickSearch/model/{$model}" rel="{$model}quickSearch" target="dialog" mask="true" title="检索配置" height="400" width="818">检索配置</a>
+				<a class="dynamic_display_operate_btn" target="dialog" href="__URL__/lookupRowAccess/setmodule/{$model}" rel="__MODULE__rowaccess" width="800" mask="true" height="500">列权限配置</a>
+				<a class="dynamic_display_operate_btn" target="dialog" href="__URL__/add/md/{$model}" rel="__MODULE__add" width="700" mask="true" height="520">配置文件添加</a>
+			</div>
+			<div class="clear"></div>
+		</div>
+		<div id="onresizetables" class="set_configure" layoutH="96" style="margin-top: 3px;">
+		<div id="dynamicconftable" >
+            <div class="into_table_lay nbm_noborder" style="width: 99%;">
+                <table class="into_table_new nbm_data_table" table_data='{"searching":true,"addRow":false,"paging":false}'  id="dynamicconf_confpanel" width="100%">
+                    <thead>
+                    <tr>
+                    	<th>排序</th>
+                        <th>字段英文</th>
+                        <th>字段中文</th>
+                        <th>字段帮助</th>
+                        <th><input type="checkbox" onclick="all_select(this,'indexlist','table');" /> 列显示</th>
+                        <th><input type="checkbox" onclick="all_select(this,'indexlist','table');" /> 导出</th>
+                        <th><input type="checkbox" onclick="all_select(this,'indexlist','table');" /> 列排序</th>
+                        <th><input type="checkbox" onclick="all_select(this,'indexlist','table');" /> 规则</th>
+                        <th><input type="checkbox" onclick="all_select(this,'indexlist','table');" /> 消息</th>
+                        <th>列宽度</th>
+                        <th>关联模板</th>
+                        <th>关联函数</th>
+                        <th>关联关系</th>
+                        <!-- <th><input type="checkbox" onclick="all_select(this,'indexlist');" />是否搜索</th> -->
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <volist id="vo" name="list">
+                        <tr name="fields">
+                        <td>
+                                <div class="list_group_lay dt_setOrder">
+                                    <input type="hidden" name="sortnum[{$key}]" class="list_input js-sortnum" value="{$vo['sortnum']}" size="6"/>
+                                    <a
+									class="" href="javascript:;">
+									<span class="icon-move"></span>
+								</a>
+                                </div>
+                                <span class="info"></span>
+                            </td>
+                            <td><if condition="!empty($vo['areashows'])">{$vo['areashows']}_</if>{$vo['name']}</td>
+                            <td>
+                                <div class="list_group_lay">
+                                    <input class="list_input" type="text" name="showname[{$key}]" value="{$vo['showname']}" />
+                                </div>
+                            </td>
+                            <td>
+                                <div class="list_group_lay">
+                                    <input class="list_input" type="text" name="helpvalue[{$key}]" value="{$vo['helpvalue']}" />
+                                </div>
+                            </td>
+                            <td>
+                                <input type="checkbox" name="shows[{$key}]" value="1" <eq name="vo.shows" value="1">checked</eq> />
+                            </td>
+                            <td><input type="checkbox" name="isexport[{$key}]" value="1" <eq name="vo.isexport" value="1">checked</eq> /></td>
+                            <td><input type="checkbox" name="sorts[{$key}]" value="1" <eq name="vo.sorts" value="1">checked</eq> /></td>
+                            <td><input type="checkbox" name="rules[{$key}]" value="1" <eq name="vo.rules" value="1">checked</eq> /></td>
+                            <td><input type="checkbox" name="message[{$key}]" value="1" <eq name="vo.message" value="1">checked</eq> /></td>
+                            <td>
+                                <div class="list_group_lay">
+                                    <input type="text" class="digits list_input" size="6" name="widths[{$key}]" value="{$vo['widths']}" />
+                                </div>
+                                <span class="info"></span>
+                            </td>
+                            <td>
+                                <div class="list_group_lay">
+                                    <input type="text" class="list_input" name="models[{$key}]" size="15" value="{$vo['models']}" />
+                                </div>
+                                <span class="info"></span>
+                            </td>
+                            <td>
+                                <div class="list_group_lay">
+                                    <input type="text" name="methods[{$key}]" class="list_input" size="15" value="{$vo['methods']}" />
+                                </div>
+                                <span class="info"></span>
+                            </td>
+                            <td>
+                                <div class="list_group_lay">
+                                    <input type="text" name="relation[{$key}]" class="list_input" size="15" value="{$vo['relation']}" />
+                                </div>
+                                <span class="info"></span>
+                            </td>
+                            <!-- <td><input type="checkbox" name="issearch[{$key}]" value="1" <eq name="vo.issearch" value="1">checked</eq> /></td> -->
+                            <td>
+                                <div class="list_group_lay">
+                                    <select class="select2 list_select2" name="status[{$key}]">
+                                        <option <if condition="$vo['status'] gt -1"> selected </if> value="1"> 启用</option>
+                                        <option <eq name="vo.status" value="-1"> selected </eq> value="-1">未启用</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <a class="dynamic_display_list_btn" href="__URL__/linkshow/setmodule/{$model}/key/{$key}" target="navTab">关联配置</a>
+                                <a class="dynamic_display_list_btn" href="__URL__/edit/md/{$model}/key/{$key}" mask="true" target="dialog" mask="true" width="700" height="520" title="编辑配置文件">编辑</a>
+                                <a class="dynamic_display_list_btn" href="__URL__/delete/md/{$model}/key/{$key}/rel/dynamicconfBox" target="ajaxTodo" title="删除配置文件字段">删除</a>
+                             </td>
+                        </tr>
+                    </volist>
+                    </tbody>
+                </table>
+		    </div>
+		</div>
+		<if condition="$sublist">
+			<div class="panelBar">
+				<div class="dynamic_display_title">{$name}明细</div>
+				<div class="dynamic_display_operate">
+					<a class="dynamic_display_operate_btn" href="__URL__/subQuickSearch/model/{$model}" rel="{$model}subQuickSearch" target="dialog" title="检索配置" height="400" width="818">检索配置</a>
+                    <a class="dynamic_display_operate_btn" target="dialog" href="__URL__/lookupRowAccess/setmodule/{$model}/issub/1" rel="__MODULE__rowaccess" width="800" mask="true" height="500">列查看权限</a>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div id="dynamicconftablesub" >
+				<table class="table" id="sublist" width="100%">
+					<thead>
+					<tr>
+						<th>排序</th>
+						<th>字段英文</th>
+						<th>字段中文</th>
+						<th><input type="checkbox" onclick="all_select(this,'sublist','table');" />列显示</th>
+						<th>列权限人员</th>
+						<th><input type="checkbox" onclick="all_select(this,'sublist','table');" />导出</th>
+						<th><input type="checkbox" onclick="all_select(this,'sublist','table');" />列排序</th>
+						<th>列宽度</th>
+						<th>关联列表</th>
+						<th>关联函数</th>
+						<!-- <th><input type="checkbox" onclick="all_select(this,'indexlist');" />是否搜索</th> -->
+						<th>操作</th>
+					</tr>
+					</thead>
+					<tbody>
+					<volist id="vo" name="sublist">
+						<tr name="fields">
+							<td>
+                                <div class="list_group_lay dt_setOrder">
+                                    <input class="list_input js-sortnum" type="hidden" name="subsortnum[{$key}]" value="{$vo['sortnum']}" size="6"/>
+	                                <a
+										class="" href="javascript:;">
+										<span class="icon-move"></span>
+									</a>
+                                </div>
+                                <span class="info"></span>
+                            </td>
+							<td><if condition="!empty($vo['areashows'])">{$vo['areashows']}_</if>{$vo['name']}</td>
+							<td>
+                                <div class="list_group_lay">
+                                    <input class="list_input" type="text" name="subshowname[{$key}]" value="{$vo['showname']}" />
+                                </div>
+                            </td>
+							<td>
+                                <input type="checkbox" name="subshows[{$key}]" value="1" <eq name="vo.shows" value="1">checked</eq> />
+							</td>
+							<td><a href="__URL__/lookupForbidView/issub/1/setmodule/{$model}/key/{$key}" mask="true" target="dialog" rel="quanxian_view">查看</a>
+							<td><input type="checkbox" name="subisexport[{$key}]" value="1" <eq name="vo.subisexport" value="1">checked</eq> /></td>
+							<td><input type="checkbox" name="subsorts[{$key}]" value="1" <eq name="vo.sorts" value="1">checked</eq> /></td>
+							<td>
+                                <div class="list_group_lay">
+                                    <input type="text" class="digits list_input" size="6" name="subwidths[{$key}]" value="{$vo['widths']}" />
+                                </div>
+                                <span class="info"></span>
+                            </td>
+							<td>
+                                <div class="list_group_lay">
+                                    <input class="list_input" type="text" name="submodels[{$key}]" size="15" value="{$vo['models']}" />
+                                </div>
+                                <span class="info"></span>
+                            </td>
+							<td>
+                                <div class="list_group_lay">
+                                    <input class="list_input" type="text" name="submethods[{$key}]" size="15" value="{$vo['methods']}" />
+                                </div>
+                                <span class="info"></span>
+                            </td>
+							<!-- <td><input type="checkbox" name="subissearch[{$key}]" value="1" <eq name="vo.issearch" value="1">checked</eq> /></td> -->
+							<td>
+                                <a class="dynamic_display_list_btn" href="__URL__/linkshow/setmodule/{$model}/key/{$key}/issub/1" target="navTab">配置</a>
+                            </td>
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+		</if>
+		<div class="formBar">
+		<!--<label style="float:left">宽度范例(100):<span style="display:inline-block;background:#000;width:100px;">&nbsp;</span></label>-->
+		<ul>
+			<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="reset">{$Think.lang.reset}</button></li>
+			<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+	
+	
+	
+	
+	</div>
+	
+	
+	
+	
+	
+	</div>
+	
+</form>

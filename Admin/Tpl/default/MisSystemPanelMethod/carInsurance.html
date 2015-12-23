@@ -1,0 +1,28 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="navTab" rel="MisUserEvents" title="车辆保险" href="__APP__/MisCarInsurance/index"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <div id="schedule">
+			          <if condition="$MisCarInsuranceList">
+			<div class="data">
+				<ul>
+					<volist id="MisCarInsuranceListVo" name="MisCarInsuranceList">
+						<li class="clearfix">
+							<a class="clearfix" target="dialog" height="400" width="500"  rel="MisHrBasicEmployeeContract" title="车辆保险记录_编辑" href="__APP__/MisCarInsurance/edit/id/{$MisCarInsuranceListVo.id}"><span class="hellip">{$MisCarInsuranceListVo.carid|getFieldBy='id','name','mis_system_car'}</span>  <em>{$MisCarInsuranceListVo.expire_time|transTime}</em></a>
+						</li>
+					</volist>
+				</ul>
+			</div>
+			<else/>
+			<div class="noData">
+				没有即将到期的车辆保险
+			</div>
+			</if>
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

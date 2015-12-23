@@ -1,0 +1,110 @@
+<script>
+//lookup升级版width自适应
+$(function() {
+	var lookupTotalWidth = $("div.select_top_lay").width(); //获取弹框的总宽度
+	var leftTreeWidth = $("div.stl_left").width(); //获取左边树的宽度
+	$("div.stl_right").css("width",lookupTotalWidth-leftTreeWidth-2); //计算出右边列表的宽度
+	
+	$('.lookup_page_con').removeClass('pageContent');
+})
+
+function createTree(data , treeid){
+	var zNodes =  data;
+	if(isNullorEmpty(zNodes) && isNullorEmpty(treeid)){
+		console.info(zNodes);
+		try{
+			if(typeof(zNodes) == 'string'){
+				zNodes = $.parseJSON(zNodes);
+			}
+			var setting = {
+					view: {
+					   selectedMulti: false,
+					   fontCss: getFontCss
+					},
+					data: {
+						simpleData: {
+							enable: true
+						}
+					}
+				};
+			$.fn.zTree.init($("#"+treeid), setting, zNodes);
+			var height = $("#"+treeid).closest('div.close').outerHeight(true);
+			$("#"+treeid).closest('div.nbm_panel-body').attr('height',height);
+		}catch(e){
+			console.warn(e.message);
+		}
+	}else{
+        $("div.stl_left").width('0');
+    }
+}
+</script>
+<div  id="checkUserObj" class="pageContent">
+		<div class="select_top_lay  not_bottom_lay">
+            <div class="stl_left">
+     <if condition="$treecount">
+            <if condition="$treecount neq 1">
+            <script>
+            $(function(){
+            	var box = navTab.getCurrentPanel();
+            	
+            	$('div.nbmaccordion' ).nbmaccordion();
+            	<volist id="item" name="treedata" >
+            	createTree({$treedata[$key]['data']} , 'lookuo_tree_{$key}');
+            	</volist>
+            	
+            	
+            });
+            
+            </script>
+            <div class="treeleft">
+            <div class="nbmaccordion"   data-option="close:icon-double-angle-down;open:icon-double-angle-up"  layouth="50">
+            <volist id="item" name="treedata" >
+            	<div title="{$treedata[$key]['title']}" >
+					
+						<div class="close">
+							<div class="clearfix p5">
+								<div class="member_searcher"  >
+									<input id="lookuo_tree_search_node_keys_{$key}" class="add_key left" type="text" name="" placeholder="请输入查找词">
+									<button class="btn_member icon-search right enterIndex" type="button" onclick="SearchZTreeNode('lookuo_tree_{$key}','lookuo_tree_search_node_keys_{$key}')"></button>
+								</div>
+							</div>
+							<ul id="lookuo_tree_{$key}" class="ztree" ></ul>
+						</div>
+					
+            	</div>
+            </volist>
+            </div>
+            </div>
+            <else/>
+            <script>
+            $(document).ready(function(){
+            	createTree({$treedata[0]['data']} , 'dynamicconfrowaccess1');
+            });
+            </script>
+            <!-- tree -->
+				<div class="treeleft">
+					<div class="close">
+						<div class="clearfix p5">
+							<div class="member_searcher"  >
+								<input id="misrowaccessrightSearchNodeKeys" class="add_key left" type="text" name="" placeholder="请输入查找词">
+								<button class="btn_member icon-search right enterIndex" type="button" onclick="SearchZTreeNode('dynamicconfrowaccess1','misrowaccessrightSearchNodeKeys')"></button>
+							</div>
+						</div>
+						<ul id="dynamicconfrowaccess1" class="ztree" layoutH="50" ></ul>
+					</div>
+				</div>
+				<!-- tree end -->
+            </if>
+     </if>
+            
+			</div>
+            <div class="stl_right">
+				<!-- content list -->
+				<div id="treelookupcontent" class="positiveBox treeright">
+					<include file="Public:lookupGenerals" />
+				</div>
+				<!-- content list end -->
+			</div>
+        </div>
+		<!-- 选中列表 -->
+</div>

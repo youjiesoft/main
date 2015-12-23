@@ -1,0 +1,30 @@
+
+<script>
+	 $(function(){;
+	 //为左侧栏目导航点击后修改选中状态@nbmxkj 20141009 1629
+		 nbm_getfouce();
+	 });
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+	<div class="close" layoutH="40"  >
+		<div class="work_statement">提醒中心</div>
+			<div class="edit_work_lay"> </div>
+				<div class="tml_divider"></div>
+					<div class="tml_bar_nav">
+						<ul class="bar_nav">
+							<li class="active"><a href="__URL__/index/jump/jump/type/0" target="ajax" rel="MisSystemDataRemindView">未读提醒</a></li>
+							<li  ><a href="__URL__/index/jump/jump/type/1" target="ajax" rel="MisSystemDataRemindView">已读提醒</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="MisSystemDataRemindView" class="unitBox treeright">
+				<include file="indexview" />
+			</div>
+		</div>

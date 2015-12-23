@@ -1,0 +1,49 @@
+<script type="text/javascript">
+//保存所选的人
+function saveSelectUserFlowList(json){
+	var response = json.data;
+	var conditions = json.condition;
+	var connectkey = json.connectkey;
+	// 等待所有script加载完再执行这个代码块
+	pr.fnInit("prcslist",response,conditions,connectkey);
+	$.pdialog.closeCurrent();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupAddOrEditField/rel/ProcessManageBox" class="pageForm required-validate" onsubmit="return validateCallback(this,saveSelectUserFlowList)">
+		<input type="hidden" name="ids" value="{$_REQUEST['ids']}"/><!-- 父级节点ID -->
+		<div class="pageFormContent" layoutH="60">
+			<table class="into_table_new nbm_data_table" table_data='{"searching":false,"addRow":false,"paging":false}' id="indexlist" width="100%">
+				<thead>
+					<tr>
+						<th style="font-weight: 700;">字段英文</th>
+						<th style="font-weight: 700;">字段中文</th>
+						<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'indexlist','nbm_data_table');" />不可编辑</th>
+						<th style="font-weight: 700;"><input type="checkbox" onclick="all_select(this,'indexlist','nbm_data_table');" />不可查看</th>
+					</tr>
+				</thead>
+				<tbody>
+					<volist id="vo" name="detailList">
+						<tr name="fields">
+							<td>{$vo['name']}</td>
+							<td>{$vo['showname']}</td>
+							<td>
+								<input type="checkbox" name="filterWritSetEmpty[{$vo['name']}]" <if condition="in_array($vo['name'],$filterwritsetempty)">checked="checked"</if> value="1" />
+							</td>
+							<td>
+								<input type="checkbox" name="filterReadSetEmpty[{$vo['name']}]" <if condition="in_array($vo['name'],$filterreadsetempty)">checked="checked"</if> value="1"/>
+							</td>
+						</tr>
+					</volist>
+				</tbody>
+			</table>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

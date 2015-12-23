@@ -1,0 +1,45 @@
+<style>
+table.table tbody tr td{height: 30px;}
+.year_1{ font-size:20px; text-align:center; padding-top:5px; }
+</style>
+<FORM method="post" action="__URL__/update/navTabId/__MODULE__"
+    class="pageForm required-validate"
+    onsubmit="return validateCallback(this, navTabAjaxDone)">
+    <input type="hidden" name="callbackType" value="closeCurrent">
+    <div class="grid">
+    	<h1 class="year_1 pageHeader">{$year}年{$month}月  月结详细信息</h1>
+        <div style="font-weight: bold; width: 100%; margin: 0 auto; line-height: ">
+            <table class="table" width="100%" layoutH="84">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>产品编码</th>
+                        <th>期末单价</th>
+                        <th>期末数量</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <volist id="vo" name="monthendList" key="key">
+                    <tr target="month" rel="{$vo['onmonth']}">
+                        <td>{$key}</td>
+                        <td>{$vo['pcode']}</td>
+                        <td>{$vo['price']}</td>
+                        <td>{$vo['qty']}</td>
+                    </tr>
+                </volist>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+                        <button type="button" class="close">{$Think.lang.close}</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</FORM>

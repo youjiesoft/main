@@ -1,0 +1,126 @@
+<div class="page">
+    <div class="pageContent">
+        <div class="panelBar">
+            <ul class="toolBar">
+                <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_myCalendar">
+                    <li>
+                        <a class="add" href="__URL__/myCalendar" rel="__MODULE__myCalendar" target="navTab"   title="我的日历"><span>我的日历</span></a>
+                    </li>
+                </if>
+            </ul>
+            <form onsubmit="return navTabSearch(this);" action="__URL__" method="post">
+                <div class="searchBar">
+                    <table class="searchContent">
+                        <tr>
+                            <include file="Public:quickSearchCondition" />
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+        <div class="clearfix xyTask">
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskFinished">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                    <if condition='$complete NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>任务名</th>
+                                    <th>发布人</th>
+                                    <th>执行难度</th>
+                                    <th>紧急程度</th>
+                                    <th>预计结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="completevo" name="complete" key="key2">
+                                <tr target="sid_node" rel="{$completevo['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="530" dwidth="744" title="任务执行" drel="__MODULE__edit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$completevo.id}");'>
+                                    <td>{$completevo['title']|missubstr=###,15,true}</td>
+                                    <td>{$completevo['createid']|getFieldBy='id','name','user'}</td>
+                                    <td>{$completevo['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+                                    <td <if condition="$completevo['urgentstatus'] eq 1">class="levelGreen"</if><if condition="$completevo['urgentstatus'] eq 2">class="levelOrange"</if><if condition="$completevo['urgentstatus'] eq 3">class="levelRed"</if>></td>
+                                    <td>{$completevo['realityenddate']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskDoing">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                    <if condition='$doing NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>任务名</th>
+                                    <th>发布人</th>
+                                    <th>执行难度</th>
+                                    <th>紧急程度</th>
+                                    <th>预计结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="doing" name="doing"  key="key3">
+                                <tr target="sid_node" rel="{$complete['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="530" dwidth="744" title="任务执行" drel="__MODULE__edit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$doing.id}");'>
+                                    <td>{$doing['title']|missubstr=###,15,true}</td>
+                                    <td>{$doing['createid']|getFieldBy='id','name','user'}</td>
+                                    <td>{$doing['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+                                    <td <if condition="$doing['urgentstatus'] eq 1">class="levelGreen"</if><if condition="$doing['urgentstatus'] eq 2">class="levelOrange"</if><if condition="$doing['urgentstatus'] eq 3">class="levelRed"</if>></td>
+                                    <td>{$doing['enddate']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskUncompleted">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                    <if condition='$uncomplete NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>任务名</th>
+                                    <th>发布人</th>
+                                    <th>执行难度</th>
+                                    <th>紧急程度</th>
+                                    <th>预计结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="uncomplete" name="uncomplete" key="key1">
+                                <tr target="sid_node" rel="{$complete['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="530" dwidth="744" title="任务执行" drel="__MODULE__edit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$uncomplete.id}");'>
+                                    <td>{$uncomplete['title']|missubstr=###,15,true}</td>
+                                    <td>{$uncomplete['createid']|getFieldBy='id','name','user'}</td>
+                                    <td>{$uncomplete['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+                                    <td <if condition="$uncomplete['urgentstatus'] eq 1">class="levelGreen"</if><if condition="$uncomplete['urgentstatus'] eq 2">class="levelOrange"</if><if condition="$uncomplete['urgentstatus'] eq 3">class="levelRed"</if>></td>
+                                    <td>{$uncomplete['enddate']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

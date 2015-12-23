@@ -1,0 +1,378 @@
+<style>
+.nbmui_checkbox{cursor:pointer}
+</style>
+<script type="text/javascript">
+var $box=$.pdialog.getCurrent();
+var navbox = navTab.getCurrentPanel();
+function changeorganization(obj){
+	$val = $(obj).val();
+	if($val=='name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索姓名");
+	}
+	if($val=='mis_system_department-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索部门");
+	}
+	if($val=='duty-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职位");
+	}
+	if($val=='all'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索员工姓名,部门,职位,职务");
+	}
+}
+
+
+var container = $('ul.selected_member' , $box);
+
+// lookup组件的JS通用初始化操作。
+// 当前显示方式为数据为列表，可多选单选、切换。
+var lookupControll={
+	init	:	function(){
+		var obj = this.get();
+		obj.find('input[type="checkbox"]').each(function(){
+			$(this).hide();
+			var cls = $(this).attr('class');
+			var cloneObj = $('<span class="nbmui_checkbox icon-check-empty"></span>');
+			cloneObj.addClass(cls);
+			$(this).after(cloneObj);
+		});
+	},
+	get 	:	function(){
+		//	获取当前操作容器
+		return $.pdialog.getCurrent();
+	},
+	getC	:	function(rule){
+		//	获取当前的选中值显示区域
+		return  rule?$(rule , this.get()) : $('ul.selected_member' , this.get());
+	},
+	setCheckAll	:	function(rule){
+		var _this = this;
+		// 绑定全选功能
+		var obj = rule ? $(rule , this.get()) : $("table.tml_set_table .checkboxControll" , this.get());
+		var group = obj.attr('group') || '';
+		if(group){
+			obj.on('click' , function(){
+				if($(this).hasClass('icon-check-empty')){
+					$(this).addClass('icon-check');
+					$(this).removeClass('icon-check-empty');
+				}else{
+					$(this).removeClass('icon-check');
+					$(this).addClass('icon-check-empty');
+				}
+				
+				
+				var p = $(this).closest('table');
+				var selfSts = $(this).hasClass('icon-check-empty')? true : false;
+				// selfSts = true  勾取所有数据
+				if(!selfSts){
+					$('span.nbm_lookupup_value_item',_this.get()).each(function(i){
+						if(!$(this).hasClass('selected')){
+							$(this).click();
+						}
+					});
+				}else{
+					// 取消已选中的数据
+					$('span.nbm_lookupup_value_item',_this.get()).each(function(j){
+						if($(this).hasClass('selected')){
+							$(this).trigger("click");
+						}
+					});
+					
+					
+				}
+			});
+		}
+		
+	},
+	ceilCheck	:	function(rule){
+		var _this = this;
+		var obj = rule ? $(rule , this.get()) : $(".nbm_lookupup_value_item" , this.get());
+		var c = this.getC();
+		
+		obj.toggle(
+		  function(){
+			$(this).addClass('selected');
+		  },
+		  function(){
+			$(this).removeClass('selected');
+		  }
+		);
+			
+		obj.on('click' , function(){
+			var sts = $(this).hasClass('selected');
+			if(sts == true){
+				//$(this).closest('tr').addClass('selected');
+				$(this).removeClass('icon-check-empty');
+				$(this).addClass('icon-check');
+				$(this).parents("tr").css("background-color","#03a9f4");
+				var curVal = $(this).prev('input.nbm_lookupup_value_item').val();
+				if(isNullorEmpty(curVal)){
+					var json =new Object();
+					try{
+						curVal= curVal.replace(/\s/ig,'');
+						json = $.parseJSON(curVal);
+					}catch(e){
+						console.log(e.message);
+					}
+					if(c.find('li.nbm_lookup_checked_'+json.userid).length == 0){
+					
+						var html ='<li class="selected_box nbm_lookup_checked nbm_lookup_checked_'+json.userid+'" data-item=\''+curVal+'\'>';
+						html +='<span class="member_name left">'+json.name+'</span>';
+						html +='<span class="selected_tool user_remove nbmui_checkbox_removelceil right">×</span>';//-- icon-remove 
+						html +='</li>';
+						c.append(html);
+					}
+				}
+			}else{
+				var curVal = $(this).prev('input.nbm_lookupup_value_item').val();
+				$(this).addClass('icon-check-empty');
+				$(this).removeClass('icon-check');
+				$(this).parents("tr").css("background-color","");
+				if(isNullorEmpty(curVal)){
+					var json =new Object();
+					try{
+						curVal= curVal.replace(/\s/ig,'');
+						json = $.parseJSON(curVal);
+					}catch(e){
+						console.log(e.message);
+					}
+					c.find('li.nbm_lookup_checked_'+json.userid).remove();
+				}
+			}
+			_this.removeCeil();
+		});
+	},
+	removeCeil	:	function(rule){
+		//	移除具体项
+		var obj = rule ? $(rule , this.get()) : $(".nbmui_checkbox_removelceil" , this.getC());
+		obj.on('click' , function(){
+			var removeObj = $(this).closest('li');
+			var vals = removeObj.data('item');
+			$('input.nbm_lookupup_value_item[data-indentity="'+vals.userid+'"]').next('span.nbmui_checkbox').click();
+		});
+	}
+}
+function goSetCheck(){
+	if($(".user_selected_ul li").length){
+		$(".user_selected_ul li").each(function(){
+			var userid = $(this).data().item.userid;
+			var this_obj = $(this);
+			$("input.nbm_lookupup_value_item").each(function(){
+				if(userid.toString()==$(this).data().indentity.toString()){
+					this_obj.remove();
+					$(this).siblings("span").trigger("click");
+				}
+			});
+		});
+	}
+}
+
+$(function(){
+	lookupControll.init();
+	lookupControll.setCheckAll('.checkboxControll');
+	lookupControll.ceilCheck();
+	goSetCheck();
+	$("table.tml_set_table input.checkboxControll" , $box).off('click');
+	$("table.tml_set_table input.checkboxControll" , $box).on('click' , function(){
+		var group = $(this).attr('group') || '';
+		var p = $(this).closest('table');
+		var selfSts = $(this).attr('checked')=='checked'? true : false;
+		var cobj = p.find('input[name="'+group+'"]');
+		cobj.attr('checked' , selfSts);
+		
+		return;
+		selfSts == true? 
+		p.find('input[name="'+group+'"]').each(function(){
+			var obj = $(this);
+			var sts = obj.attr('checked')=='checked'? true : false;
+			if(sts == false){
+				obj.trigger('click');
+			}
+		})
+		:
+		p.find('input[name="'+group+'"]').each(function(){
+			var obj = $(this);
+			obj.trigger('click');
+			console.log(' event is start fasle');
+		});
+	});
+	$("table.tml_set_table input.nbm_lookupup_value_item" , $box).each(function(k , v ){
+		$(this).off('click');
+		$(this).on("click",function(e){
+			var sts = $(this).attr('checked')=='checked'? true : false;
+			if(sts == true){
+				$(this).closest('tr').addClass('selected');
+				var curVal = $(this).val();
+				curVal= curVal.replace(/\s/ig,'');
+				var json =new Object();
+				try{
+					json = $.parseJSON(curVal);
+				}catch(e){
+					console.log(e.message);
+				}
+				if(container.find('li.nbm_lookup_checked_'+json.userid).length == 0){
+				
+					var html ='<li class="selected_box nbm_lookup_checked nbm_lookup_checked_'+json.userid+'" data-item=\''+curVal+'\'>';
+					html +='<span class="member_name left">'+json.name+'</span>';
+					html +='<span class="selected_tool user_remove right">×</span>';//-- icon-remove 
+					html +='</li>';
+					container.append(html);
+				}
+			}else{
+				var curVal = $(this).val();
+				curVal= curVal.replace(/\s/ig,'');
+				var json =new Object();
+				try{
+					json = $.parseJSON(curVal);
+				}catch(e){
+					console.log(e.message);
+				}
+				container.find('li.nbm_lookup_checked_'+json.userid).remove();
+				$(this).closest('tr').removeClass('selected');
+			}
+		});
+	});
+	
+	$("button.nbm_btn_lookup_clear" , $box).off('click');
+	$("button.nbm_btn_lookup_clear" , $box).on('click' , function(){
+		$(".user_selected_ul li", $box).remove();
+		$(".pagination li.selected a", $box).click();
+	});
+	
+	$("button.nbm_btn_lookup_save" , $box).off('click');
+	$("button.nbm_btn_lookup_save" , $box).on('click' , function(){
+		var arr = new Array();
+		$(".user_selected_ul li", $box).each(function(){
+			arr.push($(this).data().item);
+		});
+		
+	/* 	var val = "";
+		var hideVal ="";
+		$(".MisHrBecomeEmployeelist").find("input[type='checkbox']").each(function(){ 
+			if($(this).attr("checked")=='checked'){
+				var result= DWZ.jsonEval($(this).attr('value'));
+				hideVal += ',' +result.id;
+				val += ","+result.name;
+			}
+		});
+		if(isNullorEmpty(val) && isNullorEmpty(hideVal)){
+			val = val.substring(1);
+			hideVal = hideVal.substring(1);
+			var html = '<input type="hidden" name="userobjStr" value="'+hideVal+'"/>'+val;
+			$("#userobjStr1").html(html);
+			$.pdialog.closeCurrent();
+		}else{
+			alertMsg.error("请选择人员");
+		} */
+		
+		
+		if(arr.length){
+			var newarr = [];
+			for(var i=0; i<arr.length; i++){
+				for(var key in arr[i]){
+					if(!newarr[key]){
+						newarr[key] = new Array();
+					}
+					newarr[key].push(arr[i][key]);
+				}
+			}
+			if(newarr){
+				for(var key in newarr){
+					newarr[key] = newarr[key].join(",");
+				}
+			}
+			hideVal=newarr['userid'];
+			val=newarr['name'];
+			
+			//判断是否有参数传入
+			var fengzhuangbianhao ="{$fengzhuangbianhao}"; 
+			if(fengzhuangbianhao == ""){
+				var html = '<input type="hidden" name="userobjStr" value="'+hideVal+'"/>'+val;
+				$("#userobjStr1").html(html);
+			}else{
+				var html = '<input type="hidden" name="userobjStr'+fengzhuangbianhao+'" value="'+hideVal+'"/>'+val;
+				$("#userobjStr"+fengzhuangbianhao).html(html);
+			}
+			
+			$.bringBack(newarr);
+			$.pdialog.closeCurrent();
+		}else{
+			alertMsg.error('请选择人员');
+			$.pdialog.closeCurrent();
+		}
+	});
+});
+
+</script>
+<style>
+.tbodylist tr.selected {
+    background-color: royalblue;
+}
+</style>
+<div style="width:100%;">
+<form id="pagerForm" action="__URL__/lookupGetUser" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'lookupGetUserProcess');" action="__URL__/lookupGetUser" method="post">
+		<input type="hidden" name="fengzhuangbianhao" value="{$fengzhuangbianhao}">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<input type="hidden" name="companyid" value="{$companyid}">
+		<input type="hidden" name="step" value="{$step}">
+		<div class="searchBar">
+		<table class="searchContent">
+			<tr>
+				<td class="tml_select_option_left">
+					<select class="combox searchby"  onchange="changeorganization(this)"   name="searchby" >
+						 <option value="all" <if condition="$searchby eq 'all'">selected="selected"</if>>全部</option>
+						 <option value="name" <if condition="$searchby eq 'name'">selected="selected"</if>>姓名</option>
+						 <option value="mis_system_department-name" <if condition="$searchby eq 'mis_system_department-name'">selected="selected"</if>>部门</option>
+						  <option value="duty-name" <if condition="$searchby eq 'duty-name'">selected="selected"</if>>职位</option>
+					</select>
+				</td>
+				<td class="tml_select_option_center">
+					<input type="text" <if condition="$placeholder">placeholder="{$placeholder}"<else/>placeholder="搜索员工姓名,部门,职位"</if>  class="keyword" name="keyword"  value="{$keyword}" />
+				</td>
+				<td class="tml_select_option_right">
+					<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+				</td>
+			</tr>
+		</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="tml_set_table" style="width: 100%" layoutH="220">
+		<thead>
+			<tr>
+			<th width="20">
+			<input type="checkbox" class="checkboxControll" group="userid" /></th>
+				<th>员工姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+			</tr>
+		</thead>
+		<tbody class="tbodylist">
+			<volist id="vo" name="list">
+				<tr>
+				<td>
+				<input data-indentity="{$vo[userid]}" class="nbm_lookupup_value_item" type="checkbox" name="userid" value='{ "userid" : " {$vo[userid]} ","name":"{$vo.name}"}' /></td>
+					<td>{$vo['name']}</td>
+					<td>{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo['dutyid']|getFieldBy='id','name','duty'}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="lookupGetUserProcess" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+	
+</div>
+</div>

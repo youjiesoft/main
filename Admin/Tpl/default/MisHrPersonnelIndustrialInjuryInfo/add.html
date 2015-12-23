@@ -1,0 +1,435 @@
+<script>
+	//记算值
+	function getRateValue(){
+		var $box=navTab.getCurrentPanel();
+		//表单数据值
+		var sumcostV= $box.find("[name='sumcost']").val();
+		var sumcost=Number(sumcostV.replace(/,/g,""));
+		
+		var bxcostV = $box.find("[name='bxcost']").val();
+		var bxcost=Number(bxcostV.replace(/,/g,""));
+		
+		var businesscostV = $box.find("[name='businesscost']").val();
+		var businesscost=Number(businesscostV.replace(/,/g,""));
+		
+		var thirdpayV = $box.find("[name='thirdpay']").val();
+		var thirdpay=Number(thirdpayV.replace(/,/g,""));
+
+		var persioncostV = $box.find("[name='persioncost']").val();
+		var persioncost=Number(persioncostV.replace(/,/g,""));				
+
+		/* 付值 */
+		var resultstr = sumcost+"-"+bxcost+"-"+businesscost+"-"+thirdpay+"-"+persioncost;
+		var addResultFinal = comboxMathematicalOperation(resultstr,2);
+		$box.find("[name='companycost']").val(addResultFinal);
+	}
+</script>
+<div class="page">
+<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+	<div class="pageContent">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+				<div class="keepContentCenter form-affix-content">
+					<div class="contentTitle contentTitle_center form-affix-title">工伤信息录入</div>
+					<fieldset class="side-catalog-anchor" >
+                       <legend class="fieldset_legend_toggle side-catalog-firstanchor side-catalog-text">
+                           <b>一、伤者基本情况</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                       </legend>
+					   <div class="tml-row">
+							<div class="tml-form-col">
+								<label>工伤编号：</label>
+								<input type="text"  name="orderno" value="{$orderno}" class="required alphanumeric textInput" <if condition='$writable eq 0'> readonly="readonly" </if> maxlength="25"  />
+							</div>
+							  <!--  <p>
+								<label>报案号：</label>
+								<input  type="text" name="reportcode" class="" value="{$vo['reportcode']}">
+							</p> -->
+							<div class="tml-form-col">
+								<label>伤者姓名：</label>
+								<input  type="text" name="name" class="required" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>伤者部门：</label>
+								<select class="combox" name="depaid">
+									{$deptidlist}
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>伤者岗位：</label>
+								<input  type="text" name="duty" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>入职日期：</label>
+								<span class="xyInputWithUnit">
+									<input type="text" class="Wdate js-wdate" name="indate">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>身份证：</label>
+								<input  type="text" name="chinaid" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>家庭住址：</label>
+								<input  type="text" name="address" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>联系电话：</label>
+								<input  type="text" name="phone" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>工地联系人：</label>
+								<input  type="text" name="linkmin" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>联系人电话：</label>
+								<input  type="text" name="linktel" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>所属工地：</label>
+								<input  type="text" name="projectid" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>事故性质</label>
+								<select name="accidenttype" class="combox">
+									<option value="0">请选择</option>
+									<option value="自我损伤">自我损伤</option>
+									<option value="车辆损伤">车辆损伤</option>
+									<option value="其他损伤">其他损伤</option>
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>事故时间：</label>
+								<span class="xyInputWithUnit">
+									<input type="text"  class="Wdate required js-wdate" format="{dateFmt:'yyyy-MM-dd HH:mm'}" name="accidenttime" >
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>事故路段：</label>
+								<input  type="text" name="accidentway" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>事故见证人：</label>
+								<input  type="text" name="eyewitness" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>伤害部位：</label>
+								<input  type="text" name="hurtpart" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>伤势情况：</label>
+								<select name="hurtcondition" class="combox">
+									<option value="0">请选择</option>
+									{:getSelectByHtml('hurtcondition')}
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>地理区域：</label>
+								<select name="hurtdistrict" class="combox">
+									<option value="0">请选择</option>
+									<volist name="MSSlist" id="MSSlistvo">
+										<option value="{$MSSlistvo.id}">{$MSSlistvo.name}</option>
+									</volist>
+								</select>
+							</div>
+						</div>
+							<div class="tml-form-row">
+								<label>首次就医地点：</label>
+								<input  type="text" name="firstinfirmary" class="" value="">
+							</div>
+							<div class="tml-form-row">
+								<label>转诊就医地点1：</label>
+								<input  type="text" name="referralone" class="" value="">
+							</div>
+	<!--
+							<p>
+								<label>转诊就医地点2：</label>
+								<input  type="text" name="referraltwo" class="" value="">
+							</p>
+	-->
+                   	</fieldset>
+                    <fieldset class="side-catalog-anchor">
+                       <legend class="fieldset_legend_toggle side-catalog-text">
+                           <b>二、事故简要经过</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                       </legend>
+					<div class="tml-form-row">
+						<label>事故简要经过：</label>
+						<textarea name="accidentpass" maxlength="200" rows="4"></textarea>
+					</div>
+                   	</fieldset>
+                    <fieldset class="side-catalog-anchor">
+                       <legend class="fieldset_legend_toggle side-catalog-text">
+                           <b>三、事故处理情况</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                       </legend>
+					   <div class="tml-row">
+						   <div class="tml-form-col">
+								<label>工地上报时间：</label>
+								<span class="xyInputWithUnit">
+									<input type="text" class="Wdate js-wdate" name="prosubdate" value="">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>申报工伤截止日期：</label>
+								<span class="xyInputWithUnit">
+									<input type="text" class="Wdate js-wdate" name="reportcutdate" value="">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>资料备齐时间：</label>
+								<span class="xyInputWithUnit">
+									<input type="text" class="Wdate js-wdate" name="databjdate" value="">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>报工伤情况：</label>
+								<select name="reportinfo" class="combox">
+									<option value="0">请选择</option>
+									<option value="是">是</option>
+									<option value="否">否</option>
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>工伤认定：</label>
+								<select name="reportmaintain" class="combox">
+									<option value="0">请选择</option>
+									<option value="是">是</option>
+									<option value="非">非</option>
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>商保报案：</label>
+								<select name="elcomercioreport" class="combox">
+									<option value="0">请选择</option>
+									<option value="是">是</option>
+									<option value="否">否</option>
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>商保报案号：</label>
+								<input type="text" name="elcomercioreportcode" class="" value="">
+							</div>
+							<div class="tml-form-col">
+								<label>处理阶段：</label>
+								<select name="disposestage" class="combox">
+									<option value="0">请选择</option>
+									{:getSelectByHtml('disposestage')}
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>完结时间：</label>
+								<span class="xyInputWithUnit">
+									<input type="text" class="Wdate js-wdate" name="enddate" value="">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+						</div>
+                   	</fieldset>
+                    <fieldset class="side-catalog-anchor">
+                       <legend class="fieldset_legend_toggle side-catalog-text">
+                           <b>四、医疗待遇申报情况</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                       </legend>
+					   <div class="tml-row">
+						   <div class="tml-form-col">
+							<label>共计医疗费用：</label>
+							<span class="xyInputWithUnit">
+							<input  type="text" name="sumcost" onblur="getRateValue(),FormatNumber(this);" class="number TextMagnifier-money" value="">
+							<span class="input-addon-unit " title="元">元</span>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>社保报销：</label>
+							<span class="xyInputWithUnit">
+							<input  type="text" name="bxcost" class="number TextMagnifier-money" onblur="getRateValue(),FormatNumber(this);" value="">
+							<span class="input-addon-unit " title="元">元</span>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>商保报销：</label>
+							<span class="xyInputWithUnit">
+							<input  type="text" name="businesscost" class="number TextMagnifier-money" onblur="getRateValue(),FormatNumber(this);" value="">
+							<span class="input-addon-unit " title="元">元</span>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>第三责任支付：</label>
+							<span class="xyInputWithUnit">
+								<input type="text" name="thirdpay" class="number TextMagnifier-money" onblur="getRateValue(),FormatNumber(this);" value="">
+								<span class="input-addon-unit " title="元">元</span>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>员工支付：</label>
+							<span class="xyInputWithUnit">
+							<input  type="text" name="persioncost"  onblur="getRateValue(),FormatNumber(this);"  class="number TextMagnifier-money" value="">
+							<span class="input-addon-unit " title="元">元</span>
+							</span>
+						</div>					
+						<div class="tml-form-col">
+							<label>公司支付：</label>
+							<span class="xyInputWithUnit">
+							<input  type="text" name="companycost" class="number TextMagnifier-money" onblur="getRateValue(),FormatNumber(this);" value="">
+							<span class="input-addon-unit " title="元">元</span>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>保险公司：</label>
+							<select name="bxcompany" class="combox">
+								<option value="0">请选择</option>
+								<option value="人民财产保险公司">人民财产保险公司</option>
+								<option value="太平洋保险公司">太平洋保险公司</option>
+							</select>
+						</div>					
+						<div class="tml-form-col">
+							<label>社保申报时间：</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="Wdate js-wdate"  name="socialsecurity" value="">
+								<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>社保到账时间：</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="Wdate js-wdate" size="18"  name="collecteddate" value="">
+								<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>商保申报时间：</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="Wdate js-wdate" name="businestime" value="">
+								<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>商保到账时间：</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="Wdate js-wdate" name="businescolltime" value="">
+								<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+							</span>
+						</div>
+	<!--
+						<p>
+							<label>财务到账确认：</label>
+							<input  type="text" name="financeok" class="textInput" value="{$vo['financeok']}">
+						</p>
+	-->
+						</div>
+                  	</fieldset>
+                    <fieldset class="side-catalog-anchor">
+                       <legend class="fieldset_legend_toggle side-catalog-text">
+                           <b>五、伤残情况</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                       </legend>
+					   <div class="tml-row">
+							<div class="tml-form-col">
+								<label>伤残鉴定：</label>
+								<select name="maimidentify" class="combox">
+									<option value="0">请选择</option>
+									<option value="是">是</option>
+									<option value="否">否</option>
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>工伤评级：</label>
+								<select name="manmlevel" class="combox">
+									<option value="无">无</option>
+									<option value="因工死亡">因工死亡</option>
+									<option value="非因工死亡">非因工死亡</option>
+									<option value="一级伤残">一级伤残</option>
+									<option value="二级伤残">二级伤残</option>
+									<option value="三级伤残">三级伤残</option>
+									<option value="四级伤残">四级伤残</option>
+									<option value="五级伤残">五级伤残</option>
+									<option value="六级伤残">六级伤残</option>
+									<option value="七级伤残">七级伤残</option>
+									<option value="八级伤残">八级伤残</option>
+									<option value="九级伤残">九级伤残</option>
+									<option value="十级伤残">十级伤残</option>
+								</select>
+							</div>
+							<div class="tml-form-col">
+								<label>司法评级：</label>
+								<select name="roadlevel" class="combox">
+									<option value="无">无</option>
+									<option value="一级伤残">一级伤残</option>
+									<option value="二级伤残">二级伤残</option>
+									<option value="三级伤残">三级伤残</option>
+									<option value="四级伤残">四级伤残</option>
+									<option value="五级伤残">五级伤残</option>
+									<option value="六级伤残">六级伤残</option>
+									<option value="七级伤残">七级伤残</option>
+									<option value="八级伤残">八级伤残</option>
+									<option value="九级伤残">九级伤残</option>
+									<option value="十级伤残">十级伤残</option>
+								</select>
+							</div>					
+							<div class="tml-form-col">
+								<label>社保理赔：</label>
+								<span class="xyInputWithUnit">
+								<input type="text" name="socialselipei" onblur="FormatNumber(this);" class="number TextMagnifier-money" value="">
+								<span class="input-addon-unit " title="元">元</span>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>商保理赔：</label>
+								<span class="xyInputWithUnit">
+								<input  type="text" name="busineslipei" onblur="FormatNumber(this);" class="number TextMagnifier-money" value="">
+								<span class="input-addon-unit " title="元">元</span>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>商保理赔时间：</label>
+								<span class="xyInputWithUnit">
+									<input type="text" class="Wdate js-wdate" name="busineslipeitime" value="">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+							<div class="tml-form-col">
+								<label>公司理赔：</label>
+								<span class="xyInputWithUnit">
+								<input  type="text" name="companylipei" onblur="FormatNumber(this);" class="number TextMagnifier-money" value="">
+								<span class="input-addon-unit " title="元">元</span>
+								</span>
+							</div>			
+							<div class="tml-form-col">
+								<label>公司理赔时间：</label>
+								<span class="xyInputWithUnit">
+									<input type="text" class="Wdate js-wdate" name="companylipeitime" value="">
+									<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+								</span>
+							</div>
+						</div>
+                   	</fieldset>
+                    <fieldset class="side-catalog-anchor">
+                        <legend class="fieldset_legend_toggle side-catalog-text">
+                            <b>六、备注</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                        </legend>
+                        <div class="tml-form-row">
+							<label>备注：</label>
+							<textarea name="remark" maxlength="200" rows="5"></textarea>
+						</div>
+                    </fieldset>
+                    <fieldset class="side-catalog-anchor">
+                       <legend class="fieldset_legend_toggle side-catalog-text">
+                           <b>制单信息</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                       </legend>
+					   <div class="tml-row">
+							<div class="tml-form-col">
+								<label>制单人：</label>
+								<input  type="text"  readonly="readonly" class="textInput" value="{$userid|getFieldBy='id','name','User'}">
+							</div>
+							<div class="tml-form-col">
+								<label>制单时间：</label>
+								<input  type="text" readonly="readonly" class="textInput" value="{$nowtime|date='Y-m-d',###}">
+							</div>
+						</div>
+                   </fieldset>
+	 {:W('ShowAction')}
+				</div>
+			</div>
+	</div>
+</form>
+</div>

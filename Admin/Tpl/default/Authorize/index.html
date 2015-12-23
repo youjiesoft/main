@@ -1,0 +1,40 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$ztree};    //控制器中，分配数据
+		var setting = {
+				view: {
+	               selectedMulti: false,
+	               fontCss: getFontCss
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+		var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+		var valid='{$check}';
+		var nodes = treeObj.getNodesByParam("id", 2, null);
+		treeObj.selectNode(nodes[0]);
+	});
+</script>
+
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+<div class="treeleft">
+<div class="work_statement"></div>
+		<div class="close">
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="AuthorizeUserSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('treeDemo','AuthorizeUserSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="treeDemo" class="ztree" layoutH="148"></ul>
+		</div>
+	</div>
+	<div id="abc" class="unitBox treeright">
+		<include file="AuthorizeUser"  />
+	</div>
+</div>

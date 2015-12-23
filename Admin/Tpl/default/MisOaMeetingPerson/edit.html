@@ -1,0 +1,106 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="iseditor" value="1">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<input type="hidden" name="stepType" value="0"/>
+		<div class="pageFormContent applecloth" layoutH="55">
+			<div class="keepContentCenter form-affix-content">
+				<H2 class="contentTitle contentTitle_center form-affix-title">
+					会议信息
+					<span class="auto_code">
+						<b>No. </b>
+						<input type="text" name="orderno" value="{$vo.orderno}" <if condition='$writable eq 0'> readonly="readonly" class="xycodedata_read" <else/> class="xycodedata_write required alphanumeric" </if> />
+					</span>
+				</H2>
+				<fieldset class="zlqk_1">
+					<legend class="fieldset_legend_toggle">
+						<b>基本信息</b>
+					</legend>
+					<if condition='$fields["name"]'>
+					<div class="tml-form-row">
+						<label>{$fields["name"]}：</label>
+						<input type="text" name="name" readonly="readonly" class="required textInput" value="{$vo['name']}"/>
+					</div>
+					</if>
+					<div class="tml-row">
+						<if condition='$fields["personname"]'>
+						<div class="tml-form-col">
+							<label>{$fields["personname"]}：</label>
+							<input type="text" name="personname" readonly="readonly" class="required textInput" value="{$vo['personname']}"/>
+						</div>
+						</if>
+						<if condition='$fields["typename"]'>
+						<div class="tml-form-col">
+							<label>{$fields["typename"]}：</label>
+							<input type="text" name="typename" readonly="readonly" class="textInput" value="{$vo['typename']}"/>
+						</div>
+						</if>
+						<if condition='$fields["starttime"]'>
+							<div class="tml-form-col">
+								<label>{$fields["starttime"]}：</label>
+								<div class="tml-input-append">
+									<input type="text" readonly="readonly" name="starttime" value="{$vo.starttime|transTime=###,'Y-m-d H:i'}" format="{dateFmt:'yyyy-MM-dd HH:mm'}"/>
+		                        	<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+		                        </div>
+							</div>
+						</if>
+						<if condition='$fields["endtime"]'>
+							<div class="tml-form-col">
+								<label>{$fields["endtime"]}：</label>
+								<div class="tml-input-append">
+									<input type="text" readonly="readonly" name="endtime" value="{$vo.endtime|transTime=###,'Y-m-d H:i'}" format="{dateFmt:'yyyy-MM-dd HH:mm'}"/>
+		                        	<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+		                        </div>
+							</div>
+						</if>
+						<div class="tml-form-col">
+							<label>会议纪要人</label>
+							<input type="text" readonly="readonly" name="summaryname" value="{$vo.summaryname}"/>
+						</div>
+					</div>
+					<div class="tml-form-row">
+	                    <label>查阅人：</label>
+	                    <ul id="misworkplan_one_edit" class="addressee left checkTo" style="width:563px;">
+		                    <volist name="joinpeople" id="pvo">
+			                    <li>
+									<input type="hidden" value="{$pvo|getfieldby='id','name','user'}" name="lookpeoplename[]">
+									<span>{$pvo|getfieldby='id','name','user'}</span>
+									<input type="hidden" value="{$pvo}" name="lookpeople[]">
+								</li>
+							</volist>
+						</ul>
+						<a class="input-addon input-addon-addon input-addon-userplus" href="javascript:;">查找带回</a>
+						<a class="input-addon input-addon-recycle" href="javascript:;"></a>
+	                </div>
+					<if condition='$fields["address"]'>
+						<div class="tml-form-row">
+							<label>{$fields["address"]}：</label>
+							<input type="text" name="address" readonly="readonly" class="required textInput" value="{$vo['address']}"/>
+						</div>
+					</if>
+					<if condition='$fields["content"]'>
+						<div class="tml-form-row">
+							<label>{$fields["content"]}：</label>
+							<textarea style="width: 624px; height: 200px" readonly="readonly" name="content" class="ueditor" readonly="readonly">{$vo['content']}</textarea>
+						</div>
+					</if>
+					<div class="tml-form-row"><!--此处为上传列表-->
+						<label title="上传附件">上传附件：</label>
+						<span id="swfupload_misworkplan_edit-queue" class="info uploadify_queue">
+							<if condition="$attarry">
+								<volist name="attarry" id="att">
+									<div class="uploadify-queue-item">
+										<span class="fileName"><a href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank">{$att['upname']}</a></span>
+										<a  class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="tml-icon tml-icon-file"></span><span class="tml-icon-text">归档</span></a>
+									</div>											 
+								</volist>
+							</if>
+						</span>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

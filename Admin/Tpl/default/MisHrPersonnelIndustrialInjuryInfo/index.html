@@ -1,0 +1,45 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisHrPersonnelIndustrialInjuryInfotree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("MisHrPersonnelIndustrialInjuryInfotree");
+	var valid = '全部';
+    var nodes = zTree.getNodesByParam("name", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div>
+            <ul class="toolBar">
+            </ul></div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="MisHrPersonnelIndustrialInjuryInfoNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('MisHrPersonnelIndustrialInjuryInfotree','MisHrPersonnelIndustrialInjuryInfoNodeKeys')">搜索</button>
+				</div>
+			</div>
+			<ul id="MisHrPersonnelIndustrialInjuryInfotree" class="ztree" layoutH="43"></ul>
+		</div>
+	</div>
+	<div id="MisHrPersonnelIndustrialInjuryInfoBox" class="treeright">
+		<include file="indexview"/>
+	</div>
+</div>

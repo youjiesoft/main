@@ -1,0 +1,57 @@
+<style>
+.userul{margin-left: 50px;}
+.userul >li{float:left;width:100px;}
+</style>
+<script>
+function nowchecked(id){
+	var ifture = false;
+	$("#"+id+" input").each(function(i) {
+		if(i==0) {
+			if($(this).attr("checked")) {
+				ifture = true;
+			}
+		} else {
+			if(ifture){
+				$(this).attr("checked", true);
+			} else {
+				$(this).attr("checked", false);
+			}
+		}
+
+    });
+}
+function subCheck(id){
+	var allTrue = false;
+	$("#"+id+" input").each(function(i) {
+		if(i>0){
+			allTrue += $(this).attr("checked");
+		}
+    });
+    if(allTrue){
+    	$("#"+id+" .parentCls").attr("checked", true);
+    }else{
+    	$("#"+id+" .parentCls").attr("checked", false);
+    }
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/setPerson/jump/1/rel/mishrevaluationtrainmodel" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+        <input type="hidden" class="textInput" name="trainid" value="{$trainid}"/>
+        <div class="pageFormContent" layoutH="65">
+            <div class="unit">
+            	<label>节点授权：</label>
+            </div>
+            <div id="processuser" >
+                <div style="clear:both"></div>
+                <div class="testDiv">
+                {$str}
+                </div>
+            </div>
+			<div class="unit">
+				<label>备注：</label>
+				<textarea name="remark" class="textInput" rows="2" cols="50">{$vo.remark}</textarea>
+			</div>
+		</div>
+		 {:W('ShowAction')}
+	</form>
+</div>

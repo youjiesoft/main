@@ -1,0 +1,62 @@
+<script type="text/javascript">
+    function misSystemDBInitIndexAdd(){
+        var $box=navTab.getCurrentPanel();
+        var html = '<li class="DBInitchosave-li">\
+                        <div>\
+                            <input style="width:160px;" type="text" name="tables[]" class="combox checkByInput" callback="misSystemDBInitindexAlias" autocomplete="off" checkfor="Exnt_Tables" insert="TABLE_NAME" show="TABLE_NAME" />\
+                            <a class="DBInitchosave-a" href="javascript:void(0);" onclick="misSystemDBInitIndexdel(this);">删除</a>\
+                        </div>\
+                    </li>';
+        $("#missystemdbinit_tablindex").append(html).initUI();
+    };
+    function misSystemDBInitIndexdel($this){
+		var $obj=$($this).parent().parent();
+		$obj.remove();
+	}
+</script>
+<div class="page">
+	<div class="pageContent" >
+		<form method="post" action="__URL__/todoDBInit/">
+			<div class="pageFormContent" layoutH="56">
+                <div class="DBInitsave">
+                    <h3><label>保留的数据表：</label></h3>
+                    <div class="DBInitsave-div">
+                        <ul>
+                            <volist name="tablelist" id="tablelistvo">
+                                <li>
+                                    <div>
+                                        {$tablelistvo}
+                                    </div>
+                                </li>
+                            </volist>
+                        </ul>
+                    </div>
+                </div>
+                <div class="DBInitchosave">
+                    <h3><label>添加保留数据表：</label></h3>
+                    <div class="DBInitchosave-div">
+                        <ul id="missystemdbinit_tablindex">
+                            <li class="DBInitchosave-li">
+                                <div>
+                                    <input style="width:160px;" type="text" name="tables[]" class="combox checkByInput" callback="misSystemDBInitindexAlias" autocomplete="off" checkfor="Exnt_Tables" insert="TABLE_NAME" show="TABLE_NAME" />
+                                    <a class="DBInitchosave-a" href="javascript:void(0);" onclick="misSystemDBInitIndexdel(this);">删除</a>
+                                </div>
+                            </li>
+                        </ul>
+                        <div style="float:left;">
+                            <input type="button" value="新增" onclick="misSystemDBInitIndexAdd();" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+			<div class="formBar">
+				<ul>
+                    <if condition="$_SESSION.a eq 1 or $_SESSION.missystemdbinitialization_todoDBInit">
+                        <li><div class="buttonActive"><div class="buttonContent"><button type="submit">数据清除</button></div></div></li>
+                    </if>
+                    <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+				</ul>
+			</div>
+        </form>
+	</div>
+</div>

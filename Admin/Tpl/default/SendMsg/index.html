@@ -1,0 +1,32 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/send" class="pageForm" onsubmit="return validateCallback(this);">
+		<input type="hidden" name="userid" value="{$userid}" />
+		<div id="fifter" class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>发送给：</label>
+				<b>{$name}</b>
+			</div>
+			<div class="unit">
+				<label>方式：</label>
+				<select name="type" class="combox">
+					<option value="1" selected>站内方式</option>
+					<option value="2">短信方式</option>
+					<option value="3">邮件方式</option>
+				</select>
+			</div>
+			<div class="unit">
+				<label>标题：</label>
+				<input type="text" name="title"  />
+			</div>
+			<div class="unit">
+				<label>内容：</label>
+				<textarea name="content" cols="50" rows="5"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-primary">发送</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

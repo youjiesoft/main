@@ -1,0 +1,195 @@
+<script>
+    //保存交流反馈
+    function mistaskadscriptionFeedback_save($parent){
+        var $box=$.pdialog.getCurrent();
+        var $div = $("#mistaskadsFeedback_div");
+        if ($parent) {
+            var remark = $box.find("textarea[name='firstremark']").val();
+            var pid = 0;
+        } else {
+            var remark = $div.find("textarea[name='remark']").val();
+            var pid = $div.find("input[name='pid']").val();
+        }
+        var type = $div.find("input[name='type']").val();
+        var taskid = $box.find("input[name='taskid']").val();
+        var hash = $box.find("input[name='__hash__']").val();
+        var remark = $.trim(remark);
+        if (remark == '') {
+            return false;
+        }
+        mistaskadsFeedbackRefresh({'taskid':taskid,'remark':remark,'hash':hash,'type':type,'pid':pid}, 'lookupSaveFeedback');
+    }
+    //假删交流反馈
+    function mistaskadsmationFeedback_del(taskid, id){
+        if (taskid == '' || id == '') {
+            return false;
+        }
+        mistaskadsFeedbackRefresh({'taskid':taskid,'id':id}, 'lookupDeleteComment');
+    }
+    //刷新当前dialog
+    function mistaskadsFeedbackRefresh(data, action){
+        //ajax 提交反馈信息
+        $.ajax({
+            type : 'POST',
+            url  : '__URL__/' + action,
+            data : {data:data},
+            success : function (succ){
+                var $this=$("#mistaskaddivfeedbackRefresh_div");
+                $.ajax({
+                    type:'POST',
+                    url:"__URL__/edit/id/{$vo['id']}/taskid/{$vo['taskid']}/navtab/communicationFeedback",
+                    async:true,
+                    global:false,
+                    success:function(response){
+                        var json=DWZ.jsonEval(response);
+                        if(json.statusCode==DWZ.statusCode.timeout) {
+                            alertMsg.error(json.message||DWZ.msg("sessionTimout"),{okCall:function(){
+                            if($.pdialog)$.pdialog.checkTimeout();
+                            if(navTab)navTab.checkTimeout();
+                            DWZ.loadLogin();}});
+                        }
+                        if(json.statusCode==DWZ.statusCode.error){
+                            if(json.message)alertMsg.error(json.message);
+                        }else{
+                            if(json.statusCode==DWZ.statusCode.timeout){
+                                $this.html(json.message+'<div style="display:none;">'+response+'</div>').initUI();
+                            } else {
+                                $this.html(response).initUI();
+                            }
+                            $("#mistaskaddivfeedbackRefresh_div").find("[layoutH]").layoutH();
+                        }
+                    },
+                    error:DWZ.ajaxError
+                });
+            }
+        });
+    }
+    //点击回复触发
+    function mistaskadsFeedback_show($this, $id){
+        if ($id) {
+            var div = $("#mistaskadsFeedback_div");
+            div.find("input[name='pid']").val($id);
+            div.appendTo($($this).parent().parent().parent());
+            div.find("textarea[name='remark']").val('');
+            div.find("textarea[name='remark']").focus();
+        }
+    }
+    //回复框失去鼠标触发触发
+    function mistaskadsFeedback_blur(){
+        var div = $("#mistaskadsFeedback_div");
+        var remark = $.trim(div.find("textarea[name='remark']").val());
+        if (remark == '') {
+            div.appendTo($("#mistaskadsFeedback_div_parentDOM"));
+        }
+    }
+</script>
+<div id="mistaskaddivfeedbackRefresh_div" class="pkeepContentCenter">
+    <form id="pagerForm" action="" method="post">
+    </form>
+    <input type="hidden" name="taskid" value="{$vo['taskid']}">
+    <if condition="$isexchange">
+        <div class="comment">
+            <div class="commentBox">
+				<h3>我要评论</h3>
+                <div style="width:406px;padding-left:80px;">
+					<div>
+                    	<textarea name="firstremark" style="vertical-align:top;height:50px;margin:0 0 10px;resize:none;width:400px;"></textarea>
+					</div>
+					<div class="clear"></div>
+					<div class="xyqa-context-newfile">
+						<a href="javascript:;" onclick="mistaskadscriptionFeedback_save('1');"><span>{$Think.lang.save}</span></a>
+					</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </if>
+    <div class="clear"></div>
+    <if condition="$feedbackarrlist">
+        <div class="comment">
+            <div class="commentBox">
+				<h3>交流反馈</h3>
+                <div class="commentList">
+                    <volist id="feedvo" name="feedbackarrlist">
+                        <div class="commentItem">
+                            <div class="commentHeader">
+                                <span class="time">{$feedvo['createtime']|transTime=###,'Y-m-d H:i'}</span>
+                                <span class="number"></span>
+                                <span class="author">
+                                    <span class="task_ico_docu">&nbsp;{$feedvo['createid']|getFieldBy='id','name','User'}<span class="fontGray">({$feedvo['typename']})：</span></span>
+                                </span>
+                            </div>
+                            <div class="commentContent">
+                                <p class="commentText">{$feedvo['remark']}</p>
+                            </div>
+                            <div class="commentfooter">
+                                <if condition="$isexchange">
+                                    <span><a onclick="mistaskadsFeedback_show(this, '{$feedvo['id']}');" href="javascript:;">回复</a></span>
+                                    <span><a onclick="mistaskadsmationFeedback_del('{$task[id]}', '{$feedvo['id']}');" href="javascript:;">删除</a></span>
+                                </if>
+                            </div>
+                            <!-- end commentItem -->
+                            <volist name="feedvo.child" id="childvo">
+                                <div class="commentItem-child">
+                                    <div class="commentHeader">
+                                        <span class="time">{$childvo['createtime']|transTime=###,'Y-m-d H:i'}</span>
+                                        <span class="number"></span>
+                                        <span class="author">
+                                            <span class="task_ico_docu" >&nbsp;{$childvo['createid']|getFieldBy='id','name','User'}&nbsp;<span class="fontGray">回复：</span></span> 
+                                        </span>
+                                    </div>
+                                    <div class="commentContent">
+                                        <p class="commentText">{$childvo['remark']}</p>
+                                    </div>
+                                    <div class="commentfooter">
+                                        <if condition="$isexchange">
+                                            <span><a onclick="mistaskadsFeedback_show(this, '{$feedvo['id']}');" href="javascript:;">回复</a></span>
+                                            <span><a onclick="mistaskadsmationFeedback_del('{$task[id]}', '{$childvo['id']}');" href="javascript:;">删除</a></span>
+                                        </if>
+                                    </div>
+                                </div>
+                            </volist>
+                        </div>
+                    </volist>
+                </div>
+            </div>
+        </div><!-- end comment -->
+    <else/>
+        <if condition="!$isexchange">
+            <div class="timeLine">
+                <div class="timeLineData">
+                    <ul>
+                        <li class="timeLineNode-top23 clearfix">
+                            <div class="timeLineTime-ptop12">
+                                <span>{$vo["begindate"]|date='Y-m-d',###}</span>
+                            </div>
+                        </li>
+                        <li class="timeLineNodeArrow-top23 clearfix">
+                            <div class="taskdivbordernodata">
+                                无反馈信息
+                            </div>
+                        </li>
+                        <li class="timeLineNode-top23 clearfix">
+                            <div class="timeLineTime-ptop12">
+                                <span>{$taskendtime|date='Y-m-d',###}</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </if>
+    </if>
+    <!-- begin 回复框 -->
+    <div id="mistaskadsFeedback_div_parentDOM" style="display:none;">
+        <div id="mistaskadsFeedback_div" style="width:546px;height:80px;margin-top:15px;">
+            <input type="hidden" name="pid" value="">
+            <input type="hidden" name="type" value="2">
+            <textarea name="remark" onblur="mistaskadsFeedback_blur();" style="height:50px;width:400px; margin: 0 0 4px 140px;"></textarea>
+            <div class="clear"></div>
+            <div class="xyqa-context-newfile">
+                <a href="javascript:;" onclick="mistaskadscriptionFeedback_save();"><span>{$Think.lang.save}</span></a>
+            </div>
+        </div>
+    </div>
+    <!-- end 回复框 -->
+</div>

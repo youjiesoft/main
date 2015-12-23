@@ -1,0 +1,43 @@
+<div class="pageContent">
+	<form id="pagerForm" action="__URL__/edit/type/train/id/{$id}" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<table class="table" width="99%" layoutH="60">
+		<thead>
+			<tr>
+				<th width="35">序号</th>
+				<th>课程编号</th>
+				<th>课程名称</th>
+				<th>课程类型</th>
+				<th>培训讲师</th>
+				<th>培训目标</th>
+				<th>培训地点</th>
+				<th>培训时间</th>
+				<th>参与课时</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr>
+					<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td>{$vo['orderno']}</td>
+					<td>{$vo['name']}</td>
+					<td>{$vo['type']}</td>
+					<td>{$vo['lecturer']}</td>
+					<td>{$vo['traingoal']}</td>
+					<td>{$vo['site']}</td>
+					<td>{$vo['traintime']|transTime}</td>
+					<td>{$vo['classhour']}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmTrainForm" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

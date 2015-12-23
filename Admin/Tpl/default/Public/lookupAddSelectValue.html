@@ -1,0 +1,37 @@
+<script>
+function onsubmitInsertSelectValue($this,$aid) {
+	var $dialog = $.pdialog.getCurrent();
+	var $inputName = $dialog.find("input[name='hiddenInput']").val();
+	var val = $dialog.find("input[name='"+$inputName+"']").val();
+	var $thisSelect = $("#"+$aid).prev().find("select");
+	var html = $thisSelect.html();
+	html = html.replace('selected=""',"");
+	html = html.replace('selected="selected"',"");
+	html = html.replace('selected',"");
+	return validateCallback($this, function(json){
+		dialogAjaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			var id = json.data;
+			html+='<option value="'+id+'" selected="selected" >'+val+'</option>';
+			var $thisSelect = $("#"+$aid).prev().find("select");
+			var $refCombox = $("#"+$aid).prev();
+			$thisSelect.html(html).insertAfter($refCombox);
+			$refCombox.remove();
+			$thisSelect.combox();
+		}
+	});
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/lookupInsertSelectValue" class="pageForm required-validate" onsubmit="return onsubmitInsertSelectValue(this,'{$_REQUEST['aid']}')">
+		<input type="hidden" name="model" value="{$model}">
+		<div class="pageFormContent" layoutH="56">
+			<include file="$tplName" />
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+</div>

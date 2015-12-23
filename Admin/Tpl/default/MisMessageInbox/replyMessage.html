@@ -1,0 +1,205 @@
+<script type="text/javascript">
+//选中哪个接收框 
+if({$transpond}){
+	$('.checkTorecipient').click(function(){
+	    $(this).css({"background": "#fff","border-left":"1px solid #ccc"});
+	    $('.checkCcCopytopeopleid').css({"background": "#f0f0f0","border-left":"1px solid #cccccc" });
+	    $("input:[name='whickInput']").val("#Mismessageinbox_reply_add");
+	    $("input:[name='whickInputposition']").val("Mismessageinbox_reply_add");
+	    $(this).find("input").focus();
+	 });
+}
+ $('.checkCcCopytopeopleid').click(function(){
+    $(this).css({"background": "#fff","border-left":"1px solid #ccc"});
+    $('.checkTorecipient').css({"background": "#f0f0f0","border-left":"1px solid #cccccc"});
+    $("input:[name='whickInput']").val("#Mismessageinbox_reply_copy");
+    $("input:[name='whickInputposition']").val("Mismessageinbox_reply_copy");
+    $(this).find("input").focus();
+ });
+ 
+//选 择 接收人 
+ function zTreeOnClick(event, treeId, treeNode) {
+	if({$transpond}){
+        var whickInputValue = $("input:[name='whickInput']").val();
+        var whickInputpositionValue = $("input:[name='whickInputposition']").val();
+        zTreeOnClickContent(event, treeId, treeNode,whickInputValue,whickInputpositionValue,'Mismessageinbox_reply_add','Mismessageinbox_reply_copy');
+	}else {
+		zTreeOnClickContent(event, treeId, treeNode,'#Mismessageinbox_reply_copy','Mismessageinbox_reply_copy','Mismessageinbox_reply_copy','Mismessageinbox_reply_add');
+	}
+}
+//checkFor的callback函数 
+ function addresseeInputReply(json,obj){
+	 var $ulId = obj.parents('td:first');
+    var $inputName = obj.attr('inputName');//获取需要插入到数据库的收件人id的name
+    var $chainname = obj.attr('chainname');//获取需要插入到数据库的收件人name的name 
+    var $emailName = obj.attr('emailName');//获取需要插入到数据库的id的name 
+    var isTrue = true;
+    var $id = json.id;
+    var $name = json.name;
+    var $email = json.email;
+    $ulId.find("input[name='"+$inputName+"[]']").each(function(){
+        if($(this).val() == $id) {
+            isTrue = false;
+        }
+    });
+    var $str = "";
+    if(isTrue){
+        $str += "<li>";
+        $str += "<input type='hidden' name='"+$inputName+"[]' value='"+$id+"'/>";
+        $str += "<span><input type='hidden' name='"+$chainname+"[]' value='"+$name+"'>"+$name+"</span>";
+        $str += "<input type='hidden' name='"+$emailName+"[]' value='"+$email+"'>";
+        $str += "<a class='delAddressee' title='删除' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>";
+        $str += "</li>";
+        obj.val("");
+        obj.focus();
+        obj.parent().before($str);
+    }else {
+        obj.val("");
+    }
+ }
+ function commitviewInboxReply($this){
+    var $form = $($this);
+    $(":input[name='commit']",$form).val(1);
+    var outbox = {$outbox};
+    //outbox等于1表示是发件箱的转发，等于2表示是收件箱的转发 
+    if(outbox == 1){
+    	$form.attr("action","__URL__/insert/rel/jbsxBoxMessage" );
+    	return validateCallback($form, dialogAjaxDone);
+    }else{
+    	$form.attr("action","__URL__/insert/rel/messageinboxindexdiv" );
+        return validateCallback($form, dialogAjaxDone);
+    }
+};
+function saveReply(obj){
+	$(":input[name='commit']",$(obj)).val(0);
+	$(obj).attr("action","__URL__/insert/rel/messageinboxindexdiv" );
+	$(obj).click();
+    return validateCallback($(obj), dialogAjaxDone);
+}
+//单个Li的点击事件 
+$(document).ready(function(){
+    $('#Mismessageinbox_reply_add,#Mismessageinbox_reply_copy').each(function(i, el){
+        var $this = $(el);
+        $this.bind('click', function (e){
+            addressee.selectToggle(e);
+        });
+    });
+});
+</script>
+<div class="pageContent">
+<form method="post" action="__URL__/insert/rel/messageinboxindexdiv" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+<input type="hidden" name="callbackType" value="closeCurrent">
+	<div id="jbsxBox_mismessage_writeform_one" class="unitBox">
+        <input type="hidden" name="commit" value="0">
+        <input type="hidden" name="transpond" value="{$transpond}"><!-- 有值表示转发 -->
+        <input type="hidden" name="isreply" value="{$isreply}"><!-- 有值表示回复 -->
+		<input type="hidden" name="replyid" value="{$vo.id}">
+		<input type="hidden" name="iseditor" value="1"> 
+        <input type="hidden" name="whickInput" value="#Mismessageinbox_reply_add">  <!-- 接收人或抄送人，当选中后，选人时被添入当前激活的窗中；做中转存值-->
+        <input type="hidden" name="whickInputposition" value="Mismessageinbox_reply_add"> <!-- 用于判断加入的窗中 author: xiafengqing -->
+            <div class="pageFormContent clearfix" layoutH="58" style="overflow:hidden;">
+			<div id='searchuser1' style="float:right;overflow:auto;background-color:white;">
+			</div>
+			<fieldset>
+                <div style="overflow:hidden;">
+						<div class="tml-form-row">
+							<label>收&nbsp;件&nbsp;人：</label>
+                            <if condition="$transpond eq '1'">
+                             <ul class="addressee left checkTorecipient" id="Mismessageinbox_reply_add" style="width:550px;">
+                                 <li class="addresseeText">
+                                     <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" autofocus="autofocus" type="text" checkfor="MisMessage" callback="addresseeInputReply" show="" class="checkByInput" inputName="recipient" chainname="recipientname" emailName="email" tabindex="1" autocomplete="off">
+                                 </li>
+                             </ul>
+                             <a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="Mismessageinbox_reply_add" data="recipientname,username,text;recipient,userid,hidden,1;email,email,hidden">查找带回</a>&nbsp;
+                             <a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverMismessage('1','Mismessageinbox_reply_add');" title="清空接收用户"></a>
+                            <else/>
+							<ul class="addressee left checkTorecipient" id="Mismessageinbox_reply_add" style="height:30px;width:615px;border:1px #ccc solid;">
+								<li>
+									<input type="hidden" value="{$vo.createid}" name="recipient[]">
+									<span>
+									<input type="hidden" value="{$vo.createid|getFieldBy='id','name','User'}" name="recipientname[]">
+									{$vo.createid|getFieldBy='id','name','User'}
+									</span>
+								</li>
+							</ul>
+							<input type="hidden" value="{$vo.createid}" name="oldrecipient">
+							<input type="hidden" value="{$vo.createid|getFieldBy='id','name','User'}" name="oldrecipientname">
+                            </if>
+                        </div>
+                        <!--  <div class="tml-form-row">
+                        	<label>&nbsp;</label>
+                            <a class="tml-btn tml-btn-green" onclick="IscopyToAdd('copyToreply','identifying','Mismessageinbox_reply_add','Mismessageinbox_reply_copy');"><span id="identifying">添加抄送</span></a>
+                        </div>
+                            <div id="copyToreply" style="display:none;" vname="0" class="tml-form-row">-->
+                            <div id="copyToreply"  vname="0" class="tml-form-row">
+                                <label>抄&nbsp;送&nbsp;人：</label>
+                                    <ul class="addressee left checkCcCopytopeopleid" id="Mismessageinbox_reply_copy" style="width:555px;">
+                                        <li class="addresseeText">
+                                            <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInputReply" show="" class="checkByInput" inputName="copytopeopleid" chainname="copytopeoplename" emailName="emailCopy" tabindex="1" autocomplete="off">
+                                        </li>
+                                    </ul>
+                                    <a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="Mismessageinbox_reply_copy" data="copytopeoplename,username,text;copytopeopleid,userid,hidden,1;email,email,hidden">查找带回</a>&nbsp;
+                                    <a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverMismessage('2','Mismessageinbox_reply_copy');" title="清空接收用户"></a>
+                            </div>
+							<div class="tml-form-row">
+								<label>主&nbsp;&nbsp;&nbsp;&nbsp;题：</label>
+								<input type="text" value="{$vo.title}" name="title" class="required" style="width:615px"/>
+							</div>
+                            <div class="tml-form-row">
+                            	<label>上传附件：</label>
+                                    <input id="swfupload_mismessage_reply" type="file" uploader="true" name="mismessage_reply_file" formData="{ uploadpath:'MisMessage' }" auto="true"  />
+                                    <!-- <input type="image" onclick="$('#swfupload_mismessage_reply').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png"> -->
+                            </div>
+                            <div class="tml-form-row"><!-- 此处为上传列表 -->
+                                <span id="swfupload_mismessage_reply-queue" class="info uploadify_queue">
+                                    <if condition="$attarry">
+                                        <volist name="attarry" id="att">
+                                            <div class="uploadify-queue-item">
+                                                <input type="hidden" name="replyuploadaddached[{$key}]" value="{$att.attached}">
+                                                <input type="hidden" name="replyuploadname[{$key}]" value="{$att.upname}">
+                                                <div class="cancel">
+                                                    <a  class="dellink" href="__URL__/lookupdelatt/id/{$att['id']}" rel="{$att['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swfupload_mismessagedrafts_add-queue" >X</a>
+                                                </div>
+                                                <span class="fileName"><a href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank">{$att['upname']}</a></span>
+                                                <span class="data"> - 已经传</span>
+                                                <a href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="tml-icon tml-icon-file"></span><span class="tml-icon-text">归档</span></a>
+                                                <div class="uploadify-progress">
+                                                <div class="uploadify-progress-bar"></div>
+                                                </div>
+                                            </div>
+                                        </volist>
+                                    </if>
+                                </span>
+                             </div>
+							 <div class="tml-form-row">
+							 	<label>内&nbsp;&nbsp;&nbsp;&nbsp;容：</label>
+                                <if condition="$transpond eq '1'">
+	                                <textarea class="ueditor" name="content" style="height:200px;width:620px">
+	                                    {$vo.content}
+	                                </textarea>
+                                <else/>
+									<textarea class="ueditor" name="content" style="height:200px;width:620px">
+                                        <br/><br/><br/><br/><br/>
+                                        {$vo['content']}<br/>
+                                    </textarea>
+                                </if>
+							</div>
+            			</div>
+            		</fieldset>
+        		</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="button" onclick="commitviewInboxReply(this.form);">发送</button></li>
+					<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="button" onclick="saveReply(this.form)">{$Think.lang.save}草稿</button></li>
+				</ul>
+			</div>
+		<!-- <div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="commitviewInboxReply(this.form);">发送</button></div></div></li>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="saveReply(this.form)">{$Think.lang.save}草稿</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>	 -->
+	</form>
+</div>

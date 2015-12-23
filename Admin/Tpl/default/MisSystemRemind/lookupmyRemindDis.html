@@ -1,0 +1,48 @@
+<script>
+function changeapp($page){
+	 changehref="__APP__/MisSystemRemind/lookupmyRemindDis/maxlimit/{$maxcount}/minlimit/{$mincount}/page/"+$page;
+	 $("#remind_div").loadUrl(changehref,{},function(){
+         $("#remind_div").find("[layoutH]").layoutH();},false);
+}
+</script>
+<div id="remind_div">
+	<div class="entry-box  entry-box-large"> 
+			<span class="tml_remind_btn">
+			<span class="remind_btn tml_remind_left icon-angle-left <if condition="$prevlist">remind_btn_active</if>" <if condition="$prevlist"> onclick="changeapp('prevpage')" class="remind_btn_active" </if> > </span>
+					<a class="  remind_btn tml_remind_center" target="dialog" width="508"
+						height="344" mask="true"
+						rel="missystempanelmethod_lookupchangeremind" title="更改提醒模块"
+						href="__APP__/MisSystemRemind/lookupchangeremind">
+						设置
+						<span class="tml-badge tml-bg-orange">{$remindnum}</span>
+					</a>
+					<span class="remind_btn tml_remind_right icon-angle-right <if condition="$nextlist">remind_btn_active</if>" <if condition="$nextlist">onclick="changeapp('nextpage')" </if>></span>
+					</span> 
+		<if condition="$remindAllList">
+		<div class="entry-box-body">
+			<div class="entry-box-data">
+				<ul class="tml_wake">
+					<volist name="remindAllList" id="remindAll" key="h"> <if
+						condition="$h elt 6 ">
+					<li class="tml-mb5">
+						<span class="tml-label tml-bg-info tml-mr3">
+							<span class='icon  {$remindAll.span} tml-mr3"'></span>
+							&nbsp;{$remindAll.title}：
+						</span>
+						<volist name="remindAll['list']" id="rtvo">
+						{$rtvo.rtitle}(<a href="__APP__/{$rtvo.relhref}"
+							title="{$rtvo.reltitle}" target="navTab" rel="{$rtvo.relhref}">
+							<span class="{$remindAll.countcolor}  ">{$rtvo['count']}</span>
+						</a>)；&nbsp; </volist>
+					</li>
+					</if> </volist>
+				</ul>
+			</div>
+		</div>
+		<else />
+		<div class="entry-box-body">
+			<div class="noData">没有提醒事项</div>
+		</div>
+		</if>
+	</div>
+</div>

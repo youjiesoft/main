@@ -1,0 +1,93 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabsAudit)">
+		<input type="hidden" name="dotype" value="流程新建" />
+		<input type="hidden" name="beforeInsert" value="1" />
+		<input type="hidden" name="refreshtabs[closeall]" value="1" />
+		<input type="hidden" name="refreshtabs[type]" value="dialog" />
+		<input type="hidden" name="trantype" value="{$MisHrBasicEmployeeVO['workstatus']}"/>
+			<div class="contentTitle contentTitle_center">调职申请单 {:W('ShowFlow')}
+			 
+			</div>
+		<div class="pageFormContent" layoutH="105">
+			<div class="tml-row">
+			{:W('ShowOrderno',array(1,'mis_hr_personnel_train_info'))}
+				<div class="tml-form-col">
+					<label>姓名：</label>
+					<div class="tml-input-append">
+						<input type="hidden" class="org.id" callback="MisHrPersonnelTrainInfoisexits"  value="{$MisHrBasicEmployeeVO['id']}"  name="personid"/>
+						<!-- <input type="text"  name="name" value="{$MisHrBasicEmployeeVO['name']}" autocomplete="off" class="org.name checkByInput xyInputWithUnitButton inputCheckForButton " show="name" insert="id" checkfor="MisHrPersonnelManagement"   /> -->
+						<input type="text" name="name" value="{$MisHrBasicEmployeeVO['name']}" readonly="readonly" autocomplete="off" class="org.name   "    />
+						<a class="input-addon input-addon-userplus" href="__URL__/lookupmanage"  lookupGroup="org">查找带回</a>
+					</div>
+				</div>
+				<div class="tml-form-col">
+					<label>异动类型：</label>
+					<select name="typeid" class="combox">
+						<volist name="tranlist" id="volist">
+							<option value="{$volist.id}">{$volist.name}</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>入职日期：</label>
+	                <input type="text" class="org.indate"  value="{$MisHrBasicEmployeeVO['indate']|transTime}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>转正日期：</label>
+	                <input type="text"    name="transferdate" class="org.transferdate" value="{$MisHrBasicEmployeeVO['transferdate']|transTime}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>调前部门：</label>
+		            <input type="text" class="org.deptname"  check_key="otherdeptname" value="{$deptVO['name']}" readonly="readonly" />
+					<input type="hidden" class="org.deptid" check_key="otherdeptid" value="{$deptVO.id}"  name="deptid"/>
+				</div>
+				<div class="tml-form-col">
+					<label>调往部门：</label>
+					<select name="newdeptid" class="combox required" onchange="chooiseWorkType(this,'js-employeetransferadd');">
+						<option value="0">请选择</option>
+						{$depthtml}
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>调前职级：</label>
+			        <input type="text" class="org.dutyname" check_key="otherdutyname" value="{$dutyVO.name}" readonly="readonly" />
+					<input type="hidden" class="org.dutylevelid" check_key="otherdutylevelid" value="{$dutyVO.id}" name="dutylevelid"/>
+				</div>
+				<div class="tml-form-col">
+					<label>调后职级：</label>
+		            <select name="newdutylevelid" class="combox">
+						<volist name="zhiwei" id="zhiweilist">
+							<option value="{$key}">{$zhiweilist}</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>调前岗位：</label>
+					<input type="text" class="org.worktypename"  check_key="otherworktypename"  readonly="readonly" value="{$MisHrBasicEmployeeVO.worktype|getFieldBy='id','name','mis_hr_job_info'}"/>
+					<input type="hidden" name="worktype" check_key="otherworktype"   class="org.worktype"  value="{$MisHrBasicEmployeeVO.worktype}"  />
+				</div>
+				<div class="tml-form-col">
+					<label>调后岗位：</label>
+					<select name="newworktype" class="combox required" id="js-employeetransferadd">
+						<option value="0">请选择岗位</option>
+					</select>
+				</div>
+			</div>
+			 <div class="tml-form-row">
+				<label>详细描述：</label>
+				<textarea class="required textInput" name="transfer"></textarea>
+			</div>
+			<div class="tml-row">	
+				<div class="tml-form-col">
+					<label>申&nbsp;请&nbsp;人：</label>  
+					<input type="text" readonly="readonly" value="{$Think.SESSION.loginUserName}"/>
+				</div>
+				<div class="tml-form-col">
+					<label>申请时间：</label>
+					<input type="text" readonly="readonly" value="{$time|transTime}"/>
+				</div>
+			</div>
+		</div>
+		  {:W('ShowAction')}
+	</form>
+</div>

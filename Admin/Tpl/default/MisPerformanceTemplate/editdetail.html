@@ -1,0 +1,202 @@
+<script>
+//指标分类区域
+var addkpitypetd=null;
+function MisPerformanceTemplateDetail_add(){
+	  alertMsg.error('请选择模板！');
+}
+//删除分类方法
+function MisPerformanceTemplate_del(obj){
+	alertMsg.confirm("您确定移除此考核分类吗", {
+		okCall: function(){
+			$(obj).parent().parent().remove();
+			//重新计算分值
+			changescore();
+		}
+	});
+}
+//指标分类添加
+function MisPerformanceTemplate_ondblclick(url,rel,title,obj){
+	$.pdialog.open(url,rel,title,{mask:true});
+	return false;
+}
+//修改指标分类
+function  ondblclickkpitype(typeid,kpitypeqz,obj){
+	//当前指标分类区域赋值给全局变量
+	addkpitypetd=obj;
+	//查找分类下是否已有指标
+	var val=$(obj).next('td').find('input[name^=add_kpi]').val();
+	if(val){
+		//分类下有指标值能修改权重
+		$.pdialog.open("__URL__/add/step/1/typeid/"+typeid+"/kpitypeqz/"+kpitypeqz+"/edit/1/tempid/{$TemplateList.id}",'MisPerformanceTemplate','请修改考核分类权重',{mask:true});
+	}else{
+		//分类下无指标值可修改分类
+		$.pdialog.open("__URL__/add/step/1/typeid/"+typeid+"/kpitypeqz/"+kpitypeqz+"/tempid/{$TemplateList.id}",'MisPerformanceTemplate','请修改考核分类',{mask:true});
+	}
+	return false;
+}
+//计算指标分值总和
+function changescore(){
+	var sum=0;
+	//循环指标分值区域
+	$("#MisPerformanceTemplate_tbody").find(".KPIHidden_table_each").find('.countscore').each(function(){
+		if(Number($(this).val())){
+		sum+=Number($(this).val());
+		}
+	});
+	//获取模板最高分  toFixed保留两位小数
+	var mostscore= $(".mostscore").val();	
+	$("#changemost").html(sum.toFixed(2));
+	$("input.changemost").val(sum.toFixed(2));
+	//判断指标分值是否超过模板最高分
+	if(sum>mostscore){
+		alertMsg.error('分值已超过最高分，请重新分配分值！');
+		return false;
+	}
+}
+//提交此模板进行验证
+function misperformancetemplate_submit($this) {
+		var qzsum = 0;
+		var iskpiresult = false;
+		var boolkpitypeqz =false;
+		var maxsum = 0;
+		var mostscore = Number($($this).find("input.mostscore").val());// 模板最高分
+		var count = Number($($this).find("input.changemost").val());// 指标总和
+		var qzcount = 0;
+		$($this).find(".MisPerformanceTemplate_tbody_each").each(function(){
+			if(Number($(this).find("input[name='add_kpitypeqz[]']").val())==0){
+				boolkpitypeqz=true;
+			}
+			qzcount += Number($(this).find("input[name='add_kpitypeqz[]']").val());
+			
+			if($(this).next().find("input").length < 1){
+				iskpiresult = true;// 有分类没指标
+			};
+		});
+		if (iskpiresult) {
+			alertMsg.error('分类下必须选择指标！');
+			return false;
+		};
+		if(boolkpitypeqz){
+			alertMsg.error('权重不能为0,请更正！');
+			return false;
+		}
+		if(qzcount != 100){
+			alertMsg.error('权重之和必须等于100，请重新分配权重！');
+			return false;
+		}
+		if (mostscore < count) {
+			alertMsg.error(' 分值已超过最高分，请重新分配分值！');
+			return false;
+		};
+		return validateCallback($this, dialogAjaxDone);
+	}
+//修改指标
+function MisPerformanceTemplate_addkpi(typeid,$this){
+	thiskpi = $($this).parents("td");
+	$.pdialog.open("__URL__/add/step/2/typeid/"+typeid+"/tempid/{$TemplateList.id}",'MisPerformanceTemplate','请选择考核指标',{mask:true});
+	return false;
+}
+function spinner(){
+	$("#MisPerformanceTemplate_tbody").find( ".spinner" ).spinner({min:1,max:100});
+	}
+$(function(){
+	 spinner();
+});
+</script>
+<div class="pageContent">
+<form id="pagerForm" action="__URL__/index/jump/1/type/{$type}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form method="post" action="__URL__/update/rel/misperformancetemplate_rightcontent1/step/1" class="pageForm required-validate"  onsubmit="return misperformancetemplate_submit(this);"  >
+	<div class="pageContent tml-bg-white" layoutH="32">
+	<div class="panelBar">
+	<input type="hidden" name="tempid" value="{$TemplateList.id}" />
+		<ul class="toolBar">
+		</ul>
+		<table id="domain" width="100%" style="height:25px;" >
+			<tr>
+				<td>
+					模板名称:
+					<span>{$TemplateList.name}</span>
+				</td>
+				<td>
+					模板最高分:
+					<input  class='mostscore' readonly="readonly" type="hidden"
+						value="{$TemplateList.mostscore}" />
+					 <span>{$TemplateList.mostscore}</span>
+				</td>
+				<td>
+					当前标准总分:
+					<span id="changemost">
+						<if condition='$sumscore'>{$sumscore|getDigits}<else />0</if>
+					</span>
+					分
+					<input type="hidden" class="changemost" value='{$sumscore}' />
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div>
+		<table style="table-layout:fixed;width:100%;*width:auto;" class="tml-table">
+			<thead>
+				<tr>
+					<th>考核分类</th>
+					<th>考核指标</th>
+					<th style="width: 100px;">分值</th>
+					<th>操作</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody id="MisPerformanceTemplate_tbody">
+			<volist name="list" id="vo">
+				<tr> 
+				 	<td ondblclick="ondblclickkpitype('{$vo['kpitypeid']}','{$vo['kpitypeqz']}',this)" class="MisPerformanceTemplate_tbody_each" >
+				     	<input type="hidden" name="add_kpitypeid[]"  value="{$vo['kpitypeid']}"/>
+				     	<input type="hidden" s name="add_kpitypeqz[]" value="{$vo['kpitypeqz']}"/>
+			         	<span class="add_kpitypeqz">{$vo['kpitypeid']|getFieldBy='id','name','mis_performance_type'}({$vo['kpitypeqz']}%)</span>
+			        </td> 
+				 	<td colspan="2" style="padding:0;"> 
+						<table style="width:100%;" border="0" class="KPIHidden_table">
+							<volist name="vo['kpi']" id="vos">
+								<tr class="KPIHidden_table_each">
+									<td ondblclick="MisPerformanceTemplate_addkpi('{$vo['kpitypeid']}',this)">
+										{$vos['kpiid']|getFieldBy='id','name','mis_performance_kpi'}
+										<input type="hidden" value="{$vos['kpiid']}" name="add_kpi[]">
+										<input type="hidden" value="{$vos['id']}" name="edit_id[]">
+									</td>
+									<td style="border-right:none;width: 100px;">
+									<input class="countscore number required spinner" maxlength="3" type="text" name="add_kpiscore[{$vos['kpiid']}]" value="{$vos['kpiscore']}" onblur="changescore()" style="width: 50px;" />
+									</td>
+								</tr>
+							</volist>
+						</table>
+					</td>
+					<td><a href="javascript:;" class="btnDel" onclick="MisPerformanceTemplate_del(this)"></a></td>
+				 </tr>
+			</volist>
+				<tr id="MisPerformanceTemplate_d">
+					<td ondblclick="MisPerformanceTemplate_ondblclick('__URL__/add/step/1','abcd','请选择考核分类',this)">
+						&nbsp;<!--  <span style="color:red">请双击选择考核分类</span>-->
+					</td>
+					<td>
+					</td>
+					<td>
+						<span></span>
+					</td>
+					<td><span></span></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button class="tml-btn tml-btn-primary" type="submit">保存</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+	 </div>

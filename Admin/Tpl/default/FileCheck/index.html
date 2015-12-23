@@ -1,0 +1,22 @@
+<div class="pageContent">
+	<div id="AdjustMasTabs" class="tabs" currentIndex="{$currentIndex}" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<li class="selected"><a href="__URL__/checkaction"  class="j-ajax"><span>ACTION检测</span></a></li>
+					<li><a href="__URL__/checkmodel" class="j-ajax" rel="__MODULE__waitAudit"><span>MODEL检测</span></a></li>
+					<volist name="toolbarextension" id="toolb">
+						<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+							<li>{$toolb['html']}</li>
+						</if>
+					</volist>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent" style="background:#FFFFFF;padding:0px;">
+			<div class="unitBox"></div>
+			<div class="unitBox" style="display: none;"></div>
+			<div class="unitBox" style="display: none;"></div>
+		</div>
+	</div>
+</div>

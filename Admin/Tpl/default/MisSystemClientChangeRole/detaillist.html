@@ -1,0 +1,110 @@
+<script>
+$(function(){
+	var box = $.pdialog.getCurrent();
+	var nav = navTab.getCurrentPanel();
+	$("button.saveid",box).click(function(){
+		var str = '';
+		var isall = 0;
+		var allids = $("input[name='allids']",box).val();
+		if(allids){
+			str = allids;
+			isall = 1;
+		}else{
+			$("input[name^='choicelist[']:checked").each(function(){
+				str += str?','+$(this).val():$(this).val();
+			});
+		}
+		$("#detaillist_add input[name='content']",nav).val(str);
+		$("#detaillist_add input[name='isall']",nav).val(isall);
+		$.pdialog.closeCurrent();
+	});
+	
+});
+function choiceAllIds(obj){
+	var modelname = $("input[name='modelname']").val();
+	if($(obj).attr("checked")=="checked"){
+		alertMsg.info('点击全选将选择所有分页的数据，包含所有没选中数据！');
+		$.ajax({
+			 type: 'POST',
+	         url : "__URL__/lookupgetAllList",
+	         data: {modelname:modelname},
+	         global:false,
+	         dataType:'text',
+	         success:function(list){
+	        	 $("input[name='allids']").val(list);
+	         }
+		});	
+	}else{
+		 $("input[name='allids']").val('');
+	}
+}
+</script>
+<div class="pageContent">
+		  	<form id="pagerForm" action="__URL__/lookupGetDetailList/type/1" method="post">
+		 		<input type="hidden" name="pageNum" value="1"/>
+		 		<input type="hidden" name="orderField" value="{$order}" />
+		 		<input type="hidden" name="orderDirection" value="{$sort}"/>
+			</form>
+		 	<div class="panelBar">
+					<form rel="pagerForm" onsubmit="return   dialogSearch(this)" action="__URL__/lookupGetDetailList/type/1" method="post">
+						<input type="hidden" name="modelname" value="{$modelname}"/>
+						<input type="hidden" name="userid" value="userid"/>
+					<div class="searchBar">
+						<table class="searchContent">
+							<tr>
+							<include file="Public:quickSearchConditionForAudit" />
+							</tr>
+						</table>
+					</div>
+					</form>
+			</div>
+			<php>$contents = '';if($isall)$contents = $content;</php>
+			<input type="hidden" name="allids" value="{$contents}" />
+			<table class="table" width="100%" layoutH="146">
+				<thead ename="{$ename}">
+					<tr>
+						<th width="40px"><input type="checkbox" class="choiceAllIds" onchange="choiceAllIds(this);" <if condition="$isall eq 1">checked</if>>全选</th>
+						<volist id="vo" name="detailList">
+							<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">  orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+						</volist>
+					</tr>
+				</thead>
+				<tbody>
+					<volist id="vo" name="list" key="key2">
+						<tr target="sid_node" rel="{$vo['id']}"  data-tool='{$vo[classarr]}'>
+							<td class="tml-first-td"><input type="checkbox" name="choicelist[]" value="{$vo.id}" <if condition="in_array($vo.id,$contentarr)">checked</if>></th></td>
+							<volist id="vo1" name="detailList">
+								<if condition="$vo1[shows] eq 1">
+									<td width="{$vo1[widths]}">
+										<if condition="count($vo1['func']) gt 0">
+											<volist name="vo1.func" id="nam">
+												<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+													{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+												<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+											</volist>
+										<else />
+											{$vo[$vo1['name']]}
+										</if>
+									</td>
+								</if>
+							</volist>
+						</tr>
+					</volist>
+				</tbody>
+			</table>
+			<div class="panelBar panelPageBar">
+				<div class="pages">
+					<span>共{$totalCount}条</span>
+				</div>
+				<div class="pagination"  targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+			</div>
+			<div style="border-top: 1px solid #d8d8d8; padding-top: 15px" class="formBar">
+			<ul> 
+				
+	            <li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex saveid" type="button">保存</button>
+	            	</li>
+	            
+            </ul>
+         </div>
+		</div>
+

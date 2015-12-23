@@ -1,0 +1,168 @@
+<script type="text/javascript">
+//生成联系人树
+/* $(document).ready(function(){
+    var zNodes = {$usertree};
+    var zNodesProcessRole = {$ProcessRoletree};
+    var zNodesrolegroup = {$rolegrouptree};
+    var setting = {
+        view: {
+            selectedMulti: false,
+            fontCss: getFontCss
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onClick: zTreeOnClick
+        }
+    };
+    $.fn.zTree.init($("#mismessagetree"), setting, zNodes);
+    $.fn.zTree.init($("#mismessagetreeProcessRole"), setting, zNodesProcessRole);
+    $.fn.zTree.init($("#mismessagetreerolegroup"), setting, zNodesrolegroup);
+    var treeObj = $.fn.zTree.getZTreeObj("mismessagetree");
+    var valid='{$check}';
+    var nodes = treeObj.getNodesByParam("id", valid, null);
+    treeObj.selectNode(nodes[0]);
+    refreshEmailCount();
+}); */
+
+//选中哪个接收框 
+$('.checkTo').click(function(){
+	$(this).css({"background": "#fff","border-left":"1px solid #ccc"});
+    $('.checkCc').css({"background": "#f0f0f0","border-left":"1px solid #cccccc" });
+    $("input:[name='whickInput']").val("#Mismessage_add");
+    $("input:[name='whickInputposition']").val("Mismessage_add");
+    $(this).find("input").focus();
+ });
+ 
+ $('.checkCc').click(function(){
+	$(this).css({"background": "#fff","border-left":"1px solid #ccc"});
+    $('.checkTo').css({"background": "#f0f0f0","border-left":"1px solid #cccccc"});
+    $("input:[name='whickInput']").val("#Mismessage_add_copyTo");
+    $("input:[name='whickInputposition']").val("Mismessage_add_copyTo");
+    $(this).find("input").focus();
+ });
+     
+// 选 择 接收人
+/* function zTreeOnClick(event, treeId, treeNode) {
+    var whickInputValue = $("input:[name='whickInput']").val();
+    var whickInputpositionValue = $("input:[name='whickInputposition']").val();
+    zTreeOnClickContent(event, treeId, treeNode,whickInputValue,whickInputpositionValue,'Mismessage_add','Mismessage_add_copyTo');
+} */
+/*
+eagle:当提交时，如果是发送，调用这个方法，修正了提交到控制器中的哪个方法中去。]
+* type:is update or insert
+*/
+function commitviewAddWriteForm($this){
+    var $form = $($this);
+    $(":input[name='commit']",$form).val(1);
+    $form.attr("action","__URL__/insert/rel/jbsxBoxMessage" );
+    return validateCallback($form, navTabAjaxDone);
+};
+/*发送外部 邮件*/
+function sendInterEmail($thisadss){
+	var $addss = $($thisadss);
+	$(":input[name='commit']",$addss).val(1);
+	$(":input[name='interemail']",$addss).val(1);
+	$(":input[name='messageType']",$addss).val(3);
+	$(":input[name='messageTypeNmae']",$addss).val(1);
+	$addss.attr("action","__URL__/insertInterEmail/rel/jbsxBoxMessage" );
+    return validateCallback($addss, navTabAjaxDone);
+}
+//add by nbmxkj@20140611
+$(function(){
+	//$('.checkByInputPlugs').tagsinput();
+});
+function clearreceverMismessage(n , p){
+	var l = $('#'+p+' li:last');
+	$('#'+p+' li:not(:last)').remove();
+}
+//add end
+
+</script>
+<form id="pagerForm" action="__APP__/MisMessage/writeForm">
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this,'jbsxBoxMessage');" action="__APP__/MisMessage/writeForm" method="post">
+</form>
+<div class="pageContent">
+	<div style="background: #f3f3f3;overflow:hidden;">
+		<form method="post" action="__URL__/insert/rel/jbsxBoxMessage" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+			<div class="tml_mail_header">
+				<div class="tml_h40">
+                    <button class="tml-btn tml_look_btn tml_mp" type="button" onclick="sendInterEmail(this.form);"><i class="icon-columns"></i> 外部邮件</button>
+                    <button class="tml-btn tml_look_btn tml_mp" type="submit"><i class="icon-save"></i>&nbsp;{$Think.lang.save}草稿</button>
+					<button class="tml-btn tml_look_btn tml_mp" type="button" onclick="commitviewAddWriteForm(this.form);"><i class="icon-share"></i> 发送</button>
+				    <!-- <button class="xyIconSendButton" type="button" onclick="onlySendInterEmail();">只发外部邮件</button> --><!-- 功能暂时不能实现 -->
+                </div>
+			</div>
+			<input type="hidden" name="commit" value="0">
+			<input type="hidden" name="interemail" value="0">
+			<input type="hidden" name="messageType" value="0">
+			<input type="hidden" name="messageTypeNmae" value="0">
+			<input type="hidden" name="iseditor" value="1">
+			<input type="hidden" name="whickInput" value="#Mismessage_add">  <!-- 接收人或抄送人，当选中后，选人时被添入当前激活的窗中；做中转存值-->
+			<input type="hidden" name="whickInputposition" value="Mismessage_add"> <!-- 用于判断加入的窗中 author: xiafengqing -->
+            <div class="pageFormContent clearfix" layoutH="81" style="background: #f3f3f3;">
+				<div style="overflow:hidden;">
+					<fieldset>
+						<div class="tml-form-row">
+						<label>收件人：</label>
+							<ul class="addressee left checkTo" id="Mismessage_add" style="width:80%;">
+							  <li class="addresseeText">
+                                  <input type="text" style="float: left;"
+									class="checkByInput addresseeTextInput"
+									checkfor="MisMessage"
+									fileds=""
+									inputName="recipient"
+									chainname="recipientname"
+									emailName="email"
+									show=""
+									tabindex="1"
+									autocomplete="off"
+                                    callback="addresseeInput"
+									/>
+                                  </li>
+                                </ul>
+	                            <!-- checkFor带回来的值 -->
+							<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="Mismessage_add" data="recipientname,username,text;recipient,userid,hidden,1;email,email,hidden" width="800" height="800">查找带回</a>&nbsp;
+							<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverMismessage('1','Mismessage_add');" title="清空接收用户"></a>
+						</div>
+						<!-- <div class="tml-form-row">
+							<label>&nbsp;</label>
+							<a class="tml-btn tml-btn-small tml-btn-green" onclick="IscopyToAdd('copyTo','isCopy','Mismessage_add','Mismessage_add_copyTo');"><span id="isCopy"><span class="icon icon-plus"></span> 添加抄送人</span></a>
+						</div>
+						<div style="display:none;" vname="0" id="copyTo" class="tml-form-row">-->
+						<div vname="0" id="copyTo" class="tml-form-row">
+							<label>抄送人：</label>
+							<ul class="addressee left checkCc" id="Mismessage_add_copyTo" style="width:80%;">
+                                <li class="addresseeText">
+                                <input onclick="addressee.unselect(this);" onfocus="addressee.clearVal(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput addresseeTextInput" inputName="copytopeopleid" chainname="copytopeoplename" emailName="emailCopy" tabindex="1" autocomplete="off">
+                                </li>
+                            </ul>
+							<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="Mismessage_add_copyTo" data="copytopeoplename,username,text;copytopeopleid,userid,hidden,1;emailCopy,email,hidden">查找带回</a>&nbsp;
+							<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverMismessage('2','Mismessage_add_copyTo');" title="清空接收用户"></a>
+						</div>
+						<div class="tml-form-row">
+							<label>主题：</label>
+							<input type="text" value="" name="title" class="required" style="width:86.2%;" /></td>
+						</div>
+						<div class="tml-form-row">
+							<label>上传附件：</label>
+							<input id="swfupload_mismessage_add" type="file" uploader="true" name="mismessage_add_file"  formData="{ uploadpath:'MisMessage' }" auto="true" />
+							<!--<input type="image" onclick="$('#swfupload_mismessage_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">-->
+						</div>
+						<div class="tml-form-row">
+							<span id="swfupload_mismessage_add-queue" class="info uploadify-queue" style="width:80%"></span>
+						</div>
+						<div class="tml-form-row">
+							<label>正文：</label>
+							<textarea class="ueditor" name="content" style="height:240px;width:86.8%;"></textarea>
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

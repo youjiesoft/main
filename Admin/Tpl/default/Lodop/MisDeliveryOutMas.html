@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title></title>
+<script src="__PUBLIC__/Js/jquery-1.7.1.js" type="text/javascript"></script>
+<script>
+function getLodop(oOBJECT,oEMBED){
+        var strHtml1="<br><font color='#FF00FF'>打印控件未安装!点击这里<a href='__TMPL__/Lodop/install_lodop.exe'>执行安装</a>,安装后请刷新页面或关闭浏览器重新进入。</font>";
+        var strHtml2="<br><font color='#FF00FF'>打印控件需要升级!点击这里<a href='__TMPL__/Lodop/install_lodop.exe'>执行升级</a>,升级后请重新进入。</font>";
+        var strHtml3="<br><br><font color='#FF00FF'>注意：<br>1：如曾安装过Lodop旧版附件npActiveXPLugin,请在【工具】->【附加组件】->【扩展】中先卸它;<br>2：如果浏览器表现出停滞不动等异常，建议关闭其“plugin-container”(网上搜关闭方法)功能;</font>";
+        var LODOP=oEMBED;
+	try{
+	     if (navigator.appVersion.indexOf("MSIE")>=0) LODOP=oOBJECT;
+
+	     if ((LODOP==null)||(typeof(LODOP.VERSION)=="undefined")) {
+		 if (navigator.userAgent.indexOf('Firefox')>=0)
+  	         document.documentElement.innerHTML=strHtml3+document.documentElement.innerHTML;
+		 if (navigator.appVersion.indexOf("MSIE")>=0) document.write(strHtml1); else
+		 document.documentElement.innerHTML=strHtml1+document.documentElement.innerHTML;
+		 return LODOP;
+	     } else if (LODOP.VERSION<"6.0.5.6") {
+		 if (navigator.appVersion.indexOf("MSIE")>=0) document.write(strHtml2); else
+		 document.documentElement.innerHTML=strHtml2+document.documentElement.innerHTML;
+		 return LODOP;
+	     }
+	     //*****如下空白位置适合调用统一功能:*********
+
+
+	     //*******************************************
+	     return LODOP;
+	}catch(err){
+	     document.documentElement.innerHTML="Error:"+strHtml1+document.documentElement.innerHTML;
+	     return LODOP;
+	}
+}
+</script>
+<object id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0>
+	<embed id="LODOP_EM" type="application/x-print-lodop" width=0 height=0 pluginspage="__TMPL__/Lodop/install_lodop.exe"></embed>
+</object>
+</head>
+<body  style="overflow-y:scroll;background-color:#FFF; width:89%; position:absolute; left:10%; margin-left:-45px;">
+<div style="text-align:center;right:100px;padding:10px;"><b><a href="javascript:prn_preview5();">打印预览</a></b> | <b><a href="javascript:prn_preview();">直接打印</a></b></div>
+<div id="printcontent">
+<link href="__PUBLIC__/dwz2/themes/default/style.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/dwz2/themes/css/core.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/Css/styles.css" rel="stylesheet" type="text/css" />
+<!--[if IE]>
+<link href="__PUBLIC__/dwz2/themes/css/ieHack.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<style>
+.yl{  margin-bottom:20px;}
+.yl_title{ font-size:20px; padding-top:5px; padding-bottom:5px; border-top:1px solid #CCC; border-left:1px solid  #CCC; border-right:1px solid #CCC; }
+.unit{ font-size:16px; line-height:24px; margin-left:25px;}
+.unit label{ font-size:16px;}
+.xx{ border-bottom:1px solid #CCC; border-right:solid 1px #CCC;}
+.xx_1{ border-bottom:1px solid #CCC;}
+.xx_2{ border-right:1px solid #CCC;}
+.pcxx,.pcxx_1{ float:left;}
+.pcxx_1{font-size:16px; text-align:left; padding-top:5px; padding-bottom:5px; word-wrap:break-word; width:880px; line-height:20px;}
+.pcxx{ padding-top:7px; padding-bottom:5px;}
+</style>
+<div class="yl">
+	<h1 class="yl_title">
+		<if condition="$vo['objname'] eq 'InventoryOutMas' ">
+			<label style="font-size:18px">物料出库单：</label>
+		<else/>
+		    <label style="font-size:18px">物料发货单：</label>
+		</if>
+	</h1>
+    	<table class="fh" border="0" width="100%" cellspacing="0">
+		<tr>
+			<td class="xx" width="50%">
+				<div class="unit">
+					<label>{$fields["orderno"]}：</label>{$vo['orderno']}
+				</div>
+			</td>
+			 <td class="xx_1">
+				<div class="unit">
+					<label>{$fields["typeid"]}：</label>{$vo['typeid']|getFieldBy='id','name','mis_order_types'}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="xx">
+			  	<div class="unit">
+			  		<label>{$fields["handledate"]}：</label>{$vo['handledate']|transTime='Y-m-d H:i'}
+				</div>
+			</td>
+			<td class="xx_1">
+				<div class="unit">
+				<if condition="$vo['objname'] eq 'InventoryOutMas' ">
+					<label>{$fields["userid"]}：</label>
+				<else/>
+                    <label>{$fields["userid"]}：</label>{$vo['userid']||getFieldBy='id','name','user'}
+				</if>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="xx">
+			  	<div class="unit">
+			  		<label>{$fields["porter"]}：</label>{$vo['porter']}
+				</div>
+			</td>
+			<td class="xx_1">
+				<div class="unit">
+					<label>{$fields["mcid"]}：</label>
+					{$vo['mcid']|getFieldBy='id','code','MisSystemMotorcycle'}
+					{$vo['mcid']|getFieldBy='id','name','MisSystemMotorcycle'}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="xx">
+			  	<div class="unit">
+				<if condition="$vo['objname'] eq 'InventoryOutMas' ">
+					<label>总数量：</label>{$vo['totalqty']|getDigits}
+				<else/>
+				    <label>{$fields["weight"]}：</label>{$vo['weight']|getWeightOrCapacityAndUnit=2}
+				</if>
+				</div>
+			</td>
+			<td class="xx_1">
+				<div class="unit">
+			  		<label>{$fields["capacity"]}：</label>{$vo['capacity']|getWeightOrCapacityAndUnit=1}
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td class="xx">
+			  	<div class="unit">
+			  		<label>{$fields["transportid"]}：</label>{$vo['transportid']|getFieldBy='id','name','MisSystemTransport'}
+				</div>
+			</td>
+            <td class="xx_1">
+			  	<div class="unit">
+			  		<label></label>
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2" class="xx_1">
+		  		<div class="unit">
+		  			<label class="pcxx">备注说明：</label>
+                    <div class="pcxx_1">{$vo['remark']}</div>
+
+			    </div>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<div class="unit">
+		  			<label class="pcxx">拼车信息：</label>
+                    <div class="pcxx_1">
+		  			<?php
+						$dom = unserialize($vo['dom']);
+						foreach($dom as $k=>$val){
+							echo $val['value']."&nbsp;&nbsp;&nbsp;&nbsp;";
+							if(($k+1)%2 == 0) {
+								echo "<br/>";
+							}
+						}
+					?></div>
+		  		</div>
+		  	</td>
+		</tr>
+	</table>
+</div>
+<style>
+table.sub td {border:1px solid #CCC; }
+table{ border:1px solid #CCC;}
+table.list th{ border: 1px solid #CCC;}
+.sub th{ background-color:#FFF;}
+</style>
+<div class="pageContent dd">
+	<table class="list sub" width="100%" cellpadding="1">
+		<thead>
+			<tr>
+				<th class="t1" style="font-size:16px"><input type="checkbox" checked="checked" />序号</th>
+				<th class="t2" style="font-size:16px"><input type="checkbox" checked="checked" />商品代码</th>
+				<th class="t3" style="font-size:16px"><input type="checkbox" checked="checked" />商品名称</th>
+				<th class="t4" style="font-size:16px"><input type="checkbox" checked="checked" />商品规格</th>
+				<th class="t5" style="font-size:16px"><input type="checkbox" checked="checked" />单位</th>
+				<th class="t6" style="font-size:16px"><input type="checkbox" checked="checked" />数量</th>
+				<th class="t7" style="font-size:16px"><input type="checkbox" checked="checked" />重量</th>
+				<th class="t8" style="font-size:16px"><input type="checkbox" checked="checked" />容积</th>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vos" name="list">
+			<tr target="sid_node" rel="{$vos['id']}">
+				<td class="t1" style="font-size:16px">{$vos['nd']}</td>
+				<td class="t2" style="font-size:16px">{$vos['pcode']}</td>
+				<td class="t3" style="font-size:16px">{$vos['pname']}</td>
+				<td class="t4" style="font-size:16px">{$vos['prodsize']}</td>
+				<td class="t5" style="font-size:16px">{$vos['prodid']|getUnitsNames2=$vos['unitid']}</td>
+				<td class="t6" style="font-size:16px">{$vos['qty']|getDigits}</td>
+				<td class="t7" style="font-size:16px">{$vos['weight']|getWeightOrCapacityAndUnit=2}</td>
+				<td class="t8" style="font-size:16px">{$vos['capacity']|getWeightOrCapacityAndUnit=1}</td>
+			</tr>
+		 </volist>
+		</tbody>
+	</table>
+</div>
+<script language="javascript" type="text/javascript">
+var LODOP; //声明为全局变量
+function prn_preview5() {
+	CreateOnePage();
+	LODOP.SET_PRINT_MODE("PRINT_PAGE_PERCENT","Auto-Width");
+	LODOP.SET_PRINT_MODE("AUTO_CLOSE_PREWINDOW",1);//打印后自动关闭预览窗口
+	LODOP.SET_PREVIEW_WINDOW(1,0,0,0,0,"");
+	LODOP.PREVIEW();
+};
+function prn_preview() {
+	CreateOnePage();
+	LODOP.SET_PRINT_MODE("PRINT_PAGE_PERCENT","Auto-Width");
+	LODOP.SET_PRINT_MODE("AUTO_CLOSE_PREWINDOW",1);//打印后自动关闭预览窗口
+	LODOP.SET_PREVIEW_WINDOW(1,0,0,0,0,"");
+	LODOP.PRINT();
+};
+function CreateOnePage(){
+	LODOP=getLodop(document.getElementById('LODOP_OB'),document.getElementById('LODOP_EM'));
+	LODOP.PRINT_INIT("打印控件功能演示_Lodop功能_整页缩放打印输出");
+	var hold = $("#printcontent").html();
+	$("input[type='checkbox']").each(function(i){
+		var s=$(this).attr('checked');
+		if(!s){
+			var s1=$(this).parent('th').attr("class");
+			//alert(s1);
+			$("."+s1).remove();
+		}else{
+			$(this).remove();
+		}
+	});
+	var h = $("#printcontent").html();
+	$("#printcontent").html(hold);
+	LODOP.ADD_PRINT_HTM(5,5,"100%","100%","<body leftmargin=0 topmargin=0>"+h+"</body>");
+	LODOP.SET_PREVIEW_WINDOW(0,0,0,0,0,"");
+};
+</script>
+</body>
+</html>

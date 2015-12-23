@@ -1,0 +1,54 @@
+<form id="pagerForm" action="__URL__/index/frame/1/md/{$md}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this,'missystempaneldesingroleBox');" action="__URL__/index/frame/1/md/{$md}" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="172">
+		<thead ename="{$ename}">
+			<tr>
+			<volist id="vo" name="detailList">
+				<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			</volist>
+			</tr>
+		</thead>
+		<tbody id="missystempaneluserrole">
+		<volist id="vo" name="list" key="key2">
+			<tr rel="{$vo.id}" types="1" onclick="missystempaneldesingrole(this);">
+			  <volist id="vo1" name="detailList">
+				<td field="{$vo1[name]}" width="{$vo1[widths]}">
+					<if condition="count($vo1['func']) gt 0">
+						<volist name="vo1.func" id="nam">
+							<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+							{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+							<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+						</volist>
+					<else />
+					{$vo[$vo1['name']]}
+					</if>
+				</td>
+			  </volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="missystempaneldesingroleBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

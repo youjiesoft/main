@@ -1,0 +1,176 @@
+<script>
+function goAuditView($modelname,$tableid,$name,$id){
+	var modelname=$modelname;
+	var tableid=$tableid;
+	$.ajax({
+		type: "POST",
+		url: TP_APP + "/MisWorkExecuting/lookupUpdateNotify/id/"+$id,
+		data:"",
+		dataType: "json",
+		async:false,
+		global: false,
+		success: function (data){
+			if(data==true){
+			navTab.openTab(modelname, "__APP__/"+modelname+"/auditView/id/"+tableid, { title:$name, fresh:false, data:{} });
+			 // $("#MisWorkExecutingbox").loadUrl("__URL__/lookupMisNotify",{}, '');
+			}
+		},
+	});
+}
+</script>
+
+<form id="pagerForm" action="__URL__/lookupMisNotify/jump/jump" method="post">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+		<input type="hidden" name="messageType" value="{$messageType}"/>
+		<input type="hidden" name="important" value="{$important}"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="md" value="{$md}"/>
+		<input type="hidden" name="dotype" value="{$dotype}"/>
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<!-- <ul class="toolBar">
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']]) eq 1">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul> -->
+		<form rel="pagerForm" onsubmit="return divSearch(this, 'MisWorkExecutingbox');" action="__URL__/lookupMisNotify/jump/jump" method="post">
+			<input type="hidden" name="istep" value="{$istep}"/>
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="searchby">
+								<volist id="vou" name="searchbylist">
+									<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+								</volist>
+							</select>
+						</td>
+                        <td class="tml_select_option_center">
+                            <div><input type="text" placeholder="请输入关键字" name="keyword" value="{$keyword}" /></div>
+                        </td>
+						<td>
+							<input name="searchtype" type="hidden" value="2" />
+						</td>
+						<td class="tml_select_option_right"><button class="xySearch" type="submit"><i class="icon-search"></i></button></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead>
+			<tr>
+				<th width="35">序号</th>
+				<th style="width:80px;" class="">单据编号</th>
+				<th style="width:80px;" class="">单据名称</th>
+				<th style="width:750px;" class="">主题</th>
+				<th style="width:150px;" class="">发送时间</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list" key="key2">
+				<tr target="sid_node" rel="{$vo['id']}" ondblclick="goAuditView('{$vo['modelname']}','{$vo['tableid']}','{$vo['name']}','{$vo['id']}')">
+					<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td style="width:80px;">{$vo['orderno']}</td>
+					<td style="width:80px;">{$vo['name']}</td>
+					<td style="width:750px;">{$vo['title']}</td>
+					<td style="width:150px;">{$vo.createtime|transTime='Y-m-d H:i'}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="MisWorkExecutingbox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>
+
+<!--<div id="messageinboxindexdiv">
+<div class="pageContent" id="{$rel_id_name}">
+	<form id="pagerForm" action="__URL__/index{$messageTypeUrl}">
+		<input type="hidden" name="pageNum" value="{$pageNum}"/>
+		<input type="hidden" name="messageType" value="{$messageType}"/>
+		<input type="hidden" name="important" value="{$important}"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="md" value="{$md}"/>
+		<input type="hidden" name="dotype" value="{$dotype}"/>
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+		
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this,'jbsxBoxMessage');" action="__URL__/index{$messageTypeUrl}" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="searchby">
+								<volist id="vou" name="searchbylist">
+									<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+								</volist>
+							</select>
+						</td>
+                        <td class="tml_select_option_center">
+                            <div><input type="text" placeholder="请输入关键字" name="keyword" value="{$keyword}" /></div>
+                        </td>
+						<td>
+							<input name="searchtype" type="hidden" value="2" />
+						</td>
+						<td class="tml_select_option_right"><button class="xySearch" type="submit"><i class="icon-search"></i></button></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div class="clearfix">
+		<div class="xyMailTable">
+			<table class="table" width="100%" layoutH="146">
+				<thead>
+					<tr>
+					<th width="35">序号</th>
+					<th style="width:80px;" class="">单据编号</th>
+					<th style="width:750px;" class="">主题</th>
+					<th style="width:150px;" class="">发送时间</th>
+					<th><div class="xyStarActive" title="">&nbsp;&nbsp;</div></th>
+					</tr>
+				</thead>
+            </table>
+            <div layoutH="146">
+                <table class="tml-table-w">
+    				<tbody id="messageTablelist">
+    					<volist id="vo" name="list">
+    					<tr id="MisMessageInboxrelid" target="sid_node" rel="{$vo.id}"  
+    						dwidth="600" dheight="600" drel="MisMessageInboxView" onclick="lookupreadMessagedetail({$vo.id},{$vo.messageType},{$important});" >
+    						<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+    						<td style="width:80px;"><if condition="$vo['createid'] eq 0">系统<else/>{$vo.createid|getFieldBy='id','name','User'}</if></td>
+    						<td style="width:750px;"><div style="height:26px;overflow:hidden"><?php $isreply=getFieldBy($vo['sendid'], 'id', 'isreply', 'MisMessage');if($isreply==1){echo "回复：";}?>{$vo.sendid|getFieldBy='id','title','MisMessage'}&nbsp;<span style="color: #A0A0A0;font-weight: normal;">-&nbsp;<?php $a=getFieldBy($vo['sendid'], 'id', 'content', 'MisMessage');if(!strpos($a,'<br/>') && !strpos($a,'<br />')){echo strip_tags($a);}else if(strpos($a,'<br/>')){echo strip_tags(substr($a,0,strpos($a,'<br/>')));}else{echo strip_tags(substr($a,0,strpos($a,'<br />')));};?></span></div></td>
+    						<td style="width:150px;">{$vo.createtime|transTime='Y-m-d H:i'}</td>
+    						<td>
+    						<a href="javascript:void(0);" important="{$vo.important}" relid="{$vo.id}" onclick="onChangeImportant(event,this);">
+    							<if condition="$vo['important'] eq '1'">
+    								<span class="xyStarActive" title="">&nbsp;&nbsp;</span>
+    							<else/>
+    								<span class="xyStar" title="">&nbsp;&nbsp;</span>
+    							</if>
+    						</a>
+    						</td>
+    					</tr>
+    					</volist>
+    				</tbody>
+    			</table>
+            </div>
+            <div class="panelBar panelPageBar">
+                <div class="pages"><span>共{$totalCount}条</span></div>
+                <div class="pagination" rel="{$rel_id_name}" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+            </div>
+		</div>
+	</div>
+</div>
+</div>-->

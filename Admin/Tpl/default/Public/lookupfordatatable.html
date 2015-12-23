@@ -1,0 +1,437 @@
+<script>
+var box = $.pdialog.getCurrent();
+var $box = $(".sourcetable",box);
+//主数据复选框点击，带出单个主数据的子数据
+$(function(){
+	var samefield='xingming';
+	$("input[type='checkbox']",$box).click(function(){
+		var $this = $(this);
+		var checkval = $this.val();
+		var _this = $(this).closest('tr').find("input[name='"+samefield+"']").val();
+		var obj = $("input[type='checkbox']:checked",$box);
+		obj.each(function(){
+			var pre = $(this).closest('tr').find("input[name='"+samefield+"']").val();
+			if(pre != _this){
+				$this.attr("checked",false);
+			}
+		});
+		if($this.attr('checked')){
+			var url="__URL__/lookupsons";
+			var id = $this.val();
+			$.ajax({
+				type:"POST",
+				data:{id:id},
+				url:url,
+				success:function(response){
+				var data = JSON.parse(response);					
+				var html =  '<div class="tabs" currentIndex="0" eventType="click">';
+					html += '	<div class="tabsHeader">';
+					html += '		<div class="tabsHeaderContent">';
+					html += '			<ul>';
+					$.each(data,function(i,v){
+						html += '<li><a href="javascript:;"><span>'+v.title+'</span></a></li>';
+					})						
+					
+				
+				
+					html += '			</ul>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="tabsContent" layoutH="">';
+					$.each(data,function(i,v){
+						html += '	<div>';
+						html += '		<table class="tml_set_table tml_task_list">';
+						html += '			<tr>';
+						html += '				<td>';
+						html += '					<input type="checkbox" onclick="choisealldata(this);" groupss="'+i+'">';
+						html += '				</td>';
+						$.each(v.fieldstitle,function(ii,vv){
+							html += '			<td>';
+							html += vv;
+							html += '</td>';
+						});				
+						html += '</tr>';
+						
+						$.each(v.list,function(iii,vvv){
+							html += '<tr>';
+							html += '<td>';
+							var key='';
+							var name='';
+							html += '<input type="checkbox" onclick="choisedata(this);" name="'+i+'" upkey="'+checkval+'" value="'+vvv.json_code_key+'">';
+							html += '<input type="hidden" name="choise" value=\''+vvv.json_code+'\'>';
+							html += '</td>';
+							$.each(vvv,function(iiii,vvvv){
+								if(iiii=='json_code') return;
+								if(iiii=='json_code_key') return;
+								html += '<td>';
+								html += vvvv;
+								html += '</td>';
+							});
+							html += '</tr>';
+						});
+						
+						html += '		</table>';
+						html += '	</div>';
+					});
+					html += '	</div>';
+					html += '</div>';			
+					//html += '<div><a class="tml-btn" href="javascript:bringall()" title="查找带回">确定</a></div>';
+					html += '<div align="center"><button onclick="keyitijiaole();" >可以提交了</button></div>';
+					$("div.bringsons",box).html(html).initUI();
+				},
+			});	
+			
+		}else{
+			$("div.bringsons",box).html('');
+			$(".datahidden").find("input."+$(this).val()).remove();
+		}		
+	});
+})
+//主数据选择后 子数据单个复选框点击添加/删除 隐藏项
+function choisedata(obj){
+	var addbox = $(".datahidden");
+	var classkey = $(obj).val();
+	var upkey = $(obj).attr('upkey');
+	var classname = $(obj).closest('td').find('input[type="hidden"]').val();
+	var _name = $(obj).closest('div').find("input[type='checkbox']:first").attr('groupss');
+	if($(obj).attr("checked")){
+		addbox.append('<input type="hidden" class="'+upkey+' '+classkey+' '+_name+'" value=\''+classname+'\'>');
+	}else{
+		$('input.'+classkey,addbox).remove();
+	}
+}
+//主数据选择后 子数据全选添加/删除 隐藏项
+function choisealldata(obj){
+	var bringbox = $("div.bringsons",box);
+	var val = $(obj).attr('groupss');
+	if($(obj).attr('checked')){
+		$('input[name="'+val+'"]').attr('checked','checked');
+	}else{
+		$('input[name="'+val+'"]').attr('checked',false);
+	}
+	var addbox = $(".datahidden");
+	var _name = $(obj).attr('groupss');
+	if($(obj).attr("checked")){
+		$('input[name='+_name+']',bringbox).each(function(){
+			var classkey = $(this).val();
+			var upkey = $(this).attr('upkey');
+			var classname = $(this).closest('td').find('input[type="hidden"]').val();
+			addbox.append('<input type="hidden" class="'+upkey+' '+classkey+' '+_name+'" value=\''+classname+'\' >');
+		})
+	}else{
+		$('input.'+_name,addbox).remove();
+	}
+}
+//可以提交了
+function keyitijiaole(){
+	var data = $("div.datahidden").find("input[type='hidden']");
+	//console.log(data);
+	$.each(data , function(k ,v){
+		if(k==0){
+			astr=$(this).val();
+		}else{
+			astr+=','+$(this).val();
+		}
+	});
+	if(astr){
+		astr = '['+astr+']';
+		var arr = $.json2arr(astr);
+		//console.log(arr);
+		var datatablelookup1 = initTableWNEWOne("#into_table_new_one");
+		datatablelookup1.lookupAddRow(arr);
+	}
+	$.pdialog.closeCurrent();
+	var json = $(":checked:first",$box).next("input").val();
+	alert(typeof(json));
+	$.bringBack(JSON.parse(json));
+}
+function reshowchoice(obj){
+	var addbox = $("div.datahidden",box);
+	var bringbox = $("div.bringsons",box);
+	var checkbox = $(obj).closest("tr").find("input[type='checkbox']");
+	var checkboxval = checkbox.val();
+	var checked = checkbox.attr('checked');
+	if(checkbox.attr('checked')){
+		checkbox.attr('checked',false);
+		//checkbox.click();
+		
+	}
+	
+	
+}
+
+/* //复选多个主数据，显示子数据
+function sons(){
+	var id='';
+	$(":checked",$box).each(function(){
+		if(id==false){
+			id +=  $(this).val();;
+		}else{
+			id += ','+ $(this).val();;
+		}
+	});
+	var url="__URL__/lookupsons";
+	$.ajax({
+		type:"POST",
+		data:{id:id},
+		url:url,
+		success:function(response){
+			var data = JSON.parse(response);
+			
+		var html =  '<div class="tabs" currentIndex="0" eventType="click">';
+			html += '	<div class="tabsHeader">';
+			html += '		<div class="tabsHeaderContent">';
+			html += '			<ul>';
+			$.each(data,function(i,v){
+				html += '<li><a href="javascript:;"><span>'+v.title+'</span></a></li>';
+			})						
+			
+		
+		
+			html += '			</ul>';
+			html += '		</div>';
+			html += '	</div>';
+			html += '	<div class="tabsContent" layoutH="">';
+			$.each(data,function(i,v){
+				html += '	<div>';
+				html += '		<table class="tml_set_table tml_task_list">';
+				html += '			<tr>';
+				html += '				<td>';
+				html += '					<input type="checkbox" class="checkboxCtrl" group="'+i+'">';
+				html += '				</td>';
+				$.each(v.fieldstitle,function(ii,vv){
+					html += '			<td>';
+					html += vv;
+					html += '</td>';
+				});				
+				html += '</tr>';
+				
+				$.each(v.list,function(iii,vvv){
+					html += '<tr>';
+					html += '<td>';
+					html += '<input type="checkbox" name="'+i+'" value=\''+vvv.json_code+'\'>';
+					html += '</td>';
+					$.each(vvv,function(iiii,vvvv){
+						if(iiii=='json_code') return;
+						html += '<td>';
+						html += vvvv;
+						html += '</td>';
+					});
+					html += '</tr>';
+				});
+				
+				html += '		</table>';
+				html += '	</div>';
+			});
+			html += '	</div>';
+			html += '</div>';			
+			html += '<div><a class="tml-btn" href="javascript:bringall()" title="查找带回">确定</a></div>';
+			$("div.bringsons",box).html(html).initUI();
+		},
+	});	
+}
+function lookupQuickAdd($form) {
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			dialogSearch($("#lookupGeneralForm")[0]);
+		}
+	});
+}
+function ondblclickBringBack($lookupJson){
+	$("a.btnSelect").click();
+	//$.bringBack($lookupJson);
+}
+//右侧按钮选择带回
+function bringbacksons(obj,id){
+	var url="__URL__/lookupsons";
+	$.ajax({
+		type:"POST",
+		data:{id:id},
+		url:url,
+		success:function(response){
+			var data = JSON.parse(response);
+		var html =  '<div class="tabs" currentIndex="0" eventType="click">';
+			html += '	<div class="tabsHeader">';
+			html += '		<div class="tabsHeaderContent">';
+			html += '			<ul>';
+			$.each(data,function(i,v){
+				html += '<li><a href="javascript:;"><span>'+v.title+'</span></a></li>';
+			})					
+			html += '			</ul>';
+			html += '		</div>';
+			html += '	</div>';
+			html += '	<div class="tabsContent" layoutH="">';
+			$.each(data,function(i,v){
+				html += '	<div>';
+				html += '		<table class="tml_set_table tml_task_list">';
+				html += '			<tr>';
+				html += '				<td>';
+				html += '					<input type="checkbox" class="checkboxCtrl" group="'+i+'">';
+				html += '				</td>';
+				$.each(v.fieldstitle,function(ii,vv){
+					html += '			<td>';
+					html += vv;
+					html += '</td>';
+				});				
+				html += '</tr>';
+				$.each(v.list,function(iii,vvv){
+					html += '<tr>';
+					html += '<td>';
+					html += '<input type="checkbox" name="'+i+'" value=\''+vvv.json_code+'\'>';
+					html += '</td>';
+					$.each(vvv,function(iiii,vvvv){
+						if(iiii=='json_code') return;
+						html += '<td>';
+						html += vvvv;
+						html += '</td>';
+					});
+					html += '</tr>';
+				});
+				
+				html += '		</table>';
+				html += '	</div>';
+			});
+			html += '	</div>';
+			html += '</div>';			
+			html += '<div><a class="tml-btn" href="javascript:bringall()" title="查找带回">确定</a></div>';
+			$("div.bringsons",box).html(html).initUI();
+		},
+	});			
+	$("input[name='bringbackjson']",box).val($(obj).attr("bval"));
+} */
+//关闭页面 带回数据
+function bringall(){
+	var json = JSON.parse($("input[name='bringbackjson']",box).val());
+	$.bringBack(json);
+}
+</script>
+<div class="pageContent">
+	<div class="pageFormContent applecloth anchorsToolBarParen" layoutH="250">
+		<if condition="$tplName">
+		<div class="xyEditForm" style="border-top-width:1px;padding:4px;">
+			<form method="post" action="__URL__/lookupQuickInsert" class="pageForm required-validate" enctype="multipart/form-data" onsubmit="return lookupQuickAdd(this);">
+				<input type="hidden" name="quickInsertModel" value="{$model}" />
+				<fieldset>
+					<legend>快速新增</legend>
+					<include file="$tplName"/>
+					<div class="buttonActive right">
+						<div class="buttonContent">
+							<button type="submit">{$Think.lang.save}</button>
+						</div>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+		</if>
+		<form id="pagerForm" action="__URL__/lookupGeneral" method="post">
+			<input type="hidden" name="pageNum" value="1"/>
+			<input type="hidden" name="lookuptodatatable" value="2" />
+			<input type="hidden" name="orderField" value="{$order}" />
+			<input type="hidden" name="orderDirection" value="{$sort}" />
+			<input type="hidden" name="field" value="{$field}" />
+			<input type="hidden" name="deptid" value="{$deptid}" />
+			<input type="hidden" name="model" value="{$model}" />
+			<input type="hidden" name="conditions" value="{$conditions}" />
+			<input type="hidden" name="filterfield" value="{$filterfield}" />
+		</form>
+		<div class="panelBar">
+			<form id="lookupGeneralForm" onsubmit="return dialogSearch(this);" rel="pagerForm" action="__URL__/lookupGeneral" method="post">
+				<input type="hidden" name="field" value="{$field}" />
+				
+				<input type="hidden" name="lookuptodatatable" value="2" />
+				<input type="hidden" name="model" value="{$model}" />
+				<input type="hidden" name="deptid" value="{$deptid}" />
+				<input type="hidden" name="conditions" value="{$conditions}" />
+				<input type="hidden" name="filterfield" value="{$filterfield}" />
+				<div class="searchBar">
+	                  <table class="searchContent">
+						<tr>
+							<td class="tml_select_option_left">
+								<select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+									<volist id="qsl" name="quickSearchList">
+										<option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+									</volist>
+								</select>
+								<!-- <input type="hidden" name="ortype" value="{$onetype}" /> -->
+								<input type="hidden" name="time" value="{$time}" />
+							</td>
+							<td class="tml_select_option_center">
+								<volist id="qsl" name="quickSearchList">
+									<if condition="$qsl['quickname'] eq $quicksearchby">
+										<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+											{$qsl['html']}
+										</div>
+									<else/>
+										<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+											{$qsl['html']}
+										</div>
+									</if>
+								</volist>
+							</td>
+							<td class="tml_select_option_right">
+								<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+							</td>
+							<td>
+								<a class="xyAdvancedSearch" href="__APP__/Search/advancedsearch/model/{$model}" rel="__MODULE__advancedsubsearch" width="700" height="500" target="dialog" mask="true">高级检索</a>
+							</td>
+						</tr>
+					</table>
+	              </div>
+	          </form>
+		</div>
+		<div> <input type="hidden" name="bringbackjson" value=""></div>
+		<table class="sourcetable" layoutH="400" targetType="dialog" width="100%">
+			<thead>
+				<tr>
+				<th></th>
+					<volist id="vos" name="detailList">
+				    	<if condition="$vos[shows] eq 1"><th <if condition="$vos[widths]">width="{$vos[widths]}"</if><if condition="$vos[sorts]">orderField="{$vos[sortname]}" class="{$sort}"</if>>{$vos[showname]}</th></if>	<!--类型-->
+				    </volist>
+					<!-- <th>查找带回</th> -->
+				</tr>
+			</thead>
+			<tbody>
+				<volist id="vo2" name="list" key="key2">
+					<tr ondblclick='ondblclickBringBack({$vo2["lookupJson"]});' onclick="reshowchoice(this);">
+						<td><input type="checkbox" name="id" value="{$vo2.id}"><input type="hidden" value='{$vo2.lookupJson}'></td>
+						<volist id="vo1" name="detailList">
+							<if condition="$vo1[shows] eq 1">
+								<td width="{$vo1[widths]}">
+									<if condition="count($vo1['func']) gt 0">
+										<volist name="vo1.func" id="nam">
+											<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+											{:getConfigFunction($vo2[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+											<input type="hidden" name="{$vo1.name}" value="{$vo2[$vo1['name']]}">
+											<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}
+											<input type="hidden" name="{$vo1.name}" value="{$vo2[$vo1['name']]}">
+											</if>
+										</volist>
+									<else />
+									{$vo2[$vo1['name']]}
+									<input type="hidden" name="{$vo1.name}" value="{$vo2[$vo1['name']]}">
+									</if>
+								</td>
+							</if>
+						</volist>
+						<!-- <td><a class="btnSelect" href='javascript:$.bringBack({$vo2["lookupJson"]})' title="查找带回">选择</a></td> -->
+						<!-- <td><a class="btnSelect"  bval='{$vo2.lookupJson}'  onclick='bringbacksons(this,"{$vo2.id}");' title="选择"></a></td> -->
+					</tr>
+			    </volist>
+			</tbody>
+		</table>
+		<!-- <button onclick="sons();">选择</button> -->
+		<div class="panelBar panelPageBar">
+			<div class="pages">
+				<span>共{$totalCount}条</span>
+			</div>
+			<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}">
+			</div>
+		</div>
+	</div>
+	<div class="pageFormContent applecloth anchorsToolBarParen" layoutH="200">
+		<div class="bringsons"></div>		
+		<div class="datahidden"></div>	
+		
+	</div>	
+</div>

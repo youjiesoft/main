@@ -1,0 +1,234 @@
+
+<script>
+$(function(){
+	var box = $('div.page');//$.pdialog.getCurrent();
+	// 禁止重复的内容
+	var forbidArr = ['year','moth','day','createid','companyid','departmentid'];
+	// 已使用的内容
+	var curuserdArr=Array();
+	
+	// 给每个下拉框绑定事件 
+	$('select.nbm_change_item' , box).change(function(){
+		var curval=$(this).val();
+		var htmls='';
+		switch(curval){
+			case 'year':
+			case 'moth':
+			case 'day':
+				htmls="系统自动获取时间";
+				break;
+			case 'createid':
+				htmls="系统自动获取创建人编号";
+				break;
+			case 'companyid':
+				htmls="系统自动获取公司编号";
+				break;
+			case 'departmentid':
+				htmls="系统自动获取部门编号";
+				break;
+			default:
+				htmls='';
+				break;
+		}
+		var orderObj = $(this).parent().children('input.nbm_pre_item:first');
+		if(htmls == ''){
+			orderObj.attr('readonly',false);
+		}else{
+			orderObj.attr('readonly',true);
+		}
+		orderObj.prop('value',htmls);
+		setCurrentVal(this , curval);
+		orderObj.change();
+	});
+	$('input.nbm_pre_item').change(function(){
+		getRule();
+	});
+	function getRule(){
+		var temp=Array();
+		var showTemp=Array();
+		$('input.nbm_pre_item').each(function(){
+			if($(this).attr('readonly') =='readonly'){
+				var p =$(this).parent();
+				var text = p.find('select.nbm_change_item>option:selected').text();
+				temp.push(text);
+				var leng = $(this).parent().find('input[type="hidden"]').val();
+				showTemp.push(createStart(leng));
+			}else if($(this).attr('name') == 'num'){
+				temp.push('流水号');
+				var leng = $(this).val();
+				showTemp.push(createStartAppend(leng));
+			}else{
+				temp.push($(this).val());
+				showTemp.push($(this).val());
+			}
+			// 获取星号生成长度
+		});
+		$('input[type="text"][name="rule"]').val(temp.join('/'));
+		$('input[type="text"][name="preview"]').val(showTemp.join(' '));
+	}
+	function createStart(length){
+		var str='*';
+		
+		if(length!=''){
+			length = parseInt(length , 10);
+			if(typeof(length) == "number" && length >0){
+				for(var i=1 ; i<length; i ++){
+					str +='*';
+				}
+			}
+		}
+		return str;
+	}
+	function createStartAppend(length){
+		var str='';
+		if(length!=''){
+			length = parseInt(length , 10);
+			if(typeof(length) == "number" && length >0){
+				for(var i=0 ; i<length-1; i ++){
+					str +='0';
+				}
+			}
+		}
+		return str+'1';
+	}
+	
+	function setCurrentVal(obj ,val){
+		val = isNullorEmpty(val)?val:' ';
+		// 将当前值临时保存
+		var original = $(obj).attr('curval');
+		$(obj).attr('curval' , val);
+		// 设置已用值不可选中 
+		setDisItem();
+	}
+	function setDisItem(obj){
+		// 先将所有项都设置为可用
+		$('select.nbm_change_item',box).find('option').attr('disabled',false);
+		// 得到当前所有已用的项 
+		$('select.nbm_change_item',box).each(function(){
+			if($.inArray($(this).attr('curval'),forbidArr)>-1){
+				// 记录到已使用记录中
+				isNullorEmpty($(this).attr('curval'))?curuserdArr.push($(this).attr('curval')):'';
+			}
+		});
+		$.each(curuserdArr , function(i , v){
+			//$('select.nbm_change_item',box).val('');
+			//$(this).logs('我要设置为不可用的项:'+v);
+			$('select.nbm_change_item',box).find('option[value="'+v+'"]').attr('disabled',true);
+		});
+		curuserdArr=Array();
+	}
+});
+</script>
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$id}" >
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>关联表名：</label>
+				<input type="text" class="required" name="id" value="{$tablename}" readonly />
+			</div>
+				<span class="helpInline tml-form-text" style="color:red;">---->输入主表名</span>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>对象规则：</label>
+				<input type="text" class="required" name="rulename" value="{$modeltitle}" readonly />
+			</div>
+				<span class="helpInline tml-form-text" style="color:red;">---->单据对象名</span>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<input type="checkbox" name="writable" value="1">编码可修改
+			</div>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<input type="checkbox" name="status" value="1">自动生成编码开启
+			</div>
+		</div>		
+		<div class="tml-row">
+		   <div class="tml-form-row">		
+				<label>前缀一：</label>
+				<select name="prefix1" index="nbm_pre_1" class=" nbm_change_item">
+				<option value="0">请选择</option>
+                 {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name'))}
+				</select>
+				<input type="hidden" name="prefix1_long" value="4" />
+				<input type="text"   class="nbm_pre_item" maxlength="10" name="prefix1_value"  value="" />
+			</div>		
+		</div>
+		<div class="tml-row">
+		   <div class="tml-form-row">
+				<label>前缀二：</label>
+				<select name="prefix2" index="nbm_pre_2" class="nbm_change_item">
+				<option value="0">请选择</option>
+                 {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name'))}
+				</select>
+				<input type="hidden"    name="prefix2_long" value="3" />
+				<input type="text"   class="nbm_pre_item" maxlength="10"  name="prefix2_value" value="" />
+			</div>		
+		</div>
+		<div class="tml-row">
+		     <div class="tml-form-row">
+				<label>前缀三：</label>
+				<select name="prefix3" index="nbm_pre_3" class=" nbm_change_item">
+				<option value="0">请选择</option>
+                 {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name'))}
+				</select>
+				<input type="hidden"    name="prefix3_long" value="2" />
+				<input type="text"   class="nbm_pre_item"  maxlength="10" name="prefix3_value"  value="" />
+			  </div>		
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-row" >
+				<label>前缀四：</label>
+				<select name="prefix4" index="nbm_pre_4" class=" nbm_change_item">
+				<option value="0">请选择</option>
+                 {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name'))}
+				</select>
+				<input type="hidden"    maxlength="10" name="prefix4_long" value="3" />
+				<input type="text"   class="nbm_pre_item" name="prefix4_value"  value="" />
+			</div>				
+		</div>			
+		<div class="tml-row">
+			<div class="tml-form-row">
+				<label>流水号位数：</label>
+				<input type="text" class="required number nbm_pre_item" maxlength="5" name="num" value="{$vo.num}" />
+			</div>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-row">
+				<label>后缀：</label>
+				<input type="text" class="nbm_pre_item" maxlength="10" name="suffix" />
+			</div>				
+		</div>	
+		<div class="tml-row">
+            <div class="tml-form-row">
+				<label>单据编号：</label>
+				<input type="text" class="" minlength="5" maxlength="100" name="rule" value="" readonly />
+			</div>
+		</div>			
+		<div class="tml-row">
+            <div class="tml-form-row">
+				<label>规则预览：</label>
+				<input type="text" class="" minlength="5" maxlength="100" name="preview" value="" readonly />
+			</div>
+		</div>			
+
+	</div>
+	{:W('ShowAction')}
+		<!-- <div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemconfignumber_update">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div> -->
+	</form>
+
+	</div>
+</div>

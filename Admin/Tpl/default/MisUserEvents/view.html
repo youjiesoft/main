@@ -1,0 +1,78 @@
+<style>
+.pageFormContent2 p {
+	height: 21px;
+	width: 680px;
+}
+
+.eagleSearchDivInner {
+	display: block;
+	overflow: auto;
+	float: right;
+	width: auto;
+	height: auto;
+	min-width: 200px;
+	border: solid 1px #B8D0D6;
+	line-height: 21px;
+	background: #fff;
+}
+</style>
+<div class="pageContent">
+	<form method="post" action="" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone  );">
+		<div id="jbsxBox_mismessage_writeform_one" class="unitBox">
+			<input type="hidden" name="commit" value="0">
+			<input type="hidden" name="id" value="{$vo.id}">
+			<input type="hidden" name="iseditor" value="1">
+			<div class="pageFormContent" layoutH="61">
+                <p style="width:100%;">
+                    <label>主题：</label>
+                    <input type="text" readonly="readonly" style="width:440px" value="{$vo.text}" name="text" size="70" />
+                </p>
+				<p style="width:100%;">
+					<label>关联人员：</label>
+					<input type="text" class="required textInput org.name" style="width:440px" name="personname" id="wl_user2edit" value="{$vo.personname}" readonly="readonly" />
+					<input type="hidden" value="{$vo.personid}" name="personid" class="org.mangid " id="wl_user3edit" />
+				</p>
+				<p style="width:50%;">
+					<label>开始时间：</label>
+					<input type="text" class="date" format="yyyy-MM-dd HH:mm"
+						readonly="readonly" name="startdate"  value="{$vo.startdate|transTime='Y-m-d H:i'}" />
+				</p>
+				<p style="width:50%;">
+					<label>结束时间：</label>
+					<input type="text" class="date" name="enddate"
+						format="yyyy-MM-dd HH:mm" readonly="readonly" value="{$vo.enddate|transTime='Y-m-d H:i'}" />
+				</p>
+				<dl class="nowrap">
+					<dt>主要类容：</dt>
+					<dd>
+						<textarea class="editor" name="details" rows="10" cols="52" tools="mini">{$vo.details}</textarea>
+					</dd>
+				</dl>
+				<if condition="$attarry">
+				<dl class="nowrap">
+					<dt>附件：</dt>
+					<dd>
+						<volist name="attarry" id="att">
+							<p style="padding:0;"><label>附件{$key+1}</label><a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+						</volist>
+					</dd>
+				</dl>
+			</if>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+                <if condition="$vo.userid eq $_SESSION['authId']">
+				    <li><a class="button" href="__URL__/edit/id/{$vo.id}" target="dialog" height="550" width="750" mask="true" rel="__MODULE__edit"><span>{$Think.lang.edit}</span></a></li>
+                </if>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.close}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

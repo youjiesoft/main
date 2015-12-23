@@ -1,0 +1,39 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$ztree};
+		var setting = {
+				view: {
+	               selectedMulti: false,
+	               fontCss: getFontCss
+	           },
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#MisSystemDepartmentcompany"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("MisSystemDepartmentcompany");
+		var valid = '{$deptid}';
+	    var nodes = zTree.getNodesByParam("id", valid, null);
+	    zTree.selectNode(nodes[0]);
+	});
+</script>
+<div class="treeleft">
+	<div class="collapse" layoutH="0">
+		<div class="toggleCollapse"><div></div></div>
+	</div>
+	<div class="close">
+		<div class="toggleCollapse"><h2></h2><div></div></div>
+		<div class="clearfix p5">
+			<div class="xysearcher">
+				<input type="text" id="MisSystemDepartmentcompanyNodeKeys" />
+				<button class="searchBtn" onclick="SearchZTreeNode('MisSystemDepartmentcompany','MisSystemDepartmentcompanyNodeKeys')">搜索</button>
+			</div>
+		</div>
+		<ul id="MisSystemDepartmentcompany" class="ztree" layoutH="45"></ul>
+	</div>
+</div>
+ <div id="MisSystemDepartmentcompany_index" class="unitBox treeright">
+	<include file="MisSystemCompany:indexdeptlist" />
+</div>

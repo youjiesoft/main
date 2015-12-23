@@ -1,0 +1,71 @@
+<form id="pagerForm" action="__URL__/lookupproject" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<form rel="pagerForm" onsubmit="return dialogSearch(this);" action="__URL__/lookupproject" method="post">
+	<div class="pageHeader">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox" name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option  value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option  value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.subsearch}</button></div></div></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</form>
+<div class="pageContent">
+	<table class="table" layoutH="113" targetType="dialog" width="100%">
+		<thead>
+		<tr>
+			<th>项目编号</th>
+            <th>项目名称</th>
+            <th>业务员</th>
+            <th>项目类型</th>
+            <th>项目执行</th>
+            <th>查找带回</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr target="sid_node" rel="{$vo['id']}">
+				<td>{$vo['code']}</td>
+				<td>{$vo['name']}</td>
+                <td>{$vo['userid']|getFieldBy='id','name','User'}</td>
+                <td>{$vo['typeid']|getFieldBy='id','name','MisOrderTypes'}</td>
+                <td>{$vo['executiontypeid']|getFieldBy='id','name','MisExecutionType'}</td>
+                <td><a class="btnSelect" href="javascript:$.bringBack({ projectid:'{$vo.id}', projectcode:'{$vo.code}' ,projectname:'{$vo.name}'})" title="查找带回">选择</a></td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

@@ -1,0 +1,39 @@
+	<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insertsub/rel/MisSystemIntercalateMasBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<!-- 表单组合模式下的关联ID -->
+			<input type="hidden" name="masid" value="{$_REQUEST['masid']}">
+			
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>快捷导航名称：</label>
+						<input type="text" class="required" name="name" value="" />
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-row ">
+						<label>引用方式：</label>
+						<input   name="type" checked="checked" type="radio" value="1" />
+						 url跳转
+						<input  name="type" type="radio" value="2" /> 
+							执行方法
+					</div>
+				</div>
+				<div class="tml-row ">
+					<div class="tml-form-col" >
+						<label>方法名称：</label>
+						<input type="text" name="exemethod"  value="">
+					</div>
+					</div>
+				<div class="tml-row ">
+					<div class="tml-form-row " >
+						<label>url地址：</label>
+						<input type="text" name="url"  value="">
+					</div>
+					</div>
+				{:W('ShowAction')}
+			
+		</form>
+	</div>
+	</div>

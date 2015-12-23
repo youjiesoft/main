@@ -1,0 +1,76 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#dynamicconfrowaccess1"), setting, zNodes);
+});
+//lookup升级版width自适应
+$(function() {
+	var lookupTotalWidth = $("div.select_top_lay").width(); //获取弹框的总宽度
+	var leftTreeWidth = $("div.stl_left").width(); //获取左边树的宽度
+	$("div.stl_right").css("width",lookupTotalWidth-leftTreeWidth-2); //计算出右边列表的宽度
+})
+</script>
+
+<div  id="checkUserObj" class="pageContent">
+		<div class="select_top_lay">
+            <div class="stl_left">
+				<!-- tree -->
+				<div class="treeleft">
+					<div class="close">
+					<div class="clearfix p5">
+					<div class="member_searcher" style="margin:0 auto;">
+								<input id="misrowaccessrightSearchNodeKeys" class="add_key left" type="text" name="" placeholder="请输入查找词">
+								<button class="btn_member icon-search right enterIndex" type="button" onclick="SearchZTreeNode('dynamicconfrowaccess1','misrowaccessrightSearchNodeKeys')"></button>
+					</div>
+						<ul id="dynamicconfrowaccess1" class="ztree" layoutH="200" ></ul>
+					</div>
+					</div>
+				</div>
+				<!-- tree end -->
+			</div>
+            <div class="stl_right">
+				<!-- content list -->
+				<div id="misrowaccessright1" class="positiveBox treeright">
+					<include file="lookupBackendQuyuList" />
+				</div>
+				<!-- content list end -->
+			</div>
+            <div class="clear"></div>
+        </div>
+		<!-- 选中列表 -->
+	
+		<div class="select_center_lay">
+            <ul class="user_selected_ul selected_member">
+            </ul>
+        </div>
+		<!-- 选中列表 end -->
+		<div class="select_bottom_lay">
+			<div class="formBar">
+				<ul>
+					<li>
+						<!-- onclick="saveSelectUserList();" -->
+						<button class="tml_select_btn tml_formBar_btn_blue nbm_btn_lookup_save xyAdvancedSearch" >确定</button>
+					</li>
+					<li>
+					<!-- onclick="clearSelectUserList();" -->
+						<button class="tml_select_btn tml_formBar_btn_blue nbm_btn_lookup_clear" >清除</button>
+					</li>
+					<li>
+					<!-- onclick = "CloseSelectUserList()" -->
+						<button class="tml_select_btn tml_formBar_btn_red nbm_btn_lookup_cancel" >取消</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+</div>

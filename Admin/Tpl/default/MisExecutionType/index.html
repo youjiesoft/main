@@ -1,0 +1,48 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$mistree};
+		var setting = {
+				view: {
+	               selectedMulti: false,
+	               fontCss: getFontCss
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#misexecution_ztree"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("misexecution_ztree");
+	    var valid='{$selectednodeid}';
+	    var nodes = zTree.getNodesByParam("id", valid, null);
+	    zTree.selectNode(nodes[0]);
+	});
+</script>
+<div class="pageContent">
+	<div class="tabs">
+		<div class="tabsContent">
+			<div>
+                <div style=" float:left; display:block; overflow:auto; width:200px; border:solid 1px #CCC; line-height:21px;"  class="treeleft">
+                    <div class="collapse" style="display:none;width:24px;height:auto;border:0;" layoutH="0">
+                        <div class="toggleCollapse"><div></div></div>
+                    </div>
+                    <div class="close">
+                        <div class="toggleCollapse" ><h2></h2><div></div></div>
+                        <div class="clearfix" style="border:0 solid #95B8E7;border-width:1px 0;padding:4px;">
+							<input class="tree-search-input" type="text" id="MisExecutionTypeSearchNodeKeys" />
+							<div class="buttonActive"><div class="buttonContent" onclick="SearchZTreeNode('misexecution_ztree','MisExecutionTypeSearchNodeKeys')"><button>搜索</button></div></div>
+						</div>
+                        <ul id="misexecution_ztree" class="ztree" layoutH="82"></ul>
+                    </div>
+                </div>
+                <div id="misexecutiontype" class="unitBox treeright">
+                    <include file="typeindex"  />
+                </div>
+			</div>
+		</div>
+		<div class="tabsFooter">
+			<div class="tabsFooterContent"></div>
+		</div>
+	</div>
+</div>

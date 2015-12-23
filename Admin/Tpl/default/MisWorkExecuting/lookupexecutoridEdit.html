@@ -1,0 +1,52 @@
+<script>
+//清空
+function clearworkExecuting(ulId){
+    $("#"+ulId).empty();
+    var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" onfocus="addressee.clearVal(this);" autofocus="autofocus" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput addresseeTextInput" inputName="turnexecutorid" chainname="informpersonname" tabindex="1" autocomplete="off"></li>';
+    $('#'+ulId).append($string);
+    $('#'+ulId).find('input').focus();
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/lookupexecutoridEdit/rel/{$rel}" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$tableid}"/>
+		<input type="hidden" name="md" value="{$md}"/>
+		<input type="hidden" name="stepVal" value="1"/>
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<h2 class="contentTitle contentTitle_center">执行人修改
+		</h2>
+		<div class="pageFormContent" layoutH="108">
+			<div class="tml-form-row">
+				<label>执行人</label>
+				<ul class="addressee left checkTo" id="misworkexecutingexecutoridedit" style="width:80%;">
+				  	<volist name="turnexecutoridArr" id="personide">
+				  	<if condition="$personide">
+					  	<li>
+							<input type='hidden' name="turnexecutorid[]" value="{$personide}"/>
+							<span>{$personide|getFieldBy='id','name','user'}</span>
+							<a class='delAddressee' title='删除' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>
+						</li>
+					</if>
+				  </volist>
+				  	<li class="addresseeText">
+	                     <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" onfocus="addressee.clearVal(this);" autofocus="autofocus" type="text" checkfor="MisMessage" callback="addresseeInput" 
+	                     show="" class="checkByInput addresseeTextInput" inputName="turnexecutorid" chainname="informpersonname" tabindex="1" autocomplete="off">
+                     </li>
+                 </ul>
+                   <!-- checkFor带回来的值 -->
+				<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="misworkexecutingexecutoridedit" data="informpersonname,username,text;turnexecutorid,userid,hidden,1">查找带回</a>&nbsp;
+				<a href="javascript:;" class="input-addon input-addon-recycle" onclick="clearworkExecuting('misworkexecutingexecutoridedit');"></a>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button class="tml-btn tml-btn-blue" type="submit">{$Think.lang.save}</button>
+				</li>
+				<li>
+					<button type="button" class="close tml-btn">{$Think.lang.cancel}</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

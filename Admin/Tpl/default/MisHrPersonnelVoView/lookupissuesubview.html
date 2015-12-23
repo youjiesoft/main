@@ -1,0 +1,30 @@
+<div class="page">
+	<div class="pageContent">
+	<div class="pageFormContent " layoutH="58">
+<table class="tml-table" width="100%">
+    <thead>
+        <tr>
+			<th width="120">装备编号</th>
+			<th width="100">装备名称</th>
+			<th width="40">单位</th>
+			<th>数量</th>
+			<th>单价</th>
+			<th>总金额</th>
+		</tr>
+    </thead>
+    <tbody id="MisEquipmentIssue_tbody">
+        <volist id="misEquipmentManagement" name="misEquipmentManagementlist" key="key2">
+            <tr target="sid_node">
+              	<td> <input type="hidden" name="manageid[{$key2}]" value="{$misEquipmentManagement['manageid']}"> {$misEquipmentManagement.manageid|getFieldBy='id','orderno','mis_equipment_management'}</td>
+              	<td class="Issue_name"> {$misEquipmentManagement.manageid|getFieldBy='id','name','mis_equipment_management'}</td>
+              	<td>  {$misEquipmentManagement.manageid|getFieldBy='id','unitid','mis_equipment_management'|getFieldBy='id','name','mis_product_unit'}</td>
+              	<td>  {$misEquipmentManagement.mqty|getDigits} </td>
+              	<td>  {$misEquipmentManagement.unitprice|getDigits}<input type="hidden" id="unitprice{$key2}" name="unitprice[{$key2}]" value="{$misEquipmentManagement.unitprice}"/></td>
+              	<td  class="applications_umamount" id="applications_umamount{$key2}"> {$misEquipmentManagement.mamount|getDigits}</td>
+            </tr>
+        </volist>
+    </tbody>
+</table>
+</div>
+</div>
+</div>

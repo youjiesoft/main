@@ -1,0 +1,125 @@
+<div class="page" class="">
+    <div class="pageContent">
+        <div class="clearfix xyTask">
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskCareTask">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                    <!-- 我关注的任务 -->
+                    <if condition='$infolist NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>任务名</th>
+                                    <th>执行人</th>
+                                    <th>难度</th>
+                                    <th>紧急程度</th>
+                                    <th>预计结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="infolistco" name="infolist">
+                                <if condition="$infolistco.isinfo">
+                                    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskadscription_edit">
+                                        <tr target="sid_node" rel="{$infolistco['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="630" dwidth="900" title="任务执行" drel="MisTaskAdscriptionedit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__APP__/MisTaskAdscription/edit/id/{$infolistco.id}");'>
+                                    <else/>
+                                        <tr>
+                                    </if>
+                                <else/>
+                                    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_trace">
+                                        <tr target="sid_node" rel="{$infolistco['taskid']}" onclick="onTrClickCheckbox(this,'id')" title="跟踪/查看任务" dheight="630" dwidth="900" drel="MisTaskInformationtrace" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/trace/identifying/1/id/{$infolistco.taskid}/teaceindex/1');">
+                                    <else/>
+                                        <tr>
+                                    </if>
+                                </if>
+                                    <td>{$infolistco['title']|missubstr=###,25,true}</td>
+                                    <td>{$infolistco['executeuser']|getFieldBy='id','name','user'}</td>
+                                    <td>{$infolistco['difficulty']|excelTplselected='1:简单,2:一般,3:困难,4:极难'}</td>
+                                    <td <if condition="$infolistco.urgentstatus eq 1">class="levelGreen"</if><if condition="$infolistco.urgentstatus eq 2">class="levelOrange"</if><if condition="$infolistco.urgentstatus eq 3">class="levelRed"</if>></td>
+                                    <td>{$infolistco['enddate']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskCareQuestion">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                 <!-- 我关注的问题 -->
+                    <if condition='$questionlist'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>标题</th>
+                                    <th>分类</th>
+                                    <th>解决</th>
+                                    <th>提问时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="questionlistvo" name="questionlist" key="key1">
+                            <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskquestion_edit">
+                                <tr target="sid_node" rel="{$questionlistvo['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="450" dwidth="600" title="查看问题" drel="MisTaskquestionedit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__APP__/MisTaskquestion/edit/id/{$questionlistvo.id}");'>
+                            <else/>
+                                <tr>
+                            </if>
+                                
+                                    <td>{$questionlistvo['title']|missubstr=###,25,true}</td>
+                                    <td>{$questionlistvo['categoryid']|getFieldBy='id','name','MisExpertQuestionType'}</td>
+                                    <td><if condition="$questionlistvo.selchildid">是<else/>否</if></td>
+                                    <td>{$questionlistvo['createtime']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskCareFault">
+                    <div class="xyTaskPanelHeaderCon">
+                    
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                     <!-- 我关注的缺陷 -->
+                    <if condition='$feedlist NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>关联任务</th>
+                                    <th>缺陷类容</th>
+                                    <th>解决</th>
+                                    <th>提出时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="feedlistvo" name="feedlist" key="key1">
+                                <tr target="" rel="{$feedlistvo['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="450" dwidth="700" title="缺陷处理查看" drel="" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/lookupsolve/id/{$feedlistvo['id']}/type/view");'>
+                                    <td>{$feedlistvo['taskid']|getFieldBy='id','title','mis_task'|missubstr=###,25,true}</td>
+                                    <td>{$feedlistvo['remark']|missubstr=###,25,true}</td>
+                                    <td>{$feedlistvo['issolve']|excelTplselected='1:是,0:否'}</td>
+                                    <td>{$feedlistvo['createtime']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

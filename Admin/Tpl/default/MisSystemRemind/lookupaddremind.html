@@ -1,0 +1,30 @@
+<script>
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupremindinsert/navTabId/__MODULE__" class="pageForm required validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="md" value="{$md}" />
+		<input type="hidden" name="type" value="2" />
+		<div class="pageFormContent" layoutH="57">
+			<div class="tml-row">
+			<div class="tml-form-col">
+				<label>提醒标题：</label>
+				<input type="text" class="required textInput" minlength="2" maxlength="25" name="title" size="30"/>
+			</div>
+			</div>
+            <div class="tml-row">
+			<div class="tml-form-col">
+				<label>条件：</label>
+                {:W('ShowAddResult', array('model'=>$md))}
+			</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+				<!--<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>-->
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

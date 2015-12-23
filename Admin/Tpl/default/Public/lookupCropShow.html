@@ -1,0 +1,58 @@
+<!-- 
+author : nbmxkj
+date : 2015-10-21
+desc : 图片剪裁操作页面模板
+ -->
+ <if condition="$src">
+<script src="__PUBLIC__/Js/noticejs/jquery.Jcrop.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/Css/jquery.Jcrop.css" type="text/css" />
+ <div  layoutH="40"  style="">
+ <form action="__URL__/lookupCropImage" method="post" onsubmit="return validateCallback(this, dialogAjaxDone);">
+ 		<input type="hidden" id="src" name="src" value="__PUBLIC__{$src}" />
+          <input type="hidden" id="x" name="pointx" value="0" />
+          <input type="hidden" id="y" name="pointxy" value="0" />
+          <input type="hidden" id="w" name="pointw" value="240" />
+          <input type="hidden" id="h" name="pointh" value="240" />
+          <input type="submit"  value="保存图片">
+   </form>
+   <div id="preview-pane">
+	    <div class="preview-container">
+	         <img class="jcrop-preview" id="cropbox" style="border:2px solid #f1f1f1;" src="__PUBLIC__{$src}?{:time()}" alt="Preview" >
+	    </div>
+    </div>
+ </div>
+ <script>
+ // minSize:[240,240],
+ // maxSize:[400,400],
+ var json = {
+			aspectRatio: 0,
+			onSelect: updateCoords,
+			allowSelect:0, //允许选择
+			allowResize:0, //是否允许调整大小
+			setSelect: [ 10, 10, 210, 110 ], // 初始化时默认圈中区域
+		};
+ console.info(json);
+var config = '{$config}';
+console.info(config);
+if(isNullorEmpty(config)){
+	config = $.parseJSON(config);
+	var temp = new Object();
+	for(var i in config){
+		temp[i] = typeof(config[i])=='string' ? (config[i]=='1'?1:0):config[i];
+	}
+	
+	console.info(temp);
+	json = $.extend({} , json , temp);
+}
+
+console.info(json);
+
+ $('#cropbox').Jcrop(json);
+ function updateCoords(c){
+		$('#x').val(c.x);
+		$('#y').val(c.y);
+		$('#w').val(c.w);
+		$('#h').val(c.h);
+	};
+ </script>
+ </if>

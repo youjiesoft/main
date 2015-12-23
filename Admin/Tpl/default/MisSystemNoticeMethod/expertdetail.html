@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>专家详细</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/normalize.css" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/main.css" />
+    </head>
+    <body>
+		<div class="k">
+			<div class="header">
+				<div class="container">
+					<h1 class="logo">
+						<if condition="$Copany_Info['picture']">
+							<img alt="logo" src="__PUBLIC__/Uploads/{$Copany_Info['picture']}" />
+							<else/>
+							<img alt="logo" src="__PUBLIC__/Images/sysAnnouncement/logo.png" />
+						</if>
+					</h1>
+					<h2 class="title">专家顾问</h2>
+					<div class="search header-search">
+						<form action="__URL__/experquestionlist" class="form search-form" method="get">
+							<input class="search-input" type="text" value="{$keywords}" name="keywords" placeholder="请输入专家姓名..."/>
+							<button class="search-btn" type="submit">搜索</button>
+							<div class="header-link"><a class="btn btn-info" href="__URL__/mesetquestion">我要提问</a></div>
+						</form>
+					</div>
+				</div>
+			</div>
+			<!-- end header -->
+	
+			<div class="container clearfix">
+				<div class="main">
+					<div class="">
+						<div class="box2">
+							<div class="box2-header">
+								<div class="box-item">
+									<a class="expert-ask" href="__URL__/expertquestion">返回首页 &gt;&gt;</a>
+								</div>
+								<h2 class="box2-title"><span class="box2-title-txt">专家详情</span></h2>
+							</div>
+							<div class="box2-body article-list-wrap">
+								<div class="">
+									<div class="expert-single-header clearfix">
+										<h3><strong class="expert-single-name">{$expertInfo['userid']|getfieldby='id','name','User'}</strong>&nbsp;&nbsp;&nbsp;{$expertInfo.typeid|getfieldby='id','name','mis_expert_question_type'}</h3>
+										<div class="expert-single-info">
+											<p class="expert-info-p">
+												<span class="expert-info-label">来自：</span>
+													{$expertInfo.expert_deptid|getfieldby="id","name","mis_system_department"}
+											</p>
+											<p class="expert-info-p">
+												<span class="expert-info-label">手机：</span>
+													{$expertInfo.tel}
+											</p>
+											<p class="expert-info-p">
+												<span class="expert-info-label">专业：</span>
+												{$expertInfo.major}
+											</p>
+										</div>
+										<div class="expert-single-info">
+											<p class="expert-info-p">
+												<span class="expert-info-label">QQ：</span>
+													{$expertInfo.qq}
+											</p>
+											<p class="expert-info-p">
+												<span class="expert-info-label">邮箱：</span>
+													{$expertInfo.email}
+											</p>
+											<p class="expert-info-p">
+												<span class="expert-info-label">职称：</span>
+												{$expertInfo.protitle}
+											</p>
+										</div>
+										<!-- <div class="expert-single-detail">
+											<div class="expert-star">
+												<span class="expert-star-c" style="width:98%;">98%</span>
+											</div>
+											<p><span class="expert-single-rate">98%</span> 好评(3091人评价)</p>
+											<div>
+												<span class="prof-info-box prof-info-line">
+													<strong class="prof-info-num">13561</strong>
+													回答数
+												</span>
+												<span class="prof-info-box prof-info-line">
+													<strong class="prof-info-num">483456</strong>
+													帮助人数
+												</span>
+											</div>
+										</div> -->
+										<!-- end expert-single-detail -->
+									</div><!-- end expert-single-header -->
+									<div class="prof-case">
+										<h4 class="prof-case-title">技术专长</h4>
+										<p>
+											&nbsp;&nbsp;&nbsp;&nbsp;{$expertInfo.expertise}
+										</p>				
+									</div>
+									<div class="prof-case">
+										<h4 class="prof-case-title">主要经历</h4>
+										<if condition="$explist">
+											<ol class="experience-list">
+											<volist name="explist" id="expl">
+												<li>
+													<span class="experience-time">{$expl['starttime']|date="Y-m",###}-{$expl['endtime']|date="Y-m",###}</span>
+													<span>{$expl['projectname']}&nbsp;&nbsp;&nbsp;{$expl['position']}</span>&nbsp;&nbsp;&nbsp;
+													<span>{$expl['remark']}</span>
+												</li>
+											</volist>
+											</ol>
+										<else/>
+											<div class="no-data">暂时没有相关经历</div>	
+										</if>
+									</div>
+									<div class="prof-case">
+										<h4 class="prof-case-title">实战经验</h4>
+										<if condition="$anwserList">
+											<!-- <ul class="quertion-list">
+												<volist name="anwserList" id="anw">
+													<li>
+														<span class="answer-time ml10">{$anw.createtime|date="Y-m-d h:i:s",###}</span>
+														<a class="question-title" href="#">{$anw.parentid|getfieldby='id','title','mis_expert_question_list'}</a>
+													</li>
+												</volist>
+											</ul> -->
+											<p>
+												&nbsp;&nbsp;&nbsp;&nbsp;{$expertInfo.remark}
+											</p>	
+										<else/>
+											<div class="no-data">暂时没有相关实战经验</div>	
+										</if>
+									</div>
+									<div class="prof-case">
+										<h4 class="prof-case-title">专业答疑</h4>
+										<if condition="$listcount gt 0">
+											<ul class="expert-data-list">
+											<volist name="list" id="anwq">
+												<li>
+													<p class="expert-data-ask">
+														<span class="icon i-question"></span>
+														<a class="question-title" href="__URL__/anwserdetail/quesid/{$anwq.id}">{$anwq.title}</a>
+														<span> <time datetime="2013-10-16">{$anwq.createtime|date="Y-m-d h:i:s",###}</time></span>
+													</p>
+														<volist name="anwq['anwserlist']" id="anlis">
+															<p class="expert-data-answer">
+																<span class="icon i-answer"></span>
+																{$anlis.content}
+															</p>
+														</volist>
+													<!--  
+														<p class="expert-data-comment">
+															<span class="icon i-good"></span>
+															<span class="icon-txt">提问者给了一个好评</span>
+														</p>
+													-->
+												</li>
+											</volist>
+											</ul>
+										<else/>
+											<div class="no-data">暂无该专家的数据,敬请期待.</div>
+										</if>
+										<div class="pagination">
+										{$show}
+										</div>
+									</div>
+								</div>
+							</div>
+						</div><!-- end box -->
+					</div>
+				</div><!-- end main -->
+				<div class="sidebar">
+					<div class="box2 box-hot">
+						<div class="box2-header">
+							<h2 class="box2-title"><span class="box2-title-txt">专家顾问</span></h2>
+						</div>
+						<div class="box2-body">
+							<div class="expert-single-port">
+								<div class="expert-single-photo">
+									<span class="expert-single-img">
+										<if condition="$expertInfo['picpath']">
+	                                    			<a><img alt="" src="__PUBLIC__/Uploads/{$expertInfo['picpath']}" width="80px" height="75px"/></a>
+	                                        	<else/>
+	                                        		<a><img alt="userpic" src="__PUBLIC__/Images/sysAnnouncement/user.gif" /></a>
+	                                   	</if>
+                                   	</span>
+								</div>
+								<div class="expert-single-shadow"></div>
+								<if condition="$link">
+										<a class="btn btn-warning" href="__URL__/mesetquestion/userid/{$expertInfo.userid}">向我咨询</a>
+									<else/>
+										<a class="btn btn-warning" href="__APP__/Public/login/">请先登录</a>
+								</if>
+							</div><!-- end expert-single-port -->
+							<div class="prof-aside">
+								<h3><a href="__URL__/expertlist"><span class="text-success">{$expertCount}</span>位专家为您服务</a></h3>
+								<ul class="prof-aside-list">
+									<if condition="$dexperlistcount gt 0">
+										<volist name="dexperlist" id="expinf">
+											<li>
+												<div class="clearfix">
+													<div class="prof-photo">
+														<a class="prof-img" href="__URL__/expertdetail/experid/{$expinf['id']}">
+															<if condition="$expinf['picpath']">
+					                                    			<img alt="" src="__PUBLIC__/Uploads/{$expinf['picpath']}" width="60px" height="64px"/>
+					                                        	<else/>
+					                                        		<img alt="" src="__PUBLIC__/Images/sysAnnouncement/user.gif" />
+	                                   						</if>
+														</a>
+													</div>
+													<div class="prof-info-list">
+														<a class="prof-info-name" href="__URL__/expertdetail/experid/{$expinf['id']}">
+														<strong>{$expinf.userid|getFieldBy='id','name','user'}</strong></a>
+														<span class="text-muted">{$expinf.typeid|getFieldBy='id','name','mis_expert_question_type'}</span>
+														<p class="hellip text-muted">{$expinf.email}</p>
+													</div>
+												</div>
+											</li>
+										</volist>
+									<else/>
+										<li>
+											<a class="prof-info-name" href="#"><strong>暂无专家,敬请期待!</strong></a>
+										</li>
+									</if>
+								</ul>
+								<h4 class="visit-count">
+									<!-- 
+										<span>本页浏览量</span>
+										<span>
+											<span class="visit-count-num">9</span>
+											<span class="visit-count-num">7</span>
+											<span class="visit-count-num">6</span>
+										</span>
+									 -->
+								</h4>
+							</div><!-- end prof-aside -->
+						</div>
+					</div><!-- end box -->
+					
+				  <!--  增加行政通知公告部分  -->
+                   <include file="conrep"/>
+					
+				</div><!-- end sidebar -->
+			</div>
+			<!-- end container -->
+	
+			<div class="footer">
+				<p>Copyright © 2014 {:C('COPYRIGHT')}</p>
+			</div>
+		</div>
+<script>
+</script>
+    </body>
+</html>

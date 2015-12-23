@@ -1,0 +1,41 @@
+<script>
+//左边树形菜单
+$(document).ready(function(){
+    var zNodes = {$mperfotypeTreearr};
+    var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+    $.fn.zTree.init($("#MisPerformanceTypeZoneIndex"), setting, zNodes);
+    //默认选中第一个
+    var zTree = $.fn.zTree.getZTreeObj("MisPerformanceTypeZoneIndex");
+	var valid='1';
+	var nodes = zTree.getNodesByParam("id", valid, null);
+	zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div>
+	{:W("ShowToLevelMenu")}
+		<div class="treeleft">
+	<div class="work_statement"></div>
+			<div class="collapse" layoutH="0">
+				<div class="toggleCollapse"><div></div></div>
+			</div>
+			<div class="close">
+				<div class="toggleCollapse" ><h2></h2></div>
+				<ul id="MisPerformanceTypeZoneIndex" class="ztree" layoutH="10"></ul>
+			</div>
+		</div>
+		<div id="MisPerformanceTypeRelIndex" class="unitBox treeright">
+			<include file="unitlist" />
+		</div>
+	</div>
+</div>

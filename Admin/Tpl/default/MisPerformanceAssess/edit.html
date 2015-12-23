@@ -1,0 +1,83 @@
+<script>
+	/*
+	 * @Title: resetPlan
+	 * @Description: todo(重置)
+	 * @param 当前FORM变得 $form
+	 * @author 杨东 
+	 * @date 2013-8-14 下午3:01:45 
+	*/
+	function resetPlan($form){
+		$($form).attr("action", TP_APP + "/MisPerformanceAssess/resetPlan/navTabId/MisPerformanceAssessedit");
+		return validateCallback($form,navTabAjaxDone);
+	}
+	/*
+	 * @Title: opanPlanDetail
+	 * @Description: todo(双击打开考核明细页面)   
+	 * @param 当前模版 m
+	 * @param 计划id $planid
+	 * @param 当前计划对应的被考核人 $userid
+	 * @param 当前数据ID $id
+	 * @author 杨东 
+	 * @date 2013-8-14 下午3:01:45 
+	*/
+	function opanPlanDetail(m,$planid,$userid,$id){
+		var title = "考核明细";
+		var rel = m+"plandetail";
+		var options={};
+		options.width = 800;
+		options.height = 600;
+		options.mask = true;
+		var url = TP_APP + "/" + m + "/opanPlanDetail/planid/" + $planid + "/userid/" + $userid + "/id/" +$id;
+		$.pdialog.open(url,rel,title,options);//打开dialog
+	}
+</script>
+<form method="post" action="__URL__/countPlan/navTabId/__MODULE__edit" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+<input type="hidden" name="id" value="{$id}" />
+<div class="pageContent" layoutH="0">
+	<!-- 操作栏  start -->
+	<div class="panelBar">
+		<div class="tml-mt5">
+			<if condition="$vo.ostatus eq 4">
+				<button class="tml-icon-btn tml-mr5" type="button" onclick="resetPlan(this.form);"><span class="tml-icon tml-icon-add tml-mr3"></span><span class="tml-icon-text">重置</span></button>
+				<a class="tml-icon-btn tml-mr5" href="__URL__/amendscore/id/{sid_node}/planid/{$id}" title="修正总分" target="dialog" mask="true" width="370" height="250" rel="__MODULE_amendscore"><span class="tml-icon tml-icon-add tml-mr3"></span><span class="tml-icon-text">修正</span></a>
+				<a class="tml-icon-btn tml-mr5" href="__URL__/commentsConclusions/id/{sid_node}" title="评语及总结" target="dialog" mask="true" width="370" height="500" rel="__MODULE_commentsConclusions"><span class="tml-icon tml-icon-comment tml-mr3"></span><span class="tml-icon-text">评语及总结</span></a>
+			<else />
+				<button class="tml-icon-text tml-icon-btn tml-mr5" type="submit"><span class="tml-icon tml-icon-calculator tml-mr3"></span><span class="tml-icon-text">计算</span></button>
+			</if>
+		</div>
+	</div>
+	<!-- 操作栏  end -->
+	<!-- 内容start -->
+	<div class="pageContent tml-bg-white" layoutH="41">
+		<table class="list tml-table-w">
+			<thead>
+				<tr>
+					<th>序号</th>
+					<th>员工姓名</th>
+					<th>员工编号</th>
+					<th>部门</th>
+					<th>职级</th>
+					<th>计算总分</th>
+					<th>修正总分</th>
+					<th>等级</th>
+				</tr>
+			</thead>
+			<tbody>
+				<volist id="byuser" name="byusers">
+					<tr target="sid_node" rel="{$byuser['paid']}" ondblclick="opanPlanDetail('__MODULE__','{$id}','{$byuser.id}','{$byuser.paid}');">
+						<td>{$key+1}</td>
+						<td>{$byuser["name"]}</td>
+						<td>{$byuser["orderno"]}</td>
+						<td>{$byuser["deptname"]}</td>
+						<td>{$byuser["dutyname"]}</td>
+						<td>{$byuser["totalscore"]}</td>
+						<td>{$byuser["amendscore"]}</td>
+						<td>{$byuser["level"]}</td>
+					</tr>
+				</volist>
+			</tbody>
+		</table>
+	</div>
+	<!-- 内容end -->
+</div>
+</form>

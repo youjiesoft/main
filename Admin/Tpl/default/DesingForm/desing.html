@@ -1,0 +1,43 @@
+<include file="style" />
+<include file="script" />
+<div style="height: 100%; position: relative; display: block;">
+    <form action="__URL__/ajaxaddporperty" method="post" id="__MODULE__ajaxadd" style="display: none;" onsubmit="return validateCallbackFunc(this, nullValidateFunc)">
+    </form>
+    <div class="pageFormContent s_modules">
+        <div id="new_index">
+            <div id="chart">
+                <div class="xymenu" >
+                    <div class="xypt clearfix">
+                        <div class="xytoolbar design_left">
+                        	<a href="#" class="design_nav_add">添加导航</a>
+                            <ul class="clearfix" id="design_nav" style="max-height:435px;overflow-y:auto;">
+                            {$html['nav']}
+                            </ul>
+                        </div>
+                    </div>
+                    <include file="toolbar" />
+                    <div class="clear"></div>
+                    	<div class="xypc" layoutH="156" >
+                        	<ul class="xywrap clearfix design_content"  id="design_content">
+                       		<if condition="strlen($html['content'])">
+                        		{$html['content']}
+                       		<else/>
+                        		<li class="panel_group_lay panel_2 defaultItem">
+                        			<div>请拖入组件到该区域！</div>
+                        		</li>
+                       		</if>
+                        	</ul>
+                        	<form action="__URL__/createTpl" method="post" onsubmit="return validateCallback(this, navTabAjaxDone)">
+                        		<input type="hidden" name="callbackType" value="closeCurrent" />
+                        		<input type="hidden" name="id"  value="{$id}" />
+                                <div class="design_save_lay">
+                                    <button type="submit" class="tml_formBar_btn tml_formBar_btn_blue">保存布局</button>
+                                </div>
+							</form>
+                        </div>
+                    <div class="xypb"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

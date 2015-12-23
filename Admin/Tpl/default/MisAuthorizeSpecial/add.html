@@ -1,0 +1,116 @@
+<style>
+.eagleSearchDivInner {
+	display: block;
+	overflow: auto;
+	float: right;
+	width: auto;
+	height: auto;
+	min-width: 200px;
+	border: solid 1px #B8D0D6;
+	line-height: 21px;
+	background: #fff;
+}
+.addressee li {
+    float: left;
+    height: 22px;
+    line-height: 22px;
+    margin: 0 4px 4px 0;
+    padding: 0 2px 0 5px;
+    width: auto;
+}
+</style>
+<script>
+	function misauthorizes_add_changetype(obj){
+		var value = $(obj).val();
+		if ( value == '1' ) {
+			$("#MisAuthorizeSpecial_add").parent().hide();
+			$("#MisAuthorizeSpecial_rolegroup_add").parent().show();
+		}
+		if ( value == '0' ) {
+			$("#MisAuthorizeSpecial_add").parent().show();
+			$("#MisAuthorizeSpecial_rolegroup_add").parent().hide();
+		}
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/{$rel}" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$vo.id}">
+			<div class="pageFormContent" layoutH="58">
+				<div class="tml-form-row">
+					<label>{$fields["type"]}：</label>
+					<select name="type" id="misauthorizes_add_ype" class="combox" onchange="misauthorizes_add_changetype(this);">
+						<option value="0">个&nbsp;&nbsp;人</option>
+						<option value="1">权限组</option>
+					</select>
+				</div>
+				<div class="tml-form-row">
+                    <label>关联人员：</label>
+					<ul class="addressee left" id="MisAuthorizeSpecial_add" style="width:320px;"></ul>
+                    <a class="input-addon input-addon-userplus" lookupgroup="orgspecial" rel="misquthorizespecial_useradd" href="__URL__/lookupmanage/ulId/MisAuthorizeSpecial_add">查找带回</a>
+                </div>
+				<div class="tml-form-row" style="display:none;">
+                    <label>关联权限组：</label>
+					<ul class="addressee left" id="MisAuthorizeSpecial_rolegroup_add" style="width:320px;">
+					</ul>
+                    <a class="input-addon input-addon-userplus" width="450" height="500" rel="misquthorizespecial_groupadd" lookupgroup="orgrolegroupspecial" href="__URL__/lookuprolegroup/ulId/MisAuthorizeSpecial_rolegroup_add">查找带回</a>
+                </div>
+                <if condition="$category neq 2">
+					 <div class="tml-form-row">
+						<label>{$fields["exacttable"]}：</label>
+						<select name="exacttable" class="combox">
+							<option value="0">否</option>
+							<option value="1">是</option>
+						</select>
+					</div>
+					<input type="hidden" name="category" value="1"/>
+					<div class="tml-form-row">
+						<label>{$fields["tablename"]}：</label>
+						<input type="text" class="checkByInput" checkfor="Exnt_Tables" insert="id" name="tablename" show="TABLE_NAME" />
+					</div>
+					<div class="tml-form-row">
+						<label>{$fields["methodname"]}：</label>
+						<input type="text" class=""  insert="id" name="methodname"  />
+					</div>
+					<else/>
+					<div class="tml-form-row">
+						<label>权限选择：</label>
+						<select name="projectAuthorize" class="combox">
+							<option value="2">所在项目</option>
+							<option value="1">所有项目</option>
+							<option value="0">禁止查看</option>
+						</select>
+					</div>
+					<input type="hidden" name="category" value="2"/>
+				</if>
+				<div class="tml-form-row">
+					<label>{$fields["conditions"]}：</label>
+					<TEXTAREA cols="50" name="conditions"></TEXTAREA>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["remark"]}：</label>
+					<textarea name="remark" cols="50" rows="1" maxlength="100"></textarea>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["status"]}：</label>
+					<select name="status" class="combox">
+						<option <eq name="vo.status" value="1">selected</eq> value="1">启用</option>
+						<option <eq name="vo.status" value="0">selected</eq> value="0">禁用</option>
+					</select>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misauthorizespecial_insert">
+						<li>
+							<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+						</li>
+					</if>
+					<li>
+						<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

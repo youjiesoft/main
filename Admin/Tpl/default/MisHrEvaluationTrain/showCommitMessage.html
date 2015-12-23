@@ -1,0 +1,113 @@
+<style>
+.datalistsection2{width:auto;height:auto;background-color:#ffffff;}
+
+.datalistsection2 .dataitem .knowledge_leftimg {    display: inline;}
+.datalistsection2 .dataitem{	width:730px;	height:auto;	padding:10px;		border: 1px solid #898989;	background-color:#FBFCFE;	margin:10px auto; margin-left:10px;	}
+.datalistsection2 .knowledge_leftimg{	border: 1px solid green;}
+
+.clearfix:after {    clear: both;    content: ".";    display: block;    height: 0;    visibility: hidden;}
+.clearfix {    display: block;}
+.clear {    clear: both;}
+.datalistsection2 .knowledgeimgarea, .datalistsection2 .itemcontent{	float: left;}
+.datalistsection2 .knowledgeimgarea{	width:120px;	}
+.datalistsection2 .knowledgeimgarea span{	display: block;	margin-top:20px;	font-weight:bold;	text-align: center;}
+.datalistsection2 .knowledgeborder{	border: 1px solid #c0b4b4;	text-align:center;}
+
+.datalistsection2 .itemcontent{	margin-left:10px;	width:600px;}
+.datalistsection2 .itemheader{	width:auto;	height:18px;	border-bottom:1px solid #5c5c5c;}
+
+.datalistsection2 .headerleft{	float:left;	width:auto;	font-size:14px;	font-weight: bold;}
+.datalistsection2 .headerleft .titlerow a:link{	color:#09775b;}
+.datalistsection2 .headerright{	float:right;	width:auto;}
+.datalistsection2 .headerright,.labletitle{	color:#646464;	margin-right:5px;	font-size:12px;}
+
+.datalistsection2 .headerright,.labletitle b{	color:#036069;	padding-right:2px;}
+.datalistsection2 .itemlongtext{	padding:2px;	height:auto;	min-height: 25px;	line-height: 20px;	color:#277c0f;border-bottom:1px dashed silver;}
+.datalistsection2 .itemrow{	border-top:1px solid #bdbdbd; 	height:15px; 	padding-top:2px;}
+.datalistsection2 .panelBarHeight{height:90px;background-color:#ffffff;margin:0 auto;}
+}
+
+.info_div_body{	margin:0 auto;	text-align: center;	width:700px;	margin-top:5px;	padding:2px;border: 1px solid #fafafa;}
+.info_div_body_div{	margin:1px;	padding: 2px;	text-align: left;	color: #868686;	margin-left:20px;}
+.info_div_body_div span{	padding:2px;	display: block;	width: 210px;	float:left;	margin-right:10px;	margin-bottom:1px;	color: #a7a7a7;font-weight: normal;}
+.info_div_body_div span b{	display: inline-block;	width:70px;	color: #585858;font-weight: normal;}
+.info_div_body_div b{	color:#990000;}
+
+.datalistsection2 .background_mark{color:#167970;font-size: 1em;margin-top:10px;margin-bottom:10px;margin-left:2px;font-weight:bold;}
+
+/* 表格信息 */
+.rateTable table{border:1px solid gray; margin:5px; text-align: center;}
+.rateTable table th{border:1px solid gray; margin:5px; text-align: center;background-color: #f2f2f2;padding:3px;}
+
+.rateTable .tdDetail td{border:1px solid silver;padding:4px; color:#555555;font-weight: normal;}
+.rateTable .tdDetail .tdLeft{text-align: left;}
+</style>
+
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid;background-color:#f3ffff;" >
+	<div class="datalistsection2"  layoutH="35">  
+		<div class="panelBar panelBarHeight">
+			
+				<div class="info_div_body">
+					<div class="background_mark">(一)基本信息</div>		<!-- 批复图片	 -->
+					<div class="info_div_body_div">
+						<span><b>课程名称:</b>{$oneinfo['name']}</span>
+						<span><b>课程讲师:</b>{$oneinfo['lecturer']}</span>
+						<span><b>课程课时:</b>{$oneinfo['classhour']}小时</span>
+						<span><b>培训对象:</b> {$oneinfo['targetstudent']}</span>
+						<span><b>实到人数:</b>{$countShangKerRen}人</span>
+						<span><b>调查人数:</b>{$totalCount}人</span>
+						<span><b>课程评分:</b>{$totalCount}人</span>
+						<div class="clear"></div>
+					</div>
+					<div class="clear"></div>
+				</div>
+		</div> 
+		<div class="background_mark">(二)评价信息</div> 
+		<!-- 数据区开始  -->     
+		<empty name="list"><center> 暂时无评论!</center></empty>
+		<volist id="vo" name="list" key="key2">
+			<div class="dataitem">
+		        <div class="knowledgeimgarea">
+		            <div  class="knowledgeborder hand">
+		                <img title="员工相片" src="http://erp/Public/Images/xyimages/organization/user_male.jpg" width="120">
+		            </div>
+		            <span>
+		            	<if condition="$_SERVER[ 'REQUEST_TIME'] gt $vo.traintime">
+		            		<a href="#" >{$vo['userid']|getFieldBy=###,'id','name','user'}</a>
+						<else />
+	
+		            		<a href="__URL__/commitMessage/id/{$vo['trainid']}" target="dialog">陈兴军</a>
+	
+						</if>
+		            </span>
+		        </div>
+		        <div class="itemcontent">
+		            <div class="itemheader clearfix">
+		                <div class="headerleft">
+		                    <div class="titlerow">
+		                    	<span class="Knowledge_CoursePackage">&nbsp;</span>
+		                    	<a title="{$vo['name']}" >{$vo['name']}</a>
+		                    </div>
+		                </div>
+		                <div class="headerright">
+		                    <span class="labletitle"><img src="__PUBLIC__/Images/point_img.png"/><b>课程评分:</b>{$vo['pa']}</span>
+			                <span class="labletitle"><img src="__PUBLIC__/Images/point_img.png"/><b>讲师评分:</b>{$vo['pb']}</span>
+			                <span class="labletitle"><img src="__PUBLIC__/Images/point_img.png"/><b>总的评分:</b>{$vo['pc']}</span>
+
+		                    <span class="labletitle"><img src="__PUBLIC__/Images/point_img.png" /><b>时间：</b>{$vo['createtime']|date='Y-m-d H:i',###}</span>
+		                </div>
+		            </div>
+		            <div class="itemlongtext">1.{$vo['comment1']}</div>
+		            <div class="itemlongtext">2.{$vo['comment2']}</div>
+		            <div class="itemlongtext">3.{$vo['comment3']}</div>
+		         </div>
+		         <div class="clear"></div>
+			</div>
+		</volist>
+		<!-- 数据区结束  -->        
+	</div>
+	<div class="panelBar panelPageBar">
+		<div class="pages"><span>共{$totalCount}条</span></div>
+		<div class="pagination" rel="mishrevaluationtrainmodel" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

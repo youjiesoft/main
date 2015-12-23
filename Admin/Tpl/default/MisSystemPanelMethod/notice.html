@@ -1,0 +1,25 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="_blank" href="{$website}"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <!--<div class="tml_bottom_style"></div>-->
+    <div class="part_content">
+        <if condition="$noticelist">
+            <div class="data">
+                <ul class="tml_uli_show4">
+                    <volist id="notice" name="noticelist">
+                        <li><a class="clearfix" target="_blank" href="{$notice['url']}" title="{$notice['title']}"><span class="hellip">{$notice['title']}</span><em class="hellip">{$notice['date']}</em></a></li>
+                    </volist>
+                </ul>
+            </div>
+        <else/>
+        <div class="noData">
+            没有公司新闻
+        </div>
+        </if>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

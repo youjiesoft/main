@@ -1,0 +1,128 @@
+<div class="pageContent">
+    <form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+        <input type="hidden" name="callbackType" value="closeCurrent">
+        <input type="hidden" name="contracttype" value="{$table}">
+        <input type="hidden" name="id" value="{$vo.id}">
+        <div class="pageFormContent applecloth" layoutH="56">
+            <div class="keepContentCenter">
+                <H2 class="contentTitle contentTitle_center">档案查看
+                    {:W('ShowOrderno',array(0,'mis_oa_archives_manage_mas',$vo['orderno']))}
+                </H2>
+                <div>
+                <fieldset class="zlqk_1">
+                    <legend class="zlqk_2">
+                        <b>基本信息</b>
+                    </legend>
+                    <div class="tml-row">
+	                    <if condition='$fields["fondsnum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["fondsnum"]}：</label>
+	                        <input type="text" readonly="readonly" name="fondsnum" class=" textInput" value="{$vo.fondsnum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["typenum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["typenum"]}：</label>
+	                        <input type="text" readonly="readonly" name="typenum" class=" textInput" value="{$vo.typenum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["catnum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["catnum"]}：</label>
+	                        <input type="text" readonly="readonly" name="catnum" class=" textInput" value="{$vo.catnum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["year"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["year"]}：</label>
+	                        <input type="text" readonly="readonly" name="year" class=" textInput" value="{$vo.year}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["casenum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["casenum"]}：</label>
+	                        <input type="text" readonly="readonly" name="casenum" class=" textInput" value="{$vo.casenum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["retentionperiod"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["retentionperiod"]}：</label>
+	                        <input type="text" readonly="readonly" name="retentionperiod" class=" textInput" value="{$vo.retentionperiod}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["begindate"]'>
+	                    <div class="tml-form-col">
+	                        <label title="案件起始日期">案件起始日期：</label>
+	                        <input type="text" name="begindate" readonly="readonly" class="Wdate" value="{$vo.begindate|transTime}" />
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="案件截止日期">案件截止日期：</label>
+	                        <input type="text" name="enddate" readonly="readonly" class="Wdate" value="{$vo.enddate|transTime}"  />
+	                    </div>
+	                    </if>
+	            	</div>
+                </fieldset>
+                </div>
+                 <fieldset>
+                <legend>
+                    <b>设备明细</b>
+                </legend>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 12%;">责任者</th>
+                            <th style="width: 20%;">文号</th>
+                            <th>标题</th>
+                            <th style="width: 10%;">日期</th>
+                            <th style="width: 5%;">页码</th>
+                            <th style="width: 5%;">备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="sublist" id="tlist">
+                            <tr>
+                                <td title="{$tlist.deptid}">
+                                    {$tlist.deptid}
+                                </td>
+                                <td title="{$tlist.referencenum}">
+                                    {$tlist.referencenum}
+                                </td>
+                                <td title="{$tlist.title}">
+                                    {$tlist.title}
+                                </td>
+                                <td title="{$tlist.datetime|transTime}">
+                                    {$tlist.datetime|transTime}
+                                </td>
+                                <td title="{$tlist.page}">
+                                    {$tlist.page}
+                                </td>
+                                <td title="{$tlist.remark}">
+                                    {$tlist.remark}
+                                </td>
+                            </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </fieldset>
+                <div>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>页脚</b>
+                    </legend>
+                    <div class="tml-row">
+	                    <div class="tml-form-col">
+	                        <label title="制单人">制单人：</label>
+	                        <input type="text" readonly="readonly" class="textInput" value="{$vo.createid|getFieldBy='id','name','user'}" />
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="制单时间">制单时间：</label>
+	                        <input class="textInput" readonly="readonly" value="{$vo.createtime|transTime}" />
+	                    </div>
+	                 </div>
+                </fieldset>
+                </div>
+            </div>
+        </div>
+        {:W('ShowAction',array('data'=>$vo))}
+    </form>
+</div>

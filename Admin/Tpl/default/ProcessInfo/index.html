@@ -1,0 +1,151 @@
+<script type="text/javascript" src="__PUBLIC__/JS/jquery.dragsort-0.4.min.js"></script>
+<script type="text/javascript">
+$("#list1, #list2").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+function saveOrder() {
+        var data = $("#list1 li").map(function() { return $(this).children().html(); }).get();
+        $("input[name=list1SortOrder]").val(data.join("|"));
+};
+</script>
+<style type="text/css">
+#list1, #list2 { width:1080px; list-style-type:none; margin:0px; height: 100px;}
+#list1 li, #list2 li { float:left; padding:5px; width:100px; height:30px; }
+#list1 div, #list2 div {height:30px;  text-align:center;}
+.process{border:solid 1px #B8D0D6;}
+.process_ico{background-image: url(__PUBLIC__/Images/process_ico.png);background-repeat:no-repeat;background-position:center;width:30px; height:30px;}
+.placeHolder div { background-color:white !important; border:dashed 1px gray !important; }
+
+.b1,.b2,.b3,.b4,.b1b,.b2b,.b3b,.b4b,.b{display:block;overflow:hidden;}
+.b1,.b2,.b3,.b1b,.b2b,.b3b{height:1px;}
+.b2,.b3,.b4,.b2b,.b3b,.b4b,.b{border-left:1px solid #999;border-right:1px solid #999;}
+.b1,.b1b{margin:0 5px;background:#999;}
+.b2,.b2b{margin:0 3px;border-width:2px;}
+.b3,.b3b{margin:0 2px;}
+.b4,.b4b{height:2px;margin:0 1px;}
+.d1{background:#F7F8F9;}
+.k {height:300px;}
+</style>
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemprocessset_add"><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="dialog" mask="true"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemprocessset_delete"><li><a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_node}/navTabId/__MODULE__" target="ajaxTodo" title="你确定要删除吗？" warn="请选择节点"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemprocessset_edit"><li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}" target="dialog" mask="true" warn="请选择节点"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span></a></li></if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+	</div>
+    <div class="panelBar" ><span>系统所有流程(DIY)</span></div>
+    <div class="process">
+        <ul id="list2">
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+	</ul>
+    </div>
+    <div style="clear:both"></div>
+    <div class="panelBar" >
+        <span>选择模型</span>
+        <select name=""  class="combox">
+            <option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+            <option value="">销售费用申请流程</option>
+        </select>
+        <ul class="toolBar" style="float:right;">
+            <li><a class="add" href="__APP__/ProcessTemplateType/add" target="dialog" mask="true"><span>添加流程模型</span></a></li>
+            <li><a class="edit" href="__APP__/ProcessTemplateType" target="navTab" mask="true"><span>流程模型管理</span></a></li>
+        </ul>
+    </div>
+    <div class="process">
+	<ul id="list1">
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li class="process_ico"></li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+		<li class="process_ico"></li>
+		<li>
+                    <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                    <div class="b d1 k">
+                        简洁型cs
+                    </div>
+                    <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                </li>
+	</ul>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+            <li><div class="button"><div class="buttonContent"><button class="close" type="button">{$Think.lang.close}</button></div></div></li>
+        </ul>
+    </div>
+</div>

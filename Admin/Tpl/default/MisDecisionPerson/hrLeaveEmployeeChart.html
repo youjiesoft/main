@@ -1,0 +1,41 @@
+<script src="__PUBLIC__/Js/highcharts.js"></script>
+<script>
+$(function () {
+    $('#hrLeaveEmployeeChart').highcharts({
+       chart: {
+           type: 'area'
+       },
+       title: {
+           text: '{$title}'
+       },
+       xAxis: {$xAxis},
+       yAxis: {
+           min: 0,
+           title: {
+               text: '人数(人)'
+           }
+       },
+       exporting:{ 
+            enabled:false //用来设置是否显示‘打印’,'导出'等功能按钮，不设置时默认为显示 
+       },
+       credits: {
+           enabled: false
+       },
+       tooltip: {
+           headerFormat: '<span>{point.key}：</span>',
+           pointFormat: '共离职<b>{point.y}</b>人',
+           shared: true,
+           useHTML: true
+       },
+        plotOptions: {
+        	bar: {
+                dataLabels: {
+                    enabled: true
+                }
+			}
+        },
+        series: {$series}
+    });
+});
+</script>
+<div id="hrLeaveEmployeeChart" style="overflow: hidden;height: 20%"></div>

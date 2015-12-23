@@ -1,0 +1,229 @@
+<script>
+//关联模板
+function MisPerformancePlanmpteditList(){
+	var $box= $.pdialog.getCurrent()
+	var tempid =  $box.find("#MisPerformancePlanedit_tempid").val();
+	$.ajax({
+		type: 'POST',
+		url: "__URL__/lookupselecttempmaxscore",
+		data: {tempid:tempid},
+		success: function(message){
+			$box.find("input[name='mostscore']").val(message);
+		}
+	}); 
+	//下拉框选择模板后加载detail页面
+	$box.find("#MisPerformancePlan_detail").loadUrl("__URL__/editdetail/id/"+tempid+"",{},function(){
+	$box.find("#MisPerformancePlan_detail").find("[layoutH]").layoutH();});
+	$box.find("#edittempid").val(tempid);
+}
+//提交按钮 点击事件,step=1 发布 step= 2 取消发布  否则是保存当前计划
+function misperformanceplan_editsubmit(stepobj){
+	var $box= $.pdialog.getCurrent()
+	if(stepobj){
+		$box.find("#editstep").val(stepobj);
+	}
+	var planqzsum=0;
+	var iskpiresult=true;
+	//当前指标分类总和
+	var maxplansum=Number($("#sumeditscore").text());
+	//模板最高分
+	var planchangemost=$("input[name='mostscore']").val();
+	 $("#MisPerformancePlanedit_tbody").find('.MisPerformancePlanedit_tbody_each').each(function(){
+		 //获取分类下是否有指标
+		 var  iskpi=$(this).parent().find(".PlanKPIeditHidden_table_each").find("input[name^=plan_kpi]").val();
+		 if(iskpi === undefined){
+			 iskpiresult=false;
+		 } 
+		 planqzsum+=Number($(this).find("input[name^='plan_kpitypeqz']").val());
+	 });
+	 if(iskpiresult==false){ 
+		 alertMsg.error('分类下必须选择指标！');
+			return false;
+		}
+	 //模板最高分小于当前指标总和
+	 if(planchangemost<maxplansum){
+		 alertMsg.error('分值已超过最高分，请重新分配分值！');
+			return false;
+		}
+	 //权重必须等于100
+	 if(planqzsum !=100){
+		 alertMsg.error('权重之和必须等于100，请重新分配权重！');
+			return false;
+	 }
+	 var $setscoretype=$("#MisPerformancePlan_edit").find("input[name='setscoretype[]']").val();
+		if(!$setscoretype){
+			alertMsg.error('请设置评分人类型后,再提交！');
+			return false;
+		}
+	 //提交此表单
+	 setTimeout(function(){
+	 $("button[type='submit']").click();
+	 },150);
+}
+</script>
+<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+<input type="hidden" name="id" value="{$vo.id}" >
+<input type="hidden" name="resultstep" id="editstep">
+	<div class="pageContent performance" style="border-width:1px 1px 0;">
+		<div class="xyEditForm" id="MisPerformancePlan_edit">
+			<if condition="$vo.ostatus =='0'">
+			<div class="panelBar">
+				<ul class="toolBar">
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misperformanceplan_setScore "><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/setScore/id/{$vo.id}" target="dialog"  rel="__MODULE__setScore" mask="true" width=440 height="290"  title="设置评分人类别及权重"><span><span class="icon icon-compass icon_lrp"></span>评分人类别</span></a></li></if>
+							<li>{$toolb['html']}</li>
+				</ul>
+			</div>
+			</if>
+			<div class="xyEditFormCon clearfix" style="border-width:0 0 1px;">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>计划编码：</label>
+					<input type="text" name="orderno" readonly="readonly" value="{$vo.orderno}" />
+				</div>
+				<div class="tml-form-col">
+					<label>计划名称：</label>
+					<input type="text" name="name"  <if condition="$vo.ostatus !='0'">readonly="readonly"</if>  class="required" value="{$vo.name}" />
+				</div>
+				<div class="tml-form-col">
+					<label>绩效周期：</label>
+					<input type="text" name="cycle" value="{$vo.cycle}" readonly="readonly" id="plan_cycle_edit" class="required"/>
+					<if condition="$vo.ostatus eq '0'">
+					<a class="tml-icon tml-icon-lookup tml-mt3" href="__URL__/lookup/type/edit" lookupgroup="org1" width='430' height="280">设置考核周期</a>
+					</if>	
+				 </div>
+				<div class="tml-form-col">
+					<label>绩效期间/名称：</label>
+					<input type="text" name="course" value="{$vo.course}" readonly="readonly" id="plan_course_edit"/>
+				</div>
+				<div class="tml-form-col">
+					<label>关联模板：</label>
+					<if condition="$vo['ostatus'] eq '0'">
+					<input type="hidden" id="edittempid" name="tempid" value="{$vo.tempid}"/>
+					<select class="combox" id="MisPerformancePlanedit_tempid" onchange="MisPerformancePlanmpteditList()" disabled="disabled"  >
+						<option value=''>请选择考核模板</option>
+						<volist name="tempList" id="vot">
+							<option <eq name="vo.tempid" value="$key" >selected</eq> value={$key}> {$vot}</option>
+						</volist>
+					</select>
+					<else/>
+					<input type="text"  value="{$vo.tempid|getFieldBy='id','name','mis_performance_template'}" readonly="readonly" />
+					</if>
+					</div>
+				<div class="tml-form-col">
+					<label>薪资关联期间：</label>
+					 <if condition="$vo.ostatus eq '0'">
+					 <span class="xyInputWithUnit">
+						 <input  type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" class="tml-border-r0 Wdate" name="salarydate" value="{$vo.salarydate|transTime=###,'Y-m'}"/>
+					  <span class="input-addon input-addon-calendar"></span>
+					</span>
+					 <else/>
+						   <input  type="text" class="readonly"   name="salarydate" value="{$vo.salarydate|transTime=###,'Y-m'}"/>
+						 </if>
+				</div>
+				<div class="tml-form-col">
+					<label>建档人：</label>
+					<input type="text" class="org.name"  value="{$vo.userid|getFieldBy='id','name','mis_hr_personnel_person_info'}" readonly="readonly" />
+					<input type="hidden" name="userid" class="org.mangid" value="{$vo.userid}"/>
+					<if condition="$vo.ostatus eq '0'"><a class="tml-icon tml-icon-lookup tml-mt3" href="__URL__/lookupmanage"  value="{$MisHrPersonnelPersonInfoList.id}" lookupGroup="org">查找带回</a></if>
+				</div>		
+				<div class="tml-form-col">
+					<label>建档日期：</label>
+					<if condition="$vo.ostatus eq '0'"> 
+					<span class="xyInputWithUnit">
+						<input  type="text" onfocus="WdatePicker()" class="tml-border-r0 Wdate"  name="setdate" value="{$vo.setdate|transTime}" />
+					  <span class="input-addon input-addon-calendar"></span>
+					</span>
+					<else/>
+					  <input  type="text" class="readonly" readonly="readonly" name="setdate" value="{$vo.setdate|transTime}" />
+					</if>
+				</div>		
+				<div class="tml-form-col">
+					<label>最高分：</label>
+					<input  type="text" name="mostscore" onblur="planeditchangescore()" <if condition="$vo.ostatus !='0'"> readonly="readonly"</if> value="{$vo.mostscore}" class=""/>
+				</div>		
+				<div class="tml-form-col">
+					<label>绩效等级：</label>
+					<if condition="$vo['ostatus'] eq '0'">
+					<select name="levelid" class="combox" >
+						<volist name="mplList" id="vol">
+							<option <eq name="vo.levelid" value="$key" >selected</eq> value={$key}> {$vol}</option>
+						</volist>
+					</select>
+					<else/>
+					 <input  type="text" class="readonly" readonly="readonly"  value="{$vo.levelid|getFieldBy='id','name','mis_performance_type'}" />
+					</if>
+				</div>		
+				<!-- <div class="tml-form-col">
+					<label>{$fields["ostatus"]}：</label>
+					<if condition='$vo.ostatus eq 0'><input type="text" name="ostatus" value="起草" readonly="readonly"/></if>
+					<if condition='$vo.ostatus eq 1'><input type="text" name="ostatus" value="发布" readonly="readonly"/></if>
+					<if condition='$vo.ostatus eq 2'><input type="text" name="ostatus" value="执行" readonly="readonly"/></if>
+					<if condition='$vo.ostatus eq 3'><input type="text" name="ostatus" value="暂停" readonly="readonly"/></if>
+					<if condition='$vo.ostatus eq 4'><input type="text" name="ostatus" value="结束" readonly="readonly"/></if>
+				</div>	 -->
+			</div>
+			</div>
+			<div id="planeditsetscore">
+			<if condition="$setScoreList">
+			<volist  name="setScoreList" id="scoreList">
+				<input type='hidden'  name='setscoretype[]' value="{$key}" />
+			    <input type='hidden'  name='inusersqz{$key}'  value="{$scoreList}" />
+			</volist>
+			</if>
+			</div>
+			
+	    </div>
+		<div id="MisPerformancePlan_detail" class="performance">
+			 <include file="editdetail"  />
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<div class="buttonActive"
+						style="text-indent: 999px; background: none; width: 1px;">
+						<div class="buttonContent">
+							<button type="submit">保存</button>
+						</div>
+					</div>
+					<if condition="$vo['ostatus'] eq '0'">
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="button" onclick="misperformanceplan_editsubmit()">{$Think.lang.save}</button>
+						</div>
+					</div>
+					</if>
+					<if condition="$vo['ostatus'] eq '0'">
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="button" onclick="misperformanceplan_editsubmit(1)">发布</button>
+						</div>
+					</div>
+					</if>
+					<if condition="$vo.ostatus eq '1'">
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button type="button" onclick="misperformanceplan_editsubmit(2)">取消发布</button>
+						</div>
+					</div>
+					</if>
+				</li>
+                <if condition="$_SESSION.a eq 1 or $_SESSION.misperformanceplan_delete">
+                    <li>
+                        <div class="buttonActive">
+                            <div class="buttonContent">
+                                <button type="button" onclick='deleteRecord(this,"{$vo.id}","MisPerformancePlan","dialog")'>{$Think.lang.del}</button>
+                            </div>
+                        </div>
+                    </li>
+                </if>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.close}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+</form>	

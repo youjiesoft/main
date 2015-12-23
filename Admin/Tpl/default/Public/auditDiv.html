@@ -1,0 +1,39 @@
+<script>
+$(function(){
+	$(".closeAuditDiv").click(closeAuditDiv);
+	$(".submitAuditDiv").click(function(){
+		this.form.onsubmit();
+	});
+});
+</script>
+<div class="js-auditDiv tml_audit_div">
+	<div class="pageFormContent">
+	    <fieldset>
+            <div class="audit_line_lay">
+                <label>加签对象</label>
+                <div class="audit_ll_right">
+                    <ul class="addressee left checkTo" id="flowUser" style="width:60%;">
+                    </ul>
+                    <a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="flowUser" data="flowUsername,username,text;flowUserid,userid,hidden,1;email,email,hidden">查找带回</a>&nbsp;
+                    <a title="清空人员" class="input-addon input-addon-recycle" href="javascript:;" onclick="clearInputInDialog(this,'userid,username');"></a>
+                </div>
+            </div>
+            <div class="audit_line_lay">
+                <label>审核意见</label>
+                <div class="audit_ll_right">
+                    <textarea style="width: 312px; height: 100px" name="doinfo" class="required js-focustextarea">同意</textarea>
+                </div>
+            </div>
+	    </fieldset>
+	</div>
+	<div class="formBar" style="border: none;">
+	    <ul>
+	        <li>
+	            <button type="button" class="tml_select_btn tml_formBar_btn_blue submitAuditDiv">确定</button>
+	        </li>
+	        <li>
+	        	<button type="button" class="tml_select_btn tml_formBar_btn_red closeAuditDiv">取消</button>
+	        </li>
+	    </ul>
+	</div>
+</div>

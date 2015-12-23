@@ -1,0 +1,57 @@
+<script type="text/javascript">
+$(function(){
+		$("ul.xyz_marqueedata[issroll='1']").kxbdMarquee({direction:"up",scrollDelay:"70"});
+
+});
+
+</script>
+<div eventtype="click" currentindex="0" class="tabs">
+<if condition="count($sublist) gt 1">
+	<div class="tabsHeader">
+		<div class="tabsHeaderContent design_tabs_content">
+			<ul>
+				<volist name="sublist" id="tvo" key = "i">
+				<li <if condition="$i eq 1">class="selected"</if>><a href="javascript:;">{$tvo.name}</a></li>
+				</volist>
+			</ul>
+		</div>
+	</div>
+	<div class="tabsContent ">
+		<volist name="sublist" id="svo" key = "i">
+		<div>
+            <!--issroll="{$svo.issroll}"-->
+			<ul class="expert_cell_warp xyz_marqueedata"  issroll="{$svo.issroll}">
+				<volist id="vo" name="svo['list']" key="key2">
+					<li>
+					<a  {$vo[url]}  target="_blank" >
+					  <i class="icon-double-angle-right  left"></i>
+						<span style="display:inline-block;width:{$vo1[widths]};" class="left" >{$vo['title']}
+						&nbsp;&nbsp;</span><span class="news_time">{$svo['time'][$key2-1]}</span> 
+					</a>
+					</li>
+				</volist>
+			</ul>
+		</div>
+		</volist>
+	</div>
+	<div class="tabsFooter">
+		<div class="tabsFooterContent"></div>
+	</div>
+<else/>
+		<ul class="expert_cell_warp xyz_marqueedata"  issroll="{$svo.issroll}">
+				<volist id="vo" name="sublist[0]['list']" key="key2">
+					<li>
+					<a  {$vo[url]}  target="_blank" >
+					  <i class="icon-double-angle-right left"></i>
+						<span style="display:inline-block;width:{$vo1[widths]};" class="left" >{$vo['title']}
+						&nbsp;&nbsp;</span><span class="news_time">{$sublist[0]['time'][$key2-1]}</span>  
+					</a>
+					</li>
+				</volist>
+			</ul>
+</if>
+</div>
+
+
+
+

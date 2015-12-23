@@ -1,0 +1,139 @@
+<script>
+function changetablestatus(ob){
+	var $box=navTab.getCurrentPanel();
+	$box.find("#processtable"+ob).toggle();
+}
+$("#list1, #list2").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: dragTemplate, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+function dragTemplate(){
+   var itemLength = $('#list1 .itemID').length;//有效节点数
+   var virifyItem = $("#authorcount").val();//验证成功节点数
+   var virifyItem = $('#list1 .itemID font').length;//有效节点数
+   //"流程结束、结束"位置不变
+   var theFirstHtml = '<b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b><div style="cursor: move;" class="b d1 k"><input value="0" name="tid[]" type="hidden">开始</div><div style="cursor: move;" class="process_ico"></div><b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>';
+   var theLastHtml = '<b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b><div style="cursor: move;" class="b d1 k"><input value="0" name="tid[]" type="hidden">结束</div><b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>';
+   var itemRight = itemLength+1;//右移一位
+   if($("#list1 li:last-child").html() != theLastHtml){
+   		$("#list1 .start:nth-child("+itemRight+")").insertAfter("#list1 li:last-child");
+   }
+   if($("#list1 li:first-child").html() != theFirstHtml){
+   		$("#list1 .start:nth-child(2)").insertBefore("#list1 li:first-child");
+   }
+   
+   // 测试绑定事件
+   /*$('#list1 > li').live('mouseenter',function(){
+	   if($('div.process_box' , $(this)).find('div.nbm_tpl_item').length == 0){
+	   		$('div.process_box' , $(this)).append('<div class="nbm_tpl_item"><a href="javascript:void(0);" >请选择模板</a></div>');
+	   }
+   });*/
+}
+function tips_over(obj){
+    $(obj).children("span").css("display","block");
+    $("#list1 .delete").css("display","none");//屏蔽
+    $("#list2 .delete").css("display","none");
+}
+function tips_out(obj){
+    $(obj).children("span").css("display","none");
+}
+function editpinfo($pinfoid,$nodename){
+	var $box=navTab.getCurrentPanel(); x
+	$box.find("#process_indexview").loadUrl("__URL__/index/jump/1/pinfoid/"+$pinfoid+"/nodename/"+$nodename,{},function(){
+		$box.find("[layoutH]").layoutH();});
+}
+</script>
+<style type="text/css">
+    #list1 .process_ico{ display:block;}
+    #list2 .process_ico{ display:none;}
+    #list1, #list2 { width:auto; list-style-type:none; margin:0px;margin-left:auto;margin-right:auto;}
+    #list1 li, #list2 li { float:left; padding:5px; width:100px; height:30px; text-align: center; margin:7px 0;}
+    #list1 li{ margin-right:55px;}
+    .itemID{float:left; padding:5px; width:100px; height:30px; text-align: center; margin:7px 0; margin-right:45px;}
+    .start{float:left; padding:5px; width:100px; height:30px; text-align: center; margin:7px 0; margin-right:45px; cursor: default;}
+    .process li span{ display: none;}
+    .process_ico{background-image:url(__PUBLIC__/Images/process_ico.png);background-repeat:no-repeat;background-position:center;width:30px; height:30px; float:left;margin-right:-40px; margin-top:-33px; float:right;font-size: 18px;color: #C0392B;color: #2C3E50;}
+    .placeHolder div { background-color:white !important; border:dashed 1px gray !important; }
+    #start{ float:left;}
+</style>
+<div id="process_indexview">
+	<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="jump" value="1"/>
+	<input type="hidden" name="defaultId" value="{$defaultId}" />
+	<input type="hidden" name="pInfoId" value="{$pInfoId}" />
+	<input type="hidden" name="nodename" value="{$modelname}" />
+	</form>
+<div class="pageContent" style="background-color: #eee;" layoutH="48">
+			<!-- 默认为新增界面 -->
+		<form method="post"  action="__URL__/insertprocess"  class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+   		<input type="hidden" name="nodename" value="{$modelname}" />
+   		<input type="hidden" name="pInfoId"  value="{$pInfoVo.id}" />
+   		<fieldset style="width: 1024px; margin: 10px auto 0px; background: #fff;padding: 0px 0px 15px 0px;border-radius: 4px 4px 4px 4px; margin-bottom: 10px;">
+            <div class="new_process_header">新增流程</div>
+            <div class="new_process_content">
+                <div class="process_element_lay">
+                    <label>流程名称：</label>
+                    <input type="text" class="required"  name='name' value="{$pInfoVo.name}" placeholder="请输入流程名称"/>
+                </div>
+                <div class="process_element_lay">
+                    <label>规则条件：</label>
+                    {:W('ShowAddResult', array('model'=>$modelname,'data'=>$pInfoVo) )}
+                </div>
+                <div class="tml-row process_set_lay"><!--tml-mt5-->
+                    <br/>
+                    <div class="process">
+                            <span class="start" style="cursor:default;float: left;">
+                                <div class="process_box">流程开始</div>
+                                <div class="process_ico"></div>
+                            </span>
+                        <ul id="list1" style="float: left;">
+                            {$pInfoVo.str}
+                        </ul>
+                            <span class="start nbm" style="cursor:default;float: left;">
+                                <div class="process_box add_process">
+                                    <a href="__APP__/MisSystemUserBactch/lookupAddProcessRelation/modelname/{$modelname}/ptype/1" rel="lookupAddProcessRelation" width="800" height="580" mask="true" target="dialog" >添加</a>
+                                </div>
+                                <div class="process_ico"></div>
+                            </span>
+                            <span class="start" style="cursor:default;float: left;">
+                                <div class="process_box">流程结束</div>
+                            </span>
+                    </div>
+                </div>
+                <div style="width: 100%;height: 40px; text-align: center"><button class="tml_process_save" type="submit">{$Think.lang.save}流程</button></div>
+                <!--tml_formBar_btn tml_formBar_btn_blue-->
+	    </fieldset>
+	    </form>
+    <volist id="tylist" name="pInfoList">
+        <fieldset class="process_list">
+            <div class="new_process_content">
+                <div class="process_element_lay" style="margin-bottom: 0px">
+                    <label>流程名称：</label>
+                    <span class="process_bottom_border">{$tylist['name']}</span>
+                </div>
+                <div class="process_element_lay">
+                    <label>规则条件：</label>
+                    <if condition="$tylist['showrules']">
+                        <span class="process_bottom_border">{$tylist.showrules}</span>
+                        <else/>
+                        无
+                    </if>
+                </div>
+                <div class="tml-row process_set_lay">
+                    <br/>
+                    <div class="process">
+                            <span class="start" style="cursor:default;float: left;">
+                                <div class="process_box">流程开始</div>
+                                <div class="process_ico"></div>
+                            </span>
+                        <ul style="float: left;">
+                            {$tylist.str}
+                        </ul>
+                            <span class="start" style="cursor:default;float: left;">
+                                <div class="process_box">流程结束</div>
+                            </span>
+                    </div>
+                </div>
+                <a class="edit_process tml-btn tml_look_btn tml_mp" href="#" onclick="editpinfo('{$tylist.id}','{$modelname}')"><span class="icon-edit"></span> 修改</a>
+            </div>
+        </fieldset>
+    </volist>
+		</div>
+</div>

@@ -1,0 +1,62 @@
+<div class="pageContent">
+	<form id="pagerForm" action="__URL__" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<div class="panelBar">
+		 <ul class="toolBar">
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul> 
+		<form rel="pagerForm" onsubmit="return divSearch(this, 'MisListLimitview')" action="__URL__/index" method="post">
+			 <input type="hidden" value="1" name="jump"/>
+			 <input type="hidden" value="{$tableid}" name="tableid"/>
+			 <input type="hidden" value="{$tablename}" name="tablename"/>
+	    </form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+				<th width="30">序号</th>
+				<volist id="vo" name="detailList">
+					<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="MisSaleBusiness_jbsx" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+				</volist>
+				<th width="206">用户</th>
+				<th width="106">模块名</th>
+				<th >禁止字段</th>
+				<th >允许字段</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list" key="key2">
+				<tr target="sid_node" rel="{$vo['id']}"  data-tool='{$vo[classarr]}'>
+					<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td class="tml-first-td">
+						<if condition="$vo['tableid'] eq 0">
+							除允许以外的所有用户
+						<elseif condition="$vo['tablename']  eq user"/>
+							{$vo['tableid']|getFieldBy='id','name','user'}[用户]
+						<elseif condition="$vo['tablename']  eq rolegroup"/>
+							{$vo['tableid']|getFieldBy='id','name','rolegroup'}[角色]
+						<else /> 
+							{$vo['tableid']|getFieldBy='id','name','mis_expert_list'}[专家]
+						</if>
+					</td>
+					<td class="tml-first-td">{$vo['ModelTitle']}</td>
+					<td class="tml-first-td">{$vo['deny']}</td>
+					<td class="tml-first-td">{$vo['allow']}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="MisListLimitview" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

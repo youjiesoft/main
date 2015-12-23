@@ -1,0 +1,138 @@
+<script>
+// 点击审核弹出页面
+function openNotAttendDialog($id){
+	var options = {};
+		options.width = 400;
+		options.height = 250;
+		options.mask = true;
+	$.pdialog.open("__URL__/update/type/1/id/"+$id, "notAttendDialog", "不参与原因",options);
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__/rel/searchMeetingInfo" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+	<input type="hidden" name="callbackType" value="closeCurrent">
+	<input type="hidden" name="id" value="{$vo.id}">
+	<input type="hidden" name="isattend" value="1">
+	<input type="hidden" name="refreshtabs[data]" value="1">
+	<div class="pageFormContent applecloth" layoutH="55">
+		<div class="keepContentCenter">
+			<H2 class="contentTitle contentTitle_center">
+				会议信息
+				<span class="auto_code">
+					<if condition="$updataid">
+						<a href="javascript:;" class="xyPrevButton" onclick="changeTheDocNum('__MODULE__','edit',{$updataid})"></a>
+					<else/>
+						<span class="xyPrevButtonDisable"></span>
+					</if>
+					<b>No. </b>
+					<input type="text" name="orderno" value="{$vo.orderno}" <if condition='$writable eq 0'> readonly="readonly" class="xycodedata_read" <else/> class="xycodedata_write required alphanumeric" </if> />
+					<if condition="$downdataid">
+						<a href="javascript:;" class="xyNextButton" onclick="changeTheDocNum('__MODULE__','edit',{$downdataid})"></a>
+					<else/>
+						<span class="xyNextButtonDisable"></span>
+					</if>
+				</span>
+			</H2>
+			<div>
+				<fieldset class="zlqk_1">
+					<legend class="fieldset_legend_toggle">
+						<b>基本信息</b>
+					</legend>
+					<if condition='$fields["name"]'>
+					<div class="tml-form-row">
+						<label>{$fields["name"]}：</label>
+						<input type="text" value="{$vo['name']}" readonly="readonly"/>
+					</div>
+					</if>
+					<div class="tml-row">
+						<if condition='$fields["personname"]'>
+						<div class="tml-form-col">
+							<label>{$fields["personname"]}：</label>
+							<input type="text" value="{$vo['personname']}" readonly="readonly"/>
+						</div>
+						</if>
+						<if condition='$fields["typename"]'>
+						<div class="tml-form-col">
+							<label>{$fields["typename"]}：</label>
+							<input type="text" class="textInput" value="{$vo['typename']}" readonly="readonly"/>
+						</div>
+						</if>
+						<if condition='$fields["starttime"]'>
+						<div class="tml-form-col">
+							<label>{$fields["starttime"]}：</label>
+							<input type="text" value="{$vo['starttime']|transTime=###,'Y-m-d H:i'}" format="yyyy-MM-dd HH:mm" readonly="readonly" />
+						</div>
+						</if>
+						<if condition='$fields["endtime"]'>
+						<div class="tml-form-col">
+							<label>{$fields["endtime"]}：</label>
+							<input type="text" value="{$vo['endtime']|transTime=###,'Y-m-d H:i'}" format="yyyy-MM-dd HH:mm" readonly="readonly" />
+						</div>
+						</if>
+						<div class="tml-form-col">
+							<label>会议纪要人</label>
+							<input type="text" readonly="readonly" name="summaryname" value="{$vo.summaryname}"/>
+						</div>
+					</div>
+					<if condition='$fields["address"]'>
+					<div class="tml-form-row">
+						<label>{$fields["address"]}：</label>
+						<input type="text" value="{$vo['address']}" readonly="readonly"/>
+					</div>
+					</if>
+					<if condition='$fields["content"]'>
+					<div class="tml-form-row">
+						<label>{$fields["content"]}：</label>
+						<div style="height: 300px; border: 1px solid #ccc; overflow: auto;">{$vo['content']}</div>
+					</div>
+					</if>
+					<if condition='$fields["remark"]'>
+					<div class="tml-form-row">
+						<label>{$fields["remark"]}：</label>
+						<textarea style="height: 50px" maxlength="200" class="textInput" readonly="readonly">{$vo['remark']}</textarea>
+					</div>
+					</if>
+					<if condition='$vo["ostatus"] eq 1'>
+					<if condition='$fields["conclusions"]'>
+					<div class="tml-form-row">
+						<label>{$fields["conclusions"]}：</label>
+						<input type="text" class="textInput" value="{$vo['conclusions']}" readonly="readonly"/>
+					</div>
+					</if>
+					<if condition='$fields["records"]'>
+					<div class="tml-form-row">
+						<label>{$fields["records"]}：</label>
+						<textarea style="height: 300px; border: 1px solid #ccc; overflow: auto;">{$vo['records']}</textarea>
+					</div>
+					</if>
+					</if>
+				</fieldset>
+			</div>
+			<div>
+				<fieldset class="zlqk_1">
+					<legend class=fieldset_legend_toggle>
+						<b>附件信息</b>
+					</legend>
+					<div class="tml-form-row">
+						<span class="info uploadify-queue">
+							<if condition="$attarry">
+							<volist name="attarry" id="att">
+                                <div class="uploadify-queue-item">
+                                    <span class="fileName">
+                                        <a href="__PUBLIC__/{$att.attached}" target="_blank">{$att['upname']}</a>
+                                    </span>
+                                    <div class="uploadify-progress">
+                                        <div class="uploadify-progress-bar" style="width: 100%;"></div>
+                                    </div>
+                                </div>
+                               </volist>
+                               </if>
+						</span>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+	</div>
+	{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

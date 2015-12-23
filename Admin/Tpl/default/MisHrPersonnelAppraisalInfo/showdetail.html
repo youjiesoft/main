@@ -1,0 +1,334 @@
+<style>
+.gzpg_d tr td{ line-height:30px; height:30px;}
+.textInput,textarea.disabled_d{ background-image:none;}
+input.focus, textarea.focus{ background-color:#F8FAFC; border-color:#64AABC #A9D7E3 #A9D7E3 #64AABC;}
+</style>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<div class="pageFormContent" layoutH="56">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="linkonecontent" value="{$vo.linkonecontent}">
+			<input type="hidden" name="linktwocontent" value="{$vo.linktwocontent}">
+			<div class="keepContentCenter" style="width:90%;">			
+				<table cellspacing="0" border="0" width="98%" style="margin:0 auto">
+				<tr>
+					<td>
+						<fieldset>
+							<legend>
+								<b>一、基本信息</b>
+							</legend>
+							<table class="Intable" width="100%">
+								<tr>
+									<td>
+										<div class="unit">
+											<label>评估号：</label>
+											<INPUT type="hidden" name="pkid" value="{$vo.id}"/>
+											<input type="text" name="orderno" size="15" value="{$vo.orderno}" <if condition='$writable eq 0'> readonly="readonly" </if> maxlength="25" class="required alphanumeric textInput"/>
+										</div>
+									</td>
+									<td>
+										<div class="unit">
+											<label>被评估人(15%)：</label>
+											<input type="text" size="15" readonly="readonly" value="{$vo.personid|getFieldBy='id','name','mis_hr_personnel_person_info'}"/>
+										</div>
+									</td>
+									<td>
+										<div class="unit">
+											<label>部门：</label>
+											<input type="text" size="15" readonly="readonly" value="{$vo.deptid|getFieldBy='id','name','mis_system_department'}"/>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<div class="unit">
+											<label>入职时间：</label>
+											<input type="text" size="15" readonly="readonly" value="{$vo.indate|transTime}" readonly="readonly" />
+										</div>
+									</td>
+									<td>
+										<div class="unit">
+											<label>行业年限：</label>
+											<input type="text" class="textInput" size="15" readonly="readonly" value="{$vo.trainyear}" />
+										</div>
+									</td>
+									<td>
+										<div class="unit">
+											<label>A级评估人(50%)：</label>
+											<input type="text" class="required org1.name" size="15" readonly="readonly" value="{$vo.linkone|getFieldBy='id','name','mis_hr_personnel_person_info'}" />
+											<input type="hidden" name="linkone" class="org1.mangid" value="{$vo.linkone}"/>
+											<if condition="$vo.linkone eq 0"><a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org1">查找带回</a><span class="info">评估人</span></if>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<div class="unit">
+											<label>B级评估人(25%)：</label>
+											<input type="text" class="required org2.name" size="15" readonly="readonly" value="{$vo.linktwo|getFieldBy='id','name','mis_hr_personnel_person_info'}"  />
+											<input type="hidden" name="linktwo" class="org2.mangid" value="{$vo.linktwo}"/>
+											<if condition="$vo.linktwo eq 0"><a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org2">查找带回</a><span class="info">评估人</span></if>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="3">
+										<div class="unit">
+											<label>备注：</label>
+											<TEXTAREA rows="3" cols="100" readonly="readonly">{$vo.remark}</TEXTAREA>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<fieldset>
+							<legend>
+								<b>二、主要负责的项目</b>
+							</legend>
+								<table class="xyDataTable" cellspacing="0" id="mishrpersonnelappraisalinfo"  width="100%" border="1"  bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">
+								 	<tr bgcolor="#ecf1f2">
+								 		<td><strong>项目名称</strong></td>
+								 		<td><strong>开始时间</strong></td>
+								 		<td><strong>结束时间</strong></td>
+								 		<td><strong>项目负责人</strong></td>
+								 	</tr>
+								 	<volist name="projectval" id="proval">
+								 		<tr>
+									 		<td>{$proval.projectname}</td>
+									 		<td>{$proval.begintime}</td>
+									 		<td>{$proval.endtime}</td>
+									 		<td>{$proval.projectpeople}</td>
+									 	</tr>
+								 	</volist>
+								</table>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<fieldset class="zlqk_1">
+							<legend class="zlqk_2">
+								<b>二、自评内容</b>
+							</legend>
+							<table cellspacing="0" border="1" width="100%" bordercolor="#B8D0D6"
+								style="border-collapse: collapse; text-align: center;" class="gzpg_d">
+								<tr bgcolor="#ecf1f2">
+									<td width="10%">
+										<strong>类型</strong>
+									</td>
+									<td width="15%">
+										<strong>具体指标</strong>
+									</td>
+									<td width="5%">
+										<strong>权重</strong>
+									</td>
+									<td width="30%">
+										<strong>指标解释</strong>
+									</td>
+									<td width="40%">
+										<strong>评估</strong>
+									</td>
+								</tr>
+								<volist name="onselflist" id="vlist">
+								<tr>
+									<td
+										<if condition="$vlist['count'] gt 1"> rowspan="{$vlist.count}" </if>>{$vlist.name}
+									</td>
+									<td>{$vlist.zbname}</td>
+									<td>{$vlist.zbweight}</td>
+									<td align="left"><label style="width:97%">{$vlist.zbcontent}</label></td>
+									<td>
+										<volist name="vlist.sublist" id="subinfo">
+											<input type="radio" name="a{$vlist.zbid}" <if condition="$vlist['selected'] eq $subinfo['subinfoid']">checked="checked"</if> value="{$subinfo.subinfoid}"/>
+											{$subinfo.subinfoname}&nbsp;&nbsp;
+										</volist>
+									</td>
+								</tr>
+								<if condition="$vlist['count'] gt 1"> 
+								<volist name="vlist.targets" id="targetinfo">
+									<tr>
+										<td>{$targetinfo.targetname}</td>
+										<td>{$targetinfo.targetzbweight}</td>
+										<td align="left"><label style="width:97%">{$targetinfo.targetzbcontent}</label></td>
+										<td>
+											<volist name="targetinfo.sublist" id="subinfo">
+												<input type="radio" name="{$targetinfo.code}" <if condition="$targetinfo['checked'] eq $subinfo['subinfoid']">checked="checked"</if>  value="{$subinfo.subinfoid}"/>
+												{$subinfo.subinfoname}&nbsp;&nbsp;
+											</volist>
+										</td>
+									</tr>
+								</volist> </if>
+								</volist>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<fieldset class="zlqk_1">
+							<legend class="zlqk_2">
+								<b>三、A级评估内容</b>
+							</legend>
+							<table cellspacing="0" border="1" width="100%" bordercolor="#B8D0D6"
+								style="border-collapse: collapse; text-align: center;" class="gzpg_d">
+								<tr bgcolor="#ecf1f2">
+									<td width="10%">
+										<strong>类型</strong>
+									</td>
+									<td width="15%">
+										<strong>具体指标</strong>
+									</td>
+									<td width="5%">
+										<strong>权重</strong>
+									</td>
+									<td width="30%">
+										<strong>指标解释</strong>
+									</td>
+									<td width="40%">
+										<strong>评估</strong>
+									</td>
+								</tr>
+								<volist name="linkonelist" id="vlist">
+								<tr>
+									<td
+										<if condition="$vlist['count'] gt 1"> rowspan="{$vlist.count}" </if>>{$vlist.name}
+									</td>
+									<td>{$vlist.zbname}</td>
+									<td>{$vlist.zbweight}</td>
+									<td align="left"><label style="width:97%">{$vlist.zbcontent}</label></td>
+									<td>
+										<volist name="vlist.sublist" id="subinfo">
+											<input type="radio" name="b{$vlist.zbid}" <if condition="$vlist['selected'] eq $subinfo['subinfoid']">checked="checked"</if> value="{$subinfo.subinfoid}"/>
+											{$subinfo.subinfoname}&nbsp;&nbsp;
+										</volist>
+									</td>
+								</tr>
+								<if condition="$vlist['count'] gt 1"> 
+								<volist name="vlist.targets" id="targetinfo">
+									<tr>
+										<td>{$targetinfo.targetname}</td>
+										<td>{$targetinfo.targetzbweight}</td>
+										<td align="left"><label style="width:97%">{$targetinfo.targetzbcontent}</label></td>
+										<td>
+											<volist name="targetinfo.sublist" id="subinfo">
+												<input type="radio" name="{$targetinfo.code}" <if condition="$targetinfo['checked'] eq $subinfo['subinfoid']">checked="checked"</if>  value="{$subinfo.subinfoid}"/>
+												{$subinfo.subinfoname}&nbsp;&nbsp;
+											</volist>
+										</td>
+									</tr>
+								</volist> </if>
+								</volist>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<fieldset class="zlqk_1">
+							<legend class="zlqk_2">
+								<b>四、B级评估内容</b>
+							</legend>
+							<table cellspacing="0" border="1" width="100%" bordercolor="#B8D0D6"
+								style="border-collapse: collapse; text-align: center;" class="gzpg_d">
+								<tr bgcolor="#ecf1f2">
+									<td width="10%">
+										<strong>类型</strong>
+									</td>
+									<td width="15%">
+										<strong>具体指标</strong>
+									</td>
+									<td width="5%">
+										<strong>权重</strong>
+									</td>
+									<td width="30%">
+										<strong>指标解释</strong>
+									</td>
+									<td width="40%">
+										<strong>评估</strong>
+									</td>
+								</tr>
+								<volist name="linktwolist" id="vlist">
+								<tr>
+									<td
+										<if condition="$vlist['count'] gt 1"> rowspan="{$vlist.count}" </if>>{$vlist.name}
+									</td>
+									<td>{$vlist.zbname}</td>
+									<td>{$vlist.zbweight}</td>
+									<td align="left"><label style="width:97%">{$vlist.zbcontent}</label></td>
+									<td>
+										<volist name="vlist.sublist" id="subinfo">
+											<input type="radio" name="c{$vlist.zbid}" <if condition="$vlist['selected'] eq $subinfo['subinfoid']">checked="checked"</if> value="{$subinfo.subinfoid}"/>
+											{$subinfo.subinfoname}&nbsp;&nbsp;
+										</volist>
+									</td>
+								</tr>
+								<if condition="$vlist['count'] gt 1"> 
+									<volist name="vlist.targets" id="targetinfo">
+										<tr>
+											<td>{$targetinfo.targetname}</td>
+											<td>{$targetinfo.targetzbweight}</td>
+											<td align="left"><label style="width:97%">{$targetinfo.targetzbcontent}</label></td>
+											<td>
+												<volist name="targetinfo.sublist" id="subinfo">
+													<input type="radio" name="{$targetinfo.code}" <if condition="$targetinfo['checked'] eq $subinfo['subinfoid']">checked="checked"</if>  value="{$subinfo.subinfoid}"/>
+													{$subinfo.subinfoname}&nbsp;&nbsp;
+												</volist>
+											</td>
+										</tr>
+									</volist>
+								</if>
+								</volist>
+							</table>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<fieldset class="zlqk_1">
+							<legend class="zlqk_2">
+								<b>五、业绩自评报告</b>
+							</legend>
+							<TEXTAREA rows="5" style="width:99.5%" class="disabled_d" readonly="readonly">{$vo.oneself}</TEXTAREA>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<fieldset class="zlqk_1">
+							<legend class="zlqk_2">
+								<b>六、A级负责人总评</b>
+							</legend>
+							<TEXTAREA rows="5"   style="width:99.5%" readonly="readonly" class="disabled_d">{$oneprincipalcontent}</TEXTAREA>
+						</fieldset>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<fieldset class="zlqk_1">
+							<legend class="zlqk_2">
+								<b>七、B级负责人总评</b>
+							</legend>
+							<TEXTAREA rows="5" name="principalcontent" readonly="readonly" style="width:99.5%" class="disabled_d">{$twoprincipalcontent}</TEXTAREA>
+						</fieldset>
+					</td>
+				</tr>
+			</table>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<div class="button">
+						<div class="buttonContent">
+							<button type="button" class="close">{$Think.lang.cancel}</button>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</form>
+</div>

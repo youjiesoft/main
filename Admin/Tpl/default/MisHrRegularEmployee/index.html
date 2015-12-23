@@ -1,0 +1,65 @@
+<form id="pagerForm" action="__URL__/index">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+	<input type="hidden" name="dwzpageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+	    <ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrregularemployee_add ">
+				<li>
+					<a class="add" href="__URL__/add/" title="试用员工_新增" rel="__MODULE__Add" target="dialog" mask="true" height="316" width="635">
+						<span>{$Think.lang.add}</span>
+					</a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 ">
+				<li>
+					<a title="确实要删除这些记录吗?" rel="id" target="selectedTodo" postType="string" href="__URL__/delete/rel/mishrregularemployee_index" class="delete">
+						<span>{$Think.lang.del}</span>
+					</a>
+				</li>
+			</if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+	    </ul>
+	    <form rel="pagerForm" onsubmit="return divSearch(this,'mishrregularemployee_index');" action="__URL__/index" method="post">
+			<input type="hidden" name="jump" value="jump">
+            <input type="hidden" name="indextype" value="1">
+			<div class="searchBar">
+				<table class="searchContent"> 
+					<tr>
+						<include file="Public:quickSearchCondition" />
+						<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelmanagement_exportbysearchhtml ">
+							<td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index','__URL__/exportBysearchHtml');">导出</button></td>
+						</if>
+					</tr>
+				</table>
+			</div>
+		</form>	    
+    </div>
+	<table class="table" width="100%" layoutH="118" ajaxurl="__URL__/index" rel="regularemployee" dwztotalPages="{$dwztotalpage}">
+	    <thead ename="{$ename}">
+	    <tr>
+		    <th width="15" ><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+		    <volist id="vo" name="detailList">
+		    	<if condition="$vo[shows]"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="departmentmodel" orderField="{$vo[sortname]}" class="{$sort}"</if>><span style="color:blue">{$vo[showname]}</span> </th></if>	<!--类型-->
+		    </volist>
+	    </tr>
+	    </thead>
+	    <tbody>
+	    	<include file="dwzloadindex" />
+	    </tbody>
+    </table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="mishrregularemployee_index" totalCount="{$totalCount}" numPerPage="{$dwznumPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

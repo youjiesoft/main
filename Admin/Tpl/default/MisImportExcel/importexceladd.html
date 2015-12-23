@@ -1,0 +1,60 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/misimportexcelinsert/navTabId/{$refreshmodule}" class="pageForm required-validate" onsubmit="return iframeCallback(this,dialogAjaxDone);" enctype="multipart/form-data" target="callbackframe" >
+		<input type="hidden" name="id" value="{$id}" >
+		<div class="pageFormContent" layoutH="58">
+			<table width="100%" border="0" cellspacing="0">
+				<tr>
+					<td>
+						<div class="unit">
+							<label style="width:auto;">
+								<input type="hidden" name="step" value="2" />
+								<input class="required valid" type="file" name="attached" />
+							</label>
+							<span class="info"><a <if condition="$ajaxmsg eq 1">target='ajaxTodo'</if> href="__URL__/misimportexceladd/id/{$id}/download/1">点此下载 示范文件</a></span>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="unit">
+							<span class="info">
+							温馨提示 (
+							<if condition="$importcatalog eq 1">
+							为保证数据导入正确请上传后缀为xls 或者 xlsx的文件！
+							<else />
+							为保证数据导入正确请上传后缀为csv的文件！
+							</if>)
+							</span>
+						</div>
+					</td>
+					
+				</tr>
+				<tr>
+					<td>
+						<div class="unit">
+							<label style="width:auto;">操作类型：</label>
+							<select name="catalog" class="combox required">
+								<option value="1" >新增</option>
+								<option value="2" >更新</option>
+								<option value="3" >新增及更新</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+				</table>
+			
+		</div>
+		
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_misimportexcelinsert">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

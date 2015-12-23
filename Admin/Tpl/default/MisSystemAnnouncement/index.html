@@ -1,0 +1,40 @@
+<script type="text/javascript">
+<!--
+$(function(){
+    //为左侧栏目导航点击后修改选中状态@nbmxkj 20141009 1629
+    nbm_getfouce();
+});
+//-->
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+		<div class="work_statement">通知公告</div>
+        <div class="edit_work_lay">
+            <a class="edit_work_btn" href="__URL__/add" target="navTab" rel='__MODULE__indexview' title="系统公告-发布">发布 <span class="icon-pencil"></span></a>
+        </div>
+        <div class="tml_divider"></div>
+        <div class="tml_bar_nav">
+            <ul class="bar_nav">
+                <li class="active"><a href="__URL__/index/jump/1" target="ajax" rel='__MODULE__indexview'>所有通知公告</a></li>
+                <li><a href="__URL__/index/jump/1/typeid/1" target="ajax" rel='__MODULE__indexview'>已发布</a></li>
+                <li><a href="__URL__/index/jump/1/waitAudit/3" target="ajax" rel='__MODULE__indexview'>待审核</a></li>
+            </ul>
+        </div>
+		<div class="collapse" layoutH="10">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse">
+				<h2></h2>
+				<div></div>
+			</div>
+			<ul id="__MODULE__treeDemo" class="ztree xyTree" layoutH="10"></ul>
+		</div>
+	</div>
+	<div id="__MODULE__indexview" class="unitBox treeright">
+		<include file="indexview" />
+	</div>
+</div>

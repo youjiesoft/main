@@ -1,0 +1,53 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisHrRemindEmployeeContracttree"), setting, zNodes);
+	//var zTree = $.fn.zTree.getZTreeObj("remindwaitingfortree");
+   // var valid='2';
+    //var nodes = zTree.getNodesByParam("id", valid, null);
+   // zTree.selectNode(nodes[0]);
+});
+function hr_refreshdialog1(json){
+	dialogAjaxDone(json);
+	if(json.statusCode == DWZ.statusCode.ok){
+		var refreshtabs = json.refreshtabs;
+		var tab = refreshtabs.ntdata;
+		var ids = refreshtabs.ids || json.data;
+		var url="__URL__/add";
+		ondblclick_dialog("a.add","div#mishrbasicemployeecontract_index", url);
+	}
+}
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="40">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix" style="border:0 solid #99b8ee;border-width:1px 0;padding:5px;">
+				<div class="xysearcher">
+					<input type="text" id="MisHrRemindEmployeeContractSearchNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('MisHrRemindEmployeeContracttree','MisHrRemindEmployeeContractSearchNodeKeys')">搜索</button>
+				</div>
+			</div>
+			<ul id="MisHrRemindEmployeeContracttree" class="ztree" layoutH="76"></ul>
+		</div>
+	</div>
+	<div id="MisHrRemindEmployeeContract" class="unitBox treeright">
+		<include file="contractindex"  />
+	</div>
+</div>

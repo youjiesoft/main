@@ -1,0 +1,22 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/updateprobation/rel/mishrprobationemployee" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<div class="pageFormContent " layoutH="55">
+			<input type="hidden" name="id" value="{$id}" />
+				<p style="width:100%">
+					<label> 请设置试用期： </label>
+					<label style="width:50px"><input type="radio" name="transferdate" onclick="$('#otherday').hide()" value="week">一周</label>
+					<label style="width:50px"><input type="radio" name="transferdate" onclick="$('#otherday').hide()" value="onemonth">一月</label>
+					<label style="width:50px"><input type="radio" name="transferdate"  onclick="$('#otherday').hide()" value="twomonth">二月</label>
+					<label style="width:50px"><input type="radio" name="transferdate"  onclick="$('#otherday').hide()" value="threemonth">三月</label>
+					<label style="width:50px"><input type="radio" name="transferdate"  onclick="$('#otherday').show()"  value="other">其他</label>
+					<span id="otherday" style="display: none">
+					<label style="width:80px"> 请输入天数： </label>
+					<input type="text" name="days"    size="15"   >
+					</span>
+					</p>
+			</div>
+		{:W('ShowAction')}
+		</form>
+	</div>
+</div>

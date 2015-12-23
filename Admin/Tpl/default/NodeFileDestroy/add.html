@@ -1,0 +1,195 @@
+<script>
+	function nodeadd_change_bindingtype(obj){
+		var type = $(obj).val();
+		if (type == '1') {
+			$("#node_add_binding_div").show();
+			$("#node_add_IsRole").hide();
+		}
+		if (type == '0') {
+			$("#node_add_binding_div").hide();
+			$("#node_add_IsRole").show();
+		}
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/jbsxNodeBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="level" value="{$level}">
+		<input type="hidden" name="pid" value="{$pid}">
+		<div class="pageFormContent" layoutH="48">
+			<div class="tml-row">
+                <div class="tml-form-col">
+                    <label>{$fields["icon"]}：</label>
+                    <input type="text" class="required" maxlength="25"  name="icon" value="-.png">
+                </div>
+                <div class="tml-form-col">
+                    <label>
+                    <if condition="($type eq 2)">
+                        {$p_name[3]}：
+                    <else />
+                        {$p_name[$level]}：
+                    </if>
+                    </label>
+                    <input type="text" class="required alphanumeric"  name="name">
+                </div>
+                <div class="tml-form-col">
+                    <label>{$fields["title"]}：</label>
+                    <input type="text" class="required" maxlength="25"  name="title">
+                </div>
+                <div class="tml-form-col">
+                    <label>{$fields["group_id"]}：</label>
+                    <SELECT name="group_id"  class="combox">
+                        {:getDataBaseByHtml('Group',array('selected'=>$_REQUEST['group_id']))}
+                    </SELECT>
+                </div>
+                <div class="tml-form-col">
+                    <label>{$fields["showmenu"]}：</label>
+                    <div class="left tml-radio tml-w40">
+                    	<label>
+                    		<input type="radio" name="showmenu" checked value="1">是
+                    	</label>
+                    </div>
+                    <div class="left tml-radio tml-w40">
+                    	<label>
+                    		<input type="radio" name="showmenu" value="0">否
+                    	</label>
+                    </div>
+                </div>
+                <div class="tml-form-col">
+                    <label>{$fields["toolshow"]}：</label>
+                    <div class="left tml-radio tml-w40">
+                    	<label>
+                    <input type="radio" name="toolshow" value="0">是
+                    </label>
+                    </div>
+                    <div class="left tml-radio tml-w40">
+                    	<label>
+                    <input type="radio" name="toolshow" checked value="1">否
+                    </label>
+                    </div>
+                </div>
+			</div>
+			<if condition="($level eq 1)" >
+				<input type="hidden" name="type" value="0">
+			<elseif condition="($level eq 2)" />
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>类型：</label>
+						<select name="type"  class="combox">
+							{:getDataBaseByHtml('nodetype',array('selected'=>1,'conditions'=>'id = 1'))}
+						</select>
+					</div>
+				</div>
+			<elseif condition="($level eq 3)" />
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>类型：</label>
+						<select name="type"  class="combox">
+							<volist name="treeTypeList" id="list">
+								<if condition="($type eq 3) OR ($type eq 1)">
+									<if condition="($list['id'] eq 2) OR ($list['id'] eq 3)">
+										<option value="{$list['id']}" >{$list['name']}</option>
+									</if>
+								<elseif condition="($type eq 2)" />
+									<if condition="($list['id'] eq 3)">
+										<option value="{$list['id']}" >{$list['name']}</option>
+									</if>
+								</if>
+							</volist>
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>是否带审批：</label>
+						<div class="left tml-radio tml-w40">
+                    	<label>
+	                   <input type="radio" name="isprocess" value="1">是
+	                   </label>
+	                   </div>
+	                   <div class="left tml-radio tml-w40">
+	                   	<label>
+	                   <input type="radio" name="isprocess" checked value="0">否
+	                   </label>
+	                   </div>
+					</div>
+					<div class="tml-form-col">
+						<label>视图名称：</label>
+						<input type="text"  style="width:260px;" name="viewname"/>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>是否任务模板：</label>
+						 <div class="left tml-radio tml-w40">
+		                    <label>
+		                  	  <input type="radio" name="isprojectwork" value="1">是
+		                    </label>
+	                    </div>
+	                    <div class="left tml-radio tml-w40">
+		                    <label>
+		                   		 <input type="radio" name="isprojectwork" checked value="0">否
+		                    </label>
+	                    </div>
+					</div>
+				</div>
+			<elseif condition="($level eq 4)" />
+				<div class="tml-row">
+					<input type="hidden" name="type" value="4"/>
+					<div class="tml-form-col">
+						<label>{$fields["category"]}：</label>
+						<select name="category" class="required combox">
+							{:getDataBaseByHtml('nodecategory')}
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label title="是否带绑定">是否带绑定：</label>
+						<select name="bindingtype" onchange="nodeadd_change_bindingtype(this);" class="combox">
+							<option value="0" >不带绑定</option>
+							<option value="1" >带绑定</option>
+						</select>
+					</div>
+					<div class="tml-form-col">
+	                    <label title="是否生成基础权限组">是否生成基础权限组：</label>
+	                    <div class="left tml-radio tml-w40">
+                    		<label><input type="radio" name="IsRole" value="1">是</label>
+	                    </div>
+	                    <div class="left tml-radio tml-w40">
+                    		<label><input type="radio" name="IsRole" checked value="0">否</label>
+	                    </div>
+	                </div>
+				</div>
+				<div id="node_add_binding_div" style="display:none;">
+					<div class="tml-form-row">
+						<label>绑定功能：</label>
+						<volist id="levelvo" name="level_list">
+							<div class="left tml-checkbox tml-w100">
+								<label>
+									<input type="checkbox" name="binding[]" value="{$levelvo['id']}">{$levelvo['title']}
+								</label>
+							</div>
+						</volist>
+					</div>
+					<div class="tml-form-row">
+						<label>被绑定功能：</label>
+						<volist id="levelvo" name="level_list">
+							<div class="left tml-checkbox tml-w100">
+								<label>
+									<input type="checkbox" name="bebinding[]" value="{$levelvo['id']}">{$levelvo['title']}
+								</label>
+							</div>
+						</volist>
+					</div>
+				</div>
+				</if>
+				<div class="tml-row">
+	                <div class="tml-form-row">
+	                    <label>描 述：</label>
+	                    <textarea name="remark" rows="3"></textarea>
+	                </div>
+                </div>
+		</div>
+			{:W('ShowAction')}
+		
+	</form>
+	</div>
+</div>
+

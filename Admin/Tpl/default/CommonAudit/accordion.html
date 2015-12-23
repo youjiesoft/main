@@ -1,0 +1,33 @@
+<script>
+$(function(){
+	var $box=navTab.getCurrentPanel();
+	$('.nbmaccordion' , $box).nbmaccordion();
+    $('a.menu_tag').toggle(function(){
+        $('div.nbmaccordionFloat').animate({width:"200px"},'slow');
+    },function(){
+       $('div.nbmaccordionFloat').animate({width:"0px"},'slow');
+    });
+});
+</script>
+<a class="menu_tag" href="#"><span class="icon-reorder"></span></a>
+<div class="nbmaccordionFloat">
+<!-- left accordion -->
+<!--  参数说明：* @parame spread 全关全开控制，默认0：全关 @parame selecter 打开指定项下标。默认-1， @parame open 展开的样式效果 @parame close 关闭样式效果 -->
+<div class="nbmaccordion"  data-option="close:icon-double-angle-down;open:icon-double-angle-up" layouth="85">
+<volist name="accessNode" id="vo">
+	<div title="{$vo.title}">
+		<ul>
+		<volist name="vo['levelthree']" id="vv">
+			<li>
+				<a title="{$vv.title}" href="__APP__/{$vv.name}/index" target="navTab">
+					<span class="icon icon-tags mr10"></span>
+					<span>{$vv.title}</span>
+				</a>
+			</li>
+		</volist>
+		</ul>
+	</div>
+</volist>
+</div>
+<!-- left end -->	
+</div>

@@ -1,0 +1,137 @@
+<script>
+function checkUser(obj,$name){
+	var $box=$.pdialog.getCurrent();
+	$box.find("#"+$name).show();
+	var val=$(obj).val();
+	if($(obj).attr("name") == "name"){
+		$box.find("input[name='zhname']").val(val);
+	}
+	if(!val || $(obj).hasClass("error")){
+		 $box.find("input[name='"+$name+"']").addClass("error");
+		 $box.find("#"+$name+"span").show();
+		$box.find("#"+$name).attr("class","icon icon-remove tml-c-red");
+		$box.find("#"+$name).text("请正确输入用户名");
+		return false;
+	}
+	$.ajax({
+		type : 'POST',
+		url : "__URL__/lookupcheckuser",
+		data : {
+			val : val,
+			name : $name,
+		},
+		cache : false,
+		global : false,
+		success : function(msg) {
+		 if(msg !=0 ){
+			 if($name=="zhname"){
+				 $box.find("input[name='"+$name+"']").val(val+Number(parseInt(msg)+1));
+					 $box.find("#"+$name).attr("class","icon icon-ok tml-c-green");
+					 $box.find("#"+$name+"span").hide();
+					$box.find("#"+$name).text("用户名可用");
+			 }else{
+				 $box.find("input[name='"+$name+"']").addClass("error");
+				 $box.find("#"+$name+"span").show();
+				$box.find("#"+$name).attr("class","icon icon-remove tml-c-red");
+				$box.find("#"+$name).text("用户名已被注册！");
+			 }
+		 }else{
+			 $box.find("#"+$name).attr("class","icon icon-ok tml-c-green");
+			 $box.find("#"+$name+"span").hide();
+			$box.find("#"+$name).text("用户名可用");
+		 }
+		}
+	});
+}
+function changeemail(obj){
+	var $box=$.pdialog.getCurrent();
+	$ischecked=$(obj).attr("checked");
+	if($ischecked){
+		$box.find("input[name='useremail']").removeClass("required error");
+		$box.find("span[for='useremail']").hide();
+	}else{
+		$box.find("input[name='useremail']").addClass("required");
+	}
+}
+function userNavTabAjaxDone(form){
+	var $box=$.pdialog.getCurrent();
+	if($box.find("input[name='issendemail']").attr("checked")=="checked"){
+	if(!$box.find("input[name='useremail']").val()){
+		$box.find("input[name='useremail']").addClass("required ");
+	}
+	}
+	var $input = $(form).find("input.error");
+	if($input.length > 0) {
+		alertMsg.error('提交数据不完整，'+$input.length+'个字段有错误，请改正后再提交!');
+		return false;
+	}
+	return validateCallback(form,dialogAjaxDone);
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post"
+	<if condition="$step">
+	 action="__URL__/lookupinsertuser/rel/mishrpersonnelmanagement"
+	 <else/>
+	 action="__URL__/lookupinsertuser/rel/mishrprobationemployee"
+	 </if>
+	  class="pageForm required-validate" onsubmit="return userNavTabAjaxDone(this)">
+		<div class="pageFormContent" layoutH="58">
+			<input type="hidden" value="1" name="refreshtabs[byid]">
+			<input type="hidden" value="1" name="refreshtabs[data]">
+			<input type="hidden" name="employeid" value="{$id}" />
+			<input type="hidden" name="companyid" value="{$_REQUEST['companyid']}" />
+			<input type="hidden" name="email" value="{$id|getFieldBy='id','email','mis_hr_personnel_person_info'}" />	 
+			<input type="hidden" name="mobile" value="{$id|getFieldBy='id','phone','mis_hr_personnel_person_info'}" />	 
+			<input type="hidden" name="name" value="{$id|getFieldBy='id','name','mis_hr_personnel_person_info'}" />	 	 
+			<input type="hidden" name="sex" value="{$id|getFieldBy='id','sex','mis_hr_personnel_person_info'}" />	 	 
+			<input type="hidden" name="duty_id" value="{$id|getFieldBy='id','dutylevelid','mis_hr_personnel_person_info'}" />	 	 
+			<input type="hidden" name="dept_id" value="{$id|getFieldBy='id','deptid','mis_hr_personnel_person_info'}" />	 	 
+				 <div class="tml-row">
+					<div class="tml-form-col">
+						<label>英文账号：</label>
+						<input type="text"  placeholder="输入字母，数字组成的账号" onblur="checkUser(this,'account')"    class="required  alphanumeric" name="accountenglish" />
+						<span for="account" style="display:none"  id="accountspan" generated="true" class="error" title="必填字段">必填字段</span>	
+					</div>
+						<span id="account"   style="display:none;" class="tml-form-text "></span>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>中文账号：</label>
+						<input type="text"   onblur="checkUser(this,'zhname')"  onfocus="hidediv('zhname')" value="{$name}"  name="zhname" />
+						<span for="zhname" style="display:none" id="zhnamespan" generated="true" class="error" title="必填字段">必填字段</span>	
+					</div>				
+					<span id="zhname" class="tml-form-text icon icon-ok tml-c-green">用户名可用</span>
+				</div>
+				<div class="tml-row">
+		            <div class="tml-form-row">
+						<label>人工通知：</label>
+						 <span class="tml-form-text"><span class="tml-c-darken"><b>他（她）的电话是：<span id="phone"> <if condition="$phone">{$phone}<else/>暂无</if></span><span style="color:red">(*初始密码为{$pwd})</span></b></span></span>
+					</div>
+				</div>
+				<div class="tml-row">
+		            <div class="tml-form-col">
+						<label>邮件通知：</label>
+						<input type="text" class="email required" minlength="3" value="{$id|getFieldBy='id','email','mis_hr_personnel_person_info'}" maxlength="20" name="useremail" />
+					</div>
+					<div class="tml-mt5">
+						<input class="switch-check" checked="checked" value="1"  onclick="changeemail(this)" name="issendemail"  type="checkbox">
+					</div>
+				</div>
+				</div>
+				<div class="formBar">
+				<ul>
+						<li>
+							<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+						</li>
+					<li>
+						<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+					</li>
+				</ul>
+				</div>
+	</form>
+
+	</div>
+</div>
+

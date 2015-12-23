@@ -1,0 +1,93 @@
+<div class="pageContent">
+<form method="post" action="__URL__/lookupForbidView/rel/dynamicconfBox" class="pageForm required-validate"  onsubmit="return validateCallback(this, dialogAjaxDone)" >
+	<input name="key" value="{$key}" type="hidden" />
+	<input name="setmodule" value="{$setmodule}" type="hidden" />
+	<input name="issub" value="{$issub}" type="hidden" />
+	<input name="isInsert" value="1" type="hidden" />
+	<div class="pageFormContent" layoutH="58"">
+		<if condition="$userlist or $rolelist or $alluser or $expertlist">
+			<div style="color:red;padding-bottom:5px;"><strong>1、当前字段对以下用户不可见</strong></div>
+			<div>
+			<if condition="$alluser eq 1 ">
+				对除这几个用户以外所有用户不可见
+					<ul class="addressee">
+						<volist name="allowuserlist" id="allowulist">
+							<li>
+								<span>{$allowulist.name}</span>
+							</li>
+						</volist>
+					</ul>
+			<else/>
+				<if condition="$userlist">
+					用户
+					<ul class="addressee">
+						<volist name="userlist" id="ulist">
+							<li>
+								<input type="hidden" name="userid[]" value="{$ulist.id}"/>
+								<span>{$ulist.name}</span>
+								<a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除该功能">x</a>
+							</li>
+						</volist>
+					</ul>
+				</if>
+			</if>
+			<if condition="$allrole eq 1 ">
+				对除这几个角色以外所有角色不可见
+					<ul class="addressee">
+						<volist name="allowrolelist" id="roleallowulist">
+							<li>
+								<span>{$roleallowulist.name}</span>
+							</li>
+						</volist>
+					</ul>
+			<else/>
+				<if condition="$rolelist">
+					角色
+					<ul class="addressee">
+						<volist name="rolelist" id="rlist">
+							<li>
+								<input type="hidden" name="roleid[]" value="{$rlist.id}"/>
+								<span>{$rlist.name}</span>
+								<a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除该功能">x</a>
+							</li>
+						</volist>
+					</ul>
+				</if>
+			</if>
+				<if condition="$allexpert eq 1 ">
+				对除这几个专家以外所有专家不可见
+					<ul class="addressee">
+						<volist name="allowexpertlist" id="alloexpertlist">
+							<li>
+								<span>{$alloexpertlist.name}</span>
+							</li>
+						</volist>
+					</ul>
+			<else/>
+				<if condition="$expertlist">
+				专家
+					<ul class="addressee">
+						<volist name="expertlist" id="elist">
+							<li>
+								<input type="hidden" name="expertid[]" value="{$elist.id}"/>
+								<span>{$elist.name}</span>
+								<a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除该功能">x</a>
+							</li>
+						</volist>
+					</ul>
+				</if>
+			</if>
+			</div>
+			
+			<else/>
+			<div style="color:red;">1、当前字段对所有用户可见</div>
+		</if>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+		</ul>
+	</div>
+</form>
+</div>

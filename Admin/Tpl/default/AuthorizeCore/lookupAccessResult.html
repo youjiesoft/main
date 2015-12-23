@@ -1,0 +1,24 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupAccessResult" class="pageForm required validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="md" value="{$_REQUEST['modelname']}" />
+		<input type="hidden" name="type" value="{$_REQUEST['type']}" />
+		<input type="hidden" name="typeval" value="{$_REQUEST['typeval']}" />
+		<input type="hidden" name="id" value="{$UserBrowsConditionsVo.id}"/>
+		<div class="pageFormContent" layoutH="57">
+			<div class="tml-row">
+			<div class="tml-form-col">
+				<label>浏览级权限过滤：</label>
+				 {:W('ShowAddResult', array('model'=>$_REQUEST['modelname'],'data'=>$UserBrowsConditionsVo) )}
+			 </div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

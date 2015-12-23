@@ -1,0 +1,107 @@
+<div class="page">
+    <div class="pageContent">
+        <div class="clearfix xyTask">
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskTraceInitiative">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                    <!-- 主动跟踪 -->
+                    <if condition='$initiativetasklist NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>任务名</th>
+                                    <th>执行人</th>
+                                    <th>紧急程度</th>
+                                    <th>预计结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="initiativetasklist" name="initiativetasklist" key="key1">
+                                </a>
+                                <tr target="sid_node" rel="{$initiativetasklist['taskid']}" onclick="onTrClickCheckbox(this,'id')" title="跟踪/查看任务" dheight="530" dwidth="744" drel="__MODULE__trace" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/trace/identifying/1/id/{$initiativetasklist.taskid}/teaceindex/1');">
+                                    <td>{$initiativetasklist['taskid']|getFieldBy='id','title','mis_task'|missubstr=###,25,true}</td>
+                                    <td>{$initiativetasklist['executeuser']|getFieldBy='id','name','user'}</td>
+                                    <td <if condition="$initiativetasklist.urgentstatus eq 1">class="levelGreen"</if><if condition="$initiativetasklist.urgentstatus eq 2">class="levelOrange"</if><if condition="$initiativetasklist.urgentstatus eq 3">class="levelRed"</if>></td>
+                                    <td>{$initiativetasklist['enddate']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskTraceRequired">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                 <!-- 申请跟踪 -->
+                    <if condition='$applytasklist NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>任务名</th>
+                                    <th>执行人</th>
+                                    <th>紧急程度</th>
+                                    <th>预计结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="applytasklist" name="applytasklist" key="key1">
+                                <tr target="sid_node" rel="{applytasklist['taskid']}" onclick="onTrClickCheckbox(this,'id')" title="跟踪/查看任务" dheight="530" dwidth="744" drel="__MODULE__trace" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/trace/identifying/1/id/{$applytasklist.taskid}/teaceindex/1');">
+                                    <td>{$applytasklist['taskid']|getFieldBy='id','title','mis_task'|missubstr=###,25,true}</td>
+                                    <td>{$applytasklist['executeuser']|getFieldBy='id','name','user'}</td>
+                                    <td <if condition="$applytasklist.urgentstatus eq 1">class="levelGreen"</if><if condition="$applytasklist.urgentstatus eq 2">class="levelOrange"</if><if condition="$applytasklist.urgentstatus eq 3">class="levelRed"</if>></td>
+                                    <td>{$applytasklist['enddate']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyTaskPanel">
+                <div class="xyTaskPanelHeader xyTaskTraceFinished">
+                    <div class="xyTaskPanelHeaderCon">
+                    
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                     <!-- 完成跟踪 -->
+                    <if condition='$overtasklist NEQ NUll'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>任务名</th>
+                                    <th>执行人</th>
+                                    <th>紧急程度</th>
+                                    <th>预计结束时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="overtasklist" name="overtasklist" key="key1">
+                                <tr target="sid_node" rel="{$overtasklist['taskid']}" onclick="onTrClickCheckbox(this,'id')" title="跟踪/查看任务" dheight="530" dwidth="744" drel="__MODULE__trace" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/trace/identifying/1/id/{$overtasklist.taskid}/teaceindex/1');">
+                                    <td>{$overtasklist['taskid']|getFieldBy='id','title','mis_task'|missubstr=###,25,true}</td>
+                                    <td>{$overtasklist['executeuser']|getFieldBy='id','name','user'}</td>
+                                    <td <if condition="$overtasklist.urgentstatus eq 1">class="levelGreen"</if><if condition="$overtasklist.urgentstatus eq 2">class="levelOrange"</if><if condition="$overtasklist.urgentstatus eq 3">class="levelRed"</if>></td>
+                                    <td>{$overtasklist['enddate']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">没有任务</div>
+                    </if>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

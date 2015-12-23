@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link rel="shortcut icon" type="image/ico" href="http://www.datatables.net/favicon.ico">
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=2.0">
+	<title>DataTables example - Add rows</title>
+	<link rel="stylesheet" type="text/css" href="../../media/css/jquery.dataTables.css">
+	<link rel="stylesheet" type="text/css" href="../resources/syntax/shCore.css">
+	<link rel="stylesheet" type="text/css" href="../resources/demo.css">
+	<script type="text/javascript" language="javascript" src="../../media/js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" language="javascript" src="../../media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" language="javascript" class="init">
+	var TABLEWNEW = function(opts) {
+		var $ = jQuery;
+		var that = this;
+		this.st = {
+				__id: 0,
+				nextId : function ()
+		        {
+		            return this.prefx + this.__id++;
+		        },
+				table: '.into_table',
+				prefx: 'into_table',
+				addRow: '.add_col_btn',                      //添加行按钮
+				delRow: '.into_table_trash_tr',              //删除行按钮
+				add_col_input: '.add_col_input',             //添加行数量输入框
+				max_add_row_number: 20,                      //最大一次性添加行数
+				table_th:[],
+				table_th_index:[],
+				template_tr:[],
+				tongji:[],                                   //用于控件统计功能
+				ordering:false,
+				searching:false,
+				readOnly:false,                              //控件是否只读
+				is_stats:false                               //控件是否统计
+		};
+		if(opts && typeof opts === 'object') {  
+			$.extend(this.st, opts); 
+		}
+		
+		var selLen = this.st.table.length;
+		if (selLen < 1) {
+			alert('没有对象被绑定到TABLEW!');
+			return false;
+		}
+		$(that.st.table).find("th[template_key]").each(function(o){
+			if($(this).attr("is_stats")){
+				that.st.is_stats = true;
+			}
+			that.st.table_th_index.push(o);
+		});
+		var table = $(that.st.table).DataTable({
+					ordering:that.st.ordering,          //禁用排序
+					searching:that.st.searching
+        });
+		var isArray = function(v){ return Object.prototype.toString.apply(v) === '[object Array]';};
+		var isNumber = function(o) { return typeof o === 'number' && isFinite(o); };
+		var isObject = function isObject(o){return typeof(o)=="object";}
+		var ThType = function(obj,column) {
+			var template_data = obj.attr("template_data")?$.parseJSON(obj.attr("template_data")):"";
+			var template_key = obj.attr("template_key");
+			var template_name = obj.attr("template_name");
+			var template_class = obj.attr("template_name");
+			var is_tj = obj.attr("is_stats");
+			var html = "";
+			var tjClass = " into_table_tj_input";
+			switch (template_key) {
+				case "serial":
+					html = "<span class='serial_number "+template_class+"'>#index#</span><input type='hidden' value='#index#' name='"+template_name+"' />";
+					break;
+				case "input":
+					if(is_tj)
+					{
+						template_class+=tjClass;
+					}
+					html = "<input type='text' name='"+template_name+"' class='"+template_class+"' />";
+					if((template_data!=null) && (typeof(template_data.unitl) != "undefined")){
+						html = "<input type='text' name='"+template_name+"' class='"+template_class+"' unitl='"+template_data.unitl+"' />";
+					}
+					break;
+				case "date":
+					html = "<input type='text' class='date Wdate js-wdate textInput enterIndex valid "+template_class+"'  name='"+template_name+"' />";
+					break;
+				case "lookup":
+					var callback = "";
+					if(template_data.callback){
+						callback = template_data.callback;
+					}
+					var lookupname = that.st.table.replace("#","")+template_data.lookupname+"#index#"+column.toString();
+					var upclass = lookupname+"."+template_data.upclass;
+					html =  '<div class="tml-form-col">';
+					html += '<div class="tml-input-append2">';
+					html += "<input type='text' readonly class='textInput enterIndex readonly "+template_class+"' callback='"+callback+"'/>";
+					if(isArray(template_data["hidden_data"])){
+						for(var i=0;i<template_data["hidden_data"].length;i++){
+							var hidden_upclass = lookupname+"."+template_data["hidden_data"][i]["upclass"];
+							html += "<input type='hidden' name='"+template_data["hidden_data"][i]["name"]+"' class='"+hidden_upclass+"'/>";
+						}
+					}
+					html += '<a autocomplete="off" bindlookupname="'+lookupname+'" lookupgroup="'+lookupname+'" href="'+template_data.href+'" param="'+template_data.param+'" class="input-addon input-addon-addon input-addon-add">查找带回</a>';
+					html += '<a onclick="clearOrg(\''+lookupname+'\');" href="javascript:void(0);" class="input-addon input-addon-recycle" title="清空信息"></a>';
+					html += '</div></div>';
+					break;
+				case "select":
+					html = '<select name="'+template_name+'" class="'+template_class+'"><option value="">请选择</option>';
+					if(isArray(template_data))
+					{
+						for(var i = 0;i<template_data.length;i++)
+						{
+							html+='<option value="'+template_data[i].value+'">'+template_data[i].name+'</option>';
+						}
+					}
+					html+="</select>";
+					break;
+				case "action":
+					html = '<a href="#" class="into_table_trash_tr icon-remove '+template_class+'"></a><input type="hidden" name="'+template_name+'" value="0" />';
+					break;
+				default :
+					html = "<input type='text'/>";
+					break;
+			}
+			return html;
+		};
+		
+			
+		var getTj = function(this_num,index,decimals) {
+			if(that.st.is_stats==false||that.st.tongji.length==0)return;
+			var tb = that.st.table;
+			var sum = parseFloat($(tb).find(".into_table_tj_"+index).val());
+			if(!isNumber(this_num))
+			{
+				this_num = 0.00;
+			}
+			
+			if(!isNumber(sum))
+			{
+				sum = 0.00;	
+			}
+			
+			sum += this_num;
+			$(tb).find(".into_table_tj_"+index).val(sum.toFixed(decimals));
+		};
+		
+		var getTjAll = function(index) {
+			var tj = that.st.tongji;
+			var tb = that.st.table;
+			if(that.st.is_stats==false||tj.length==0)return;
+			for(var i=0;i<tj.length;i++)
+			{
+				if(tj[i]["is_stats"])
+				{
+					var this_num = parseFloat($(tb).find("tbody tr").eq(index).find("td").eq(i).find("input").val());
+					
+					if(!isNumber(this_num))
+					{
+						this_num = 0.00;
+					}
+					else
+					{
+						this_num = -this_num;	
+					}
+					getTj(this_num,i,tj[i]["decimals"]);
+				}
+			}
+		};
+		
+		var get_obj_name = function() { 
+			var new_tr = $(that.st.table).find("tbody tr");
+			for(var i =0;i<new_tr.length;i++)
+			{
+				for(var j =0;j<$(that.st.table).find("tbody tr").eq(i).find("td").length;j++)
+				{
+					var type = $(that.st.table).find("th[template_key]").eq(j).attr("template_key");
+					var template_name = $(that.st.table).find("th[template_key]").eq(j).attr("template_name");
+					var obj_name = "";
+					var obj = "";
+					if(template_name)
+					{
+						obj_name = template_name;
+					}
+					else
+					{
+						obj_name = "into_table_"+type;
+					}
+					switch (type) {
+						case "serial":
+							type = "input";
+							new_tr.eq(i).find("td").eq(j).find(".serial_number").html(i+1);
+							new_tr.eq(i).find("td").eq(j).find(type).val(i+1);
+							break;
+						default :
+							break;
+					}
+					if(obj_name!="")
+					{
+						new_tr.eq(i).find("td").eq(j).find(type).attr("name",obj_name.replace("#index#",i));
+						
+					}
+				}
+			}
+		};
+		
+		var get_add_obj_name = function(index,obj_new_tr) { 
+			var i = index;
+			var new_tr = obj_new_tr;
+			new_tr.html(new_tr.html().replace(/#index#/g,i));
+			for(var j =0;j<new_tr.find("td").length;j++)
+			{
+				var template_data = $.parseJSON($(that.st.table).find("th[template_key]").eq(j).attr("template_data"));
+				var type = $(that.st.table).find("th[template_key]").eq(j).attr("template_key");
+				switch (type) {
+					case "input":
+						if((template_data!=null) && (typeof(template_data.unitl) != "undefined")){
+							if( typeof unitlinit === 'function' ){
+								unitlinit();
+							}
+						}
+						break;
+					case "date":
+						if($.fn.datepicker)new_tr.eq(i).find("td").eq(j).find(type).datepicker();
+						break;
+					case "lookup":
+						if($.fn.lookup)new_tr.eq(i).find("td").eq(j).find("a[lookupGroup]").lookup();
+						break;
+					case "select":
+						if( typeof initChosen === 'function' ){
+							initChosen();
+						}
+						break;
+					default :
+						break;
+				}
+			}
+		};
+		
+		if(this.st.template_tr=="")
+		{
+			$(this.st.table).find("th[template_key]").each(function(i){
+				that.st.template_tr.push(ThType($(this),i));
+				var tjarr = {};
+				tjarr.is_stats=$(this).attr("is_stats")?true:false;
+				tjarr.decimals=isNumber(parseInt($(this).attr("stats_num")))?parseInt($(this).attr("stats_num")):0;
+				that.st.tongji.push(tjarr);
+			});
+		}
+		
+		$(this.st.table).find(this.st.delRow).die();
+		//删除行
+		$(this.st.table).find(this.st.delRow).live("click", function(){
+			var delIndex = $(that.st.table).find("tbody tr").index($(this).parents("tr"));
+			getTjAll(delIndex);
+			table.row($(this).parents("tr")).remove().draw(false);
+			//console.log($(that.st.table).find($(table.columns(0).nodes()[0])));
+			table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+	            var html = "<span class='serial_number'>#index#</span><input type='hidden' name='into_table_serial' value='#index#' />";
+	    		var index = i+1;
+	    		$(table.rows().nodes()).eq(i).find("td:eq(0)").html(html.replace(/#index#/g,index));
+	        });
+		});
+		
+		$(this.st.table).find(this.st.addRow).die();
+		//添加行
+		$(this.st.table).find(this.st.addRow).on( 'click', function () {
+			var rows = parseInt($(that.st.add_col_input).val());
+			if(!isNumber(rows))
+			{
+				rows = 1;
+			}
+			if(rows>that.st.max_add_row_number)
+			{
+				alert("最多一次添加"+that.st.max_add_row_number+"行！");
+				return;
+			}
+			for(var i = 0;i<rows;i++){
+				table.row.add(that.st.template_tr).draw();
+				var rowsCount = table.row()[0].length;
+				var obj = $(table.rows().nodes(rowsCount-1)).eq(rowsCount-1);
+				console.log(obj);
+				get_add_obj_name(rowsCount,obj);
+			}
+		});
+		
+		var getTjCol = function() {  //获取统计列
+		    var tj = that.st.tongji;
+			var tb = that.st.table;
+			
+			var html = "<tr　class='into_table_tjtr'>";
+			for(var i=0;i<tj.length;i++)
+			{
+				if(tj[i]["is_stats"])
+				{
+					html += "<td>列小计:<input readonly='readonly' decimals="+tj[i]["decimals"]+"  class='into_table_tj_"+i+"'></td>";
+				}
+				else
+				{
+					html += "<td>&nbsp;</td>";
+				}
+			}
+			html += "</tr>";
+			return html;
+		};
+		
+		$(this.st.table).find(".into_table_tj_input").die();
+		$(this.st.table).find(".into_table_tj_input").live("change keyup",function(){
+			var tj = that.st.tongji;
+			var index = $(this).parents("tr").find("td").index($(this).parents("td"));
+			var this_num = parseFloat($(this).val());
+			var y_num = parseFloat($(this).attr("y_num"));
+			if(!isNumber(this_num))
+			{
+				this_num = 0.00;	
+			}
+			$(this).attr("y_num",this_num);
+			if(isNumber(y_num))
+			{
+				this_num -= y_num;	
+			}
+			getTj(this_num,index,tj[index]["decimals"]);
+		});
+		
+		$(this.st.table).find(".into_table_hide_column").die();
+		$(this.st.table).find('button.into_table_hide_column').on( 'click', function (e) {
+	        e.preventDefault();
+	        var column = table.column( $(this).attr('data-column') );
+	        column.visible(!column.visible());
+	    });
+		
+		if(this.st.is_stats)
+		{
+			$(that.st.table).find("tbody").after(getTjCol());
+		}
+	}
+	function initTableWNEW() {
+		var table;
+		$(".into_table_new").each(function(o){
+			var id = $(this).attr("id");
+			if(!id){
+				var setId = "into_table_new"+o.toString();
+				$(this).attr("id",setId);
+				var opts = {table:"#"+setId};
+				table = new TABLEWNEW(opts);
+			}
+		});
+	};
+
+$(document).ready(function() {
+	initTableWNEW();
+	/*var table = $('#example').DataTable();
+ 
+    $('.into_table_trash_tr').live("click", function () {
+        //table.row('.selected').remove().draw( false );
+        table.row($(this).parents("tr")).remove().draw( false );
+        var data = table.$('input, select').serialize();
+        console.log(data);
+    } );
+	
+    table.on( 'order.dt search.dt', function () {
+    	table.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+            var html = "<span class='serial_number'>#index#</span><input type='hidden' name='into_table_serial' value='#index#' />";
+    		var index = i+1;
+            cell.innerHTML = html.replace(/#index#/g,index);
+        } );
+    } ).draw();
+    
+	$('#addRow').on( 'click', function () {
+		var rows = $(".add_col_input").val();
+		for(var i = 0;i<rows;i++){
+			table.row.add( [
+    		    '',
+    			'<input name="aa" type="text">',
+    			'<select name="bb"><option>请选择</option><option>选择1</option><option>选择2</option></select>',
+    			counter +'.3',
+    			counter +'.4',
+    			counter +'.5',
+    			'<button class="delRow" type="button">删除</button>',
+    		] ).draw();
+    		counter++;
+		}
+	});*/
+} );
+	</script>
+</head>
+
+<body class="dt-example">
+	<div class="container">
+		<section>
+			<h1>DataTables example <span>Add rows</span></h1>
+			<table class="display into_table_new" cellspacing="0" width="100%">
+				<thead>
+					<tr>
+						<th template_key="serial" template_name="code" template_class="code">序号</th>
+				        <th template_key="input" template_data='{"bindlookupname":"org1","upclass":"id"}' template_name="tel_phone" is_stats="true" stats_num="2" template_class="required unitlpase"><button class="into_table_hide_column" data-column="1">隐藏</button>联系电话</th>
+				        <th template_key="date" template_name="test_date" template_data='{"format":"yyyy-MM-dd HH:mm"}'><button class="into_table_hide_column" data-column="2">隐藏</button>开始日期</th>
+				        <th template_key="select" template_data='[{"value":1,"name":"第一人"},{"value":2,"name":"第二人"}]' template_class="code">联系人</th>
+				        <th template_key="lookup" template_name="employeename" template_data='{"param":"field=id,code,enterprisename&model=MisSalesCustomer&newconditions=","upclass":"name","callback":"mishrbecomeemployeeisworkage","lookupname":"org1","href":"/systemnew/Admin/index.php/MisHrBecomeEmployee/lookupmanage","hidden_data":[{"upclass":"id","name":"employeeid"},{"upclass":"deptid","name":"deptid"}]}'>联系人邮箱</th>
+				        <th template_key="lookup" template_name="" template_data='{"upclass":"name","callback":"mishrbecomeemployeeisworkage","lookupname":"org2","href":"/systemnew/Admin/index.php/MisHrBecomeEmployee/lookupmanage","hidden_data":[{"upclass":"id","name":"employeeid#index#"},{"upclass":"deptid","name":"deptid"}]}'>联系人邮箱</th>
+				        <th template_key="action">操作</th>
+					</tr>
+				</thead>
+				<tfoot>
+			    <tr>
+			        <td  colspan="7"><span class="right"><input class="add_col_input" type="text"/><a class="add_col_btn" href="#">新增行</a></span></td>
+			    </tr>
+			    </tfoot>
+			</table>
+		</section>
+	</div>
+<style>
+    .into_table tr td span{
+        margin: 0 auto;
+        display: inline-block;
+    }
+    .into_table tr td input{
+        border: 1px solid #e8e8e8;
+        font-family: "Microsoft Yahei";
+        border-radius: 4px;
+        font-size: 15px;
+        padding-left: 3px;
+    }
+    .into_table_trash_tr,.add_col_btn{
+        padding: 3px 8px;
+        background: #e1455e;
+        color: #fff;
+        border-radius: 4px;
+        margin-top: -1px;
+        font-size: 12px;
+    }
+    .add_col_btn{
+        background: #0099e6;
+        margin-right: 20px;
+    }
+    .add_col_btn:hover,.into_table_trash_tr:hover{
+        background: #446DB2;
+        transition: background 0.8s;
+        color: #fff;
+    }
+    .add_col_input,.add_col_input.focus{
+        width: 30px;
+        height: 18px;
+        border: 1px solid #d8d8d8;
+        border-radius: 4px;
+        /*border-right: none;*/
+        margin: 8px 5px 0px 0px;
+        padding-left: 5px;
+    }
+</style>
+</body>
+</html>

@@ -1,0 +1,634 @@
+<!-- 导入汉字转拼音库 -->
+<script type="text/javascript" src="__PUBLIC__/Js/plugs/jQuery.Hz2Py-min.js"></script>
+<link href="__PUBLIC__/Css/tmlstyle/model.css" rel="stylesheet" type="text/css" media="screen" />
+<script>
+/********		现行组件及字段设定		********/
+var controllArr ='[{"key":"text","val":"文本框","count":"1","edit":"1"},{"key":"date","val":"日期选择器","count":"0","edit":"1"},{"key":"lookup","val":"查找带回","count":"0","edit":"1"},{"key":"select","val":"下拉框","count":"0","edit":"1"},{"key":"uploadfilenew","val":"附件上传","count":"0","edit":"0"}]';
+var fieldArr = '[{"key":"INT","val":"整数型","len":"10","cate":"text"},{"key":"VARCHAR","val":"字符型","len":"30","cate":"text"},{"key":"DECIMAL","val":"浮点型","len":"18,6","cate":"text"},{"key":"DATE","val":"日期型","len":"11","cate":"date"}]';
+/********		现行组件及字段设定end		********/
+
+var id = '{$id}';
+var check = '{$check}'; 
+var asciiCode = 96;
+var asciiCodeArr=Array();
+var reserved='{$reserved}';
+var originalData='';
+// 现有字段
+<?php
+		if($tabledata){
+		foreach($tabledata as $key=>$val){
+			$a[]=$val['fieldname'];
+		}
+		echo "originalData=".json_encode($a).";";
+		}
+	?>
+	
+	
+function inserdatabaseinfo($form) {
+//	console.log(getTag(getContainer(check) , 'hidden' , id));
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			id= '{$id}';
+			check = '{$check}';
+			getTag(getContainer(check) , 'hidden' , id).val('');
+			$(this).logs(json.data);
+			console.log(getTag(getContainer(check) , 'hidden' , id));
+			getTag(getContainer(check) , 'hidden' , id).val(json.data);
+			console.log(getTag(getContainer(check) , 'hidden' , id));
+			$.pdialog.closeCurrent(); 
+		}
+	});
+}
+function createNewCharacter(obj , original){
+	var splider = '_';
+	//var defaultCahr = 'a';
+	// 生成唯一的字符 
+	// 得到最后的字符 
+	var curChar = $(obj).val();
+	// 取出自动追加的字段
+	if(asciiCode<122){
+		asciiCode +=1;
+	}else{
+		asciiCode = 97;
+		asciiCodeArr.push(asciiCode); 
+	}
+	var str = '';
+	for(var i in asciiCodeArr){
+		str += String.fromCharCode(i);
+	}
+	end = String.fromCharCode(asciiCode);
+	return original+splider+end;
+}
+var filedOprate = {
+		run : function() {
+			$(this).logs('整体绑定事件');
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			this.insertCol();
+			// 删除当前选中行
+			this.deleteCol();
+			// 字段名称唯一检查
+			this.checkFieldOnly();
+			// 下拉框改变 赋权重
+			this.selecchange();
+			// 全勾取
+			this.checkall();
+			// 显示系统字段
+			this.showsystemfield();
+			// 设置英文名没有填写的自动拼音填充
+			this.setpy();
+		},
+		get : function() {
+			return $.pdialog.getCurrent();
+			//return $(document);
+		},
+		showsystemfield : function(){
+			var box = this.get();
+			var _this = this;
+			// 显示系统字段列表
+			var obj = $('button.nbm_system_field' , box);
+			obj.unbind('click');
+			obj.on('click' , function(){
+				// 检查当前区域中是否有系统字段列表 
+				var container = $(this).closest('div.tableItem');
+				var systemfieldlist = container.find('table.nbm_system_field_list');
+				if(systemfieldlist.length>0){
+					systemfieldlist.toggle();
+				}else{
+					var orignal = $('table.nbm_system_field_list');
+					var cloneObj = orignal.clone();
+					cloneObj.show();
+					$(this).closest('table').after(cloneObj);
+				}
+				_this.run();
+			});
+			
+		},
+		checkall : function() {
+			var box = this.get();
+			var _this = this;
+			// 添加一行	
+			var obj = $('a.nbm_check_all_item', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				if($(this).attr('ckd')==1){
+					var p = $(this).closest('table');
+					$.each(p.find('tr'),function(){
+						$(this).find('input:checkbox:first').attr('checked',false);
+					});
+					$(this).attr('ckd',0);
+				}else{
+					var p = $(this).closest('table');
+					$.each(p.find('tr'),function(){
+						$(this).find('input:checkbox:first').attr('checked',true);
+					});
+					$(this).attr('ckd',1);
+				}
+				_this.run();
+			});
+			
+			var obj = $('a.nbm_check_all_count', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+			//	测试功能用的代码
+			//	$(this).closest('table').find('input:checkbox:last').attr('disabled',true);
+				if($(this).attr('ckd')==1){
+					var p = $(this).closest('table');
+					$.each(p.find('tr'),function(){
+						$(this).find('input:checkbox:last').attr('checked',false);
+					});
+					$(this).attr('ckd',0);
+				}else{
+					var p = $(this).closest('table');
+					$.each(p.find('tr'),function(){
+						var temp=$(this).find('input:checkbox:last');
+						if(temp.attr('disabled')=='disabled'){
+							temp.attr('checked',false);
+						}else{
+							temp.attr('checked',true);
+						}
+					});
+					$(this).attr('ckd',1);
+				}
+				_this.run();
+			});
+			
+		},
+		insertCol : function() {
+			var box = this.get();
+			var _this = this;
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			var obj = $('button.nbm_add_col', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				
+				//var tr = $(this).closest('tr').prev('tr');
+				var tr = $(this).closest('table').find('tbody:first>tr:last');
+				var index = tr.closest('table').attr('index');
+				try {
+					index = parseInt(index, 10);
+				} catch(e) {
+					index = 0;
+				}
+				
+				var cloneTr = tr.clone();
+				cloneTr.find('td:first').find('input[type="hidden"]').remove();
+				cloneTr.find('a.a_edit').removeAttr('onclick');
+				cloneTr.find(':input').each(function() {
+
+					var ids = $(this).attr('name');
+					// 当前组件的name值
+					if ( typeof (ids) == "string") {
+						//var curNames = ids.replace(/\d+/g, "$1"+index + 1);
+						var curids = ids.replace(/[+\d+]/g, function(va){
+								var curIndex = va.match(/\d+/g);
+								var i = parseInt(curIndex , 10);
+								return (i+1);
+							}); 
+						$(this).attr('name', curids);
+					}
+					
+					if ($(this).attr('type') != "checkbox") {
+						$(this).val('');
+					}
+					if ($(this)[0].tagName == "SELECT") {
+						var curTag = $(this);
+						curTag.addClass('combox');
+						// 加样式
+						var td = curTag.closest('td');
+						// 获取td
+						td.html('');
+						//移除现有td内容
+						td.append(curTag);
+						//追加当前select
+					}
+				});
+				tr.after(cloneTr);
+				$('div.tableItem>table', this.get).initUI();
+				_this.run();
+				//$('div.tableItem>table', this.get).find('tr:last').find('select').change();
+				cloneTr.find('select').change();
+			});
+		},
+		deleteCol : function() {
+			var box = this.get();
+			// 删除当前选中行
+			var obj = $('a.nbm_del_col', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				var tbObj = $(this).closest('table');
+				//var hasid = $(this).closest('tr').find('td:first').find('input[type="hidden"]');
+				if (tbObj.find('tbody:first>tr').length > 1 ){
+					//&& !hasid.length) {
+					var id = $(this).closest("tr").find("input[name$='fieldid]']").val();
+					if(id){
+						$("#misdynamicformmanageforfield").append('<input type="hidden" name="dropline[]" value="'+id+'">');
+					}
+					$(this).closest('tr').remove();
+					
+				}				
+			});
+		},
+		checkFieldOnly : function() {
+			var box = this.get();
+			var _this = this;
+			// 字段名称唯一检查
+			$('input.nbm_fieldnameonly', box).unbind('keyup change blur');
+			$('input.nbm_fieldnameonly', box).on('keyup change blur', function(event) {
+				/* 检查字段值，空值不检查 */
+				// 取得当前输入值
+				var curVal = $(this).val().toLowerCase();
+				curVal = $.trimAll(curVal);
+				$(this).val(curVal);
+				
+				if ($.inArray(curVal, reserved) > -1) {
+					alert('当前字段不能使用系统使用字段，请更换！ ');
+					$(this).val('');
+					$(this).attr('isautocreate','');
+					return
+				}
+				// 取得所有字段名称的值
+				var allVal = Array();
+				var _this = this;
+				$('input.nbm_fieldnameonly', box).not(this).each(function() {
+					if (isNullorEmpty($(this).val())) {
+						allVal.push($(this).val().toLowerCase());
+					}
+				});
+				if ($.inArray(curVal, allVal) > -1) {
+					alert('已存存字段名 ' + curVal + ' 请更换');
+					$(this).val('');
+					$(this).attr('isautocreate','');
+				}
+			});
+			$('input.nbm_fieldnameonly', box).unbind('createonlycharacter');
+			$('input.nbm_fieldnameonly', box).bind('createonlycharacter', function() {
+				var isCreateNewCharacter= false;
+				// 取得当前输入值
+				var curVal = $(this).val().toLowerCase();
+				curVal = $.trimAll(curVal);
+				$(this).val(curVal);
+				
+				// 取得所有字段名称的值
+				var allVal = Array();
+				var _this = this;
+				$('input.nbm_fieldnameonly', box).not(this).each(function() {
+					if (isNullorEmpty($(this).val())) {
+						allVal.push($(this).val().toLowerCase());
+					}
+				});
+				// 如果为系统字段 
+				if ($.inArray(curVal, reserved) > -1) {
+					isCreateNewCharacter = true;
+				}
+				// 已用字段 
+				if ($.inArray(curVal, allVal) > -1) {
+					isCreateNewCharacter = true;
+				}
+				if(isCreateNewCharacter == true){
+					var newChar = createNewCharacter(this , curVal);
+					$(this).val(newChar);
+					isCreateNewCharacter = false;
+					$(_this).trigger('createonlycharacter');
+				}
+			});
+		},
+		selecchange : function() {
+			/* 下拉框值改变事件，给文本写值。 */
+			var box = this.get();
+			// 组件类型修改
+			$('select.opweight' , box).off('change');
+			$('select.opweight', box).on('change' , function() {
+				$(this).logs('事件来叧。。。');
+				//获取当前select选中的值
+				var _th = this;
+				var val = $(_th).val();
+				if (val) {
+					// 修改 统计项的使用状态
+					var count = $(_th).find("option:selected").attr('count');
+					var ret = count==0?true:false;
+					if(ret == true){
+						$(_th).closest('tr').find('input.nbm_fieldcountonly[type="checkbox"]').attr('checked' , false);
+					}					
+					$(_th).closest('tr').find('input.nbm_fieldcountonly[type="checkbox"]').attr('disabled' , ret);
+					// 修改 组件修改类型的属性编辑按钮状态
+					var editStatus = $(_th).find("option:selected").attr('edit');
+					if(editStatus==1){
+						// 允许编辑属性
+						var name = $(_th).closest('tr').find('a.a_edit').siblings("input").attr("name");
+						$(_th).closest('tr').find('a.a_edit').attr('onClick','controllConfigEdit("'+name+'","'+$(_th).val()+'",this);');
+						$(_th).closest('tr').find('a.a_edit').show();
+					}else{
+						// 没有编辑属性
+						$(_th).closest('tr').find('a.a_edit').removeAttr('onClick');
+						$(_th).closest('tr').find('a.a_edit').next('hidden').val('');
+						$(_th).closest('tr').find('a.a_edit').hide();
+					}
+				} else {
+					$(_th).closest('tr').find('input.nbm_fieldcountonly[type="checkbox"]').attr('disabled' , false);
+				}
+				
+			});
+			// 字段类型修改
+			$('select.opcategory' , box).off('change');
+			$('select.opcategory' , box).on('change',function(){
+				//获取当前select选中的值
+				var val = $(this).val();
+				if (val) {
+					var weight = $(this).find("option:selected").attr('len');
+					$(this).closest('td').next('td').find('input').val(weight);
+					var p = $(this).closest('tr').find('select.opweight');
+					var cate = $(this).find("option:selected").attr('cate');
+					p.find('option').attr('selected',false);
+					var oreritem = p.find('option[value="'+cate+'"]');
+					oreritem.attr('selected',true);
+					p.change();
+					p.prev('a').text(oreritem.text());
+					/*if(cate && p){
+						p.	(cate);
+					}*/
+				} else {
+					$(this).closest('td').next('td').find('input').val('');
+				}
+			});
+		},
+		setpy : function(){
+			var box = this.get();
+			var _this = this;
+			//  keydown change blur
+			$('input.nbm_filedtitleonly').off("keyup");
+			$('input.nbm_filedtitleonly').on("keyup",function (){
+				var ipt = $(this).closest('tr').find('td:first :input');
+				
+				var curVal = $(this).val().toLowerCase();
+				curVal = $.trimAll(curVal);//去除空格
+				$(this).val(curVal);
+				
+				if(!isNullorEmpty(ipt.val())){
+					ipt.attr('isautocreate',true);
+					//ipt.val($(this).toPinyin());
+					//ipt.change();
+					//ipt.trigger('createonlycharacter');
+				}
+				if(ipt.attr('isautocreate') == 'true'){
+					ipt.val($(this).toPinyin());
+					//ipt.change();
+					ipt.trigger('createonlycharacter');
+				}
+			});
+		}
+	};
+	$(function() {
+		// 得到当前保存页面中的值，有值就进行编辑。
+		var curTableFiled = getTag(getContainer(check) , 'hidden' , id).val();
+		
+		try{
+			reserved=$.parseJSON(reserved);
+			curTableFiled = $.parseJSON(curTableFiled);
+			var box = $.pdialog.getCurrent();
+			
+			try{
+				controllArr = $.parseJSON(controllArr);
+				fieldArr = $.parseJSON(fieldArr);
+			}catch(e){
+				alert(e.message);
+			}
+			// 设置现行组件列表
+			if(typeof(controllArr)=='String' && controllArr==''){
+				throw '现行组件错误,请联系管理员！';
+			}
+			// 设置现行组件列表
+			if(typeof(fieldArr)=='String' && fieldArr==''){
+				throw '字段类型数据错误,请联系管理员！';
+			}
+			// 现有字段信息数据
+			var originalHtml='';
+			var indexOrginalTag=1;
+			var datatablers = '{$rs}';
+			$(this).logs(datatablers);
+			datatablers = $.parseJSON(datatablers);
+			if(datatablers){
+					$.each(datatablers , function(k , v){
+						originalHtml +="<tr>";
+						originalHtml +='<td>';
+						originalHtml +='<input type="hidden" name="items['+indexOrginalTag+'][fieldid]" value="'+v.id+'" />';
+						originalHtml +='<input name="items['+indexOrginalTag+'][fieldname]" placeholder="请输入英文名称" autocomplete="off" type="text" class="lettersonly required nbm_fieldnameonly" value="'+v.fieldname+'" /></td>';
+						originalHtml +='<td><input name="items['+indexOrginalTag+'][fieldtitle]" placeholder="请输入中文标题" autocomplete="off"  type="text" class="required nbm_filedtitleonly" value="'+v.fieldtitle+'" /></td>';
+						originalHtml +='<td><select val="'+v.fieldtype+'" name="items['+indexOrginalTag+'][fieldtype]" class=" opcategory combox"></select></td>';
+						originalHtml +='<td><input name="items['+indexOrginalTag+'][fieldlength]" placeholder="请输入字段长度" autocomplete="off" type="text" class="required " value="'+v.fieldlength+'" /></td>';
+						originalHtml +='<td><select val="'+v.category+'" name="items['+indexOrginalTag+'][fieldshowtype]" class=" opweight  combox"></select></td>';
+						originalHtml +='<td><a class="a_edit" href="javascript:void(0);">编辑属性</a><input type="hidden" name="items['+indexOrginalTag+'][fieldshowtypeconfig]" value="'+v.config+'" /></td>';
+						var ckd='';
+						if(v.isshow==1){
+							ckd='checked';
+						}else{
+							ckd='';
+						}
+						originalHtml +='<td><input name="items['+indexOrginalTag+'][fieldshow]" value="1" class="nbm_fieldshowonly" type="checkbox" '+ckd+'/></td>';
+						var countakd='';
+						if(v.iscount==1){
+							countakd='checked';
+						}else{
+							countakd='';
+						}
+						originalHtml +='<td><input name="items['+indexOrginalTag+'][fieldcount]" value="1" class="nbm_fieldcountonly" type="checkbox" '+countakd+'/></td>';
+						if(v.fieldsort==null){
+							v.fieldsort = '';
+						}
+						originalHtml +='<td><input name="items['+indexOrginalTag+'][fieldsort]" placeholder="请输入字段序号" type="text" class="" value="'+v.fieldsort+'" /></td>';
+						if(v.colwidth==null){
+							v.colwidth = '';
+						}
+						originalHtml +='<td><input name="items['+indexOrginalTag+'][colwidth]" placeholder="请输入列宽" type="text" class="" value="'+v.colwidth+'" /></td>';
+						originalHtml +='<td><a class="nbm_del_col" href="javascript:void(0);">移除行</a></td>';
+						originalHtml +='</tr>';
+						indexOrginalTag ++ ;
+					});
+			}
+			
+			var controllOption='';
+			var fieldOption='';
+			$.each(controllArr , function(k,v){
+				controllOption +="<option value=\""+v.key+"\" edit=\""+v.edit+"\" count=\""+v.count+"\">"+v.val+"</option>";
+			});
+			$.each(fieldArr , function(k,v){
+				fieldOption +="<option value=\""+v.key+"\" len=\""+v.len+"\" cate=\""+v.cate+"\">"+v.val+"</option>";
+			});
+			
+			if(originalHtml){
+				$('table.new_table' , box).find('tbody').html(originalHtml);
+				$('select.opcategory').html(fieldOption);
+				$('select.opweight').html(controllOption);
+				$(this).stop(1);
+				filedOprate.run();
+				
+				$('div.tableItem' , box).find('select.opcategory').each(function(){
+					var tempVal=$(this).attr('val');
+					if(tempVal){
+						var objs = $(this).find('option[value="'+tempVal+'"]');
+						objs.prop('selected',true);
+						objs.attr('selected',true);
+						objs.val(tempVal);
+						//$(this).change();
+					}
+				});
+				
+				$('div.tableItem' , box).find('select.opweight').each(function(){
+					var tempVal=$(this).attr('val');
+					if(tempVal){
+						var objs = $(this).find('option[value="'+tempVal+'"]');
+						objs.prop('selected',true);
+						objs.attr('selected',true);
+						objs.val(tempVal);
+						$(this).change();
+					}
+				});
+				
+				//$('div.tableItem' , box).find('select').change();
+			}else{
+				filedOprate.run();
+				$('select.opcategory').html(fieldOption);
+				$('select.opweight').html(controllOption);
+				//$('div.tableItem' , box).find('select').change();
+				
+			}
+		}catch(e){
+			alert(e.message || e);
+			$('button[type="submit"]').attr('disabled',true);
+		}
+	});
+	/**
+	*	写入组件配置值
+	* @parame object obj 事件触发对象
+	* @parame string val 配置值  
+	*/
+	function controllConfig(obj , val){
+		$('input[type="hidden"][name="'+obj+'"]').val(val);
+	}
+	/**
+	*	打开属性编辑
+	* @parame object obj 事件触发对象
+	*/
+	function controllConfigEdit(obj,type,dobj){
+		var value =$(dobj).closest('tr').find('input[type="hidden"]:last').val();
+		//var url="__URL__/editProperty/type/"+type+"/obj/"+obj+"/editvalue/"+value;
+		var options = {width:600,height:400,mask:true,global:false};
+		var formid = $("input[name='formid']",box).val();
+		var url="__URL__/editProperty/type/"+type+"/obj/"+obj+'/formid/'+formid;
+		options.param = {editvalue:value};
+		$.pdialog.open(url,"__MODULE__","编辑属性",options);
+	}
+	//将上个页面的 组件属性记录ID和表单ID带到本页面 的input hidden
+	var box = $.pdialog.getCurrent();
+	$(function(){
+		//表单ID
+		var id = $("div.contentTitle ").find("input[name='dynamicformid']");
+		$("input[name='formid']",box).val(id.val());
+		//组件属性记录ID
+		var pro = $("#nbmDroppable li.line.liscur ").find("input[name^='id[']");
+		$("input[name='propertyid']",box).val(pro.val());
+		//组件所在表
+		var curtablename = $("#nbmDroppable li.line.liscur ").find("input[name^='tablename[']").val();
+		$("input[name='tablename']",box).val(curtablename);
+		//当前组件名
+		var curzujianname = $("#nbmDroppable li.line.liscur ").find("input[name^='fields[']").val();
+		$("input[name='zujianname']",box).val(curzujianname);
+	});
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/datatablecontroll" class="pageForm required-validate" onsubmit="return inserdatabaseinfo(this)">
+	    <div class="pageFormContent" layoutH="58">
+	    <input type="hidden" name="formid" value='{$formid}'>
+	    <input type="hidden" name="propertyid" value="{$propertyid}">
+	    <input type="hidden" name="tablename" value="{$tablename}">
+	    <input type="hidden" name="zujianname" value="{$fieldname}">
+<div class="tableItem">
+	<div class="list_header">
+	</div>
+	<table class="new_table" index="1">
+		<colgroup>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="9%"></col>
+			<col width="11%"></col>
+		</colgroup>
+		<thead>
+		<tr>
+			<th >字段名称（英文）</th>
+			<th>字段标题（中文）</th>
+			<th >字段类型</th>
+			<th >字段长度</th>
+			<th >组件类型</th>
+			<th>编辑组件属性</th>
+			<th><a href="javascript:void(0);" class="nbm_check_all_item">是否显示</a></th>
+			<th><a href="javascript:void(0);" class="nbm_check_all_count">是否统计</a></th>
+			<th >字段排序</th>
+			<th >列宽</th>
+			<th>操作</th>
+		</tr>
+		</thead>
+		<tbody id="misdynamicformmanageforfield">
+		<tr>
+			<td>
+			<input name="items[1][fieldname]" placeholder="请输入英文名称" autocomplete="off" type="text" class="lettersonly required  nbm_fieldnameonly" />
+			</td>
+			<td>
+			<input name="items[1][fieldtitle]"  placeholder="请输入中文标题" autocomplete="off" type="text" class="required nbm_filedtitleonly" />
+			</td>
+			<td>
+			<select name="items[1][fieldtype]" class="combox opcategory">
+				 
+			</select></td>
+			<td>
+			<input name="items[1][fieldlength]" placeholder="请输入字段长度" autocomplete="off" type="text" value="10" class="required " />
+			</td>
+			<td>
+			<select name="items[1][fieldshowtype]" class="combox opweight ">
+			</select></td>
+			<td>
+				<a href="javascript:void(0);" class="a_edit" onclick="controllConfigEdit('items[1][fieldshowtypeconfig]','text',this);">编辑属性</a>
+				<input type="hidden" name="items[1][fieldshowtypeconfig]" />
+			</td>
+			<td>
+			<input name="items[1][fieldshow]" class="nbm_filedshowonly" value="1" type="checkbox" checked/>
+			</td>
+			<td>
+			<input name="items[1][fieldcount]" class="nbm_fieldcountonly" value="1" type="checkbox" />
+			</td>
+			<td>
+			<input name="items[1][fieldsort]" placeholder="请输入字段序号"  type="text" class="nbm_fieldnameonly" />
+			</td>
+			<td>
+			<input name="items[1][colwidth]" placeholder="请输入列宽"  type="text" />
+			</td>
+			<td><a class="nbm_del_col" href="javascript:void(0);">移除行</a></td>
+		</tr>
+		</tbody>
+		<tfoot>
+		<tr>
+			<td colspan="11" style="text-align: right;">
+				<button type="button" class="new_col_btn nbm_add_col">
+					新建一行
+				</button>
+			</tr>
+			</tfoot>
+			</table>
+	</div>
+<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystempanel_edit">
+				<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}设置</button></li>
+			</if>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

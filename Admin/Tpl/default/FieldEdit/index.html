@@ -1,0 +1,131 @@
+<div id="naslkdjasldjasoldjasldjasli" class="file_edit_page" layoutH="40">
+    <div class="work_shortcut_top file_edit_header">
+        <ul class="file_edit_adds">
+            <li>地址栏:</li>
+            <li>./</li>
+            <li><a href="#">admin</a></li>
+            <li>/</li>
+            <li><a href="#">lib</a></li>
+            <li>/</li>
+            <li><a href="#">Model</a></li>
+        </ul>
+    </div>
+<style>
+    .file_edit_page {
+        background: #fff;
+    }
+    .file_edit_header {
+        background: #fff;
+        line-height: 40px;
+    }
+    .file_edit_adds {
+        width: 95%;
+        margin: 0 auto;
+    }
+    .file_edit_adds li {
+        float: left;
+        font-size: 16px;
+        padding: 0 1px;
+    }
+    .file_edit_adds li:first-child {
+        padding-right: 8px;
+    }
+    .file_edit_adds li a {
+        color: #666;
+    }
+    .file_edit_adds li a:hover {
+        color: #03a9f4;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .folder_ul {
+        width: auto;
+        height: 400px;
+        overflow: auto;
+        padding: 0 10px;
+    }
+    .folder_ul li {
+        width: 139px;
+        height: 190px;
+        overflow: hidden;
+        margin:  5px 0;
+        float: left;
+        text-align: center;
+        position: relative;
+        padding: 0 5px;
+    }
+    .folder_ul .file {
+        font-size: 100px;
+    }
+    p.icon-folder-close {
+        color: #F1C40F;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.3);
+    }
+    p.icon-file-alt {
+        color: #1ABC9C;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.15);
+    }
+    .file_edit_name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #363636;
+        margin-top: -20px;
+    }
+    .file_format {
+        display: block;
+        width: 58px;
+        height: 30px;
+        line-height: 30px;
+        position: absolute;
+        left: 46px;
+        top: 65px;
+        color: #1ABC9C;
+        text-shadow: 0 1px 6px rgba(0,0,0,0.15);
+        font-size: 16px;
+        font-weight: 700;
+    }
+</style>
+<script>
+$(function(){
+	var box = navTab.getCurrentPanel();
+	$('.openFolder' , box).click(function(){
+		console.info('你妹' + $(this).attr('path'));
+		getFolderInfo('naslkdjasldjasoldjasldjasli' ,$(this).attr('path'));
+	});
+	
+	// 文件编辑
+	$('.editFile' , box).click(function(){
+	
+		var options = {};
+		options.param={'path':$(this).attr('path')};
+		options.mask = "true";
+		options.width="900";
+		options.height='500';
+		$.pdialog.open('__URL__/editfile',"_blank","文件修改",options);
+	});
+});
+
+function getFolderInfo(tagId , path){
+	$.ajax({
+		url:'__URL__/getFolderInfo/',
+		data:{'path':path},
+		type:'post',
+		dataType:'html',
+		success:function(data){
+			$('#'+tagId).html(data);
+		}
+	});
+}
+</script>
+<ul class="folder_ul">
+    <volist name="vo"  id="item">
+        <!--文件名basename-->
+        <!--类型extension-->
+        <!--文件路径dirname-->
+        <li>
+            <p class="file {$item['extension']|fileSuffix}"  path="{$item['dirname']}/{$item['basename']}"></p><!-- 图标 -->
+            <span class="file_format {$item['extension']|fileSuffix=###,false}" path="{$item['dirname']}/{$item['basename']}">{$item['extension']}</span><!-- 文件名称 -->
+            <p class="file_edit_name" title="{$item['basename']}">{$item['basename']}</p>
+        </li>
+    </volist>
+</ul>
+</div>

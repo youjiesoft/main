@@ -1,0 +1,115 @@
+<script>
+function changeeditworkage(json){
+	setTimeout(function(){
+		var begintime=$("input[name='indate']").val();
+        var endtime=$("input[name='leavedate']").val();
+        if(json){
+        	if(!json.indate){
+        		$box.find("input[name='indate']").val('');
+        	}
+        	var begintime=json.indate;
+        }
+        $.ajax({
+            type:'POST',
+            url:"__URL__/lookupgetdate",
+            data:{sdate:begintime,edate:endtime},
+            cache:false,
+            success:function(d){
+            	$("input[name='workage']").val(d);
+            }
+        });
+    },150);
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo.leaveid}">
+		<input type="hidden" name="dotype" value="流程启动" />
+		<input type="hidden" name="ostatus" value="{$vo.ostatus}" />
+		<input type="hidden" name="refreshtabs[closeall]" value="1" />
+		<div class="pageFormContent " layoutH="105">
+				<h2 class="contentTitle contentTitle_center">离职申请单{:W('ShowAdvices',array('id'=>$vo['id']))}
+					<input type="hidden"  name="oldleavetype" value="{$vo.leavetype}">
+					{:W('ShowOrderno',array(0,'mis_hr_leave_employee',$vo['orderno']))}
+				</h2>
+				<div class="tml-row">	
+						<div class="tml-form-col">
+								<label>姓名：</label>
+								<div class="tml-input-append">
+				                <input type="text" class="org.name"  name="name" value="{$vo['name']}" <if condition="$vo.trantype eq '3' ||$vo.trantype eq '4'">   autocomplete="off" class="org.name checkByInput xyInputWithUnitButton inputCheckForButton " show="name" insert="id" checkfor="MisHrPersonnelManagement"<else/> readonly="readonly" </if>   />
+								 <input type="hidden"  value="{$vo.employeeid}" class="org.mangid" name="employeeid"/>
+									<a class="input-addon   input-addon-add"  href="__URL__/lookupmanage/working/1"   lookupGroup="org">查找带回</a>
+							</div>	
+						</div>
+						<div class="tml-form-col">
+							<label> 部&nbsp;&nbsp;&nbsp;&nbsp;门： </label>
+							<input type="text"  class="org.deptname" callback="changeeditworkage" value="{$vo.id|getFieldBy='id','deptid','mis_hr_personnel_person_info'|getFieldBy='id','name','mis_system_department'}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 职&nbsp;&nbsp;&nbsp;&nbsp;位： </label>
+							<input type="text" class="org.dutyname" name="dutyname" value="{$vo.id|getFieldBy='id','dutylevelid','mis_hr_personnel_person_info'|getFieldBy='id','name','duty'}"   readonly="readonly">
+		                    <input type="hidden" class="org.dutylevelid" name="dutylevelid" value="{$vo.id|getFieldBy='id','dutylevelid','mis_hr_personnel_person_info'}">
+		                    <input type="hidden" class="org.level" name="level" value="{$vo.id|getFieldBy='id','dutylevelid','mis_hr_personnel_person_info'|getFieldBy='id','level','duty'}">
+		                </div>
+						<div class="tml-form-col">
+							<label> 岗&nbsp;&nbsp;&nbsp;&nbsp;位： </label>
+							<input type="text"  class="org.worktypename" value="{$vo.id|getFieldBy='id','worktype','mis_hr_personnel_person_info'|getFieldBy='id','name','mis_hr_job_info'}"   readonly="readonly">
+							<input type="hidden" name="worktye"  class="org.worktye" >
+						</div>
+						<div class="tml-form-col">
+							<label>联系方式：</label>
+							<input type="text" class="org.mobilephone" name="mobilephone" value="{$vo.id|getFieldBy='id','phone','mis_hr_personnel_person_info'}" class=""   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+					 	<label>身份证号：</label>
+						<input name="chinaid" type="text"  readonly="readonly" value="{$vo.chinaid}"  class="textInput  org.chinaid" />
+						</div>
+						<div class="tml-form-col">
+							<label> 入职时间： </label>
+							<input type="text" class="org.indate"    name="indate" value="{$vo.id|getFieldBy='id','indate','mis_hr_personnel_person_info'|transTime}"    readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label>预离时间 ： </label>
+							<span class="xyInputWithUnit" >
+							<input type="text" class="tml-border-r0 Wdate required" onfocus="WdatePicker()" name="leavedate"  value="{$vo.leavedate|transtime}"  onblur="changeeditworkage()" />
+							<span class="input-addon input-addon-calendar"></span>
+							</span>
+						</div>
+						<div class="tml-form-col">
+							<label>工&nbsp;&nbsp;&nbsp;&nbsp;龄：</label>
+							<input type="text" name=workage value="{$workage}"   readonly="readonly">
+						</div>
+						<if condition="$vo.leavetype eq '3'||$vo.leavetype eq '4'">
+							<div class="tml-form-col">
+								<label>离职类型 ： </label>
+								<select  name="forleavetype"  class="combox">
+								  <volist name="forLeaveList" id="forLeave">
+								  	<option <if condition="$vo.forleavetype eq $key"> selected="selected" </if>  value="{$key}">{$forLeave}</option>
+								  </volist>
+								</select>
+							</div>
+						</if>
+				</div>
+				<div class="tml-form-row">
+					<label>离职原因：</label>
+					<textarea name="leavereason" >{$vo.leavereason}</textarea>
+				</div>
+				<div class="tml-row">	
+					<div class="tml-form-col">
+						<label>申请人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}"   />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>申请时间：</label>
+						<input name="applicationdate" type="text" size="19"  readonly="readonly" value="{$vo.createtime|transTime}"  class="textInput required" />
+					</div>
+				</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

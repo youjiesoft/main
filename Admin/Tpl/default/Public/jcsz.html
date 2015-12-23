@@ -1,0 +1,171 @@
+<script>
+$(function() {
+	var $img = $("#jcimg");
+	if(window.ActiveXObject) {
+		$img.attr("usemap","#Map_6_1");
+	} else {
+		$img.attr("usemap","#Map_6");
+	}
+});
+</script>
+<script>
+$(function() {
+	var $img = $("#xsimg");
+	if(window.ActiveXObject) {
+		$img.attr("usemap","#Map_6_1");
+	} else {
+		$img.attr("usemap","#Map_6");
+	}
+	
+	function myresize(){
+		var mywidth = $(window).width();
+		var width1 = mywidth - 250 - 60;
+		$(".salesQuotationmas").width(width1);
+		}
+	
+	window.onresize = function() {
+		myresize();
+		var mywidth = $(window).width();
+		
+		if(mywidth < 880) {
+			//$("#xsimg").width($(".salesQuotationmas").width() - 7) ;
+			$(".salesQuotationmas_img").get(0).style.overflowX = "scrolly" ;
+			
+		} else {
+			//$("#xsimg").width("auto");
+			$(".salesQuotationmas_img").get(0).style.overflow = "hidden";
+		}
+	}
+	
+	myresize();
+	
+});
+
+</script>
+
+<div id="salesQuotationmas_z">
+	<div id="myleft" class="salesQuotationmas left">
+		<div class="xypreferences">
+			<ul>
+				<a href="__APP__/AsingleConfig/index" rel="AsingleConfig" target="navTab" title="业务关联配置"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="业务关联配置"><span>业务关联配置</span></a>
+				<a href="__APP__/SystemConfigNumber/index" rel="SystemConfigNumber" target="navTab" title="单号规则"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="单号规则"><span>单号规则</span></a>
+				<a href="__APP__/MisAttachedConfig/index" rel="MisAttachedConfig" target="navTab" title="附件配置"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="附件配置"><span>附件配置</span></a>
+				<a href="__APP__/MisFinanceCurrency/index" rel="MisFinanceCurrency" target="navTab" title="货币信息"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="货币信息"><span>货币信息</span></a>
+				<a href="__APP__/MisSystemTransport/index" rel="MisSystemTransport" target="navTab" title="货运方式"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="货运方式"><span>货运方式</span></a>
+				<a href="__APP__/MisSalesSite/index" rel="MisSalesSite" target="navTab" title="区域划分"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="区域划分"><span>区域划分</span></a>
+				<a href="__APP__/MisPurchaseSuppliertype/index" rel="MisPurchaseSuppliertype" target="navTab" title="供应商类型"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="供应商类型"><span>供应商类型</span></a>
+				<a href="__APP__/User/index" rel="User" target="navTab" title="后台用户"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="后台用户"><span>后台用户</span></a>
+				<a href="__APP__/MisPurchaseReturnmas/index" rel="MisPurchaseReturnmas" target="navTab" title="采购退货管理"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="采购退货管理"><span>采购退货管理</span></a>
+				<a href="__APP__/MisInventoryAdjustMas/index" rel="MisInventoryAdjustMas" target="navTab" title="物料调整"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="物料调整"><span>物料调整</span></a>            
+				<a href="__APP__/MisPurchaseReturnmas/index" rel="MisPurchaseReturnmas" target="navTab" title="采购退货管理"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="采购退货管理"><span>采购退货管理</span></a>
+				<a href="__APP__/Duty/index" rel="Duty" target="navTab" title="职务管理"><img width="64" height="64" src="/lnproduct/Public/Images/xyicon/mainui/appbtn_main8.png" alt="职务管理"><span>职务管理</span></a>
+			</ul>
+		</div>
+		<!--<div class="jicsz">
+    	<img id="jcimg" src="__PUBLIC__/Images/jcsz.png" border="0"/>
+    	<map name="Map_6" id="Map_6">
+              <a href="__APP__/AsingleConfig/index" rel="AsingleConfig" target="navTab" title="业务关联配置" shape="rect" coords="33,15,108,83"></a>
+              <a href="__APP__/SystemConfigNumber/index" rel="SystemConfigNumber" target="navTab" title="单号规则" shape="rect" coords="186,12,250,83"></a>
+              <a href="__APP__/MisAttachedConfig/index" rel="MisAttachedConfig" target="navTab" title="附件配置" shape="rect" coords="330,9,406,81"></a>
+              <a href="__APP__/MisFinanceCurrency/index" rel="MisFinanceCurrency" target="navTab" title="货币信息" shape="rect" coords="490,15,554,81"></a>
+              <a href="__APP__/MisSystemTransport/index" rel="MisSystemTransport" target="navTab" title="货运方式" shape="rect" coords="38,146,97,217"></a>
+              <a href="__APP__/MisSalesSite/index" rel="MisSalesSite" target="navTab" title="区域划分" shape="rect" coords="188,144,248,217"></a>
+              <a href="__APP__/MisPurchaseSuppliertype/index" rel="MisPurchaseSuppliertype" target="navTab" title="供应商类型" shape="rect" coords="336,147,403,218"></a>
+              <a href="__APP__/User/index" rel="User" target="navTab" title="后台用户" shape="rect" coords="496,147,551,220"></a>
+              <a href="__APP__/MisPurchaseReturnmas/index" rel="MisPurchaseReturnmas" target="navTab" title="采购退货管理" shape="rect" coords="41,282,103,354"></a>
+              <a href="__APP__/MisInventoryAdjustMas/index" rel="MisInventoryAdjustMas" target="navTab" title="物料调整" shape="rect" coords="194,284,253,354"></a>              
+              <a href="__APP__/MisPurchaseReturnmas/index" rel="MisPurchaseReturnmas" target="navTab" title="采购退货管理" shape="rect" coords="343,286,402,354"></a>
+              <a href="__APP__/Duty/index" rel="Duty" target="navTab" title="职务管理" shape="rect" coords="497,286,555,352"></a>                          
+            </map>  
+            <map name="Map_6_1" id="Map_6_1">
+              <a href="__APP__/AsingleConfig/index" rel="AsingleConfig" target="navTab" title="业务关联配置"><area shape="rect" coords="33,15,108,83"/></a>
+              <a href="__APP__/SystemConfigNumber/index" rel="SystemConfigNumber" target="navTab" title="单号规则"><area shape="rect" coords="186,12,250,83"/></a>
+              <a href="__APP__/MisAttachedConfig/index" rel="MisAttachedConfig" target="navTab" title="附件配置"><area shape="rect" coords="330,9,406,81"/></a>
+              <a href="__APP__/MisFinanceCurrency/index" rel="MisFinanceCurrency" target="navTab" title="货币信息"><area shape="rect" coords="490,15,554,81"/></a>
+              <a href="__APP__/MisSystemTransport/index" rel="MisSystemTransport" target="navTab" title="货运方式"><area shape="rect" coords="38,146,97,217"/></a>
+              <a href="__APP__/MisSalesSite/index" rel="MisSalesSite" target="navTab" title="区域划分"><area shape="rect" coords="188,144,248,217"/></a>
+              <a href="__APP__/MisPurchaseSuppliertype/index" rel="MisPurchaseSuppliertype" target="navTab" title="供应商类型"><area shape="rect" coords="336,147,403,218"/></a>
+              <a href="__APP__/User/index" rel="User" target="navTab" title="后台用户"><area shape="rect" coords="496,147,551,220"/></a>
+              <a href="__APP__/MisPurchaseReturnmas/index" rel="MisPurchaseReturnmas" target="navTab" title="采购退货管理"><area shape="rect" coords="41,282,103,354"/></a>
+              <a href="__APP__/MisInventoryAdjustMas/index" rel="MisInventoryAdjustMas" target="navTab" title="物料调整" shape="rect" coords="194,284,253,354"></a>            
+              <a href="__APP__/MisPurchaseReturnmas/index" rel="MisPurchaseReturnmas" target="navTab" title="采购退货管理" shape="rect" coords="343,286,402,354"></a>
+              <a href="__APP__/Duty/index" rel="Duty" target="navTab" title="职务管理" shape="rect" coords="497,286,555,352"></a>              
+            </map>
+	</div>-->
+    </div>
+	<div id="myright" class="right">
+    	<div class="salesQuotationmas_d1">
+        <div class="salesQuotationmas_d_bg">
+            <ul>
+                <li class="sqm_all sqm_jc left"></li>
+                <li class="sqm_title left">基础档案</li>
+                <li class="sqm_all sqm_bz right"></li>
+            </ul>
+        </div>
+        <div class="salesQuotationmas_d_bg1">
+            <ul class="left">
+                <li><a href="">业务类型</a></li>
+                <li><a href="">往来单位</a></li>
+                <li><a href="">货位</a></li>
+                <li><a href="">员工</a></li>
+                <li><a href="">出入库类别</a></li>
+            </ul>
+            <span class="salesQuotationmas_xt left"></span>
+            <ul class="left">
+                <li><a href="">存货</a></li>
+                <li><a href="">部门</a></li>
+                <li><a href="">计量单位</a></li>
+                <li><a href="">仓库</a></li>
+            </ul>
+        </div>
+    </div>
+    	<div class="salesQuotationmas_d1">
+        <div class="salesQuotationmas_d_bg">
+            <ul>
+                <li class="sqm_all sqm_sj left"></li>
+                <li class="sqm_title left">相关数据</li>
+                <li class="sqm_all sqm_bz right"></li>
+            </ul>
+        </div>
+        <div class="salesQuotationmas_d_bg1 salesQuotationmas_d_bg2">
+            <ul class="left">
+                <li><a href="">采购入库单</a></li>
+                <li><a href="">销售出库单</a></li>
+                <li><a href="">调拨单</a></li>
+            </ul>
+            <span class="salesQuotationmas_xt salesQuotationmas_xt1 left"></span>
+            <ul class="left">
+                <li><a href="">其他入库单</a></li>
+                <li><a href="">其他出库单</a></li>
+                <li><a href="">费用分摊单</a></li>
+            </ul>
+        </div>
+    </div>
+    	<div class="salesQuotationmas_d1">
+        <div class="salesQuotationmas_d_bg">
+            <ul>
+                <li class="sqm_all sqm_bb left"></li>
+                <li class="sqm_title left">相关报表</li>
+                <li class="sqm_all sqm_bz right"></li>
+            </ul>
+        </div>
+        <div class="salesQuotationmas_d_bg1 salesQuotationmas_d_bg3">
+            <ul class="left">
+                <li><a href="">收发存汇总表</a></li>
+                <li><a href="">呆滞存货分析表</a></li>
+                <li><a href="">库存周转率分析表</a></li>
+                <li><a href="">库存资金占用分析表</a></li>
+                <li><a href="">库龄分析表</a></li>
+                <li><a href="">库存台账</a></li>
+                <li><a href="">存货总账</a></li>
+                <li><a href="">存货明细账</a></li>
+            </ul>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+
+

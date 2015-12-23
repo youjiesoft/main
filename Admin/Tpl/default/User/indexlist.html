@@ -1,0 +1,103 @@
+<form id="pagerForm" action="__URL__/index/frame/1" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.user_add ">
+				<li>
+					<a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" rel="__MODULE__add" title="后台用户_新增" target="navTab" >
+						<span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span>
+					</a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.user_update ">
+				<li>
+					<a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_user}/navTabId/__MODULE__" rel="__MODULE__edit" title="后台用户_编辑" target="navTab" >
+						<span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.edit}</span>
+					</a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.user_delete ">
+				<li>
+					<a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_user}/navTabId/__MODULE__" target="ajaxTodo" title="你确定要删除吗？" warn="请选择用户">
+						<span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span>
+					</a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1">
+				<li>
+					<a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/resetlogin/id/{sid_user}/navTabId/__MODULE__" target="ajaxTodo" title="你确定要解除锁定吗？" warn="请选择用户">
+						<span><span class="icon icon-edit icon_lrp"></span>解除锁定</span>
+					</a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.user_import ">
+			<li>
+			<a class="tbexcel tml-btn tml_look_btn tml_mp"  href="__URL__/import/" rel="__MODULE__import" title="导入" target="navTab" tabid="__MODULE__import" height="350" width="660" mask="true" >
+					<span><span class="icon icon-download-alt icon_lrp"></span>导入excel</span>
+				</a>
+			</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.user_password"><li><a class="tbpass tml-btn tml_look_btn tml_mp" href="__URL__/password/id/{sid_user}" target="dialog" mask="true" warn="请选择用户"><span><span class="icon icon-edit icon_lrp"></span>修改密码</span></a></li></if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this,'userindexjbsxBox');" action="__URL__/index" method="post">
+			<input type="hidden" name="frame" value="1" />
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+						<if condition="$_SESSION.a eq 1 or $_SESSION.user_exportbysearchhtml ">
+							<td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index','__URL__/exportBysearchHtml');">导出</button></td>
+						</if>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+			<th width="22"></th>
+			<volist id="vo" name="detailList">
+				<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="userindexjbsxBox" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			</volist>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_user" rel="{$vo['usersid']}" onclick="onTrClickCheckbox(this,'id')" title="后台用户_编辑" drel="__MODULE__edit" ondblclick='ondblclick_navTab(this,"__MODULE__edit","__URL__/edit/id/{$vo[userid]}");'>
+			<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+			  <volist id="vo1" name="detailList">
+				<td field="{$vo1[name]}" width="{$vo1[widths]}">
+					<if condition="count($vo1['func']) gt 0">
+						<volist name="vo1.func" id="nam">
+							<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+							{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+							<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+						</volist>
+					<else />
+					{$vo[$vo1['name']]}
+					</if>
+				</td>
+			  </volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="userindexjbsxBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>
+	

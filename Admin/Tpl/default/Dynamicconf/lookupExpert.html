@@ -1,0 +1,54 @@
+<form id="pagerForm" action="__URL__/lookupExpert" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return dialogSearch(this);" action="__URL__/lookupExpert" method="post">
+		<div class="searchBar">
+                 <table class="searchContent">
+				<tr>
+					<td class="tml_select_option_left">
+						<select class="combox searchby" name="searchby" >
+							<volist name="searchbylist" id="searchby">
+								 <option value="{$searchby.id}"> {$searchby.val} </option>
+							</volist>
+						</select>
+					</td>
+					<td class="tml_select_option_center">
+					<input type="text" value="{$keyword}" name="keyword" placeholder="搜索专家名称" title="搜索专家名称" class="quicksearch textInput enterIndex">
+					</td>
+					<td class="tml_select_option_right"><button type="submit" class="xySearch enterIndex"><span class="icon-search"></span></button></td>
+					<td>
+						<button class="xyAdvancedSearch"  type="button" multLookup="expertid" warn="请选择用户">选择带回</button>
+					</td>
+				</tr>
+			</table>
+            </div>
+	</form>
+</div>
+<div>
+	<table class="table" width="100%" layoutH="146">
+		<thead>
+			<tr>
+				<th><input type="checkbox" class="checkboxCtrl" group="expertid" /></th>
+				<th>序号</th>
+				<th>专家名称</th>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr onclick="addDispatchingUsers(this,'tr');onTrClickCheckbox(this,'orgmsg');" rel="{$vo['id']}">
+				<td><input type="checkbox" name="expertid" value="{ id:'{$vo.id}', name:'{$vo.name}'}" /></td>
+				<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+				<td  class="name">{$vo['name']}</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div> 

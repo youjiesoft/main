@@ -1,0 +1,51 @@
+<script>
+$(function(){
+		var confad = new Object();
+		var dataadd = '{$deptComList}';
+		confad.data =$.parseJSON(dataadd);
+		confad.ids = '#userdeptdutycadd,#userdeptdutydadd',
+		confad.tag = 'compay,dept'; 
+		confad.pid = 'companyid';
+		confad.container=$("#userdeptdutyadd");
+		confad.defaultVal='{$companyid}';
+		confad.container = $.pdialog.getCurrent(); // 新加组件作用域
+		confad.istree=true ; // 是否开启树形数据功能。
+    	confad.islastchoice =true; // 是否开启最下一项可选择功能
+		confad.tex = 'name'; 
+		confad.val = 'id';  
+		confad.container = $.pdialog.getCurrent();
+		$.linkage(confad); 
+	}); 
+</script>
+<div class="pageContent" id="userdeptdutyadd">
+	<form method="post" action="__URL__/insert/rel/editXxBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="userid" value="{$_GET['userid']}" />
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>公司：</label>
+					<select  id="userdeptdutycadd" name="companyid" class="chosen">
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>部门：</label>
+					<select name="deptid" id="userdeptdutydadd" class="chosen">
+					</select>
+				</div>
+			<div class="tml-form-col">
+				<label>职级：</label>
+				<select name="dutyid" class="combox">
+					{:getDataBaseByHtml('MisSystemDuty')}
+				</select>
+			</div>
+			</div>
+				<div class="tml-row">
+			<div class="tml-form-col"  style="width:500px;">
+				<label>备注：</label>
+				<textarea name="remark" rows="2" maxlength="200" cols="40"></textarea>
+			</div>
+			</div>
+		</div>
+		 {:W('ShowAction')}
+	</form>
+</div>

@@ -1,0 +1,106 @@
+<script>
+function  changeInput(obj){
+	var $box=$.pdialog.getCurrent();
+	$val=$(obj).val();
+	if($val=='name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索姓名");
+	}
+	if($val=='mis_system_department-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索部门");
+	}
+	if($val=='duty-name'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职位");
+	}
+	if($val=='dutyname'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索职级");
+	}
+	if($val=='all'){
+		$box.find("input[name='keyword']").attr("placeholder","搜索员工姓名,部门,职位,职级");
+	}
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupdepartment/jump/1/par/{$par}" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageHeader" style="border: 1px #B8D0D6 solid;">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'cementdepartmentindexBox');" action="__URL__/lookupdepartment/jump/1/par/{$par}" method="post">
+		<input type="hidden" name="dept_id" value="{$dept_id}">
+		<div class="searchBar" style="margin-top:3px;">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<input type="text"  <if condition="$placeholder">placeholder="{$placeholder}"<else/>placeholder="搜索员工姓名,部门,职位,职级"</if> name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox"  onchange="changeInput(this)"  name="searchby">
+							   <option value="all"   <if condition="$searchby eq 'all'">selected</if> >全部</option>
+								<option value="name"  <if condition="$searchby eq 'name'">selected</if> >姓名</option>
+								<option value="mis_system_department-name"     <if condition="$searchby eq 'mis_system_department-name'">selected</if> >部门</option>
+								<option value="dutyname"   <if condition="$searchby eq 'dutyname'">selected</if> >职级</option>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />			
+						<!-- <select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select> -->
+					</td>
+					<td>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+						</div>
+					</div>
+					</td>
+					<td>
+					<div class="buttonActive">
+						<div class="buttonContent">
+							<button class="xySearch" name="orgId" type="button" onclick="missystemannouncement_selectallpeople()">批量带回</button>
+						</div>
+					</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="125">
+		<thead>
+			<tr>
+				<th width="20"><input type="checkbox" class="checkboxCtrl" group="org2" /></th>
+				<th width="20">ID</th>
+				<th>员工姓名</th>
+				<th>性别</th>
+				<th>部门</th>
+				<th>职级</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody class="personbodylist">
+			<volist id="vo" name="list">
+				<tr onclick="onTrClickCheckbox(this,'orgId')">
+					<td  width="20"><input type="checkbox" name="orgId" value="{personid:'{$vo.id}', personname:'{$vo.name}'}" personid="{$vo.id}" personname="{$vo.name}" /></td>
+					<td  width="20">{$vo['id']}</td>
+					<td >{$vo['name']}</td>
+					<td><if condition="$vo.sex eq '1'">男 <else/> 女</if></td>
+					<td>{$vo['dept_id']|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo['duty_id']|getFieldBy='id','name','duty'}</td>
+					<td>
+						<a class="btnSelect" onclick="missystemannouncement_addpeople2('{$vo.id}','{$vo.name}')" href="javascript:$.bringBack({ id:'{$vo.id}', name:'{$vo.name}'})" title="查找带回">选择</a>
+					</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="cementdepartmentindexBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

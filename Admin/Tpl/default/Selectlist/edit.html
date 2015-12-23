@@ -1,0 +1,83 @@
+<script>
+function editmfem_append_Selectlist() {
+	var $box = $.pdialog.getCurrent();
+	var html = '<tr>';
+		html +='<td><input type="text" class="gangwei_d xytdinput"  name="arr_key[]" value="" /></td>';
+        html +='<td><input type="text" class="gangwei_d xytdinput" name="arr_val[]" value="" /> </td>';                              
+        html +='<td><a href="javascript:;" onclick="editmfem_delete_Selectlist(this);"><strong style="color:red">移除</strong></a></td>';
+	html +='</tr>';
+	var $ht = $(html).initUI();
+	$("#Selectlist_ex_edit").append($ht);
+}
+function editmfem_delete_Selectlist(obj) {
+	var $box = $.pdialog.getCurrent();
+	$(obj).parent().parent().remove();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$name}" >
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>编码：</label>
+					<input type="text" class="required alphanumeric" name="name" value="{$name}" <if condition="!($vo['level'] & 4)">readonly="readonly"</if> />
+				</div>
+				<div class="tml-form-col">
+					<label>标题：</label>
+					<input type="text" class="required" name="title" value="{$vo['name']}"  />
+				</div>
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select name="status" class="combox">
+						<option <if condition="$vo.status eq 1">selected</if> value="1">开启</option>
+						<option <if condition="$vo.status eq 0">selected</if> value="0">禁用</option>
+					</select>
+				</div>
+				 <div class="tml-form-col" >
+						<label title="">配置类型：</label>
+						<input type="radio" name="conftype" value="0" <if condition="$vo.conftype eq 0">checked</if>>用户自定义
+	                    <input type="radio" name="conftype" value="1" <if condition="$vo.conftype eq 1">checked</if>>系统配置
+					</div>
+			</div>
+			<div class="tml-form-row">
+				<label>描述：</label>
+				<input type="text" class="" name="remark" value="{$vo.remark}" <if condition="!($vo['level'] & 4)">readonly="readonly"</if> />
+			</div>
+			<div class="dialog-box">
+                <table class="data-table" cellspacing="0" id="Selectlist_ex_edit" width="100%">
+                    <thead>
+                        <tr>
+                            <td style="width:200px;"><strong>键</strong></td>
+                            <td><strong>值</strong></td>
+                            <td style="width:30px;">
+							<if condition="($vo['level'] & 2)">
+							<a href="javascript:;" onclick="editmfem_append_Selectlist();"><strong style="color:green">添加</strong></a>
+							</if>
+							</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    	<volist name="selectlistname" id="sname">
+	                        <tr>
+								<td><input type="text" class="gangwei_d xytdinput"  name="arr_key[]" value="{$key}" <if condition="!($vo['level'] & 4)">readonly="readonly"</if> /></td>		
+	                            <td><input type="text" class="gangwei_d xytdinput" name="arr_val[]" value="{$sname}" <if condition="!($vo['level'] & 4)">readonly="readonly"</if> /> </td>                                
+	                            <td>
+								<if condition="($vo['level'] & 8)">
+								<a href="javascript:;" onclick="editmfem_delete_Selectlist(this);"><strong style="color:red">移除</strong></a>
+								</if>
+								</td>
+	                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+
+	</div>
+</div>
+
+

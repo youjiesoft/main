@@ -1,0 +1,39 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$typeTree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#ProcessManage"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("ProcessManage");
+	var valid = '{$nodeId}';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="close" style="border-top:none;">
+		<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="ProcessManageSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('ProcessManage','ProcessManageSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="ProcessManage" class="ztree" layoutH="148"></ul>
+		</div>
+	</div>
+	<div id="ProcessManageBox" class="treeright" style="overflow:hidden;">
+		<include file="indexview"/>
+	</div>
+</div>

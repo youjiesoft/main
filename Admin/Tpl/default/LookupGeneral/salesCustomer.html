@@ -1,0 +1,46 @@
+<script>
+function getThisAutoCode($this,m,$model,val) {
+	$.ajax({
+		type: "POST",
+		url: TP_APP + "/"+m+"/lookupChageCode/",
+		data:{model:$model,val:val},
+		dataType: "text",
+		global: false,
+		success: function(d) {
+			$($this).parent().find("input").val(d);
+		}
+	});
+}
+</script>
+<div class="edit-form-mini">
+	<div class="edit-form-col">
+		<label>编码：</label>
+		<input type="text" name="code" value="" <if condition='$writable eq 0'> readonly="readonly" </if> class="required"/>
+		<if condition="$tplName">
+			<a class="btnRefresh" href="javascript:;" onclick="getThisAutoCode(this,'MisSalesCustomer','{$model}','{$deptid}')">获取编号</a>
+		</if>
+	</div>
+	<div class="edit-form-col">
+		<label>客户名称：</label>
+		<input type="text" name="name" value="" class="required"/>
+	</div>
+	<div class="edit-form-col">
+		<label> 行业类型： </label>
+		<select name="intype" class="combox">
+		{:getDataBaseByHtml('mis_sales_customer_industry',array('selected'=>$vosoft['intype']))}
+		</select>
+	</div>
+	<div class="edit-form-col">
+		<label>所属部门：</label>
+		<input type="text"  readonly="readonly" value="{:getSelectByName('customertype',$deptid)}" class="required"/>
+		<input type="hidden" name="typeid"  value="{$deptid}" />
+	</div>
+	<div class="edit-form-col">
+		<label>公司地址：</label>
+		<input type="text" name="caddr" value="" class="required"/>
+	</div>
+	<div class="edit-form-col">
+		<label>备注：</label>
+		<input type="text" name="remark" value="" class="required"/>
+	</div>
+</div>

@@ -1,0 +1,138 @@
+<script type="text/javascript">
+	//修改样式
+	function turnaround(obj){
+		var url = $(obj).parent().find("input").val();
+		$.pdialog.reload(url,'','userinterface');
+	}
+	//添加样式
+	function seed(obj){
+		$(obj).addClass("xyTabListCu");
+	}
+	//去除样式
+	function clearnc(obj){
+		var comfirm = $(obj).hasClass("confirm");
+		if(!comfirm){
+			$(obj).removeClass("xyTabListCu");
+		}
+	}
+ 	//
+ 	//js 在一个数组中检索某个元素 如果存在该元素正则返回ture 不存在则返回 false
+ 	/*
+ 	 * dirc by yu
+ 	 * arr-----是要检索的数组 
+ 	 * conm----是要检索的元素 
+ 	 * 返回值 ture & false
+ 	 */
+ 	function isInarray(arr,conm){
+ 		var alength = arr.length;
+ 		var i = 0 ;
+ 		for(i = 0; i <alength ;i++){
+ 			if(arr[i] == conm){
+ 				return true;
+ 				break;
+ 			}
+ 		}
+ 		return false;
+ 	}
+ 	//构造url dirc by ysl
+ 	function moreinfo(obj){
+ 		var waitelist = '{$waitearr}';
+ 		var newwaitelist = DWZ.jsonEval(waitelist);
+ 		var remaindlist = '{$alist}';
+ 		var newremaindlist = DWZ.jsonEval(remaindlist);
+ 		var iurl = $(".confirm").find("input").val();
+ 		var arrurl = new Array();
+ 		arrurl = iurl.split('/');
+ 		var boolx = isInarray(arrurl,'typename');
+ 		var posi = arrurl.length - 3;
+ 		var parm = arrurl[posi];//从 url中获取modelname
+ 		//如果是待办
+ 		if(boolx){
+ 			for(var i = 0;i < newwaitelist.length;i++){
+ 				if(newwaitelist[i]['name'] == parm){
+ 					var title = newwaitelist[i]['title'];
+ 					break;
+ 				}
+ 			}
+ 			var urlx = TP_APP + "/" + parm +"/index"+"/default/2";
+	 		navTab.openTab(title, urlx, { title:title, fresh:false, data:{} });
+ 		}else{
+ 			for(var j = 0;j < newremaindlist.length;j++){
+ 				if(newremaindlist[j]['name'] == parm){
+ 					var relhref = newremaindlist[j]['relhref'];
+ 					var title = newremaindlist[j]['reltitle'];
+ 					var parname = newremaindlist[j]['name'];
+ 					break;
+ 				}
+ 			}
+ 			var urlx = TP_APP + "/" + relhref +"/index/isend/3/md/" + parname;
+ 			navTab.openTab(parm, urlx, { title:title, fresh:false, data:{} });
+ 		}
+ 	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<div class="pageFormContent">
+			<div class="row">
+				<div class="xyTab">
+					<div class="xyTabHeader" id="selectdiv">
+						<ul class="xyTabHeaderUl clearfix" id="cards">
+							<if condition="$selectlist">
+								<volist name="selectlist" id="cards" key="k">
+									<li <if condition="$cards['keyi'] eq $mark">class="xyTabList tml-pos-rel xyTabListCu confirm"<else/>class="xyTabList tml-pos-rel"</if>onmouseover="seed(this);" onmouseout="clearnc(this);">
+										<a href="javascript:;"  onclick="turnaround(this);">{$cards['title']}
+											<if condition="$cards['countnumx']">
+												<span class="tml-bg-orange badge">{$cards['countnumx']}</span>
+											</if>
+										</a>
+										<input type="hidden" neme="url" value="{$cards['url']}"/>
+									</li>
+								</volist>
+							</if>
+						</ul>
+					</div>
+				</div>
+				<div class="tableList" layoutH="85">
+					<table class="table" width="100%">
+							<thead>
+								<tr> <th width="24">序号</th>
+									<volist id="vo" name="detailList">
+						                <if condition="$vo[shows] eq 1">
+						                	<th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th>
+						                </if> 
+						            </volist>
+								</tr>
+							</thead>
+							<tbody>
+								<volist id="vo" name="MisWorkMonitoringList" key="key2">
+					                <tr target="sid_node" rel="{$vo['id']}"  title="{$vo['title']}"  ondblclick="ondblclick_navTab(this,'{$vo['tableid']}','{$vo['url']}','{$vo['title']}');">
+					                    <td class="tml-first-td">{$key+1}</td>
+					                    <volist id="vo1" name="detailList">
+					                        <td field="{$vo1[name]}" width="{$vo1[widths]}">
+					                            <if condition="count($vo1['func']) gt 0">
+					                               <volist name="vo1.func" id="nam">
+														<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+															{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+														<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]} 
+														</if>
+													</volist>
+					                            <else />
+					                            {$vo[$vo1['name']]}
+					                            </if>
+					                        </td>
+					               		</volist>
+  									 </tr>
+								</volist>
+							</tbody>
+					</table>
+				</div>
+			</div><!-- end row -->
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="button" class="tml-btn close">关闭</button></li>
+				<li class="p5" style="float: right;"><a href="javascript:;" onclick="moreinfo(this);">更多...</a></li>
+			</ul>
+		</div>
+	</div>
+</div>

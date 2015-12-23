@@ -1,0 +1,58 @@
+<script type="text/javascript">
+var box= $.pdialog.getCurrent();
+$('select[name="parentid"],input[name="name"]',box).on("change",function(){
+	var parentid=$('select[name="parentid"]',box).val();
+	$.ajax({
+		type:'POST',
+		url:TP_APP + '/MisSystemAreas/lookupGetJoin',
+		data:"parentid="+parentid,
+		dataType:"json",
+		async:false,
+		cache:false,
+		global:false,
+		success:function(data){
+			console.log(data);
+			var joinname=data;
+			var name=$('input[name="name"]',box).val();
+			if(joinname==null){
+				$('textarea[name="joinname"]',box).val(name);
+			}else{
+				$('textarea[name="joinname"]',box).val(joinname+','+name);
+			}
+		},
+		error:DWZ.ajaxError
+	});
+})
+
+</script>
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<div class="pageFormContent new_version_page_content" layoutH="58">
+							<!-- text组件 start -->
+							<div class="col_1_3 form_group_lay field_name ">
+								<label class="label_new">{$fields["id"]}:</label>
+								<input   type="text"  name="id" class=" input_new required input_new  " value="{$vo['name']}">
+							</div>
+							<div class="col_1_3 form_group_lay field_name ">
+								<label class="label_new">{$fields["name"]}:</label>
+								<input   type="text"  name="name" class=" input_new required input_new  " value="{$vo['name']}">
+							</div>
+							<!-- text组件 end -->
+							<!-- select组件 start -->
+							<div class="col_1_3 form_group_lay field_select3 ">
+								<label class="label_new">{$fields["parentid"]}:</label>
+								{:W('ShowSelect',array($vo['parentid'],array('   ',array('type'=>'table',array('readonly'=>'0','targevent'=>'','actionName'=>'MisSystemAreas','names'=>'parentid','defaultcheckitem'=>'','defaultval'=>'0','defaulttext'=>'顶级节点','table'=>'mis_system_areas', 'id'=>'id','name'=>'name','conditions'=>'','parentid'=>'','mulit'=>'0','isnextend'=>'1','treeheight'=>'','treewidth'=>'','key'=>'','isedit'=>'1','showtype'=>'0')))))}
+						 </div>
+							<!-- select组件 end -->
+							<!-- textarea组件 start -->
+							<div class="col_1_7 form_group_lay field_textarea4 ">
+								<label class="label_new">{$fields["joinname"]}:</label>
+								<textarea  cols="100" rows="4" readonly="readonly" class="  text_area" name="joinname"></textarea>
+							</div>
+							<!-- textarea组件 end -->
+		<div class="clear"></div>
+		{:W('MisSystemOrderno',array(1))}
+			</div>
+		{:W('ShowAction')}
+		</form>
+	</div>

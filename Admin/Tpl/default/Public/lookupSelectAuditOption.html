@@ -1,0 +1,25 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {view: {selectedMulti: false,fontCss: getFontCss},data: {simpleData: {enable: true}}};
+	$.fn.zTree.init($("#hrpersonneltransfer"), setting, zNodes);
+});
+</script>
+<div class="treeleft">
+	<div class="collapse" layoutH="0">
+		<div class="toggleCollapse"><div></div></div>
+	</div>
+	<div class="close">
+		<div class="toggleCollapse"><h2></h2><div></div></div>
+		<div class="clearfix p5">
+			<div class="xysearcher">
+				<input type="text" id="hrpersonneltransferNodeKeys" />
+				<button class="searchBtn" onclick="SearchZTreeNode('hrpersonneltransfer','hrpersonneltransferNodeKeys')">搜索</button>
+			</div>
+		</div>
+		<ul id="hrpersonneltransfer" class="ztree" layoutH="45"></ul>
+	</div>
+</div>
+ <div id="auditOpionBox" class="unitBox treeright">
+	<include file="Public:lookupSelectAuditOptionRight" />
+</div>

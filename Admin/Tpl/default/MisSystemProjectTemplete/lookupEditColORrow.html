@@ -1,0 +1,127 @@
+<script type="text/javascript">
+function datatableFormul($form){
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			var data=DWZ.jsonEval(json.data);
+			$('#'+data.id).attr("href",data.url);
+			$.pdialog.closeCurrent(); 
+		}
+	});
+}
+function deleteThisRecord(id){
+	$.ajax({
+		type: "POST",
+		url: TP_APP + "/MisSystemProjectTemplete/lookupDelete",
+		data:"id="+id,
+		dataType: "json",
+		async:false,
+		global: false,
+		success: function (data){
+			$.pdialog.closeCurrent(); 
+			navTab.reload();
+		},
+	});
+	
+}
+</script>
+	<div class="pageContent">
+		<form method="post" action="__URL__/lookupEditColORrow" class="pageForm required-validate" onsubmit="return datatableFormul(this, dialogAjaxDone)">
+			<input type="hidden" name="isedit" value="1">
+			<input type="hidden" name="id" value="{$id}">
+			<input type="hidden" name="showname" value="{$showname}">
+			<input type="hidden" name="name" value="{$name}">
+			<input type="hidden" name="supcategory" value="{$supcategory}" />
+			<input type="hidden" name="category" value="{$category}" />
+			<input type="hidden" name="hyid" value="{$hyid}" />
+			<input type="hidden" name="cylid" value="{$cylid}" />
+			<input type="hidden" name="custtypeid" value="{$custtypeid}" />
+			<input type="hidden" name="labelList" value="{$labelList}">
+			<div class="pageFormContent new_version_page_content" layoutH="58">
+				<div class="col_1_7 form_group_lay field_upload3">
+						<div class="tml_search_tips info_tips">
+						    <div class="search_tips_title"><span class="icon-comments" style="margin-right: 5px"></span>友情提示：</div>
+							<p class="search_tips_center">1、除基本标签的运算外，还支持表格下标进行计算，下标为从上向下或从左至右的顺序以0开始计数，例如:([0]+[1])/[1]。</p>
+					    </div>
+				</div>
+				<div class="col_1_3 form_group_lay field_beizhu ">
+					<label class="label_new">显示方式:</label>
+					<select name="showtype"  class=" select2 select_elm">
+						<option <if condition="$formula['showtype'] eq 0">selected=selected</if>  value="0">竖向</option>
+						<option <if condition="$formula['showtype'] eq 1">selected=selected</if>  value="1">横向</option>
+					</select>
+				</div>
+			  <!-- 	<div class="col_1_3 form_group_lay field_name ">
+					<label class="label_new ">显示表头:</label>
+					<select name="showtitle" class=" select2 select_elm">
+						<option  <if condition="$formula['showtitle'] eq 0">selected=selected</if>  value="0">否</option>
+						<option   <if condition="$formula['showtitle'] eq 1">selected=selected</if> value="1">是</option>
+					</select>
+				</div>  -->
+				<div class="col_8_0 form_group_lay field_datatable ">				
+							<div class="into_table_lay">
+							<table class="into_table_new nbm_data_table" id="dt_datatable_edit" table_type="edit">
+								<thead>
+									<tr class="thead_tr">
+										<th style='width:40px;' template_key="serial" >序号</th>
+										<th template_key="input" template_name="datatable[#index#][name]"  stats_num=\"2\" template_class=" ">
+											标签名称
+										</th>
+										<th template_key="input" template_name="datatable[#index#][showname]"  stats_num=\"2\" template_class=" ">
+											标签别名
+										</th>
+										<th template_key="input" template_name="datatable[#index#][formula]"  stats_num=\"2\" template_class=" ">
+											运算公式
+										</th>
+										<th style='width:90px;' template_data='{"table":"datatable","post_table":"mis_system_templete_label","post_url":"__URL__/onesave","del_url":"__URL__/delsubinfo"}' template_key="action">操作</th>
+									</tr>
+								</thead>
+								<tbody cellpadding="0" cellspacing="1">
+						{~$key=0;}
+						<volist name="tablelist" id="item">
+							<tr>
+								<td>
+									<span class="serial_number">
+										{$key+1}
+									</span>
+								</td>
+								<!-- 现有数据 -->
+								<td>
+									<div class="list_group_lay" style="display: none;">
+										<input type="text"  class="list_input       " 	    name="datatable[#index#][name]"  value="{$item[name]}" />
+									</div>
+									<span class="datatable_show_val">{$item[name]}</span>
+								</td>	
+								<td>
+									<div class="list_group_lay" style="display: none;">
+										<input type="text"  class="list_input       "  name="datatable[#index#][showname]"  value="{$item[showname]}" />
+									</div>
+									<span class="datatable_show_val">{$item[showname]}</span>
+								</td>							
+								<td>
+										<div class="list_group_lay" style="display: none;">
+											<input type="text"  class="list_input      " name="datatable[#index#][formula]"  value="{$item[formula]|htmlentities}" />
+										</div>
+										<span class="datatable_show_val">{$item[formula]}</span>
+								</td>	
+								<td >
+									<input type="hidden" name="datatable[#index#][id]" value="{$item.id}" />
+									<button type="button" class="into_table_new_trash_tr  tml-btn tml_look_btn tml_mp"  del_id="0"  del_url="__URL__/delsubinfo"  del_table="mis_system_templete_label" >
+									删除</button>
+									<button post_id="{$item.id}" post_url="__URL__/lable" post_id="{$item.id}" post_table="mis_system_templete_label" rel_type="edit" class="save_row_btn" type="button">编辑</button>
+								</td>
+							</tr>
+							{~$key++}
+						</volist>	
+						</tbody>
+				</table>
+			</div>	
+		</div>
+			</div>
+		<div class="formBar">
+		<ul>
+			<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button></li>
+			<li><button onclick="deleteThisRecord({$id});" class="tml_formBar_btn tml_formBar_btn_red enterIndex" type="button">清除配置</button></li>
+		</ul></div>
+		</form>
+	</div>

@@ -1,0 +1,60 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mispaymentmethod_add "><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="dialog" title="付款方式新增"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mispaymentmethod_delete "><li><a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li></if>
+			<!-- <if condition="$_SESSION.a eq 1 or $_SESSION.mispaymentmethod_edit "><li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}" target="dialog"  warn="请选择节点" title="付款方式修改"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span></a></li></if> -->
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+	</div>
+
+	<table class="table" width="100%" layoutH="84">
+		<thead>
+		<tr>
+			<th><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+			<volist id="vo" name="detailList">
+				<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			</volist>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')" title="付款方式_编辑" drel="__MODULE__edit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$vo[id]}");'>
+				<td><input type="checkbox" name="id" value="{$vo['id']}" /></td>
+	              <volist id="vo1" name="detailList">
+					<if condition="$vo1[shows] eq 1">
+					<td width="{$vo1[widths]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+					</if>
+				  </volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

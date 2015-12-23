@@ -1,0 +1,385 @@
+
+<script>
+$(function(){
+	var modelname = '{$modelname}';
+	var box = $('div.page');//$.pdialog.getCurrent();
+	// 禁止重复的内容
+	var forbidArr = ['year','moth','day','createid','companyid','departmentid'];
+	// 已使用的内容
+	var curuserdArr=Array();
+	
+	// 给每个下拉框绑定事件 
+	$('select.nbm_change_item' , box).change(function(){
+		var curval=$(this).val();
+		var htmls='';
+		switch(curval){
+			case 'year':
+			case 'moth':
+			case 'day':
+				htmls="系统自动获取时间";
+				break;
+			case 'createid':
+				htmls="系统自动获取创建人编号";
+				break;
+			case 'companyid':
+				htmls="系统自动获取公司编号";
+				break;
+			case 'departmentid':
+				htmls="系统自动获取部门编号";
+				break;
+			case 'formset':
+				tablefields(modelname,this);
+				break;				
+			default:
+				htmls='';
+				break;
+		}
+		var orderObj = $(this).parent().children('input.nbm_pre_item:first');
+		 $(this).parent().children('input[type="hidden"]:first').val('');
+		if(htmls == ''){
+			orderObj.attr('readonly',false);
+		}else{
+			orderObj.attr('readonly',true);
+		}
+		orderObj.prop('value',htmls);
+		setCurrentVal(this , curval);
+		orderObj.change();
+	});
+	$('input.nbm_pre_item').change(function(){
+		getRule();
+	});
+	function getRule(){
+		var temp=Array();
+		var showTemp=Array();
+		$('input.nbm_pre_item').each(function(){
+			if($(this).attr('readonly') =='readonly'){
+				var p =$(this).parent();
+				var text = p.find('select.nbm_change_item>option:selected').text();
+				temp.push(text);
+				var leng = $(this).parent().find('input[type="hidden"]').val();
+				showTemp.push(createStart(leng));
+			}else if($(this).attr('name') == 'num'){
+				temp.push('流水号');
+				var leng = $(this).val();
+				showTemp.push(createStartAppend(leng));
+			}else{
+				temp.push($(this).val());
+				showTemp.push($(this).val());
+			}
+			// 获取星号生成长度
+		});
+		$('input[type="text"][name="rule"]').val(temp.join('/'));
+		$('input[type="text"][name="preview"]').val(showTemp.join(' '));
+	}
+	function createStart(length){
+		var str='*';
+		
+		if(length!=''){
+			length = parseInt(length , 10);
+			if(typeof(length) == "number" && length >0){
+				for(var i=1 ; i<length; i ++){
+					str +='*';
+				}
+			}
+		}
+		return str;
+	}
+	function createStartAppend(length){
+		var str='';
+		if(length!=''){
+			length = parseInt(length , 10);
+			if(typeof(length) == "number" && length >0){
+				for(var i=0 ; i<length-1; i ++){
+					str +='0';
+				}
+			}
+		}
+		return str+'1';
+	}
+	
+	function setCurrentVal(obj ,val){
+		val = isNullorEmpty(val)?val:' ';
+		// 将当前值临时保存
+		var original = $(obj).attr('curval');
+		$(obj).attr('curval' , val);
+		// 设置已用值不可选中 
+		setDisItem();
+	}
+	function setDisItem(obj){
+		// 先将所有项都设置为可用
+		$('select.nbm_change_item',box).find('option').attr('disabled',false);
+		// 得到当前所有已用的项 
+		$('select.nbm_change_item',box).each(function(){
+			if($.inArray($(this).attr('curval'),forbidArr)>-1){
+				// 记录到已使用记录中
+				isNullorEmpty($(this).attr('curval'))?curuserdArr.push($(this).attr('curval')):'';
+			}
+		});
+		$.each(curuserdArr , function(i , v){
+			//$('select.nbm_change_item',box).val('');
+			//$(this).logs('我要设置为不可用的项:'+v);
+			$('select.nbm_change_item',box).find('option[value="'+v+'"]').attr('disabled',true);
+		});
+		curuserdArr=Array();
+	
+	}
+	function tablefields(modelname,obj){
+		var objindex = $(obj).attr("index");
+		var title = "自定义前缀";
+		var rel = "SysemConfigNumber_tablefields";
+			options = {width:500,height:300,mask:true};
+			options.param={modelname:modelname,objindex:objindex};
+		var url="__URL__/tablefields";
+		DWZ.debug(url);
+		if(!url.isFinishedTm()){
+		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+		return false;}
+		$.pdialog.open(url,rel,title,options);	
+		/* $.ajax({
+			type:"POST",
+			url:"__URL__/tablefields",
+			data:{modelname,modelname},
+			success:function(res){
+				var html = 
+				$.each(res,function(){
+						
+				});
+			}
+		}); */
+		
+	}
+});
+
+
+function getCorrelationField($val){
+	//获取来源表字段
+	  $.ajax({
+			type: "POST",
+			url: TP_APP + "/SystemConfigNumber/lookupgetCorrelationField/table/"+$val,
+			data:"",
+			dataType: "json",
+			success: function (data){
+				var html='<option value="">请选择</option>';
+				   $.each(data, function(key, val) {  
+					   html+='<option value="'+key+'">'+key+'【'+val+'】</option>';
+				   });
+				  $('#correlationfield').html(html).select2();
+			}
+		}); 
+}
+</script>
+<style>
+.nbm_field{margin-right: 10px; width: 160px;}
+</style>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/SystemConfigNumberBox" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="modelname" value="{$modelname}" >
+		<div class="pageFormContent" style="background: #fff;">
+            <div class="work_shortcut_top lookup_top_header">设置表单编码规则</div>
+            <div class="set_configure" layoutH="95">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>关联表名：</label>
+				<input type="text" class="required" name="id" value="{$id}" readonly />
+			</div>
+			<span class="helpInline tml-form-text">输入主表名</span>
+			<div class="tml-form-col">
+				<label>对象规则：</label>
+				<input type="text" class="required" name="rulename" value="{$vo.rulename}" />
+			</div>
+			<span class="helpInline tml-form-text">单据对象名</span>
+			<div class="tml-form-col" style="font-size: 15px;  padding-left: 25px;padding-top: 5px;">
+				<span style="margin-right: 10px"><input style="margin-right: 5px" type="checkbox" name="writable" value="1" <if condition="$vo['writable'] eq 1">checked="checked"</if> >编码可修改</span>
+                <?php
+                 if(!isset($vo['status'])){
+                    $vo['status']=1;
+                 }
+                ?>
+				<input style="margin-right: 5px" type="checkbox" name="status" value="1"  <if condition="$vo['status'] eq 1">checked="checked"</if> >自动生成编码开启
+			</div>
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>分类字段：</label>
+				<select name="typefield" class=" select2 nbm_field left">
+				<option value="">请选择</option>
+				<volist name="fieldList" id="fieldvo">
+				<option <if condition="$vo['typefield'] eq $key">selected</if> value="{$key}">{$key}【{$fieldvo}】</option>
+				</volist>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>分类来源表：</label>
+				<select name="fieldtable"  onchange="getCorrelationField(this.value)" class=" select2 nbm_field left">
+				<option value="">请选择</option>
+				<volist name="tableList" id="tablevo">
+				<option  <if condition="$vo['fieldtable'] eq $key">selected</if>  value="{$key}">{$key}【{$tablevo}】</option>
+				</volist>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>关联字段：</label>
+				<select id="correlationfield" name="correlationfield" class=" select2 nbm_field left">
+				<option value="">请选择</option>
+				<if condition="$tabFieldList">
+					<volist name="tabFieldList" id="tabfieldvo">
+					<option  <if condition="$vo['correlationfield'] eq $key">selected</if>  value="{$key}">{$key}【{$tabfieldvo}】</option>
+					</volist>
+				</if>
+				</select>
+			</div>
+			<div class="tml-form-col" style="font-size: 15px; padding-left: 25px; padding-top: 5px;">
+				<input  style="margin-right: 5px"  type="checkbox" name="classify" value="1"  <if condition="$vo['classify'] eq 1">checked="checked"</if> >是否分类
+			</div>
+		</div>	
+                <div class="clear"></div>
+		<div class="tml-row">
+		   <div class="tml-form-row">		
+				<label>前缀一：</label>
+				<select name="prefix1" index="nbm_pre_1" class="select2 nbm_change_item left">
+				<option value="">请选择</option>
+                {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name','selected'=>$vo['prefix1']))}
+				</select>
+				<input type="hidden" name="prefix1_long" value="{$vo.prefix1_long}" />
+				<input type="text"   class="nbm_pre_item left"  name="prefix1_value"  value="{$vo.prefix1_value}" />
+			</div>
+		</div>
+		<div class="tml-row">
+		   <div class="tml-form-row">
+				<label>前缀二：</label>
+				<select name="prefix2" index="nbm_pre_2" class="select2 nbm_change_item left">
+				<option value="">请选择</option>
+                {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name','selected'=>$vo['prefix2']))}
+				</select>
+				<input type="hidden"    name="prefix2_long" value="{$vo.prefix2_long}" />
+				<input type="text"   class="nbm_pre_item"   name="prefix2_value" value="{$vo.prefix2_value}" />
+			</div>		
+		</div>
+		<div class="tml-row">
+		     <div class="tml-form-row">
+				<label>前缀三：</label>			
+				<select name="prefix3" index="nbm_pre_3" class="select2 nbm_change_item left">
+				<option value="">请选择</option>
+                {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name','selected'=>$vo['prefix3']))}
+				</select>
+				<input type="hidden"    name="prefix3_long" value="{$vo.prefix3_long}" />
+				<input type="text"   class="nbm_pre_item"  name="prefix3_value"  value="{$vo.prefix3_value}" />
+			  </div>		
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-row" >
+				<label>前缀四：</label>				
+				<select name="prefix4" index="nbm_pre_4" class="select2 nbm_change_item left">
+				<option value="">请选择</option>
+                {:getDataBaseByHtml('mis_system_orderno_type',array('id'=>'orderno','name'=>'name','selected'=>$vo['prefix4']))}
+				</select>
+				<input type="hidden"    name="prefix4_long" value="{$vo.prefix4_long}" />
+				<input type="text"   class="nbm_pre_item" name="prefix4_value"  value="{$vo.prefix4_value}" />
+			</div>				
+		</div>			
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>流水号位数：</label>
+				<input type="text" class="required number nbm_pre_item" maxlength="5" name="num" value="{$vo.num}" />
+			</div>
+			<div class="tml-form-col">
+				<label>当前流水号：</label>
+				<input type="text" class="number "  maxlength="5" name="numshow" value="{$vo.numshow}" />
+			</div>
+			<div class="tml-form-col">
+				<label>设置流水号：</label>
+				<input type="text" class="number " maxlength="5" name="numnew" value="{$vo.numnew}" />
+			</div>			
+		</div>
+		<div class="tml-row">
+			<div class="tml-form-row">
+				<label>后缀：</label>
+				<input type="text" class="nbm_pre_item" maxlength="10" name="suffix" value="{$vo.suffix}"/>
+			</div>				
+		</div>	
+		<div class="tml-row">
+            <div class="tml-form-row">
+				<label>单据编号：</label>
+				<input type="text"  minlength="5" maxlength="100" name="rule" value="{$vo.rule}" />
+			</div>
+		</div>			
+		<div class="tml-row">
+            <div class="tml-form-row">
+				<label>规则预览：</label>
+				<input type="text" class="" minlength="1" maxlength="100" name="preview" value="{$vo.preview}" readonly />
+			</div>
+		</div>
+		<div class="formBar">
+		    <ul>
+			    <li><button type="submit" class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+		    </ul>
+	    </div>
+        </div>
+	<!-- 	<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemconfignumber_update">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div> -->
+	</div>
+	</form>
+
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<!-- <div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemconfignumber_add "><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add/model/{$modelname}/modeltitle/{$modeltitle}" target="dialog" mask="true" width="800" height="600" ><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemconfignumber_edit "><li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}/model/{$modelname}" target="dialog" mask="true" width="800" height="600" warn="请选择节点"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.systemconfignumber_edit "><li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit1/id/{sid_node}/model/{$modelname}" target="dialog" mask="true" width="800" height="600" warn="请选择节点"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span></a></li></if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead>
+		<tr>
+			<th>关联表名</th>
+			<volist id="vo" name="detailList">
+		    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if>>{$vo[showname]}</th></if>	类型
+		    </volist>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$key}" dheight="480" title="单号规则_编辑" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$key}");'>
+				<td>{$key}</td>
+				<volist id="vo1" name="detailList">
+					<td width="{$vo1[widths]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+				</volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+</div> -->

@@ -1,0 +1,83 @@
+<div class="pageContent">
+		<a class="input-addon input-addon-addon input-addon-add" style="display: none;" rel="lookupSelectAuditOption" id="auditselectoption" href="__URL__/lookupSelectAuditOption/modulename_auditoption/__MODULE__/audittype/dialog" lookupGroup="selectaudituser">选择下一步审核人</a>
+		<div class="pageFormContent " layoutH="58">
+				<h2 class="contentTitle contentTitle_center">库存动态
+				</h2>
+				<div class="tml-row">	
+						<div class="tml-form-col">
+							<label> 设备名称： </label>
+							<input type="text"  value="{$vo.managename}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 设备类型： </label>
+							<input type="text"  value="{$vo.equipmenttype|getFieldBy='id','name','mis_work_facility_type'}"   readonly="readonly">
+						</div>
+						<if condition="$vo.operation eq '2'">
+						<div class="tml-form-col">
+							<label> 原数量： </label>
+							<input type="text"  value="{$vo.oldqty|getDigits}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 异动数量： </label>
+							<input type="text"  value="{$vo.appqty|getDigits}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 异动前部门： </label>
+							<input type="text"  value="{$vo.olddeptid|getFieldBy='id','name','mis_system_department'}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 异动后部门： </label>
+							<input type="text"  value="{$vo.applydepartmentid|getFieldBy='id','name','mis_system_department'}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 异动前存放地点： </label>
+							<input type="text"  value="{$vo.oldplace}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 异动后存放地点： </label>
+							<input type="text"  value="{$vo.place}"   readonly="readonly">
+						</div>
+						<else/>
+						<div class="tml-form-col">
+							<label> 数量： </label>
+							<input type="text"  value="{$vo.appqty|getDigits}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 单位： </label>
+							<input type="text"  value="{$vo.manageid|getFieldBy='id','unit','mis_work_facility_manage'|getFieldBy='id','name','mis_product_unit'}"   readonly="readonly">
+						</div>
+							<div class="tml-form-col">
+							<label>存放地点： </label>
+							<input type="text"  value="{$vo.place}"   readonly="readonly">
+						</div>
+						<div class="tml-form-col">
+							<label> 操作部门： </label>
+							<input type="text"    value="{$vo.applydepartmentid|getFieldBy='id','name','mis_system_department'}"   readonly="readonly">
+						</div>
+						</if>
+						<div class="tml-form-col">
+							<label> 操作类型： </label>
+							<input type="text"    value="{:getSelectByName('operationdis',$vo['operation'])}"   readonly="readonly">
+						</div>
+						</div>
+				<div class="tml-form-row">
+					<label>备注：</label>
+					<textarea readonly="readonly">{$vo.remark}</textarea>
+				</div>
+				<div class="tml-row">	
+					<div class="tml-form-col">
+						<label>操作人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}"   />
+					</div>	
+					<div class="tml-form-col">
+					 	<label>操作时间：</label>
+						<input name="applicationdate" type="text" size="19"  readonly="readonly" value="{$vo.createtime|transTime}"  class="textInput  " />
+					</div>
+				</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+</div>

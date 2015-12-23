@@ -1,0 +1,65 @@
+<script>
+//左边树形菜单
+$(document).ready(function(){
+	var zNodes = {$mpkTreearr};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			callback: {
+				onRightClick: zTreeOnRightClick
+	        }
+		};
+	$.fn.zTree.init($("#misperformancekpitree"), setting, zNodes);
+	//默认选中第一个
+	var zTree = $.fn.zTree.getZTreeObj("misperformancekpitree");
+	var valid='{$type}';
+	var nodes = zTree.getNodesByParam("id", valid, null);
+	zTree.selectNode(nodes[0]);
+	
+	function zTreeOnRightClick(event, treeId, treeNode) {
+        if (treeNode && !treeNode.noR) {
+            zTree.selectNode(treeNode);
+			var nodes = zTree.getSelectedNodes();
+			$(this).log(treeNode.id);
+			$.nbmMenu({'addonly':treeNode.id,'havechild':false,'left':event.clientX, 'top':event.clientY,
+				addNode:function(obj){
+					$(obj).attr('url','__APP__/MisPerformanceType/add/type/2/');
+					addNodes(obj,'misperformancekpitree');
+				},
+				modifyNode:function(t){
+						 $(t).attr('url','__APP__/MisPerformanceType/edit/id/');
+						 editNodes(t,'misperformancekpitree');
+				},
+				deleteNode:function(t){
+						delNodes('misperformancekpitree','/MisPerformanceType/delete/id/','misperformancelevel_rightcontent');
+				}
+			});
+        }
+    }
+});
+</script>
+
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse" ><h2></h2>
+			</div>
+			<ul id="misperformancekpitree" class="ztree" layoutH="10"></ul>
+		</div>
+	</div>
+	<div id="MisPerformanceKpiZnodes" class="unitBox treeright">
+		<include file="unitlist"  />
+	</div>
+</div>

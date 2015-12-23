@@ -1,0 +1,71 @@
+<script>
+function attachdeptval(){
+	$box = $.pdialog.getCurrent();
+	var val = $box.find("#attachdept option:checked").val();
+	var name = $box.find("#attachdept option:checked").attr("vname").trim();
+	var isTrue=true;
+	$("#usersystemdept").find("input[class='dept']").each(function(){
+		 if($(this).val()== val){
+			 isTrue=false;
+			 alertMsg.error(name+'已存在！')
+		 } 
+	});
+	var $str="";
+	if(isTrue){
+		$str += "<li>";
+		$str += "<input type='hidden' class='dept' name='attachdept[]' value='"+val+"'/>";
+		$str += "<span>"+name+"</span>";
+		$str += "<a class='delAddressee' title='删除该功能' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>";
+		$str += "</li>";
+		$("#usersystemdept").append($str);
+	}
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/setUserDepartment/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" class="textInput" name="uid" value="{$uid}"/>
+		<div class="pageFormContent" layoutH="120">
+			<div class="testDiv">
+				<div class="clearfix" style="border:1px solid #ccc;margin-top:5px;">
+              		<label>所在部门：</label><div class="divider"></div>
+              		<input type="hidden" name="uid" value="{$id}"/>
+               		<ul class="addressee left"  id="usersystemdept">
+               			<li>
+	               			<span style="color:red">{$deptid|getFieldBy='id','name','mis_system_department'}</span>
+	               			<input type="hidden" class="dept" value="{$deptid}">
+	               		</li>
+               			<volist name="attachdeptlist" id="vo">
+               			<if condition="$vo">
+               				<li>
+	               				<span>{$vo|getFieldBy='id','name','mis_system_department'}</span>
+	               				<input type="hidden" class="dept" name="attachdept[]" value="{$vo}"/>
+	               				 <a class='delAddressee' title='删除该功能' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>
+	               			</li>
+	               		</if>
+               			</volist>
+               		</ul>
+              	</div>
+			</div>
+		</div>
+		<div class="pageFormContent">
+			<div class="unit">
+				<label>请选择附属部门：</label>
+				<select class=" combox " id="attachdept" name="dept_id">
+					<option selected value="">请选择附属部门</option>
+						{$html}
+				</select>
+				<div class="buttonActive">
+					<div class="buttonContent">
+						<button type="button"  onclick="attachdeptval()">添加</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,38 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupsettrackingstate" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="taskid" value="{$taskview['taskid']}">
+		<input type="hidden" name="type" value="{$type}">
+		<input type="hidden" name="id" value="{$trackstate['id']}">
+		<input type="hidden" name="trackuser" value="{$taskview['trackuser']}">
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>任务名称：</label>
+				<textarea cols='42' rows='2'  readonly style="width:250px;">{$taskview['title']}</textarea>
+			</div>
+			<div class="unit">
+				<label>是否同步周期：</label>
+				<input type="radio" name="trackstatus" <eq name="trackstate.trackstatus" value="1" >checked</eq> value="1">是
+				<input type="radio" name="trackstatus" <eq name="trackstate.trackstatus" value="0">checked</eq>  value="0">否
+			</div>
+			<div class="unit">
+				<label>设置周期时间：</label>
+				<input type="text" class="required" min="0" name="cycle" value="{$trackstate['cycle']}">
+				<select name="date" class="combox">
+				    <option value="hour">时</option>
+				    <option value="day">天</option>
+				</select>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_settrackingstate">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>
+

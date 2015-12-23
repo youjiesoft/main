@@ -1,0 +1,157 @@
+<script>
+function appendbecomeHtml($id){
+	var isTrue = true;
+	$(".mishragentbecomeemployee_addtable").find("input[name='employeeid[]']").each(function(){
+		if($(this).val() == $id) {
+			isTrue = false;
+		}
+	});
+	var $str = "";
+	if(isTrue){
+			$.ajax({
+				type: 'POST',
+				url: "__URL__/lookupemployeeInfo",
+				data: {id:$id},
+				success: function(response){
+					var json=DWZ.jsonEval(response);
+					 if(json){
+						 $str+="<tr>";
+						 $str+="<td>";
+						 $str+="<input type='hidden' name='employeeid[]' value='"+$id+"'>"+json.name+"";
+						 $str+="</td>";
+						 $str+="<td>"+json.dutylevelid+"</td>";
+						 $str+="<td>"+json.indate+"</td>";
+						 $str+="<td>"+json.pedate+"</td>";
+						 $str+="<td>"+json.date+"</td>";
+						 $str+="<td><a href='javascript:;' class='btnDel' onclick='MisHrBasicEmployee_addbecomedel(this)' ></a>";
+						 $str+="</td>";
+						 $str+="</tr>";
+						 $(".mishragentbecomeemployee_addtable").find("table").find('tbody').append($str);
+					 }
+				}
+			});
+	}
+}
+function mishrbasicemployee_employeeInfo($id,obj){
+	$box = $.pdialog.getCurrent();
+	$("#mishrbasicemployee_addBecome").find("span").each(function(){
+		 $(this).attr("style","")  
+	});
+	$(obj).attr("style","color:red");
+	$.ajax({
+		type: 'POST',
+		url: "__URL__/lookupemployeeInfo",
+		data: {id:$id},
+		success: function(response){
+			var json=DWZ.jsonEval(response);
+			 $box.find("input[name='phone']").val(json.phone);
+			 $box.find("input[name='deptname']").val(json.deptname);
+			 $box.find("input[name='dutyname']").val(json.dutyname);
+			 $box.find("input[name='dutylevelid']").val(json.dutylevelid);
+			 $box.find("input[name='indate']").val(json.indate);
+			 $box.find("input[name='pedate']").val(json.pedate);
+			 $box.find("input[name='date']").val(json.date);
+		}
+	});
+}
+function mishragentbecomeemployee_addpeople(id,name){
+	var $strHtml = appendbecomeHtml(id);
+}
+function mishragentbecomeemployee_addselect($this){
+		var $dialog = $.pdialog.getCurrent();
+		if($(".MisHrAgentBecomeEmployeeaddlist").find("input[type='checkbox']:checked").length < 1){
+			alertMsg.error($($this).attr("warn"));
+			return false;
+		}
+		$(".MisHrAgentBecomeEmployeeaddlist").find("input[type='checkbox']:checked").each(function(){
+	 			var val = DWZ.jsonEval($(this).attr('value'));
+	 			mishragentbecomeemployee_addpeople(val.id,val.name);
+	 	});
+		$.pdialog.close($dialog);
+}
+function MisHrBasicEmployee_addbecomedel(obj){
+	$(obj).parents('tr').remove();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisHrBecomeEmployee/insert/rel/mishrprobationemployee" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+				<input type="hidden" name="dotype" value="流程新建" />
+			<input type="hidden" name="beforeInsert" value="1" /> 
+			<input type="hidden" name="refreshtabs[closeall]" value="1" /> 
+			<input  type="hidden" name="regulartype" value="2"> 
+			<input type="hidden" name="leavetype" value="4" />
+			<div class="pageFormContent " layoutH="55">
+				<H2 class="contentTitle contentTitle_center">
+				<span class="xyEditFormIcon clearfix">
+					<a class="xyicon xyIconStartButton" href="__URL__/lookupmanage/step/addBecome" lookupGroup="org1">查找带回</a>
+				</span>
+				代办转正申请单
+				{:W('ShowOrderno',array(0,'mis_hr_regular_employee'))}
+				</H2>
+				<FIELDSET>
+				  <div class='mishragentbecomeemployee_addtable'>
+					<table class="tml-table"  width="100%" >
+						<thead>
+							<tr>
+								<th>姓名</th>
+								<th>职级</th>
+								<th>入职日期</th>
+								<th>试用期</th>
+								<th>已试用</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody class="Basicsaleprojectlist">
+						<volist id="void" name="volistid" > 
+							<tr>
+								<td>
+								 <input type="hidden" name="employeeid[]" value="{$void.id}">{$void.name}
+								</td>
+								<td>{$void.dutylevelid|getFieldBy='id','name','duty'}</td>
+								<td>{$void['indate']|transTime}</td>
+								<td>{$void['pedate']}</td>
+								<td>{$void['date']}</td>
+								<td><a href="javascript:;" class="btnDel" onclick="MisHrBasicEmployee_addbecomedel(this)" ></a>
+								</td>
+							</tr>
+						</volist>
+					</tbody>
+					</table>
+					</div>
+					<p>
+						<label>转正日期：</label>
+						<span class="xyInputWithUnit">
+							<input type="text" name="positivedate" class="tml-border-r0 Wdate required" onfocus="WdatePicker()" size="15" id="positivedate_e" value="{$time|transTime}"/>
+							<span class="input-addon input-addon-calendar"></span>
+						</span>
+					</p>
+				</FIELDSET>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>个人总结</b></legend>
+	             		<textarea style="width: 620px; height: 160px;" name="remark" class="required"></textarea>
+						<div class="clear"></div>
+	             		<span class="tml-help-block" style="color:red">* 试用期间工作总结（内容包括对试用期工作的回顾、总结，对公司企业文化的理解；自己在工作中的优点及不足，如何改进存在的不足；对今后工作的设想、建议等）。</span>
+				</fieldset>
+				<p>
+					<label>代&nbsp;办&nbsp;人：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$Think.SESSION.loginUserName}"    />
+				</p>	
+				<p>
+				 	<label>代办时间：</label>
+					<input name="applicationdate" type="text" readonly="readonly" value="{$time|transTime}"  class="textInput required" />
+				</p>
+			</div>
+			<div class="formBar">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_startprocess">
+						<if condition="$vo.auditState eq 0 || $vo.auditState eq -1">
+							<li><button type="button" class="tml-btn tml-btn-primary" onclick="StartProcess_dialog(this.form,'__MODULE__');">{$Think.lang.startprocess}</button></li>
+						</if> 
+					</if>
+					<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

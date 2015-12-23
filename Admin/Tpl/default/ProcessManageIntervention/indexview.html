@@ -1,0 +1,86 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<form rel="pagerForm" onsubmit="return  divSearch(this, 'ProcessManageInterventionBox')" action="__URL__/index" method="post">
+			<input type="hidden" name="jump"  value="1"/>
+			<input type="hidden" name="nodename"  value="{$nodename}"/>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="148">
+		<thead>
+			<tr>
+				<th width="25">序号</th>
+				<th>请求标题</th>
+				<th>工作流程</th>
+				<th>项目名称</th>
+				<th>创建人</th>
+				<th>创建时间</th>
+				<th>当前节点</th>
+				<th>当前未操作者</th>
+				<th>当前状况</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr target="sid_node" rel="{$vo['id']}">
+					<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td>
+						<if condition="$vo['catgory'] eq 1">
+							<span style="color:red;">变更</span>{$vo['infoid']|getFieldBy='id','name','process_info_form'}-{$vo['createid']|getFieldBy='id','name','user'}-
+							<br/>{$vo['createtime']|transTime='Y-m-d H:i'} ({$vo['tableid']})
+							<else/>
+							{$vo['infoid']|getFieldBy='id','name','process_info_form'}-{$vo['createid']|getFieldBy='id','name','user'}-
+							<br/>{$vo['createtime']|transTime='Y-m-d H:i'} ({$vo['tableid']})
+						</if>
+					</td>
+					<td>{$vo['infoid']|getFieldBy='id','name','process_info_form'}</td>
+					<td width="230" style="word-break:break-all">{$vo['projectid']|getFieldBy='id','name','mis_auto_kimpu'}</td>
+					<td>{$vo['createid']|getFieldBy='id','name','user'}</td>
+					<td>{$vo['createtime']|transTime}</td>
+					<td>{$vo['name']}</td>
+					<td>{$vo['curAuditUser']|getSeparatedValue='id','name','user'}</td>
+					<td>
+						<if condition="$vo['auditState'] eq 5">
+							强制结束
+							<elseif condition="$vo['auditState'] eq 4"/>
+							强制收回
+							<elseif condition="$vo['auditState'] eq 3"/>
+							流程干预至其他节点
+							<else/>
+							上级审核节点通过
+						</if>
+					</td>
+					<td title="操作" width="100">
+						<if condition="$vo['ganyustate'] lt 2">
+							<div title="操作">
+								<if condition="$_SESSION['a'] eq 1 || $_SESSION['processmanageintervention_ganyuprocess']"> 
+									<span><a href="__URL__/ganyuEdit/tableid/{$vo['tableid']}/tablename/{$vo['tablename']}/ostatus/{$vo['id']}/catgory/{$vo['catgory']}" target="navTab" rel="{$vo['tablename']}view" title="流程干预">流程干预</a></span>
+									<br/>
+								</if>
+								<if condition="$_SESSION['a'] eq 1 || $_SESSION['processmanageintervention_overprocess']">
+									<span><a href="__URL__/overProcess/tableid/{$vo['tableid']}/tablename/{$vo['tablename']}/ostatus/{$vo['id']}/catgory/{$vo['catgory']}/rel/ProcessManageIntervention" target="ajaxTodo" title="你确定要强制结束吗？">强制结束</a></span>
+									<br/>
+								</if>
+								<if condition="$_SESSION['a'] eq 1 || $_SESSION['processmanageintervention_backprocess']">
+									<span><a href="__URL__/backProcess/tableid/{$vo['tableid']}/tablename/{$vo['tablename']}/ostatus/{$vo['id']}/catgory/{$vo['catgory']}/rel/ProcessManageIntervention" target="ajaxTodo" title="你确定要强制收回吗？">强制回收</a></span>
+								</if>
+							</div>
+						</if>
+					</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination"  rel="ProcessManageInterventionBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

@@ -1,0 +1,51 @@
+<form method="post" action="__URL__/showDetail" class="pageForm required-validate" onsubmit="return noneRefreshAdd(this);">
+    <div class="pageFormContent pageFormContent2" layoutH="63">
+        <volist id="vo" name="list" key="key2">
+            <div class="unit">
+                <label>标题：</label>
+                <input value="{$vo['text']}" readonly="readonly">
+            </div>
+            <br />
+            <div class="unit">
+                <label>开始时间：</label>
+                <input value="{$vo['startdate']|transTime='Y-m-d H:i:s'}" readonly="readonly">
+            </div>
+            <br />
+            <div class="unit">
+                <label>结束时间：</label>
+                <input value="{$vo['enddate']|transTime='Y-m-d H:i:s'}" readonly="readonly">
+            </div>
+            <br />
+            <div class="unit">
+                <label>描述：</label>
+                <textarea cols='42' rows='4'  readonly="readonly" style="width:400px">{$vo['details']}</textarea>
+            </div>
+             <br />
+            <if condition="$attarry">
+            <div class="unit">
+                <div class="xyMessageAttach">
+                   <label>附件：</label>
+                    <volist name="attarry" id="att">
+                        <div class="xyMessageAttachItem">
+                            <span>附件{$key+1}</span>
+                            <a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span>{$att['upname']}</span></a>
+                        </div>
+                    </volist>
+                </div>
+            </div>
+            </if>
+            
+        </volist>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li>
+                <div class="button">
+                    <div class="buttonContent">
+                        <button type="button" class="close">{$Think.lang.close}</button>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</form>

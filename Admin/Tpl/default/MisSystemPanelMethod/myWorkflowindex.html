@@ -1,0 +1,26 @@
+<if condition="$nolist">
+	<div class="data" >
+		<volist id="novo" name="nolist">
+			<dl>
+				<dt class="clearfix">
+					<a class="collapsedl" href="#"></a>
+					<span class="collapsedl">{$novo['name']}&nbsp;({$novo['count']})</span>
+				</dt>
+				<volist id="novvo" name="novo['vlist']">
+					<dd>
+						<a rel="{$novo['model']}edit" target="navTab" title="{$novo['name']}修改" href="__APP__/{$novo['model']}/edit/id/{$novvo['tableid']}" title="投标标书审查">
+							{$novvo['orderno']}
+						</a>
+						&nbsp;{$novvo['userid']|getFieldby='id','name','User'}
+						&nbsp;{$novvo['doinfo']}
+						&nbsp;{$novvo['dotime']|transTime}
+					</dd>
+				</volist>
+			</dl>
+		</volist>
+	</div>
+<else/>
+	<div class="noData">
+		没有工作流
+	</div>
+</if>

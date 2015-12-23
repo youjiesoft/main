@@ -1,0 +1,38 @@
+<script>
+function savefields(){
+	var savefieldsbox = $.pdialog.getCurrent();
+	var china = $("select",savefieldsbox).find("option:selected").attr("china");
+	var value = $("select",savefieldsbox).val();
+	var box = navTab.getCurrentPanel();
+	var objindex = '{$objindex}';
+	$("select[index='"+objindex+"']",box).closest("div").find("input[type='hidden']").val(value);
+	$("select[index='"+objindex+"']",box).closest("div").find("input[type='text']").val(china);
+	$("select[index='"+objindex+"']",box).closest("div").find("input.nbm_pre_item").change();
+	$.pdialog.closeCurrent(); 
+}
+
+</script>
+<div class="pageContent" id="openRulesPage">
+
+<div class="pageFormContent">
+		<div class="" layoutH="80">
+			<div class=tml-row>
+				<label>表字段：</label>
+				<select class="select2 left" style="width:200px;">
+				<option value="">请选择</option>
+				
+				<volist name="list" id="vo">
+				<!-- <option value="{$vo.fieldname}" china="{$vo.title}">{$vo.fieldname}【{$vo.title}】</option> -->
+				<option value="{$key}" china="{$vo}">{$key}【{$vo}】</option>
+				</volist>
+				</select>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue enterIndex" onclick="savefields();">确定</button></li>
+			</ul>
+		</div>
+</div>
+
+</div>

@@ -1,0 +1,164 @@
+<style>
+.left{ float:left;}
+.right{ float:right;}
+.clear{ clear:both;}
+th{text-align: left;}
+
+.liuchengbz{ margin:1px auto;min-width:550px;max-width:840px;text-align: center;}
+.liuchengbzcon{float:left;}
+.lc_ks,.lv_bg,.lan_bg,.lv_bg_start,.lc_cell_box,.lc_cell_box_small{
+		 background:url("__PUBLIC__/Images/progress_line.png") no-repeat; 
+}
+
+.lc_ks{
+	background-attachment: scroll;
+	background-clip: border-box;
+	background-color: transparent;
+	background-origin: padding-box;
+	background-repeat: no-repeat;
+	background-size: auto auto;
+	width:20px; 
+	height:20px; 
+	margin-top:20px; 
+	background-position: -365px -10px;
+}
+.lv_bg {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background-origin: padding-box;
+    background-position: -120px 5px;
+    background-repeat: no-repeat;
+    background-size: auto auto;
+    height: 73px;
+    text-align: center;
+    width: 85px;
+}
+.lv_bg_start{
+	background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background-origin: padding-box;
+    background-position: -243px 5px;
+    background-repeat: no-repeat;
+    background-size: auto auto;
+    height: 73px;
+    text-align: center;
+    width: 85px;
+}
+
+.lan_bg{  
+	background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background-origin: padding-box;
+    background-position: -120px 5px;
+    background-repeat: no-repeat;
+    background-size: auto auto;
+    height: 73px;
+    text-align: center;
+    width: 85px;
+}
+
+.lc_cell_box,.lc_cell_box_small{
+	background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+    background-origin: padding-box;
+    background-position: 0 -175px;
+    background-size: auto auto;
+    text-align: center;
+    background-repeat: repeat-x;
+	
+}
+.lcwz {
+    margin-bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0;
+    padding-bottom: 10px;
+    padding-top: 15px;
+    width: 80px;
+}
+
+.lc_cell_box{
+	float:left;
+	width:105px;
+}
+
+/*结尾没有箭头，容器调小一点*/
+.lc_cell_box_small{
+		
+	float:left;
+	width:85px;
+}
+.lc_show_date{
+	clear:left;
+ 	width:85px;
+ 	height:18px;
+}
+</style>
+<div class="page">
+	<div class="pageHeader">
+		<div class="liuchengbz">
+			<div class="liuchengbzcon">
+				<volist id="vo" name="list">
+					<div  <if condition="$key lt $len">class="lc_cell_box "<else/>class="lc_cell_box_small"</if>>
+						<!-- * -->
+						<div 
+							<if condition="$vo['show']">
+									class="lv_bg_start left "
+							<else/> 
+								class="lan_bg left"
+							</if>
+						>  
+						<!-- * -->
+							<div class="lcwz">
+								<if condition="$vo['url']">
+									<a style="color:#003366;" target="dialog" title="审核人" href="{$vo['url']}">
+										{$vo['tid']|getFieldBy='id','name','process_template'}
+									</a>
+								<else/>
+									<eq name="vo['tid']" value="1">流程开始</eq>
+									<eq name="vo['tid']" value="-1">流程结束</eq>
+									<eq name="vo['tid']" value="-2">流程新建</eq>
+								</if>
+							</div>
+						</div>
+						<if condition="$key lt $len"><div class="lc_ks left"></div></if>
+						<div class="lc_show_date">{$vo['dotime']|transTime}</div>
+					</div>
+				</volist>
+				<div class="clear"></div>
+			</div>
+			<div class="clear"></div>
+		</div>
+	</div>
+	<div class="pageContent">
+	<table class="table" width="100%" layoutH="95">
+		<thead>
+		<tr>
+			<th>流程名称</th>
+			<th>处理动作</th>
+			<th>处理人</th>
+			<th>处理时间</th>
+			<th>处理意见</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="pihlist">
+			<tr target="sid_pih" rel="{$vo['id']}">
+				<td>
+					{$vo['pid']|getFieldBy='id','name','process_info'}
+				</td>
+				<td>{$vo['dotype']}</td>
+				<td>{$vo['userid']|getFieldBy='id','name','user'}</td>
+				<td>{$vo['dotime']|transTime}</td>
+				<td>{$vo['doinfo']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	</div>
+</div>
+

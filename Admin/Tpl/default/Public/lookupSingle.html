@@ -1,0 +1,195 @@
+<script>
+var filedback ='{$filedback|json_encode}'; // 带回字段 
+var callback = '{$callback}'; // 回调函数名 
+var index = '{$index}'; // 函数触发页面中lookup 组件的序号 
+var fieldname='{$fieldname}'; // 需要检索的字段，目前只有两个 首项为 显示字段，第二项为值字段 。 
+var showtype='{$showtype}';
+var container = $.pdialog.getCurrent();
+var this_searching_index = -1; //查询结果滚动定位的索引
+function lookupQuickAdd($form) {
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			dialogSearch($("#lookupGeneralForm")[0]);
+		}
+	});
+}
+function ondblclickBringBack($lookupJson){
+	$.bringBack($lookupJson);
+}
+$(function(){
+	/*		处理触发页面回传过来的已选中数据	 */
+	
+	/*if(showtype){
+		var lookuphoisetemObj = $('a[lookupitems]:last').eq(index); 
+	}else{
+		var lookuphoisetemObj = $('a[lookupitems]').eq(index); // 获取在触发页面中多个lookup中对应序号
+	} */
+	var lookuphoisetemObj = $('a[lookupitems]').eq(index);
+	/* // 只指定了行，没有指定具体个数时
+	if(showtype==''){
+		var lookuphoisetemObj = $('a[lookupitems="'+index+'"]');//.eq(index); // 获取在触发页面中多个lookup中对应序号
+	}else{
+		var lookuphoisetemObj = $('a[lookupitems="'+index+'"]').eq(showtype);
+	} */
+	// 根据index找到多lookup所在行。
+	// 根据showtype找到具体是哪个lookup
+	
+	var ids = lookuphoisetemObj.attr('lookupitems');	// 页面缓存的当前选id 列表。
+	var fileds = lookuphoisetemObj.attr('lookupkey'); // lookupkey为区数据的唯一标识字段，与ids 当前返回ID列表结合确定选中的是lookup左侧列表中的哪些项
+	if(isNullorEmpty(ids) && isNullorEmpty(fileds)){
+		var idArr = ids.indexOf(',')==0? ids.substring(1).split(','):ids.split(',');
+		var retHtml = '';
+		for(var i in idArr){
+			var curObj = $('#nbm_choices_container>li' , container).find('input[type="hidden"][class="'+fileds+'"][value="'+idArr[i]+'"]');
+			retHtml += curObj.length? '<li checkitem="'+idArr[i]+'">'+curObj.closest('li').html()+'</li>':'';
+		}
+		$('#nbm_choices_list' , container).html(retHtml); // 处理
+		$('#nbm_choices_list li' ,container).on('click',function(){
+			$(this).remove();
+			$('#js-lookupSingleNum' , container).text($('#nbm_choices_list>li' , container).length);
+		});
+		$('#js-lookupSingleNum' , container).text($('#nbm_choices_list li' , container).length);
+	}
+	/*		处理触发页面回传过来的已选中数据 end	 */
+	
+	var filedArr = $.parseJSON(filedback);
+	$('#nbm_choices_container>li' , container).click(function(){
+		var istem = $(this).html();
+		var liObj = $('<li></li>');
+		liObj.append(istem);
+		var vals = liObj.find('input[type="hidden"][class="{$hidden}"]').val();
+		liObj.attr('checkitem',vals); // checkitem  为 当前选 中列表数据的标识 ，存储的值为对应数据的ID 方便确认选中项 
+		if($('#nbm_choices_list li[checkitem='+vals+']' , container).length==0){
+			$('#nbm_choices_list' , container).append(liObj);
+			
+			$('#nbm_choices_list li' ,container).on('click',function(){
+				$(this).remove();
+				$('#js-lookupSingleNum' , container).text($('#nbm_choices_list>li' , container).length);
+			});
+			
+			$('#js-lookupSingleNum' , container).text($('#nbm_choices_list li' , container).length);
+		}
+	});
+	// 保存当前选中数据 并调用回调函数处理数据最终显示。
+	$('#saveLookupSingleList' , container).click(function(){
+		var retVal = Array();
+		var retJson= Array();
+		if(filedArr.length>0){
+			$('#nbm_choices_list li' , container).each(function(){
+				var lth = $(this);
+				var curObj = new Object();
+				curObj[filedArr[0]] = lth.find('.'+filedArr[0]).val();
+				curObj[filedArr[1]] = lth.find('.'+filedArr[1]).val();
+				retJson.push(curObj);
+			});
+		}
+		retVal['index'] =index; // 当前操作对象序号
+		retVal['data'] = retJson; // 返回数据 
+		retVal['showtype'] = showtype; //区别显示字段
+		retVal['fieldname']=fieldname;
+		retVal['filed']=Array(filedArr[0], filedArr[1]); // 返回用户指定的显示隐藏字段 [0]显示字段 [1]隐藏字段 
+		$(this).logs(callback);
+		if(isNullorEmpty(callback)){
+			nbm_doCallback(eval(callback) , [retVal]);
+		}
+		$.pdialog.closeCurrent();
+	});
+	// 清除现有选中项 
+	$('#clearLookupSingleList' , container).click(function(){
+		$('#nbm_choices_list li' , container).remove();
+		$('#js-lookupSingleNum' , container).text($('#nbm_choices_list>li' , container).length);
+	});
+});
+function SearchSingleList(){
+	var obj = $("#nbm_choices_container li",container);
+	var find_obj = $("#nbm_choices_container li.find_this",container);
+	var search_scroll = $("#nbm_choices_container li.search_scroll",container);
+	var text = $("#MultipleUserTreeSearchNodeKeys",container).val();
+	var frist_obj = null;
+	var frist_num = 0;
+	obj.removeClass("find_this");
+	if(find_obj.length==search_scroll.length){
+		obj.removeClass("search_scroll");
+	}
+	if($.trim(text)!=""){
+		obj.each(function(i){
+			if($(this).text().indexOf(text) > -1){
+				$(this).addClass("find_this");
+				var find_count = $("#nbm_choices_container li.search_scroll",container).length;
+				if(find_count==0 || (frist_num ==0 && this_searching_index!=-1&&!$(this).hasClass("search_scroll")) ){
+					this_searching_index = i;
+					frist_num = this_searching_index;
+					$(".base_lookup_single",container).scrollTop(frist_num*($(this).height()+4)+5);
+					$(this).addClass("search_scroll");
+				}
+			}else{
+				$(this).removeClass("find_this");
+			}
+		});
+	}else{
+		obj.removeClass("search_scroll");
+		obj.removeClass("find_this");
+	}
+}
+</script>
+<div id="checkUserObj" class="pageContent">
+	<div class="address-dialog-body">
+		<div class="tml-row">
+			<div class="grid-50 left">
+				<h3 class="tml-h3">{$showtitle}（{$totalCount}）</h3>
+				<div class="address-dialog-box">
+							<div class="member_searcher">
+									<input class="js-searchZTreeSubmit add_key left" type="text" id="MultipleUserTreeSearchNodeKeys"/>
+									<button class="btn_member icon-search right" type="button" onclick="SearchSingleList()"></button>
+								</div>
+					<div class="tabs base_lookup_single" currentindex="0" eventtype="click" style="margin: 1px;">
+						<div class="tabsContent" style="background: none repeat scroll 0 0 #FFFFFF;border: none;">
+							<div>
+							<ul id="nbm_choices_container"> 
+								<volist name="list" id="vo">
+								<li>
+								<volist name="filedback" id="vitem">
+									<input type="hidden" class="{$vitem}" value="{$vo[$vitem]}" />
+								</volist>
+								<if condition="$showname">{$vo[$showname]}<else/><if condition="$vo['name']">{$vo['name']} <else/> {$vo['orderno']}</if></if>
+								</li>
+								</volist>
+							</ul>
+							</div>
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="SingleProcessRoleTreeeSearchNodeKeys" />
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('SingleProcessRoleTree','SingleProcessRoleTreeeSearchNodeKeys')"/>
+								</div>
+								<ul id="SingleProcessRoleTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="SingleRolegroupTreeSearchNodeKeys" />
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('SingleRolegroupTree','SingleRolegroupTreeSearchNodeKeys')"/>
+								</div>
+								<ul id="SingleRolegroupTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+						</div>
+					</div>	
+				</div>
+			</div>
+			<div class="grid-50 right">
+				<h3 class="tml-h3">已选{$showtitle}（<span id="js-lookupSingleNum">0</span>）</h3>
+				<div class="address-dialog-box">
+					<ul class="address-dialog-list" id="nbm_choices_list">
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml_select_btn tml_formBar_btn_blue" id="saveLookupSingleList">确定</button></li>
+			<li><button class="tml_select_btn tml_formBar_btn_red" id="clearLookupSingleList">清除</button></li>
+			<!--<li><button class="tml-btn close">取消</button></li>-->
+		</ul>
+	</div>
+</div>

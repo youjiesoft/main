@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+</head>
+<style>
+body { margin: 0; padding: 0; font-size: 12px; font-family: "宋体", Arial, Helvetica, sans-serif; color: #666; }
+a:link { font-size: 12px; color: #333; text-decoration: none; }
+a:visited { font-size: 12px; color: #333; text-decoration: none; }
+a:hover { font-size: 12px; color: #0071bd; text-decoration: none; }
+a:active { font-size: 12px; color: #0071bd; text-decoration: none; }
+h1, h2, h3, h4, h5, h6 { margin: 0; padding: 0; float: left; }
+ul { margin: 0; padding: 0; list-style: none; }
+li { float: left; list-style: none }
+img { border: 0; }
+
+.boxmain { width: 95%; margin: 0 auto; }
+.listbox { border: 1px solid #e4e4e4; border-bottom: 0; margin-top: 20px; }
+.titlebox { width: 100%; }
+.title1 { background: #f9f9f9; line-height: 34px; text-align: center; border-right: 1px solid #e4e4e4; border-bottom: 1px solid #e4e4e4; }
+.title2, .title3 { border-bottom: 1px solid #e4e4e4; line-height: 34px; padding-left:10px; }
+.title3 { background: #f9f9f9; }
+.pagenav {margin: 0 auto; width: 70%; text-align: center; margin-top: 20px; font-size: 12px; font-family: Tahoma; }
+.pagenav a { display: inline-block; background: #fff; border:1px #ccc solid; height: 17px; padding:0 5px; line-height: 17px; text-decoration: none; margin: 3px 3px 3px 0; vertical-align: middle; }
+.pagenav span {display: inline-block; background: orange; border:1px orange solid; height: 17px; padding:0 5px; line-height: 17px; text-decoration: none; margin: 3px 3px 3px 0; vertical-align: middle;}
+.pagenav a:hover {display: inline-block; background: orange; border:1px orange solid; height: 17px; padding:0 5px; line-height: 17px; text-decoration: none; margin: 3px 3px 3px 0; vertical-align: middle;}
+.next_page {float:right;}
+</style>
+<body>
+<div class="boxmain">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" class="listbox">
+    <tr class="titlebox">
+      <td class="title1">类型</td>
+      <td class="title1">标题</td>
+      <td class="title1">发布时间</td>
+    </tr>
+    <voList name="AnnouncementList" id="list">
+        <tr class="titlebox">
+        	<td class="title1"><span>{:getSelectByname('announcementtype',$list['type'])}</span></td>
+            <td class="title1">
+	           <a href="__URL__/systemNoticesview/id/{$list['id']}" target="_blank">
+	           <if condition="$list['top'] eq 1">
+	           		<span style="color:red;">{$list['title']}</span>
+	           		<img src="__PUBLIC__/Images/zding.gif"/>
+	           <else />
+	           		<span>{$list['title']}</span>
+	           </if>
+	           </a>
+            </td>
+            <td class="title1">{$list['createtime']|date='Y-m-d',###}</td>
+        </tr>
+    </voList>
+  </table>
+  <div class="pagenav">
+    {$page}
+  </div>
+</div>
+</body>
+</html>

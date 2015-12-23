@@ -1,0 +1,100 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 初始化树
+	var zNodes = {$levelcontrastTree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			check: {
+				enable: true,
+				chkboxType:{ "Y" : "s", "N" : "s" }
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#levelcontrastTreeDemo"), setting, zNodes);
+});
+// 重写检索DIV函数，主要作用是取树里面的部门
+function divLevelContrastSearch($form){
+	var box = $($form);// 当前表单
+	var treeObj = $.fn.zTree.getZTreeObj("levelcontrastTreeDemo");//当前树
+	var nodes = treeObj.getCheckedNodes(true);//所有被选中的节点
+	var arr = new Array();//创建一个被分析部门数组
+	//循环所有被选中的节点
+	for (i = 0; i < nodes.length; i++) {
+		arr.push(nodes[i].id);
+	}
+	// 判断是否含有分析人员
+	if(arr.length < 1) {
+		alertMsg.error('请先选择要分析的部门！');
+		return false;
+	}
+	var deptid = arr.join(",");//字符串化分析人员
+	box.find("input[name='deptid']").val(deptid);
+	return divSearch($form,'levelcontrastdata');
+}
+function levelContrastOnchangePlan($this){
+	var $this = $($this);
+	var planid = $this.val();
+	var box = $("#levelcontrast");
+	box.loadUrl("__URL__/levelcontrast/planid/"+planid,{},function(){
+		box.find("[layoutH]").layoutH();});
+}
+</script>
+<div class="pageContent">
+	<div class="pageHeader">
+		<form onsubmit="return divLevelContrastSearch(this);" action="__URL__/lookupLevelContrast" method="post">
+			<div class="searchBar">
+				<table>
+					<tbody>
+						<tr>
+							<td><label style="width: 55px;">考核计划:</label></td>
+							<td>
+								<select onchange="levelContrastOnchangePlan(this)" name="planid" class="combox">
+									<volist name="pplist" id="ppvo">
+										<option <eq name="ppvo.id" value="$planid" >selected</eq> value={$ppvo.id}> {$ppvo.name}</option>
+									</volist>
+								</select>
+								<input type="hidden" name="type" value="level">
+								<input type="hidden" name="deptid" value="">
+							</td>
+							<td>
+								<button class="xyicon xyIconStartButton" type="submit">计算</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div>
+		<!-- 树start -->
+		<div class="treeleft">
+			<div class="close">
+				<ul id="levelcontrastTreeDemo" class="ztree" layoutH="74"></ul>
+			</div>
+		</div>
+		<!-- 树end -->
+		<div id="levelcontrastdata">
+			<div class="pageContent">
+				<table class="list" style="width: 500px;" layoutH="450">
+					<thead>
+						<tr>
+							<th>部门</th>
+							<th>参加考核人数</th>
+							<volist id="plvo" name="pllist">
+								<th>{$plvo['name']}</th>
+							</volist>
+						</tr>
+					</thead>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>

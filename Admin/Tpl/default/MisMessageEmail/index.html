@@ -1,0 +1,187 @@
+<style>
+	.Ru {
+	    background: url("__PUBLIC__/Images/icon/mail_colse.png") no-repeat center;
+	}
+	.Kw{
+	    background: url("__PUBLIC__/Images/icon/mail_open.png") no-repeat center;
+	}
+</style>
+<script>
+	//不知道什么用途
+    function refurbishCurrentMsg(){
+		$("#msgindexnewrefurbish").loadUrl(TP_APP + "/MisMessageInbox/lookuprefurbishCurrentMsg/");
+    }
+	
+  	//不知道什么用途
+    $(document).ready(function(){
+    	$("#messageTable").find("input[type='checkbox']").click(function(e){
+    	    //阻止冒泡,避免行点击事件中,直接选择选框无效
+            e.stopPropagation();
+    	    if($(this).attr('checked')){
+    	    	$(this).parent().parent().addClass('selected');
+    	    } else {
+    	    	$(this).parent().parent().removeClass('selected');
+    	    }
+        });
+		var msg='{$newmsg}';
+		    if(msg){
+		    $("#alertusermsgnum").html(msg).show();
+		}else{
+		    $("#alertusermsgnum").html("").hide();
+		}
+    });
+</script>
+<div class="pageContent" style="border-left:1px #99b8ee solid;border-right:1px #B8D0D6 solid"  id="{$rel_id_name}">
+	<form id="pagerForm" action="__URL__/index{$messageTypeUrl}">
+		<input type="hidden" name="pageNum" value="{$pageNum}"/>
+		<input type="hidden" name="messageType" value="{$messageType}"/>
+		<input type="hidden" name="important" value="{$important}"/>
+		<input type="hidden" name="dwzpageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li>
+				<a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage" class="delete tbmaildel tml-btn tml_look_btn tml_mp">
+					<span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span>
+				</a>
+			</li>
+			<li>
+				<a title="确实标记为重要邮件吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/important/rel/jbsxBoxMessage/batch/1" class="tbmailair tml-btn tml_look_btn tml_mp">
+					<span><span class="icon icon-envelope-alt icon_lrp"></span>标记为重要邮件</span>
+				</a> 
+			</li>
+		   <li>
+				<a title="确实标记为已读邮件吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/lable/rel/jbsxBoxMessage" class="tbmailopen tml-btn tml_look_btn tml_mp" >
+					<span><span class="icon icon-envelope-alt icon_lrp"></span>标记为已读邮件</span>
+				</a>
+			</li>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this,'jbsxBoxMessage');" action="__URL__/index{$messageTypeUrl}" method="post">
+			<div class="searchBar" style="margin-top:3px;">
+				<table class="searchContent">
+					<tr>
+						<td>
+							<div>请输入关键字：<input type="text" name="keyword" value="{$keyword}" /></div>
+						</td>
+						<td>
+							<select class="combox" name="searchby">
+								<volist id="vou" name="searchbylist">
+									<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+								</volist>
+							</select>
+						</td>
+						<td>
+							<input name="searchtype" type="hidden" value="2" />
+						</td>
+						<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div class="clearfix">
+		<div class="xyMailTable" style="float:left;width:480px;">
+			<table class="xyTable" width="100%">
+				<thead>
+					<tr>
+					<th style="width:12px;"><input type="checkbox" group="id" class="checkboxCtrl"></th>
+					<th style="width:14px;"><div class="Ru" title="">&nbsp;&nbsp;</div></th>
+					<th style="width:30px;">编号</th>
+					<!-- <th style="width:48px;">收件人</th> -->
+					<th style="width:48px;">发件人</th>
+					<th style="width:144px;">标题</th>
+					<th style="width:100px;">发送时间</th>
+					<th><div class="xyStarActive" title="">&nbsp;&nbsp;</div></th>
+					</tr>
+				</thead>
+            </table>
+            <div  <if condition="$type">layoutH="64"<else/>layoutH="108"</if>>
+                <table style="width:100%;">
+    				<tbody id="messageTable">
+    					<volist id="vo" name="list">
+    					<tr target="sid_node" rel="{$vo.id}" dwidth="600" dheight="600" ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/readMessage/id/{$vo.id}/','查看邮件');">
+                        	<td style="width:12px;"><input type="checkbox" value="{$vo.id}" name="id" ></td>
+    						<td style="width:14px;">
+    						<a href="__URL__/lable/id/{$vo.id}/rel/jbsxBoxMessage" target="ajaxTodo" >
+    							<div class="<if condition="$vo['readedStatus'] eq '0'">Ru<else/>Kw</if>" title="">&nbsp;&nbsp;</div>
+    						</a>
+    						</td>
+    						<td style="width:30px;"><div class="hellip" style="width:30px;">{$vo.id}</div></td>
+    						<!-- <td style="width:48px;"><div class="hellip" style="width:48px;">{$vo.sendid|getFieldBy='id','recipientname','MisMessage'}</div></td> -->
+    						<td style="width:48px;"><div class="hellip" style="width:48px;">{$vo.createid|getFieldBy='id','name','User'}</div></td>
+    						<td style="width:144px;"><div class="hellip" style="width:144px;">{$vo.sendid|getFieldBy='id','title','MisMessage'|missubstr=###,30,true}</div></td>
+    						<td style="width:80px;"><div class="" style="width:100px;">{$vo.createtime|transTime='Y-m-d H:i'}</div></td>
+    						<td>
+    						<a href="__URL__/important/id/{$vo.id}/rel/jbsxBoxMessage" target="ajaxTodo" >
+    							<span class="<if condition="$vo['important'] eq '1'">xyStarActive<else/>xyStar</if>" title="">&nbsp;&nbsp;</span>
+    						</a>
+    						</td>
+    					</tr>
+    					</volist>
+    				</tbody>
+    			</table>
+            </div>
+		</div>
+        <if condition="$list">
+		<div class="xyMailRead" id="MessageCurrentRead">
+            <include file="lookupreadmessage" />
+        </div>
+        <else/>
+        <div class="noData">
+            <p>没有信息</p>
+        </div>
+        </if>
+	</div>
+	<div class="panelBar panelPageBar">
+		<div class="pages"> <span>共{$totalCount}条</span></div>
+		<div class="pagination" rel="{$rel_id_name}" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>
+<script>
+$(document).ready(function(){
+	var $trs = $('#messageTable').find('tr');
+	$trs.click(function(){
+		$trs.filter('.cu').removeClass('cu');
+		$(this).addClass('cu');
+		var $this=$("#MessageCurrentRead");
+        var messageType = '{$messageType}';
+        var important = '{$important}';
+        var mtypurl = "";
+        if(messageType){
+            mtypurl = "/messageType/"+messageType;
+        }
+        if(important){
+            mtypurl = "/important/"+important;
+        }
+        $rel = $(this).attr('rel');
+        $.ajax({
+            type:'POST',
+            url:"__URL__/lookupreadmessage/id/"+$rel+mtypurl,
+            async:true,
+            global:false,
+            success:function(response){
+                var json=DWZ.jsonEval(response);
+                if(json.statusCode==DWZ.statusCode.timeout) {
+                    alertMsg.error(json.message||DWZ.msg("sessionTimout"),{okCall:function(){
+                    if($.pdialog)$.pdialog.checkTimeout();
+                    if(navTab)navTab.checkTimeout();
+                    DWZ.loadLogin();}});
+                }
+                if(json.statusCode==DWZ.statusCode.error){
+                    if(json.message)alertMsg.error(json.message);
+                }else{
+                    if(json.statusCode==DWZ.statusCode.timeout){
+                        $this.html(json.message+'<div style="display:none;">'+response+'</div>').initUI();
+                    } else {
+                        $this.html(response).initUI();
+                    }
+              $("#MessageCurrentRead").find("[layoutH]").layoutH();
+            }},
+            error:DWZ.ajaxError
+        });
+	});
+})
+</script>

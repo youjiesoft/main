@@ -1,0 +1,109 @@
+<script>
+var $box=$.pdialog.getCurrent();
+$("input:[name='hours']",$box).focus(function(){
+	var obj=$(this);
+	var endtime=$("input:[name='endleavedate']",$box).val();
+	var begintime=$("input:[name='beginleavedate']",$box).val();
+	$.ajax({
+		type:'POST',
+		url:"__URL__/lookupgethours",
+		data:{sdate:begintime,edate:endtime},
+		cache:false,
+		success:function(d){
+			$(obj).val(d);
+		}
+	});
+});
+$("input:[name='endleavedate']",$box).blur(function(){
+	$("input:[name='hours']",$box).val("");
+});
+$("input:[name='beginleavedate']",$box).blur(function(){
+	$("input:[name='hours']",$box).val("");
+});
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<input type="hidden" name="dotype" value="流程启动" />
+		<input type="hidden" name="ostatus" value="{$vo.ostatus}" /> 
+		<input type="hidden" name="refreshtabs[closeall]" value="1" />
+		
+		<input type="hidden" class="selectaudituser.mangid" name="audit_option_user" value="" callback="auditOpion" />
+		<a class="input-addon input-addon-addon input-addon-add" style="display: none;" id="auditselectoption" rel="lookupSelectAuditOption" href="__URL__/lookupSelectAuditOption/modulename_auditoption/__MODULE__/audittype/dialog" lookupGroup="selectaudituser">选择下一步审核人</a>
+		
+		<div class="pageFormContent " layoutH="55">
+			<H2 class="contentTitle contentTitle_center">请假申请单
+				<span class="auto_code" >
+					<b>No.</b>
+					<input type="text"  name="orderno" value="{$vo.orderno}" readonly="readonly" class="xycodedata_read" <if condition='$writable eq 0'> readonly="readonly" </if> />
+			    </span>
+			</H2>
+			<p>
+				<label>姓名：</label>
+                <input type="text" class="org.name" size="15" name="name" readonly="readonly" value="{$vo.name}"/>
+				<input type="hidden" class="org.mangid" name="personid" value="{$vo.personid}"/>
+				 <!-- <span class="info"><a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a></span>  -->
+			</p>
+			<p>
+				<label>单据类型：</label>
+					<select name="typeid" class="combox"  >
+						<volist id="vot" name="OrderTypesList">
+			        	<option value="{$vot['id']}" <eq name="vot.id" value="$vo.typeid">selected</eq>>{$vot['name']}</option>
+			        </volist>
+				</select>
+			</p>			
+			<p>			 
+				<label>部门：</label>
+                <input type="text" class="org.deptname" size="15" readonly="readonly" value="{$vo.deptid|getFieldBy='id','name','mis_system_department'}" />
+				<input type="hidden" class="org.deptid" name="deptid" value="{$vo.deptid}"/>
+			</p>
+			<p>
+				<label>职务：</label>
+                <input type="text" class="org.dutyname" name="dutyname" size="15" readonly="readonly" value="{$vo.dutyname}" />
+				<input type="hidden" class="org.dutylevelid" name="dutylevelid" value="{$vo.dutylevelid}"/> <!-- 职级编号 -->
+			</p>
+			<dl class="nowrap">
+				<dt>请假类别：</dt>
+				<dd style="width:70%;">
+					<volist name="typelist" id="tplist">
+						<label><input type="radio" name="leavetype" <if condition="$vo['leavetype'] eq $key">checked="checked"</if> value="{$key}"/>&nbsp;{$tplist}</label>
+					</volist>
+				</dd>
+			</dl>
+			<div class="clear"></div>
+			<p style="width:auto;">
+				<label>请假时间：</label>
+                    <input type="text" name="beginleavedate" class="date textInput"  readonly="readonly" value="{$vo.beginleavedate|transTime='Y-m-d H:i'}" format="yyyy-MM-dd HH:mm" />
+			 		<a class="inputDateButton" href="#">选择</a>
+			 		<span class="info">&nbsp;----&nbsp;</span>
+			 		<input type="text" name="endleavedate" class="date" readonly="readonly" value="{$vo.endleavedate|transTime='Y-m-d H:i'}" format="yyyy-MM-dd HH:mm"/>
+					<a class="inputDateButton" href="#">选择</a>
+					<span class="info">&nbsp;&nbsp;&nbsp;合计&nbsp;</span>
+					<input type="text" class="textInput required" readonly name="hours" value="{$vo.hours}" size="10"/>
+			</p>
+			<div class="clear"></div>
+			<div class="unit">
+				<label>请假原因：</label>
+                <textarea   rows="2" cols="30" style="width:450px;" name="remark" class="required">{$vo.remark}</textarea>
+			</div>
+			<div class="clear"></div>
+			<div class="unit">
+				<label>职务工作代理<br>人及委托事项：</label>
+                 <textarea   rows="2" cols="30" style="width:450px;" name="leaveagency">{$vo.leaveagency}</textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleaveinfo_update">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleaveinfo_startprocess">
+				<if condition="$vo.auditState eq 0 || $vo.auditState eq -1">
+					<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="StartProcess_dialog(this.form,'__MODULE__');">{$Think.lang.startprocess}</button></div></div></li>
+				</if>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,24 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" id="search_form" action="" class="pageForm required-validate" onsubmit="return searchSubmit(this);" >
+		<div class="pageFormContent" layoutH="58">
+			<div class="advancedSearchForm">
+				<volist id="qsl" name="detailList">
+					<p><label>{$qsl['showname']}:</label>{$qsl['html']}</p>
+					<div class="clear"></div>
+				</volist>
+				<input type="hidden" name="subsearch_flag" value="1" />
+				<h3>友情提示：</h3>
+				<p>1、不作为查找条件的字段可不填内容</p>
+				<p>2、多搜索方式和单搜索一样</p>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml-btn tml-btn-blue" onclick="searchSubmit();" type="button">{$Think.lang.search}</button></li>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

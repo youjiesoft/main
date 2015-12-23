@@ -1,0 +1,66 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisPerformancePlanPutTree"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="clearfix p5">
+			<div class="xysearcher">
+				<input type="text" id="MisMessageSearchNodeKeys" />
+				<button class="searchBtn" onclick="SearchZTreeNode('hrpersonnelpositive','MisMessageSearchNodeKeys')">搜索</button>
+			</div>
+		</div>
+		<ul id="MisPerformancePlanPutTree" class="ztree" layoutH="43" ></ul>
+	</div>
+	<div id="MisPerformancePlanPutList" class="MisPerformancePlanPutList" style="margin-left: 204px;">
+		<include file="lookupmanagelist" />
+	</div>
+	<div style="margin-left: 204px;">
+		<form method="post" action="__URL__/lookupsetbyusers/navTabId/__MODULE__edit" class="pageForm required-validate"  onsubmit="return validateCallback(this,dialogAjaxDone);"  >
+		<input type="hidden" id="putid" name="putid" value="{$putid}">
+		<fieldset style="border:0 solid #99b8ee;border-width:1px 1px 0;padding:0;">
+			<legend>已选择被考核人</legend>
+			<table class="list" width="100%">
+				<thead>
+					<tr>
+						<th width="70">员工编号</th>
+						<th width="90">员工姓名</th>
+						<th width="110">部门</th>
+						<th width="90">职级</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+			</table>
+			<table class="list" width="100%" layoutH="390">
+				<tbody id="pppbyusers">
+					<volist id="byuser" name="byuserlist">
+						<tr>
+							<td style="width: 70px;"><input type="hidden" name="byusers[]" value="{$byuser['id']}" />{$byuser['orderno']}</td>
+							<td style="width: 90px;">{$byuser['name']}</td>
+							<td style="width: 110px;">{$byuser['deptname']}</td>
+							<td style="width: 90px;">{$byuser['dutyname']}</td>
+							<td><a href="javascript:;" onclick="dellookputusers(this,{$byuser['id']},'lookbyusers');" title="删除" class="btnDel">x</a></td>
+						</tr>
+					</volist>
+				</tbody>
+			</table>
+			<div class="formBar tml-text-r">
+				<button class="tml-btn tml-btn-primary" type="submit">保存</button>
+			</div>
+		</fieldset>
+		</form>
+	</div>
+</div>

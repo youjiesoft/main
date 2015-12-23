@@ -1,0 +1,60 @@
+<include file="Public:pagerForm" />
+
+<!--div class="pageHeader">
+	<form rel="pagerForm" onsubmit="return navTabSearch(this);" action="__URL__" method="post">
+	<div class="searchBar">
+		<ul class="searchContent">
+			<li>
+				<label>用户名：</label>
+				<input type="text" name="account" value=""/>
+			</li>
+		</ul>
+		<div class="subBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">查询</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+	</form>
+</div-->
+
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="navTab"  rel="__MODULE__add"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li>
+			<li><a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_user}/navTabId/__MODULE__" target="ajaxTodo" callback="navTabAjaxDone" title="你确定要删除吗？" warn="请选择用户"><span><span class="icon icon-trash icon_lrp"></span>删除</span></a></li>
+			<li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_user}" target="navTab" rel="__MODULE__edit" warn="请选择记录"><span><span class="icon icon-edit icon_lrp"></span>编辑</span></a></li>
+		</ul>
+	</div>
+
+	<table class="table" width="100%" layoutH="146">
+		<thead>
+		<tr>
+			<th width="60">编号</th>
+			<th>节点名称</th>
+			<th>excel模板</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr target="sid_user" rel="{$vo['id']}">
+				<td>{$vo['id']}</td>
+				<td>
+				<if condition="$vo['nodeid']">{$vo['nodeid']|getFieldBy='id','title','Node'}<else/>【未指定节点】{$vo['actiontitle']}</if>
+				</td>
+				<td>{$vo['tpl']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+
+</div>
+
+

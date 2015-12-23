@@ -1,0 +1,34 @@
+<link rel="stylesheet" href="__PUBLIC__/dhtmlxScheduler/codebase/dhtmlxscheduler.css" type="text/css" media="screen" title="no title" charset="utf-8">
+<script src="__PUBLIC__/dhtmlxScheduler/codebase/dhtmlxscheduler.js" type="text/javascript" charset="utf-8"></script>
+<script src="__PUBLIC__/dhtmlxScheduler/sources/locale_cn.js" type="text/javascript" charset="utf-8"></script>
+	<script src="__PUBLIC__/dhtmlxScheduler/codebase/ext/dhtmlxscheduler_minical.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+	function eventinit() {
+		scheduler.config.xml_date="%Y-%m-%d %H:%i";
+		scheduler.init('app_scheduler_here',new Date(),"day");
+		scheduler.load("__URL__/app/d/xml",function(){
+			var convert = scheduler.date.date_to_str("%Y-%m-%d");
+			scheduler.renderCalendar({
+				container:"app_mini_here",
+				date:scheduler._date,
+				navigation:true,
+				handler:function(date,calendar){
+					$.pdialog.open("__URL__/app/d/date/time/"+convert(date),"userEvent","日程摘要",{mask:true,width:520,height:260});
+				}
+			});
+		});
+	}
+	eventinit();
+</script>
+
+	<div id="app_mini_here" ></div>
+	<div id="app_scheduler_here" class="dhx_cal_container">
+      <div class="dhx_cal_navline">
+         <div class="dhx_cal_date"></div>
+         <div class="dhx_cal_tab" name="day_tab" style="right:76px;"></div>
+      </div>
+      <div class="dhx_cal_header">
+      </div>
+      <div class="dhx_cal_data">
+      </div>
+	</div>

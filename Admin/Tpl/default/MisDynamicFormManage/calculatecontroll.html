@@ -1,0 +1,284 @@
+<script type="text/javascript">
+var id = '{$_GET[id]}';
+var check = '{$_GET[check]}'; 
+//文本验证公式
+function fn(string, obj) {
+	if ("" === string) {
+		return false;
+	}
+	if (/[\+\-\*\/]{2,}/.test(string)) {
+		return false;
+	}
+	if (/\(\)/.test(string)) {
+		return false;
+	}
+	var stack = [];
+	for (var i = 0,item; i < string.length; i++) {
+		item = string.charAt(i);
+		if ('(' === item) {
+			stack.push('(');
+		} else if (')' === item) {
+			if (stack.length > 0) {
+				stack.pop();
+			} else {
+				return false;
+			}
+		}
+	}
+	if (0 !== stack.length) {
+		return false;
+	}
+	if (/\([\+\-\*\/]/.test(string)) {
+		return false;
+	}
+	if (/[\+\-\*\/]\)/.test(string)) {
+		return false;
+	}
+	 if (/[^\(\+\-\*\/]\(/.test(string)) {
+		return false;
+	} 
+	if (/\)[^\+\-\*\)\/]/.test(string)) {
+		return false;
+	}
+	var tmpStr = string.replace(/[\(\)\+\-\*\/]{1,}/g, '`');
+	var array = tmpStr.split('`');
+	for (var i = 0,item; i < array.length; i++) {
+		item = array[i];
+		if (/[A-Z]|[0-9]*/i.test(item) && 'undefined' === typeof(obj[item])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+//日期公式验证
+function datefn(string, obj) {
+	if ("" === string) {
+		return false;
+	}
+	if (/[\-]{2,}/.test(string)) {
+		return false;
+	}
+	var patt = /[A-Z]+?/g; 
+	var pattArray=string.match(patt)
+	if (pattArray.length>2) {
+		return false;
+	}
+	if (/\(\)/.test(string)) {
+		return false;
+	}
+	var stack = [];
+	for (var i = 0,item; i < string.length; i++) {
+		item = string.charAt(i);
+		if ('(' === item) {
+			stack.push('(');
+		} else if (')' === item) {
+			if (stack.length > 0) {
+				stack.pop();
+			} else {
+				return false;
+			}
+		}
+	}
+	if (0 !== stack.length) {
+		return false;
+	}
+	if (/\([\-]/.test(string)) {
+		return false;
+	}
+	if (/[\-]\)/.test(string)) {
+		return false;
+	}
+	 if (/[^\(\-]\(/.test(string)) {
+		return false;
+	} 
+	 if (/\)[^\-\)]/.test(string)) {
+		return false;
+	}
+	var tmpStr = string.replace(/[\(\)\-]{1,}/g, '`');
+	var array = tmpStr.split('`');
+	for (var i = 0,item; i < array.length; i++) {
+		item = array[i];
+		if (/[A-Z]/i.test(item) && 'undefined' === typeof(obj[item])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function checkFormul(){
+	var formula=$('#formula').val();
+    // 测试  
+    var selectVal=$('#selectType').val();
+    if(selectVal=="1"){
+    	var fields = $.parseJSON($('input[name="calarray"]').val());
+    	var result= fn(formula, fields);  
+    }else if(selectVal=="2"){
+    	var fields = $.parseJSON($('input[name="datecalarray"]').val());
+    	var result= datefn(formula, fields);  
+    }else if($calculateList['type']=="2"){
+    	var fields =$.parseJSON({$datecalarray});
+    	var result= datefn(formula, fields);  
+    }else{
+    	var fields =$.parseJSON({$calarray});
+    	var result= fn(formula, fields);  
+    }
+    
+  /*   if(result==false){
+    	alert("公式不正确");
+    	return false;
+    } */
+}
+
+function deleteRecordFormul(){ 
+    $("#editform").append('<input type="hidden" name="conveneStatus" value="2" />');
+    $("#editform").submit(); 
+} 
+
+function datatableFormul($form){
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			var data=DWZ.jsonEval(json.data);
+			getTag(getContainer(check) , 'hidden' , id).val(json.data);
+			$.pdialog.closeCurrent(); 
+		}
+	});
+	
+}
+ function selectChange(obj){
+	 $('.calc').hide();
+	 var selval= $(obj).val();
+	 if(selval==2){
+		 var trclass='calc_'+selval;
+	 }else{
+		 var trclass='calc_1';
+	 }
+	
+	 $('.'+trclass).show();
+	 $('#formula').val("");
+	 if(selval=="2"){
+		 $('.jinduClass').show();
+	 }else{
+		 $('.jinduClass').hide();
+	 }
+ }
+
+</script>
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" id="editform" action="__URL__/calculatecontroll" class="pageForm required-validate" onsubmit="return datatableFormul(this, dialogAjaxDone)">
+			<input type="hidden" name="controll" value="1" />
+			<input type="hidden" name="propertyid" value="{$propertyid}" />
+			<input type="hidden" name="formid" value="{$formid}" />
+			<input type="hidden"  name="calarray" value='{$calarray}' />
+			<input type="hidden"  name="datecalarray" value='{$datecalarray}' />
+			<div class="pageFormContent" layoutH="68">
+                    <table class="data-table" cellspacing="0" style="line-height:32px; width: 96%;margin: 0 auto;" >
+                        <tbody class="list_table">
+                        	 <tr >
+                                <td class="cell_left" width="20%">公式类型</td>
+                                <td class="cell_right" width="80%">
+									<select onchange="selectChange(this)"  id="selectType" name="type" class="select2" style="width: 200px;">
+										<option <if condition="$calculateList.type eq 1">selected=selected</if> value="1">文本公式</option>
+										<option <if condition="$calculateList.type eq 2">selected=selected</if> value="2">日期公式</option>
+										<option <if condition="$calculateList.type eq 4">selected=selected</if> value="4">文本拼接</option>
+									</select>
+								</td>
+                            </tr>
+                           <if condition="$calculateList.type eq 2">
+                           		<tr class="calc calc_1" style="display: none">
+	                                <td class="cell_left" width="20%">可用字段对应编号</td>
+	                                <td class="cell_right " width="80%">
+											<volist name="voList" id="voList">
+												<input type="hidden" name="pid[text][{$voList.ASCII}]" value="{$voList.id}"/>
+												<span>{$voList.ASCII}：</span>
+												<span>{$voList.title}</span>
+												&nbsp;&nbsp;&nbsp;
+											</volist>
+									</td>
+	                            </tr>
+	                             <tr class="calc calc_2">
+	                                <td class="cell_left" width="20%">可用字段对应编号</td>
+	                                <td class="cell_right " width="80%">
+											<volist name="datevoList" id="voList">
+												<input type="hidden" name="pid[date][{$voList.ASCII}]" value="{$voList.id}"/>
+												<span>{$voList.ASCII}：</span>
+												<span>{$voList.title}</span>
+												&nbsp;&nbsp;&nbsp;
+											</volist>
+									</td>
+	                            </tr>
+	                         <else />
+		                          <tr class="calc calc_1">
+		                                <td class="cell_left" width="20%">可用字段对应编号</td>
+		                                <td class="cell_right " width="80%">
+												<volist name="voList" id="voList">
+													<input type="hidden" name="pid[text][{$voList.ASCII}]" value="{$voList.id}"/>
+													<span>{$voList.ASCII}：</span>
+													<span>{$voList.title}</span>
+													&nbsp;&nbsp;&nbsp;
+												</volist>
+										</td>
+		                            </tr>
+		                           <tr class="calc calc_2" style="display: none">
+		                                <td class="cell_left" width="20%">可用字段对应编号</td>
+		                                <td class="cell_right " width="80%">
+												<volist name="datevoList" id="voList">
+													<input type="hidden" name="pid[date][{$voList.ASCII}]" value="{$voList.id}"/>
+													<span>{$voList.ASCII}：</span>
+													<span>{$voList.title}</span>
+													&nbsp;&nbsp;&nbsp;
+												</volist>
+										</td>
+		                            </tr>
+                            </if>
+                            <tr>
+                                <td class="cell_left">公式: </td>
+                                <td class="cell_right">
+                                	<input type="text"  id="formula" name="formula" onblur="checkFormul()"  value="{$calculateList.formula}" placeholder="请输入计算公式">
+                                </td>
+                            </tr>
+                           
+	                            <tr class="jinduClass"  <if condition="$calculateList.type neq 2">style="display: none"</if>>
+	                            	<td class="cell_left">精度:</td>
+	                            	<td class="cell_right">
+	                            		<select name="jingdu" class="select2" style="width: 200px;">
+	                            			<option value="">请选择精度</option>
+	                                		<option <if condition="$calculateList.jingdu eq y">selected=selected</if> value="y">年</option>
+	                                		<option <if condition="$calculateList.jingdu eq m">selected=selected</if> value="m">月</option>
+	                                		<option <if condition="$calculateList.jingdu eq d">selected=selected</if>  value="d">日</option>
+	                                		<option <if condition="$calculateList.jingdu eq h">selected=selected</if>  value="h">时</option>
+	                                		<option <if condition="$calculateList.jingdu eq i">selected=selected</if>  value="i">分</option>
+	                                		<option <if condition="$calculateList.jingdu eq s">selected=selected</if>  value="s">秒</option>
+	                                	</select>
+	                            	</td>
+	                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <br />
+                    <br />	
+			 <div class="tml-row"  style="width:96%;margin: 0 auto;">
+                    <div class="tml_search_tips">
+                    <div class="search_tips_title">友情提示：</div>
+                    <p class="search_tips_center">1、文本公式只能进行加(+)、减(-)、乘(*)、除(/)的操作</p>
+                    <p class="search_tips_center">2、括号只能输入英文()</p>
+                    <p class="search_tips_center">3、禁止使用空格</p>
+                    <p class="search_tips_center">4、日期公式只能写减(-)</p>
+                    <p class="search_tips_center">5、正确写法：A+B-C*D 或(A+B)*C/D 错误写法：A+B-CD(乘法必须*链接)或 (a+B)*C/D+F(不能包含除可用字段之外的字符)</p>
+                    </div>
+             </div>
+			</div>	
+                   	
+			<div class="formBar">
+				<ul>
+					<li><button type="submit" onclick="return  checkFormul()" class="tml_formBar_btn tml_formBar_btn_blue enterIndex">保存</button></li>
+					<li><button onclick="deleteRecordFormul();" class="tml_formBar_btn tml_formBar_btn_red enterIndex" type="button">删除</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div> 
+	

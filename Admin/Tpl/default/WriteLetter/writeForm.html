@@ -1,0 +1,147 @@
+<script type="text/javascript">
+$("#fjxxfile_upload_writeletter_add").uploadify({
+    'height'        : 20,
+    'formData'      : {'upload' : '1','public':"__PUBLIC__",'type':'88'},
+    'swf'           : "__PUBLIC__/uploadify/uploadify.swf",
+    'uploader'      : "__URL__/uploads/",
+    'width'         : 120,
+    'queueID'  : 'some_fjxxfile_queuead_writeletter_add',
+    'onUploadSuccess' : function(file, data, response) {
+		$("#inner_html_writeletter_add").append(data);
+    }
+});
+function unique13(data)
+{
+     data = data || [];
+     var a = {};
+     for (var i = 0, len = data.length; i < len; i++)
+     {
+         var v = data[i];
+         if ('undefined' == typeof(a[v]))
+        {
+             a[v] = 1;
+         }
+     }
+     data.length = 0;
+     for (var i in a)
+     {
+         data[data.length] = i;
+     }
+     return data;
+ };
+var usernames13=new Array();
+var uids13=new Array();
+function addleteruser13(obj){
+	name=$(obj).attr("rel");
+	uid = $(obj).attr("title");
+	usernames13.push(name);
+	uids13.push(uid);
+	unique13(usernames13);
+	unique13(uids13);
+	var wl_user2=usernames13.join(",");
+	var recever_uid=uids13.join(",");
+	$("#wl_user2").val(wl_user2);
+	$("#wl_user3").val(recever_uid);
+ };
+function clearrecever13(){
+	$("#wl_user2").val("");
+	usernames13.splice(0,usernames13.length);
+}
+/*
+eagle:当提交时，如果是发送，调用这个方法，修正了提交到控制器中的哪个方法中去。
+*/
+function commitview13_add($this){
+	$form = $($this);
+	$form.attr("action","__URL__/commitviews/navTabId/__MODULE__" );
+	return validateCallback($form, navTabAjaxDone);
+};
+
+function searchuser(form){
+	var $form = $(form);
+	var s = '';
+	$form.find("input[name='keyword']").each(function(){
+		s = $(this).val();
+	});
+	$("#searchuser").loadUrl("__URL__/searchuser/keyword/"+s);
+}
+</script>
+<style>
+.pageFormContent p {
+    display: block;
+    float: left;
+    height: 21px;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding-bottom: 5px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 5px;
+    position: relative;
+    width: 780px;
+}
+.eagleSearchDivInner{
+	display:block;
+	overflow:auto;
+	width:200px;
+	border:solid 3px #B8D0D6;
+	line-height:21px;
+	background:#fff;
+}
+</style>
+<div class="pageContent" style="border:1px #B8D0D6 solid; padding:5px;" layoutH="75" > 
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+	    <div class="pageFormContent"  layoutH="111"> 
+	    <input type="hidden" name="callbackType" value="closeCurrent">
+			<p>
+				<label>收件人：</label>
+				<input type="text" class="required textInput org.name" size="70" name="recipientname" id="wl_user2" readonly="readonly" />
+				<a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">查找带回</a>
+				<input type="hidden" name="recipient" class="org.mangid "  id="wl_user3"/>
+				<a href="javascript:;" onclick="clearrecever13();">清空</a>
+			</p>
+			<p>
+				<label>主题：</label>
+				<input type="text" value="" name="title" class="required " size="70"/>
+			</p>
+			<p>
+				<label>附件：</label>
+				<input type="file" id="fjxxfile_upload_writeletter_add"  class="textInput xmmc"/> 
+			</p>
+			<p>
+				<label>附件详情：</label>
+				<div id="inner_html_writeletter_add" style="width:400px;height:auto;margin-left:120px;"></div>
+			</p>
+			<p><label>正文：</label>
+					<textarea class="editor" name="content" rows="20" cols="60" style="width:80%"></textarea>
+			</p>
+	    
+			<div class="eagleSearchDivInner">
+				<div id='searchuser'>
+					<ul class="tree treeFolder collapse" style="height:450px;overflow:scroll;">
+					     <volist id="depart1" name="contact">
+						<li>
+						     <a href="javascript:;">{$key}</a>
+						     <if condition="count($depart1)">
+							 <ul>
+							     <volist id="vo" name="depart1">
+							     <li> <a href="javascript:;" title="{$vo.id}" rel="{$vo.name}" onclick="addleteruser13(this);">{$vo['name']}</a></li>
+							     </volist>
+							 </ul>
+							</if>
+						</li>
+					     </volist>
+					  </ul>
+				</div>
+			</div> 
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}草稿</button></div></div></li>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="button" onclick="commitview13_add(this.form);">发送</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>		
+	</form>
+</div>

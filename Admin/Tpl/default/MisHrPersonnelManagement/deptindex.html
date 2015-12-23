@@ -1,0 +1,72 @@
+<script>
+inleave();
+function inleave(){
+	 var $box=navTab.getCurrentPanel();
+	 $box=$box.find("#mishrpersonnelmanagement");
+	 var sinode=$box.find("input[name='id']:checked").length;
+	 if(sinode==0){
+		 var ll=$box.find("#sid_node").length;
+		 if(ll){
+			 $box.find("#sid_node").val('-1');
+		 }else{
+			 $box.find("div.grid").prepend('<input id="sid_node" type="hidden" value="-1" />');
+		 }
+	 }
+}
+</script>
+<form id="pagerForm" action="__URL__/regularemployee">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	<input type="hidden" name="deptid" value="{$deptid}" />
+	<input type="hidden" name="parentid" value="{$parentid}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+	    <ul class="toolBar">
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+	    </ul>
+	    <form rel="pagerForm" onsubmit="return divSearch(this,'mishrpersonnelmanagement');" action="__URL__/regularemployee/rel/mishrpersonnelmanagement" method="post">
+			<input type="hidden" name="jump" value="1">
+            <input type="hidden" name="deptid" value="{$deptid}" />
+			<input type="hidden" name="parentid" value="{$parentid}" />
+			<div class="searchBar">
+				<table class="searchContent"> 
+					<tr>
+						<include file="Public:quickSearchCondition" />
+						<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelmanagement_exportbysearchhtml ">
+							<td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/regularemployee','__URL__/exportBysearchHtml');">导出</button></td>
+						</if>
+					</tr>
+				</table>
+			</div>
+		</form>	    
+    </div>
+	<table class="table" width="100%" layoutH="175">
+	    <thead ename="{$ename}">
+	    <tr>
+		    <th width="15" ><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+		    <volist id="vo" name="detailList">
+		    	<if condition="$vo[shows]"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="mishrpersonnelmanagement" orderField="{$vo[sortname]}" class="{$sort}"</if>><span style="color:blue">{$vo[showname]}</span></th></if>	<!--类型-->
+		    </volist>
+	    		 <if condition="$_SESSION.a eq 1 || $_SESSION.mishrpersonnelmanagement_adduser"><th><span style="color:blue">后台用户</span></th> </if>
+	    </tr>
+	    </thead>
+	    
+	    
+	    <tbody>
+	    	<include file="dwzloadindex" />
+	    </tbody>
+    </table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="mishrpersonnelmanagement" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

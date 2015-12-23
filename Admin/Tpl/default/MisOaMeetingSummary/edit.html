@@ -1,0 +1,116 @@
+<script>
+function changejoinedit(json){
+	var $box=navTab.getCurrentPanel();
+	var joinpeople = json.joinpeople;
+	var joinpeoplename = json.joinpeoplename;
+	var starttime = json.starttime;
+	var endtime = json.endtime;
+	var name = joinpeoplename.split(",");
+	var id = joinpeople.split(",");
+	var html = "";
+	for(var i=0;i<name.length;i++){
+		html += '<li><input type="hidden" value="'+id[i]+'" name="joinpeople[]"><span>'+name[i]+'</span><input type="hidden" value="'+name[i]+'" name="joinpeoplename[]"><a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除">x</a></li>';
+	}
+	html +='<li class="addresseeText"><input class="checkByInput addresseeTextInput textInput" type="text" autocomplete="off" tabindex="1" callback="addresseeInput" chainname="lookpeoplename" inputname="lookpeople" show="" checkfor="MisMessage" autofocus="autofocus" onfocus="addressee.clearVal(this);" onkeydown="addressee.del(this, event);" onclick="addressee.unselect(this);"></li>';
+	$("#MisOaMeetingSummary_one_edit").empty();
+	$("#MisOaMeetingSummary_one_edit").append(html);
+	$('#MisOaMeetingSummary_one_edit').find('input').focus();
+	$box.find("input[name='starttime']").val(transTime(starttime));
+	$box.find("input[name='endtime']").val(transTime(endtime));
+}
+function transTime(ob){
+	var mydate = new Date(parseInt(ob) * 1000);
+	var time = '';
+	time += mydate.getFullYear() + '-';   //返回年份
+	time += mydate.getMonth()+1 + '-';    //返回月份，因为返回值是0开始，表示1月，所以做+1处理
+	time += mydate.getDate() + ' ';
+	time += mydate.getHours() + ':';
+	time += mydate.getMinutes();
+	return time;
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" enctype="multipart/form-data">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="iseditor" value="1">
+		<input type="hidden" name="stepType" value="0"/>
+		<input type="hidden" name="id" value="{$vo.id}">
+		<div class="pageFormContent applecloth" layoutH="55">
+			<div class="keepContentCenter form-affix-content">
+				<div class="contentTitle contentTitle_center form-affix-title">
+					会议纪要信息
+					
+				</div>
+				<fieldset class="zlqk_1">
+					<legend class="fieldset_legend_toggle">
+						<b>基本信息</b>
+					</legend>
+					{:W('ShowOrderno',array(1,'mis_oa_meeting_summary',$vo['orderno']))}
+					<div class="tml-form-row">
+						<label>{$fields["name"]}：</label>
+						<div class="tml-input-append">
+							<input type="text" class="org1.name" value="{$vo.name}" callback="changejoinedit"/>
+							<input type="hidden" name="meetid" class="org1.id" value="{$vo.meetid}"/>
+							<a class="input-addon input-addon-addon input-addon-add lookupproject" lookupgroup="org1" href="__URL__/lookupGeneral" param="field=id,name,personname,typename,starttime,endtime,address,summaryname,joinpeople,joinpeoplename&model=MisOaMeetingManage&conditions=stepType,1">会议选择</a>
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>{$fields["personname"]}：</label>
+							<input type="text" name="personname" class="org1.personname" value="{$vo.personname}"/>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["typename"]}：</label>
+							<input type="text" name="typename" class="org1.typename" value="{$vo.typename}"/>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["starttime"]}：</label>
+							<div class="tml-input-append">
+								<input type="text" class="" name="starttime" value="{$vo.starttime|transTime=###,'Y-m-d H:i'}"/>
+	                        	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+	                        </div>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["endtime"]}：</label>
+							<div class="tml-input-append">
+								<input type="text" class="" name="endtime" value="{$vo.endtime|transTime=###,'Y-m-d H:i'}"/>
+	                        	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+	                        </div>
+						</div>
+						<div class="tml-form-col">
+							<label>会议纪要人：</label>
+							<input type="text" name="summaryname" value="{$vo.summaryname}"/>
+						</div>
+					</div>
+					<div class="tml-form-row">
+	                	<label>查阅人：</label>
+	                	<ul id="MisOaMeetingSummary_one_edit" class="addressee left checkTo" style="width:563px;">
+		                    <volist name="joinperson" id="pvo">
+			                    <li>
+									<input type="hidden" value="{$pvo|getfieldby='id','name','user'}" name="joinpeoplename[]">
+									<span>{$pvo|getfieldby='id','name','user'}</span>
+									<input type="hidden" value="{$pvo}" name="joinpeople[]">
+									<a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除">x</a>
+								</li>
+							</volist>
+							<li class="addresseeText">
+								<input class="checkByInput addresseeTextInput textInput" type="text" autocomplete="off" tabindex="1" callback="addresseeInput" chainname="lookpeoplename" inputname="lookpeople" show="" checkfor="MisMessage" autofocus="autofocus" onfocus="addressee.clearVal(this);" onkeydown="addressee.del(this, event);" onclick="addressee.unselect(this);">
+							</li>
+						</ul>
+						<a class="input-addon input-addon-addon input-addon-userplus checkUser" data="lookpeoplename,username,text;lookpeople,userid,hidden,1" ulid="MisOaMeetingSummary_one_edit" href="javascript:;">查找带回</a>
+						<a class="input-addon input-addon-recycle" title="清空接收用户" onclick="clearreceverMisOaMeetingSummary('1','MisOaMeetingSummary_one_edit');" href="javascript:;"></a>
+	                </div>
+					<div class="tml-form-row">
+						<label>{$fields["address"]}：</label>
+						<input type="text" class="org1.address" readonly="readonly" value="{$vo.meetid|getfieldby='id','address','mis_oa_meeting_manage'}"/>
+					</div>
+					<div class="tml-form-row">
+						<label>会议纪要：</label>
+						<textarea style="width: 624px; height: 200px" name="summary" class="ueditor" readonly="readonly">{$vo['summary']}</textarea>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

@@ -1,0 +1,63 @@
+<form id="pagerForm" action="__URL__/index/jump/1" method="post">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+    <input type="hidden" name="numPerPage" value="{$numPerPage}" />
+    <input type=hidden name="type" value="{$type}">
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_add"> 
+				<li><a class="add tml-btn tml_look_btn tml_mp" target="dialog" mask="true" width="680" height="280" title="新增"
+					<if condition="$type" > href="__URL__/add/vid/1/type/{$type}" <else/>  href="__URL__/add/vid/1/type/1"</if> >
+				    <span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_delete">
+				<li><a title="确实要删除这些记录吗?" target="ajaxTodo" rel="id"  href="__URL__/delete/id/{sid_node}/navTabId/__MODULE__" class="delete"><span>{$Think.lang.del}</span></a></li></if>
+		</ul>
+		<form onSubmit="return  divSearch(this,'MisPerformanceTypeRelIndex');" action="__URL__/index/jump/1/type/{$type}" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+				<volist id="vo" name="detailList">
+			    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="MisPerformancePlanPutRel" orderField="{$vo[name]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			    </volist>
+			    <th style="width: 60%"></th>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$vo['id']}" title="编辑"  dwidth="680" dheight="280" ondblclick='ondblclick_dialog(this,"__MODULE__edit","__URL__/edit/id/{$vo[id]}");'>
+				<volist id="vo1" name="detailList">
+					<if condition="$vo1[shows] eq 1">
+					<td width="{$vo1[widths]}" field="{$vo1[name]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+					</if>
+				</volist>
+				<td></td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar"></div>
+</div>

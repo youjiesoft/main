@@ -1,0 +1,99 @@
+<div class="new_version_page_content">
+	
+			
+			<div class="fieldset_show_box col_8_0 form_group_lay field_fieldset30" original="{$vo[fieldset30]}" category="fieldset" style="">
+				<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+					<a name="fieldset30"></a>
+					<b>基本信息</b>
+					<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+				</legend>
+			</div>
+			<div class="fieldsetjs_show_box col_8_0 form_group_lay field_fieldset30">
+			<div class="col_1_3 form_group_lay field_orderno" original="{$vo[orderno]}" category="text" style="">
+				<label class="label_new">
+					编号:
+				</label>
+				<span class="input_new">{$vo['orderno']}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_name" original="{$vo[name]}" category="text" style="">
+				<label class="label_new">
+					姓名:
+				</label>
+				<span class="input_new">{$vo['name']}</span>
+			</div>
+			<p class="employeePhoto" style="float:right;">
+				<img id="mishrpersonnelvoview_picture_edit"
+					style="border: 2px solid #f1f1f1;  background-color:#468cda;  width: 80px; height: 80px;"
+					 <if  condition="$vo.picture"> src="__PUBLIC__/Uploads/{$vo.picture}" <else/> src="__PUBLIC__/Images/xyimages/xyheader_image.jpg" </if>>  
+			</p>
+			<div class="col_1_3 form_group_lay field_profession" original="{$vo[profession]}" category="text" style="">
+				<label class="label_new">
+					性别:
+				</label>
+				<span class="input_new"><if condition="$vo.sex eq '1'"> 男<else/>女</if>{$vo['profession']}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_school" original="{$vo[school]}" category="text" style="">
+				<label class="label_new">
+					户籍:
+				</label>
+				<span class="input_new">{$vo.nativeaddress}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_address" original="{$vo[address]}" category="text" style="">
+				<label class="label_new">
+					身份证:
+				</label>
+				<span class="input_new">{$vo.chinaid}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_yongyouorderno" original="{$vo[yongyouorderno]}" category="text" style="">
+				<label class="label_new">
+					年龄:
+				</label>
+				<span class="input_new">{$vo.age}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_address" original="{$vo[address]}" category="text" style="">
+				<label class="label_new">
+					出生年月:
+				</label>
+				<span class="input_new">{$vo.birthday|transtime}</span>
+			</div>
+			</div>
+			<div class="fieldset_show_box col_8_0 form_group_lay field_fieldset31" original="{$vo[fieldset31]}" category="fieldset" style="">
+				<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+					<a name="fieldset31"></a>
+					<b>组织信息</b>
+					<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+				</legend>
+			</div>
+				<div class="fieldsetjs_show_box col_8_0 form_group_lay field_fieldset31">
+			<volist  name="list" id="UserDeptDutyVo">
+			<div class="col_1_3 form_group_lay field_address" original="{$vo[address]}" category="text" style="">
+				<label class="label_new">
+					所属公司:
+				</label>
+				<span class="input_new">{$UserDeptDutyVo['companyid']|getFieldBy='id','name','mis_system_company'}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_address" original="{$vo[address]}" category="text" style="">
+				<label class="label_new">
+					入职部门:
+				</label>
+				<span class="input_new">{$UserDeptDutyVo['deptid']|getFieldBy='id','name','mis_system_department'}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_address" original="{$vo[address]}" category="text" style="">
+				<label class="label_new">
+					企业岗位:
+				</label>
+				<span class="input_new">{$UserDeptDutyVo['worktype']|getFieldBy='id','name','mis_hr_job_info'}</span>
+			</div>
+			<div class="col_1_3 form_group_lay field_address" original="{$vo[address]}" category="text" style="">
+				<label class="label_new">
+					企业职级:
+				</label>
+				<span class="input_new">{$UserDeptDutyVo['dutyid']|getFieldBy='id','name','mis_system_duty'}</span>
+			</div>
+			</volist>
+			</div>
+	{~$appendPageContentArr = getBindTabsContent('MisAutoDtw',$vo,'view')}
+	{$appendPageContentArr[2]}
+	{$appendPageContentArr[3]}
+	{:W('ShowAction')}
+</div>

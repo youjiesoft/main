@@ -1,0 +1,95 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$name}" >
+		
+		
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>标题：</label>
+					<input type="text" class="required" name="title" value="{$vo['title']}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>带回字段：</label>
+					<input type="text" class="required" name="fields" value="{$vo['fields']}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>请求地址：</label>
+					<input type="text" class="required" name="url" value="{$vo['url']}"  readonly="readonly"/>
+				</div>
+				<div class="tml-form-col">
+					<label>模型名称：</label>
+					<input type="text" class="required" name="mode" value="{$vo['mode']}"  readonly="readonly"/>
+				</div>
+				<div class="tml-form-col">
+					<label>显示字段：</label>
+					<input type="text" class="required" name="filed" value="{$vo['filed']}" readonly="readonly" />
+				</div>
+				<div class="tml-form-col">
+					<label>org值字段：</label>
+					<input type="text" class="required" name="val" value="{$vo['val']}" readonly="readonly" />
+				</div>
+				
+				<div class="tml-form-col">
+					<label>过滤条件：</label>
+					<input type="text" name="condition" value="{$vo['condition']}"  readonly="readonly"/>
+				</div>
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select name="status" class="combox">
+						<option <if condition="$vo.status eq 1">selected</if> value="1" readonly="readonly">开启</option>
+						<option <if condition="$vo.status eq 0">selected</if> value="0" readonly="readonly">禁用</option>
+					</select>
+				</div>
+			</div>			
+		</div>	
+		
+		
+		
+		
+		
+		<!-- <div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>名称：</label>
+					<input type="text" class="required" name="name" value="{$name}" readonly="readonly"/>
+				</div>
+				<div class="tml-form-col">
+					<label>描述：</label>
+					<input type="text" class="required" name="remark" value="{$vo.remark}" readonly="readonly"/>
+				</div>
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select name="status" class="combox">
+						<option <if condition="$vo.status eq 1">selected</if> value="1">开启</option>
+						<option <if condition="$vo.status eq 0">selected</if> value="0">禁用</option>
+					</select>
+				</div>
+			</div>
+			<div class="dialog-box">
+                <table class="data-table" cellspacing="0" id="Selectlist_ex_edit" width="100%">
+                    <thead>
+                        <tr>
+                            <td style="width:200px;"><strong>键</strong></td>
+                            <td><strong>值</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    	<volist name="selectlistname" id="sname">
+	                        <tr>
+								<td><input type="text" class="gangwei_d xytdinput"  name="arr_key[]" value="{$key}" readonly="readonly"/></td>		
+	                            <td><input type="text" class="gangwei_d xytdinput" name="arr_val[]" value="{$sname}" readonly="readonly"/> </td>                                
+	                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div>
+		</div> -->
+		{:W('ShowAction')}
+	</form>
+
+	</div>
+</div>
+
+

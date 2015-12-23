@@ -1,0 +1,76 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="jump" value="1"/>
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this,'mishrbasicemployeecontract');" action="__URL__/index" method="post">
+			<input type="hidden" name="working" value="{$working}">
+			<input type="hidden" name="jump" value="1">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition"/>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead>   
+		<tr>
+			<th width='24'>序号</th>
+            <volist id="vo" name="detailList">
+		    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="mishrbasicemployeecontract" orderField="{$vo['name']}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+		    </volist>
+		</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list" key="key2">
+				<!-- 计算合同快到期的提示 -->
+				<?php
+					$time=time();
+					$result = $vo['endtime'] - $time;
+					$ftrue = false;
+					if($result < 2592000 && $vo['contractstatus']=='0' && $vo['endtime']){
+						$ftrue = true;
+					}
+				?>
+				<tr target="sid_node" rel="{$vo['id']}"   data-tool={$vo['classarr']}  onclick="onTrClickCheckbox(this,'id')" 
+					title="合同管理-编辑" dwidth="900" dheight="550" 
+					'__URL__/edit/id/{$vo['leaveid']}');" drel="__MODULE__edit"
+					ondblclick="ondblclick_navTab(this,'__MODULE__edit','__URL__/edit/id/{$vo['id']}/employeeid/{$vo.employeeid}');"
+					<if condition="($vo['working'] eq '0' and $vo['contractstatus'] eq '0') or $ftrue"> style="color: red;" </if>
+					>
+				<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+				<volist id="vo1" name="detailList">
+					<td width="{$vo1[widths]}" field="{$vo1[name]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+							{$vo[$vo1['name']]}
+						</if>
+					</td>
+				</volist>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages"><span>共{$totalCount}条</span></div>
+		<div class="pagination" targetType="navTab" rel="mishrbasicemployeecontract" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

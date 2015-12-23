@@ -1,0 +1,75 @@
+<script>
+    function misquestioncomment_save(){
+        var $box=$.pdialog.getCurrent();
+        var content = $box.find("textarea[name='content']").val();
+        var sourceid = $box.find("input[name='sourceid']").val();
+        var parentid = $box.find("input[name='parentid']").val();
+        var content = $.trim(content);
+        if (content == '') {
+            return false;
+        }
+        //ajax 提交反馈信息
+        $.ajax({
+            type : 'POST',
+            url  : '__URL__/lookupSaveComment',
+            data : {parentid:parentid,sourceid:sourceid,content:content},
+            success : function (succ){
+                if (succ != '0') {
+                    var html = '<tr>\
+                                <td>' + succ.id + '</td>\
+                                <td><div class="xyqa-view-main" style="background: none repeat scroll 0 0 #F4F4F4;height:40px;overflow: auto;">\
+                                <div class="entry-content" style="text-indent: 2em;Line-height:20px;">' + succ.content + '</div>\
+                                </div></td>\
+                                <td>' + succ.createtime + '</td>\
+                            </tr>';
+                    var obj=$(html).initUI();
+                    $("#misquestioncomment_add").append(obj);
+                }
+            },
+            dataType: 'json'
+        });
+    }
+</script>
+<div class="page">
+    <div class="pageContent">
+        <div class="pageFormContent" layoutH="95">
+            <input type="hidden" name="sourceid" value="{$question['sourceid']}">
+            <input type="hidden" name="parentid" value="{$parentid}">
+            <if condition="$type eq 'execute'">
+                <div class="unit">
+                    <label>发表评论：</label>
+                    <textarea cols='42' rows='4' name="content" style="width:500px;"></textarea>
+                </div>
+                <div class="clear"></div>
+                <div class="unit">
+                   <label>&nbsp;&nbsp;</label>
+                   <div class="button" style="float: right;"><div class="buttonContent"><button type="button" onclick="misquestioncomment_save();">{$Think.lang.save}</button></div></div>
+                </div>
+            </if>
+            <div class="unit">    
+                <table class="xyDataTable" cellspacing="0" id="misquestioncomment_add" width="100%" border="1" bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">
+                    <thead>
+                        <tr>
+                            <td style="width:50px;"><strong>序号</strong></td>
+                            <td><strong>内容</strong></td>
+                            <td style="width:110px;"><strong>评论日期</strong></td>
+                        </tr>
+                    </thead>
+                    <tbody style="background: none repeat scroll 0 0 #F4F4F4;">
+                        <volist id="countvo" name="countlist">
+                        <tr>
+                            <td>{$countvo['id']}</td>
+                            <td>
+                                <div class="xyqa-view-main" style="height:20px;overflow: auto;">
+                                    <div class="entry-content" style="text-indent: 2em;Line-height:20px;">{$countvo['content']}</div>
+                                </div>
+                            </td>
+                            <td>{$countvo['createtime']|transTime=###,'Y-m-d H:i'}</td>
+                        </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </div> 
+        </div>
+    </div>
+</div>

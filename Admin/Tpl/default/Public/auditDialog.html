@@ -1,0 +1,37 @@
+<script>
+var $dialog = $.pdialog.getCurrent();
+var val = $dialog.find("textarea").val();
+$dialog.find("textarea").val("").focus().val(val);
+$dialog.find("textarea").focus();
+function onsubmitAuditDialog() {
+	var textarea = $dialog.find("textarea").val()
+	if (textarea.length <= 0) {
+		alertMsg.error('请填写审核意见！');
+		return false;
+	}
+	$.pdialog.closeCurrent();
+	var $navTab = navTab.getCurrentPanel();
+	$navTab.find("input[name='doinfo']").val(textarea);
+	var form = $navTab.find("form");
+	return validateCallback(form[0], refreshtabsAudit);
+}
+</script>
+<div class="pageContent">
+	<div class="pageFormContent" layoutH="56">
+		<fieldset>
+			<legend class="fieldset_legend_toggle">
+				<b>审核意见</b>
+			</legend>
+			<div>
+				<textarea style="width: 360px; height: 100px" name="doinfo" class="required">同意</textarea>
+			</div>
+		</fieldset>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li>
+				<button class="tml-btn tml-btn-primary" type="button" onclick="onsubmitAuditDialog();">确定</button>
+			</li>
+		</ul>
+	</div>
+</div>

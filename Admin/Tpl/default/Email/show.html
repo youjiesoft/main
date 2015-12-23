@@ -1,0 +1,25 @@
+<style>
+.pageContent .email{
+	width:230px;
+}
+.pageFormContent p{
+	float:none;
+}
+</style>
+<div class="pageContent">
+	<div class="pageFormContent" layoutH="58">
+		<volist id="list" name="users">
+			<p><b>{$list.department}</b></p>
+			<volist id="user" name="list.users">
+				<p class="email">
+					<input name="one_email" type="checkbox" value="{$user.name}:{$user.email}" /> {$user.name}:{$user.email}
+				</p>
+			</volist>
+		</volist>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><div class="buttonActive"><div class="buttonContent"><button onclick="batchAddEmail();" type="button">{$Think.lang.confirm}</button></div></div></li>
+		</ul>
+	</div>
+</div>

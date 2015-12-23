@@ -1,0 +1,82 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<style>
+*{ margin:0; padding:0;}
+img{ border:none;}
+ul,li{ list-style:none;}
+body{ background-color:#b5e1f7;}
+.mis_my{ background:url(__PUBLIC__/Images/login/ad_log_cloud.png) repeat-x 0 bottom; width:100%; height:580px; margin-top:-275px; position:absolute; top:50%;}
+.mis_myk{ background:url(__PUBLIC__/Images/login/my_b2.png) no-repeat; width:305px; height:221px; top:50%; left:50%; margin-top:-100px; margin-left:-150px; position:absolute;}
+.ms_w{ padding-top:140px; text-align:center;}
+.my_btn{ background:url(__PUBLIC__/Images/login/my_btn.png) no-repeat; width:48px; height:22px; border:none; cursor:pointer; margin-top:10px;}
+.input_text{ border: solid 1px #00c6ff; width:190px; height:25px; resize:none; line-height:25px;}
+.my_sm{ padding-top:35px; width:310px;}
+.my_sm li{padding-left:5px;}
+.left{ float:left;}
+.clear{ clear:both;}
+</style>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <div class="mis_my">
+        	<div class="mis_myk">
+            <form action="__APP__/SerialNumber/check" method="post" class="ms_w">
+                密钥：<input name="key"  class="input_text">
+                <br><input type="submit" class="my_btn" value="提交">
+            </form>
+                    <ul class="my_sm">
+                        <if condition="$crypt['length']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">不正确的密钥</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['key']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">不正确的密钥</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['version']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">版本不匹配</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['pcode']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">此密钥可能与产品编号不匹配</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['fc']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">文件可能被篡改，请联系软件服务商。</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['software']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">软件模式不正确</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['expired']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">软件已经过期，请联系软件商。</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['online']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">并发数受到限制</li>
+                        </if>
+                        <div class="clear"></div>
+                        <if condition="$crypt['file']">
+                        <li class="left"><img src="__PUBLIC__/Images/login/my_cw.png" /></li>
+                        <li class="left">您还未进行系统授权</li>
+                        </if>
+                    </ul>
+            </div>
+        </div>
+    </body>
+</html>

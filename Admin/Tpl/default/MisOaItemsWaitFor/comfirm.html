@@ -1,0 +1,40 @@
+<script type="text/javascript">
+//判断用户是点击的 打回还是通过
+	function comtype(obj,com){
+		var $box= $.pdialog.getCurrent()
+		$("#type").val(com);
+		var type = $("#type").val();
+		$(obj.form).submit();
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupoverdata/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+			<input type="hidden" name="id" value="{$comfid}" />
+			<input type="hidden" name="typeid" id = 'type' value="" /><!-- 这是判断是打回还是通过的 -->
+			<input type="hidden" name="refreshtabs[data]" value="1">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+		<div class="pageFormContent smallFormContent" layoutH="56">
+			<fieldset>
+				<div class="tml-form-row">
+						<label>处理意见:</label>
+						<textarea class="readonly"  name="doinfo"></textarea>
+				</div>
+			</fieldset>
+			<fieldset>
+				<!-- 附件信息 -->
+				{:W('ShowUpload')}
+			</fieldset>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button type="button"  onclick="comtype(this,1)" class="tml-btn tml-btn-blue">办理</button>&nbsp;
+					<button type="button"  onclick="comtype(this,0)" class="tml-btn tml-btn-blue">打回</button>&nbsp;
+					<button type="button" class="close tml-btn tml-btn-blue">{$Think.lang.close}</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

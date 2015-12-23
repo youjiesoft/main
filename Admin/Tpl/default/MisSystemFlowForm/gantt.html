@@ -1,0 +1,44 @@
+<!-- 甘特图 -->
+<script src="__PUBLIC__/Js/xrkgantt/js/gantt.js" type="text/javascript"></script>
+<script>
+    $(document).ready(function(){
+		var str = '{$str}';
+		var gtData,gtMap;
+		var XmlDocument = null;
+		XmlDocument = SFAjax.createDocument(str);
+		onGanttLoaded(XmlDocument);
+    });
+    function onGanttLoaded(doc){	//doc参数是一个XML文件DOM对象
+		var gtConfig=new SFConfig();	//初始化一个页面上的配置对象
+		gtConfig.setConfig("SFGantt/container","Div_Gantt");	//设置用来显示甘特图的层的ID
+		gtConfig.setConfig("SFGantt/readOnly",true);	//设置甘特图为只读
+		gtConfig.setConfig("SFGantt/imgPath",TP_PUBLIC+'/Js/xrkgantt/img/');	//设置甘特图图片路径
+		
+		gtConfig.setConfig("SFGantt/disableHelpLink",true);	//设置甘特帮助隐藏
+		gtConfig.setConfig("SFGantt/isTracking",true);//设置是否显示成跟踪甘特图
+		gtConfig.setConfig("SFGantt/idCellWidth",0); //左侧ID列表的宽度
+		//gtConfig.setConfig("SFGantt/headBgColor","#E0E8EA"); //甘特图顶端部分的背景色
+		//gtConfig.setConfig("SFGantt/bodyBgColor","#E0E8EA"); //甘特主体端部分的背景色
+		//gtConfig.setConfig("SFGantt/bottomBgColor","#E0E8EA"); //甘特图底端部分的背景色
+		gtConfig.setConfig("SFGantt/listWidth", 354);
+		gtConfig.setConfig("SFGantt/disableTimeSegmentation",true);
+		gtData=new SFData(new SFDataProject(doc));	//将doc对象初始化为一个甘特数据对象
+		gtMap=new SFGantt(gtConfig,gtData);	//用相应的数据对象和配置对象创建甘特对象
+		gtMap.showMap(null,3);//显示甘特图 参数1：甘特图显示开始时间，null为根节点开始时间，参数2：甘特图显示的缩放等级，默认甘特图支持从0-8的9个等级
+    }
+</script>
+<div class="pageContent tml-bg-white" layoutH="20">
+<div class="clearfix">
+	<h2 class="contentTitle contentTitle_center" style="height:0px;"></h2>
+	<div id="content" class="dashboard_detail">
+		<div class="tml-text-c mb10">
+			<a class="tml-btn tml-btn-blue mr10" href="javaScript:gtMap.zoomIn();">图表放大</a>
+			<a class="tml-btn tml-btn-blue mr10" href="javaScript:gtMap.zoomOut();">图表缩小</a>
+			<a class="tml-btn tml-btn-blue mr10" id="Expand" href="javaScript:gtMap.collapseList();">展开/收拢 列表</a>
+			<a class="tml-btn tml-btn-blue mr10" id="Collapse" href="javaScript:gtMap.collapseMap();">展开/收拢 图表</a>
+			<a class="tml-btn tml-btn-blue" id="Collapse" href="__URL__/dashgtt/showtype/1/id/{$id}" target="_blank">全屏展示</a>
+		</div>
+		<div id="Div_Gantt" style="position:relative;height:500px;"></div>
+	</div>
+</div>
+</div>

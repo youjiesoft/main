@@ -1,0 +1,60 @@
+<div class="xypanel xypreferences clearfix app_right_list" id="appConstantly_div">
+	<!-- {$systempanels} -->
+	<!-- 已移至企业工作台 -->
+	<!-- <h4>常用功能</h4>
+	<div id="oftenindex"><include file="oftenindex" /></div>   -->
+	<div class="app-shortcut">
+	<volist  name="apptypelist" id="apptype" key="appi">
+	<!-- 显示五个类型 -->
+	<if condition="$_SESSION['a']==1">
+		<a class="app_tab_nav" href="#" <if condition="$appi eq $typeid"> style="color:#404a53;background:#fff;padding-top:12px;cursor: default;"</if> onclick="changeapp('{$appi}')"> {$apptype} </a>
+	<else/>
+	<a class="app_tab_nav" href="#" <if condition="$appi eq $typeid"> style="color:#404a53;background:#fff;padding-top:12px;cursor: default;"<</if> onclick="changeapp('{$appi}')"> {$apptype} </a>
+	
+	</if>
+	</volist>
+	<div class="appPage_div" id="appPage_div" style="float: right;width: 200px; margin-right: 10px">
+		<div class="tml-text-c prev_next_btn">
+		    <if condition="$prevlist">	<a class="prev_page_btn pnb" href="#"  onclick="changeapp('{$typeid}','','prevpage')" ><span>上一页</span></a><else/><span class="prev_page_btn_disabled pnb" >上一页 </span> </if>
+			<if condition="$nextlist">	<a class="next_page_btn pnb" href="#" onclick="changeapp('{$typeid}','','nextpage')"  ><span>下一页</span></a><else/><span class="next_page_btn_disabled pnb" >下一页 </span> </if>
+		</div>
+		<ul id="app_shortcut_list" class="app-shortcut-list">
+		<volist name="newappList" id="newappVol">
+			<volist  name="newappVol['list']"  id="newapp"  >
+				<li data-app-height="{$newapp['height']}" data-app-width="{$newapp['width']}" data-app-icon="{$newapp['imgsrc']}" data-app-name="{$newapp['title']}" data-app-url="{$newapp['title']}" data-app-id="1" data-node-type="appItem">
+					<a onclick="changeapp('{$typeid}','{$newapp['sortnum']}')" title="{$newapp['title']}"  href="#">
+						<img class="app-shortcut-icon" width="64px" height="64px" alt="{$newapp['title']}" <if condition="$newapp.imgsrc">src="{$newapp['imgsrc']}"<else/> src="__PUBLIC__/Images/xyicon/xyicon_36.png" </if> >
+						<span class="app-shortcut-name">{$newapp['title']}</span>
+					</a>
+				</li>
+			</volist>
+		</volist>
+	</ul>
+	<div class="tml-text-c"><a class="person_set_btn" href="__APP__/MisSystemApp/lookupuserSetApp/typeid/{$typeid}" target="dialog" rel="__MODULE__userSetApp" width="750" height="500" mask="true ">个人设置</a></div>
+	</div>
+	<div class="appDis_div" id="appDis_div" style="margin-right: 220px;">
+        <div class="mbox-header"><span>{$newappVo['title']}</span>
+            <a class="o-close-simple" data-param="{"id": 7}" data-action="removeWidget" href="javascript:;"></a>
+        </div>
+        <div class="mbox-body">
+            <iframe frameborder="0" style="width: 95%;  height: {$newappVo['height']}px" scrolling="no"  allowtransparency="true" src="{$newappVo['src']}"></iframe>
+        </div>
+	</div>
+</div>
+</div>
+
+<script type="text/javascript">
+ function changeapp(obj,$child,$page){
+	var	changehref="__APP__/MisSystemApp/lookupmyfunctionbox/typeid/"+obj;
+	 if($child){
+		 changehref="__APP__/MisSystemApp/appdis/typeid/"+obj+"/child/"+$child;
+		 $("#appDis_div").loadUrl(changehref);
+	 }else if($page){
+		 changehref="__APP__/MisSystemApp/apppage/typeid/"+obj;
+		 changehref+="/maxlimit/{$maxcount}/minlimit/{$mincount}/page/"+$page;
+		 $("#appPage_div").loadUrl(changehref); 
+	 }else{
+		 $("#appConstantly_div").loadUrl(changehref);
+	 }
+ }
+</script>

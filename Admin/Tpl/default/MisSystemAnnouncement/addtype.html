@@ -1,0 +1,46 @@
+<script>
+function missystemannouncementsave(form,stepobj){
+	$(form).submit();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/MisSystemAnnouncement" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="typeid" value="1" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>上级类型：</label>
+					<if condition="$apid neq -1">
+					<input type="text" style="color:black;" readonly="readonly" value="{$pname}"/>
+					<input type="hidden" name="pid" value="{$pid}"/>
+					<else/>
+					<input type="text" style="color:black;" readonly="readonly" value="顶级节点"/>
+					</if>
+				</div>
+				<div class="tml-form-col" style="display:none;">
+					<label>类型属性：{$apid}</label>
+					<select name="typevalue" id="selval" class="combox">
+						<option value="1" <if condition="$apid eq -1">selected="selected"</if>>主类型</option>
+						<option value="2" <if condition="$apid neq -1">selected="selected"</if>>子类型</option>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>编码：</label>
+					<input type="text" style="color:black;" name="code" value="" maxlength="50" />
+				</div>
+				<div class="tml-form-col">
+					<label>名称：</label>
+					<input type="text" style="color:black;" name="name" class="required" value="" maxlength="50" />
+				</div>
+			</div>
+				<div class="tml-form-row">
+					<label>备注：</label>
+					<TEXTAREA rows="2" style="color:black;width:400px;" cols="30" name="remark"></TEXTAREA>
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

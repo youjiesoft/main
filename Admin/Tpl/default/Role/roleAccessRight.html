@@ -1,0 +1,53 @@
+<form onsubmit="return validateCallback(this, refreshtabs);" action="__URL__/authorizeRoleByright" method="post">
+    <input type="hidden" name="pid" value="{$vo['id']}">
+    <input type="hidden" name="pid_type2" value="{$pid_type2}" />
+    <input type="hidden" name="pid_type1" value="{$pid_type1}" />
+    <input type="hidden" name="pid_type0" value="{$pid_type0}" />
+    <input type="hidden" name="roleid" value="{$roleid}">
+
+    <input type="hidden" name="refreshtabs[tabid]" value="RoleAcess">
+    <input type="hidden" name="refreshtabs[url]" value="__URL__/roleAccess/roleid/{$roleid}/id/{$vo['id']}">
+    <input type="hidden" name="refreshtabs[title]" value="{$roleid|getFieldBy=id,name,role}_授权">
+    <input type="hidden" name="refreshtabs[type]" value="navtab">
+    <input type="hidden" name="refreshtabs[data]" value="{ selectednodeid:{$vo['id']} }">
+    
+    <div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+		    <li><a  class="edit" href="#" ><span>{$vo['title']} -—— 授权</span></a></li>
+		</ul>
+	</div>
+	<table class="table" width="99%" layoutH="108" ajaxurl="__URL__/index" rel="jbsxBox" dwztotalPages="{$dwztotalpage}">
+		<thead>
+		<tr>
+			<th>授权名称</th>
+			<th>方法名称</th>
+			<th>禁用</th>
+			<th>全部</th>
+			<th>部门及子部门</th>
+			<th>部门</th>
+			<th>个人</th>
+			
+		</tr>
+		</thead>
+		<tbody>
+		    <volist id="v" name="list">
+			    <tr>
+				    <td style="width:250px">{$v['title']}</td>
+				    <td style="width:150px">{$v['name']}</td>
+				    <td style="width:200px"><input type="radio" name="acc[{$v['id']}]" <eq name="v['plevels']" value="0">checked="checked"</eq> value="0"></td>
+				    <td style="width:200px"><input type="radio" name="acc[{$v['id']}]" <eq name="v['plevels']" value="1">checked="checked"</eq> value="1"></td>
+				    <td style="width:200px"><input type="radio" name="acc[{$v['id']}]" <eq name="v['plevels']" value="2">checked="checked"</eq> value="2"></td>
+				    <td style="width:200px"><input type="radio" name="acc[{$v['id']}]" <eq name="v['plevels']" value="3">checked="checked"</eq> value="3"></td>
+				    <td style="width:200px"><input type="radio" name="acc[{$v['id']}]" <eq name="v['plevels']" value="4">checked="checked"</eq> value="4"></td>
+			    </tr>
+		    </volist>
+		</tbody>
+	</table>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+    </div>
+</form>

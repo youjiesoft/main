@@ -1,0 +1,46 @@
+<div class="pageContent"  style="border:1px solid #B8D0D6;border-top:0;">
+    <div class="panelBar">
+	    <ul class="toolBar">
+	    <if condition="$_SESSION.a eq 1 or $_SESSION.misconstructionteamtype_add ">
+		<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add/id/{$vo['parentid']}" target="dialog" title="新增下级分类"><span><span class="icon icon-plus icon_lrp"></span>新增同级分类</span></a></li>
+		<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add/id/{$vo['id']}" target="dialog" title="新增下级分类"><span><span class="icon icon-plus icon_lrp"></span>新增下级分类</span></a></li>
+		<li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="dialog" title="新增定级分类"><span><span class="icon icon-plus icon_lrp"></span>新增顶级分类</span></a></li>
+	    </if>
+	    <if condition="$_SESSION.a eq 1 or $_SESSION.misconstructionteamtype_delete "><li>
+	    <a title="确定要删除此分类吗?" target="ajaxTodo" href="__URL__/delete/id/{$vo['id']}/navTabId/__MODULE__" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>删除此分类</span></a>
+	    </li></if>
+	</ul>
+    </div>
+     
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+	    <div class="pageFormContent"  layoutH="93"  >
+		<div class="unit">
+		    <label>类型编码：</label>
+		    <INPUT type="hidden" name="id" value="{$vo.id}"/>
+		    <input type="text" name="code" class="required alphanumeric" maxlength="10" value="{$vo.code}" />
+		</div>
+		<div class="unit">
+		    <label>类型名称：</label>
+		    <input type="text" name="name" class="required" maxlength="25" value="{$vo.name}" />
+		</div>
+		<div class="unit">
+		    <label>上级类型</label><span class="info">
+		    <if condition="$vo['parentid'] eq 0 ">顶级节点
+		    <else/>
+		    {$vo['parentid']|getFieldBy='id','name','mis_construction_team_type'}
+		    </if>
+		    </span>
+		 </div>
+		<dl class="nowrap">
+		    <dt><label>备注：</label></dt>
+		    <dd><textarea name="remark" rows="2" maxlength="200" cols="60">{$vo.remark}</textarea></dd>
+		</dl>
+	    </div>
+	    <div class="formBar">
+		    <ul>
+		    	<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+		    </ul>
+	    </div>
+	</form>
+     
+</div>

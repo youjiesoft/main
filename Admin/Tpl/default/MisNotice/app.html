@@ -1,0 +1,8 @@
+<style>
+.misnotice{height:190px;overflow-y:scroll; padding-left:5px;}
+</style>
+<ul class="misnotice">
+<volist name="list" id="vo">
+<li><a href="{$vo['url']}" target="_blank">{$key+1}、{$vo['title']}</a></li>
+</volist>
+</ul>

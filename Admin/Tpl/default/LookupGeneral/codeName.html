@@ -1,0 +1,25 @@
+<script>
+function getThisAutoCode($this,m,$model) {
+	$.ajax({
+		type: "POST",
+		url: TP_APP + "/"+m+"/lookupGetCode/",
+		data:{model:$model},
+		dataType: "text",
+		global: false,
+		success: function(d) {
+			$($this).parent().find("input").val(d);
+		}
+	});
+}
+</script>
+<p>
+	<label>编码：</label>
+	<input type="text" name="code" value="" <if condition='$writable eq 0'> readonly="readonly" </if> class="required"/>
+	<if condition="$tplName">
+		<a class="btnRefresh" href="javascript:;" onclick="getThisAutoCode(this,'__MODULE__','{$model}')">获取编号</a>
+	</if>
+</p>
+<p>
+	<label>名称：</label>
+	<input type="text" name="name" value="" class="required"/>
+</p>

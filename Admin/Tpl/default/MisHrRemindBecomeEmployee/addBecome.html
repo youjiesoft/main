@@ -1,0 +1,163 @@
+<script>
+function appendbecomeHtmlRemind($id){
+	var isTrue = true;
+	$(".mishrbasicemployee_table").find("input[name='employeeid[]']").each(function(){
+		if($(this).val() == $id) {
+			isTrue = false;
+		}
+	});
+	var $str = "";
+	if(isTrue){
+			$.ajax({
+				type: 'POST',
+				url: "__URL__/lookupemployeeInfo",
+				data: {id:$id},
+				success: function(response){
+					var json=DWZ.jsonEval(response);
+					 if(json){
+						 $str+="<tr>";
+						 $str+="<td>";
+						 $str+="<input type='hidden' name='employeeid[]' value='"+$id+"'>"+json.name+"";
+						 $str+="</td>";
+						 $str+="<td>"+json.dutyid+"</td>";
+						 $str+="<td>"+json.indate+"</td>";
+						 $str+="<td>"+json.pedate+"(天)</td>";
+						 $str+="<td>"+json.date+"(天)</td>";
+						 $str+="<td><a href='javascript:;' class='btnDel' onclick='MisHrBasicEmployee_addbecomedelRemind(this)' ></a>";
+						 $str+="</td>";
+						 $str+="</tr>";
+						 $(".mishrbasicemployee_table").find("table").find('tbody').append($str);
+					 }
+				}
+			});
+	}
+}
+function mishrbasicemployee_employeeInfoRemind($id,obj){
+	$box = $.pdialog.getCurrent();
+	$("#mishrbasicemployee_addBecome").find("span").each(function(){
+		 $(this).attr("style","")  
+	});
+	$(obj).attr("style","color:red");
+	$.ajax({
+		type: 'POST',
+		url: "__URL__/lookupemployeeInfo",
+		data: {id:$id},
+		success: function(response){
+			var json=DWZ.jsonEval(response);
+			 $box.find("input[name='mobilephone']").val(json.mobilephone);
+			 $box.find("input[name='deptname']").val(json.deptname);
+			 $box.find("input[name='dutyname']").val(json.dutyname);
+			 $box.find("input[name='dutyid']").val(json.dutyid);
+			 $box.find("input[name='indate']").val(json.indate);
+			 $box.find("input[name='pedate']").val(json.pedate);
+			 $box.find("input[name='date']").val(json.date);
+		}
+	});
+}
+function mishrbasicemployee_addpeopleRemind(id,name){
+	var $strHtml = appendbecomeHtmlRemind(id);
+}
+function MisHrBasicEmployee_selectintoRemind($this){
+		var $dialog = $.pdialog.getCurrent();
+		if($(".Basicsaleprojectlist").find("input[type='checkbox']:checked").length < 1){
+			alertMsg.error($($this).attr("warn"));
+			return false;
+		}
+		$(".Basicsaleprojectlist").find("input[type='checkbox']:checked").each(function(){
+	 			var val = DWZ.jsonEval($(this).attr('value'));
+	 			mishrbasicemployee_addpeopleRemind(val.id,val.name);
+	 	});
+		$.pdialog.close($dialog);
+}
+function MisHrBasicEmployee_addbecomedelRemind(obj){
+	$(obj).parents('tr').remove();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisHrBecomeEmployee/insert/rel/mishrprobationemployee" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+				<input type="hidden" name="dotype" value="流程新建" />
+			<input type="hidden" name="beforeInsert" value="1" /> 
+			<input type="hidden" name="refreshtabs[closeall]" value="1" /> 
+			<input  type="hidden" name="regulartype" value="2"> 
+			<div class="pageFormContent" layoutH="58">
+				<H2 class="contentTitle contentTitle_center">
+				<span class="xyEditFormIcon clearfix">
+					<a class="xyicon xyIconStartButton" href="__URL__/lookupmanage/step/addBecome" lookupGroup="org1">查找带回</a>
+				</span>
+				代办转正申请单
+				<input type="hidden" name="leavetype" value="4" />
+					{:W('ShowOrderno',array(0,'mis_hr_regular_employee'))}
+				</H2>
+				<FIELDSET>
+				  <div class='mishrbasicemployee_table'>
+					<table class="tml-table"  width="100%" >
+						<thead>
+							<tr>
+								<th>姓名</th>
+								<th>职级</th>
+								<th>入职日期</th>
+								<th>试用期</th>
+								<th>已试用</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody class="Basicsaleprojectlist">
+						<volist id="void" name="volistid" > 
+							<tr>
+								<td>
+								 <input type="hidden" name="employeeid[]" value="{$void.id}">{$void.name}
+								</td>
+								<td>{$void.dutylevelid|getFieldBy='id','name','duty'}</td>
+								<td>{$void['indate']|transTime}</td>
+								<td>{$void['pedate']}(天)</td>
+								<td>{$void['date']}(天)</td>
+								<td><a href="javascript:;" class="btnDel" onclick="MisHrBasicEmployee_addbecomedelRemind(this)" ></a>
+								</td>
+							</tr>
+						</volist>
+					</tbody>
+					</table>
+					</div>
+				</FIELDSET>
+				<fieldset>
+					<div class="tml-form-row">
+						<label>转正日期：</label>
+						<span class="xyInputWithUnit">
+                            <input type="text"  name="positivedate" onfocus="WdatePicker()" size="15" id="positivedate_e" class="tml-border-r0 Wdate required" value="{$time|transTime}" />
+                            <span class="input-addon input-addon-calendar"></span>
+						</span>
+					</div>
+				</FIELDSET>
+				<fieldset>
+					<!-- <legend class="fieldset_legend_toggle"><b>原因描述</b></legend> -->
+					<div class="tml-form-row">
+					<TEXTAREA  name="remark"  style="width:520px; height: 60px;" class="required"></TEXTAREA>
+					</div>
+				</fieldset>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>代&nbsp;办&nbsp;人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$Think.SESSION.loginUserName}"    />
+						<input type="hidden" name="createid" value="{$uid}"/>
+					</div>
+					<div class="tml-form-col">
+					 	<label>代办时间：</label>
+						<input name="applicationdate" type="text" readonly="readonly" value="{$time|transTime}"  class="textInput required" />
+					</div>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li>
+						<button class="tml-btn tml-btn-primary" type="button" onclick="StartProcess_dialog(this.form,'MisHrBecomeEmployee');">启动审核</button> 
+						<!-- <button type="submit" >启动审核</button>-->
+					</li>
+					<li>
+						<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

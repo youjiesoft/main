@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>{$arc.title}</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+         <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/normalize.css?{:time()}" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/main.css?{:time()}" />
+        <script src="__PUBLIC__/Js/jquery-1.7.1.js" type="text/javascript"></script>
+        <script type="text/javascript" src="__PUBLIC__/Js/jquery.popupwindow.js"></script>
+        <script type="text/javascript" src="__PUBLIC__/Js/common.js"></script>
+	       <script>
+	       		function praise(parisetype,num,arcid){
+	       			var aperc ;
+					var nperc ;
+					 	$.ajax({
+			        		  type:'POST',
+			                  url:"__URL__/applaud",
+			                  data:{parisetype:parisetype,arcid:arcid},
+			        		  success:function(re){
+			        			eval("data=" +re);
+			        			 if(data){
+			        				 if (data.result !== undefined && data.result != "faile"){
+						        					 if(parisetype == 1){
+							        						$("#agree").text(parseInt(data.agree));
+							        					}else{
+							        						//$("#noagree").text(parseInt(data.noagree) + parseInt(1));
+							        						$("#noagree").text(parseInt(data.noagree));
+							               				}
+						        					var total= parseInt(data.agree) + parseInt(data.noagree);
+						        					//"有用"个数为0 ,且"无用"个数不为0
+						        					if((data.agree == 0) && (data.noagree != 0)){
+						        							nperc = 100 ;
+						        						    aperc == 1 ;
+						        					}
+						        					//"无用"个数为0 ,且"有用"个数不为0
+						        					if((data.noagree == 0) && (data.agree != 0)){
+						        						 aperc = 100 ;
+						        						 nperc == 1 ;
+						        					}
+						        					//"无用"个数不为0 ,同时"有用"个数不为0
+						        					if((data.noagree != 0) && (data.agree != 0)){
+						        						 aperc = parseInt((data.agree/total)*100);
+							        					 nperc = parseInt((data.noagree/total)*100);
+						        					}
+						        					//alert(data.aperc);
+						        					//alert(data.noagree);
+			        					$("#colorpery").css({ width: aperc + '%'});
+			        					$("#colorpern").css({ width: nperc +'%'});
+			        				 }else{
+			        					 if(parisetype == 1 || parisetype == 2){
+				        						alert("您已经评价过了!");
+				        					}
+			        				 }
+			        			 }
+			        		}
+			        	});
+	       		}
+	       </script>
+	       <script type="text/javascript">
+	    	   function iEsc(){ return false; }
+	    	   function iRec(){ return true; }
+	    	   function DisableKeys() {
+		    	   if(event.ctrlKey || event.shiftKey || event.altKey)  {
+			    	   window.event.returnValue=false;
+			    	   iEsc();
+		    	   }
+	    	   }
+	    	   document.ondragstart=iEsc;
+	    	   document.onkeydown=DisableKeys;
+	    	   document.oncontextmenu=iEsc;
+	    	   if (typeof document.onselectstart !="undefined")
+	    	   document.onselectstart=iEsc;
+	    	   else{
+	    		   //qsyz.net
+	    	   document.onmousedown=iEsc;
+	    	   document.onmouseup=iRec;
+	    	   }
+	    	   function DisableRightClick(www_qsyz_net){
+	    	   if (window.Event){
+	    	   if (www_qsyz_net.which == 2 || www_qsyz_net.which == 3)
+	    	   iEsc();}
+	    	   else
+	    	   if (event.button == 2 || event.button == 3){
+	    	   event.cancelBubble = true
+	    	   event.returnValue = false;
+	    	   iEsc();}
+	    	   }
+	       </script>
+	       <script type="text/javascript">
+        	function showsontype(obj){
+        		$(obj).find("ul").show();
+        	}
+        	function hidesontype(obj){
+        		$(obj).find("ul").hide();
+        	}
+        	</script>
+        	<script>
+			function openNewWindowsDisplayFile(obj) {
+				var url = $(obj).attr("rel");
+				$(obj).popupWindow({
+					windowURL : url,
+					centerScreen : 1,
+					scrollbars : 0,
+					width : 960,
+					resizable : 1,
+					scrollbars : 1
+				});
+			}
+		</script>
+	       <style type="text/css"> 
+				body {
+					-moz-user-select : none;
+					-webkit-user-select: none;
+					}
+		   </style> 
+    </head>
+    <body>
+		<div class="k">
+			<div class="header">
+				<div class="container">
+				<h1 class="logo">
+						<if condition="$Copany_Info['picture']">
+							<img alt="logo" src="__PUBLIC__/Uploads/{$Copany_Info['picture']}" />
+							<else/>
+							<img alt="logo" src="__PUBLIC__/Images/sysAnnouncement/logo.png" />
+						</if>
+				</h1>
+					<h2 class="title">&nbsp;知识库</h2>
+						<div class="search header-search">
+							<form action="__URL__/more" class="form search-form" method="get">
+								<input style="font-size:13px;" class="search-input" type="text" name='keywords' value='{$keywords}' placeholder="请输入时间如 2013-04-12或文章标题..."/>
+								<button class ="search-btn" type="submit">搜索</button>
+								<div class="header-link"><a class="btn btn-info" href="__URL__/knowledgepublish">发表文章</a></div>
+							</form>
+						</div>
+				</div>
+			</div>
+			<!-- end header -->
+			<div class="container clearfix">
+				<div class="main">
+					<div class="">
+						<div class="box2">
+							<div class="box2-header">
+								<div class="box-item">
+									<a class="expert-ask" href="__URL__/knowledge">返回首页 &gt;&gt;</a>
+								</div>
+								<h2 class="box2-title">
+									<span class="box2-title-txt">
+										{$arc.categoryid|getfieldby='id','name','mis_knowledge_type'}
+									</span>
+								</h2>
+							</div>
+							<div class="box2-body article2">
+								<div class="article2-header">
+									<h3 class="article2-title">{$arc.title}</h3>
+									<div class="article-list-info">
+										作者：<span class="">{$arc.createid|getfieldby='id','name','user'}</span>&nbsp; &nbsp;发表于：<span class="">{$arc.createtime|date="Y-m-d ",###}</span>&nbsp;&nbsp; 点击：<span class="">{$arc.count}</span>
+									</div>
+								</div>
+								<div class="article2-body">
+									<div class="article2-intro">
+										<p>{$arc['content_ful']}</p><!-- 关键子position -->
+									</div>
+									<div class="article2-content">
+										<p>{$arc.content}</p>
+									</div>
+									<!-- 附件操作 -->
+									<if condition="$attarry">
+										<volist id="att" name="attarry">
+							                <div class="mb10">
+							                	<span class="label label-success">附件{$key+1}</span>
+												<span class="attlink ml10">
+													<a title="{$att['upname']}" href="__APP__/MisKnowledgeManage/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank">
+														<span>{$att['upname']}</span>
+													</a></span>
+												<if condition="$att['isplay'] eq 1">
+													&nbsp;<a class="btn btn-small btn-warning" style="cursor:pointer;" rel="__APP__/MisKnowledgeManage/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);">在线查看</a>
+												</if>
+												<if condition="$attR_Right">
+													&nbsp;<a title="{$att['upname']}" href="__APP__/MisKnowledgeManage/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank">
+														<span>下载</span>
+													</a>
+												</if>
+							                </div>
+										 </volist>
+										 <!--  2014 06 17 dirct yuansl
+								            <div>
+								                <b><span style="color:black;">附件：</span></b>
+								                <span>
+								                	<ul style="list-style-type:none">
+										                <volist id="att" name="attarry">
+															<li><span style="color:black;">{$att['upname']}</span>&nbsp;<a title="{$att['upname']}" title="" href="__APP__/MisSystemAnnouncement/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank"><span style="color:#FF8000;">下载</span></a></li>
+										                </volist>
+									                </ul>
+								                </span>
+								                <br/><br/>
+								            </div>
+							            -->
+					       			</if>
+					       			
+									<div class="article2-vote">
+										<div class="vote">
+										 <a class="vote-good" href="JavaScript:;" onclick="praise(1,'{$agree}','{$arc.id}')">
+												<!-- 最初数值 -->
+												<span class="vote-act">
+													有用&nbsp;&nbsp;
+													<span class="vote-num" id="agree">{$agree}</span> 
+												</span>
+												<span class="vote-percent">
+												<!-- 样式百分比  -->
+													<span class="vote-percent-bar">
+														<span id="colorpery" class="vote-percent-good" style="width:{$agreepercent};"></span>
+													</span>
+												<!--  百分比 -->
+													<span class="vote-percent-num" id="numbpery">
+															<span id="ypercent"></span>
+													</span>
+												</span>
+									    </a>
+										<a class="vote-bad" href="JavaScript:;" onclick="praise(2,'{$onagree}','{$arc.id}')">
+												<span class="vote-act">
+													无用&nbsp;&nbsp;
+													<span class="vote-num" id="noagree">{$noagree}</span>
+												</span>
+												<span class="vote-percent">
+												<!-- 样式百分比 -->
+													<span class="vote-percent-bar">
+														<span id="colorpern" class="vote-percent-bad" style="width:{$noagreepercent};"></span>
+													</span>
+												<!-- 百分比 -->
+													<span class="vote-percent-num" id="numbpery">
+														<span id="npercent"></span>
+													</span>
+												</span>
+										 </a>
+										</div><!-- end vote -->
+									</div>
+								</div>
+								<div class="article2-footer">
+									<div class="article2-link">
+										<span>上一篇：</span>
+										<if condition="$updata"><a href="__URL__/knowledgedetail/categoryid/{$updata|getFieldBy='id','categoryid','MisKnowledgeList'}/id/{$updata}" target="_self">{$updata|getFieldBy='id','title','MisKnowledgeList'}</a>
+										<else/>无</if>
+									</div>
+									<div  class="article2-link">
+										<span>下一篇：</span>
+										 <if condition="$downdata"><a href="__URL__/knowledgedetail/categoryid/{$downdata|getFieldBy='id','categoryid','MisKnowledgeList'}/id/{$downdata}" target="_self">{$downdata|getFieldBy='id','title','MisKnowledgeList'}</a>
+										 <else/>无</if>
+									</div>
+								</div>
+							</div>
+						</div><!-- end box2 -->
+					</div>
+				</div><!-- end main -->
+				<div class="sidebar">
+					<div >
+						<ul class="k-breadcrumb clearfix">
+							<li class="k-breadcrumb-history">
+								<a>当前位置:</a>
+							</li>
+							<li class="k-breadcrumb-history">
+								<a href="__URL__/knowledge">主页</a>
+							</li>
+					 		<if>
+								<if condition="toptypeName neq ull">
+									<li>
+										<span>&gt;</span>
+									</li>
+									<li>
+										<span><a href="__URL__/knowledgelist/typeid/{$topTypeArr['id']}">{$topTypeArr['name']}</a></span>
+									</li>
+								</if>
+							</if>
+						</ul>
+					</div>
+					<div class="column-box">
+						<div class="column-box-inner">
+							<div class="column-box-header">
+								<h2 class="column-box-title">栏目列表</h2>
+							</div>
+							<div class="column-box-body">
+								<ul class="column-list">
+										<volist name="listarray" id="vll">
+											<li onmouseover="showsontype(this)" onmouseout="hidesontype(this)">
+												<a href="__URL__/knowledgelist/typeid/{$vll['obj']['id']}">{$vll['obj']['id']|getfieldby='id','name','mis_knowledge_type'}</a>
+												<if condition="$vll['sontypelist']">
+													<ul class="column-sub-list" >
+														<volist name="vll['sontypelist']" id="sontypes">
+																<li><a href="__URL__/knowledgelist/id/{$sontypes['id']}/typeid/{$vll['obj']['id']}">{$sontypes['name']}</a></li>
+														</volist>
+													</ul>
+												</if>
+											</li>
+										</volist>
+								</ul>
+							</div>	
+							<!-- $vll['obj']['id']是子类的parentid. $vll['obj']['name']并不是顶级分类的id -->
+							<div class="column-box-footer"></div>
+						</div>
+					</div><!-- end column-box -->
+					<div class="box2 box-hot">
+						<div class="box2-header">
+							<h2 class="box2-title"><span class="box2-title-txt">热门关注</span></h2>
+						</div>
+						<div class="box2-body">
+							<ul class="hot-list">
+								<volist name="hotlist" id="vx">
+								<if condition="hotlist neq null">
+									<li >
+										<a href="__URL__/knowledgedetail/categoryid/{$vx.categoryid}/id/{$vx.id}">{$vx.title}</a>
+									</li>
+									<else/>
+									<li>
+										<a >暂无数据</a>
+									</li>
+								</if>
+								</volist>
+							</ul>
+						</div>
+					</div>
+					<ul class="link-list">
+						<li><a class="link link-4" href="__APP__/MisSystemPanelMethod/systemNoticeslookup" target="_black">公告中心</a></li>
+						<li><a class="link link-2" href="__APP__/MisSystemNoticeMethod/expertquestion" target="_black">专家问答</a></li>
+						<li><a class="link link-3" href="{$url}" target="_black">公司网站</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- end container -->
+			<div class="footer">
+				<p>Copyright © 2014 {:C('COPYRIGHT')}</p>
+			</div>
+		</div>
+<script>
+</script>
+    </body>
+</html>

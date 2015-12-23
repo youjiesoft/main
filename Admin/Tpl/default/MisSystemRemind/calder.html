@@ -1,0 +1,27 @@
+
+<script>
+//日程
+$(document).ready(function () {
+	option = new Array(true,false,false,true);//[0]:是否显示节日;[1]:是否显示天干地支;[2]:是否显示农历;[3]:是否显示法定节日;
+	var json_val = '{$myEvents}';
+	//传入日程json
+	var calendar = PL_rili("#calendarIndexWork",option,json_val);
+	// 构造滚动
+	//$("#privatetask").kxbdMarquee({direction:"up",scrollDelay:"70"});
+});
+
+</script>
+<!-- 日历 -->
+<div class="calendar-box" style="position:relative;line-height: 14px;">
+	<div id='calendarIndexWork' ></div>
+	<div class="calendar-tips hide" id="calendar-tips">
+		<div class="">
+			<ul class="calendar-tips-list" id="calendar-tips-list">
+				<!-- start calendar-tips-alt -->
+				 
+				<!-- end calendar-tips-alt -->
+			</ul>
+		</div>
+	</div>
+</div>
+<!-- 日历 结束 -->

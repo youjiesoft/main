@@ -1,0 +1,47 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/changePwd" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}">
+		<input type="hidden" name="step" value="1">
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>旧密码：</label>
+				<input type="password" class="required" name="oldpassword">
+			</div>
+			<div class="unit">
+				<label>新密码：</label>
+				<input type="password" id="w_validation_pwd" class="required" name="password">
+			</div>
+			<div class="unit">
+				<label>确认密码：</label>
+				<input type="password"  equalto="#w_validation_pwd" class="required" name="repassword">
+			</div>
+			<div class="unit">
+				<label>验证码：</label>
+				<input type="text" class="required" name="verify">
+				<img src="__APP__/Public/verify/" BORDER="0" ALT="click" id="verifyImg" onClick="fleshVerify();return false;" style="cursor:pointer" align="absmiddle">
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	<script>
+		function fleshVerify(type){
+			//重载验证码
+			var timenow = new Date().getTime();
+			if (type){
+				$('#verifyImg').attr("src", TP_APP+'/Public/verify/adv/1/'+timenow);
+			}else{
+				$('#verifyImg').attr("src", TP_APP+'/Public/verify/'+timenow);
+			}
+		}
+		$(document).ready(function(){
+			$("#verifyImg").attr("src",TP_APP+"/Public/verify/"+new Date().getTime()); 
+		});
+	</script>
+	</div>
+</div>

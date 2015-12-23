@@ -1,0 +1,102 @@
+<script type="text/javascript">
+$(function(){
+	var $box=navTab.getCurrentPanel();
+	$('.nbmaccordion' , $box).nbmaccordion();
+});
+</script>
+<style>
+    .right_nbm_panel .nbm_panel:first-child .nbm_panel-head{
+        border-radius: 4px 4px 0 0;
+    }
+    .center_lay {
+        width: calc(100% - 240px);
+        margin-bottom: 40px
+    }
+    .right_nbm_panel {
+        margin-right: 10px
+    }
+    .center_part_box {
+        margin-bottom: 15px;
+        background: #fff;
+        border-radius: 4px 4px 0px 0px;
+        box-shadow: 0 0 6px rgba(0,0,0,0.35);
+        box-shadow: 0 2px 3px 0 rgba(0,0,0,0.058);
+    }
+    .center_part_title {
+        overflow: hidden;
+        line-height: 40px;
+        height: 40px;
+        background: #1fb5f9;
+        border-radius: 4px 4px 0px 0px;
+        position: relative;
+        box-shadow: 0 0 2px 0 rgba(0,0,0,0.5);
+     }
+    .center_box_title{
+        font-size: 16px;
+        padding: 0 0 0 10px;
+        color: #fff;
+        text-shadow: 1px 2px 1px rgba(0,0,0,0.3);
+    }
+    .more_part_btn {
+        display: inline-block;
+        cursor: pointer;
+        background: rgba(0,0,0,0.15);
+        color: #fff;
+        width: 60px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        border-radius: 2px;
+        border: 1px solid rgba(0,0,0,0.1);
+        box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
+        position: absolute;
+        right: 10px;
+        top: 5px;
+    }
+</style>
+	<div class="page unitBox">
+	<div class="pageContent">
+	
+	<!-- ***************************************************** -->
+        <div class="left center_lay" layouth="40">
+            <volist name="MisSystemReportList" id="reportvo">
+            <if condition="$reportvo['isindex']==='1'">
+                <div class="center_part_box">
+                    <div class="center_part_title">
+                        <span class="center_box_title">{$reportvo['name']}</span>
+                        <a class="more_part_btn" href="{$reportvo.url}" target="{$reportvo.showmethod}" rel="{$reportvo['modelname']}_report" title="{$reportvo['name']}">更多</a>
+                    </div>
+                        <iframe frameborder="0" style="width: 100%;  height: {$reportvo['height']}px" scrolling="no"  allowtransparency="true" src="{$reportvo.url}"></iframe>
+                </div>
+                </if>
+            </volist>
+        </div>
+	<!-- end -->
+	<!-- 以下为菜单 -->
+            <!--  参数说明：* @parame spread 全关全开控制，默认0：全关 @parame selecter 打开指定项下标。默认-1， @parame open 展开的样式效果 @parame close 关闭样式效果 -->
+			<div class="right right_nbm_panel">
+                <div class="nbmaccordion"  data-option="selecter:0;close:icon-double-angle-down;open:icon-double-angle-up" layouth="40">
+                    <volist name="groupList" id="groupVo">
+                        <div title="{$groupVo|getFieldBy='id','name','group'}">
+                            <ul style="background: #fff;">
+                                <volist name="reportlistArr[$groupVo]" id="reportgroupvo">
+                                    <li>
+                                        <a href="{$reportgroupvo.url}" target="{$reportgroupvo.showmethod}" rel="{$reportgroupvo['modelname']}_report" title="{$reportgroupvo['name']}">
+                                            <span>
+                                            {$reportgroupvo.name}
+                                            </span>
+                                        </a>
+                                    </li>
+                                 </volist>
+                            </ul>
+                        </div>
+                    </volist>
+                </div>
+			</div>
+			<!-- left end -->
+        <div class="clear"></div>
+	</div>
+</div>
+<!-- 菜单 -->
+	<!--</volist> -->
+ 

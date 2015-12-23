@@ -1,0 +1,20 @@
+<div class="pageContent" layoutH="10">
+	<table class="list" width="100%">
+		<thead>
+		<tr>
+			<th width="120">开始时间</th>
+			<th width="120">结束时间</th>
+			<th>摘要</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr target="sid_node" rel="{$vo['id']}">
+			<td>{$vo['startdate']|transTime='Y-m-d H:i:s'}</td>
+			<td>{$vo['enddate']|transTime='Y-m-d H:i:s'}</td>
+			<td>{$vo['text']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+</div>

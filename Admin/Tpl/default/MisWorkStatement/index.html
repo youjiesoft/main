@@ -1,0 +1,107 @@
+<style>
+.fc-day-content{display: none;}
+.pred{
+    background-color: #1092f7;
+	 color: #ff0;
+}
+.fc-grid .fc-day-number {
+    float: none;
+    text-align: center;
+    cursor: pointer;
+}
+.fc-grid .fc-day-number:hover {
+    /*background-color: #ffa;*/
+    color:#333;
+}
+</style>
+<script>
+$(document).ready(function () {
+    var date = new Date();
+    var d = date.getDate();
+    var m = date.getMonth();
+    var y = date.getFullYear();
+    var calendar = $('#calendarWorkStatement').fullCalendar({
+        header: {
+            left: 'prev',
+            center: 'title',
+            right: 'next'
+        },
+	 
+        height:20,
+        monthNames: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        monthNamesShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        dayNames: ["日", "一", "二", "三", "四", "五", "六"],
+        dayNamesShort: ["日", "一", "二", "三", "四", "五", "六"],
+        today: ["今天"],
+        firstDay: 0,
+        buttonText: {
+            month: '月',
+            prev: "<span class='fc-text-arrow'>&lsaquo;</span>",
+            next: "<span class='fc-text-arrow'>&rsaquo;</span>",
+            prevYear: "<span class='fc-text-arrow'>&laquo;</span>",
+            nextYear: "<span class='fc-text-arrow'>&raquo;</span>"
+       },
+       /* 显示日程  */
+       viewDisplay: function (view) {
+           var viewStart = $.fullCalendar.formatDate(view.start, "yyyy-MM-dd");
+           var viewEnd = $.fullCalendar.formatDate(view.end, "yyyy-MM-dd");
+           $("#calendarWorkStatement").fullCalendar('removeEvents');
+           $.post("__URL__/lookupGetdate/jump/1/starttime/"+viewStart+"/endtime/"+viewEnd, { start: viewStart, end: viewEnd }, function (data) {
+               var resultCollection = jQuery.parseJSON(data);
+               $.each(resultCollection, function (index, term) {
+                   $("#calendarWorkStatement").fullCalendar('renderEvent', term, true);
+               });
+           }); 
+      },
+      selectable: true,
+      selectHelper: true,
+      /* 新增日程  */
+      select: function(start, end, allDay) {
+    	  var start = $.fullCalendar.formatDate(start, "yyyy-MM-dd");
+    	  $("#misworkstatementBox").loadUrl(TP_APP+"/MisWorkStatement/index/jump/1/datetime/"+start,'',function(){
+    		  $("#misworkstatementBox").find("[layoutH]").layoutH();
+    	  });
+      }
+    });
+    //为左侧栏目导航点击后修改选中状态@nbmxkj 20141009 1629
+    nbm_getfouce();
+});
+//发送工作报告
+function sendWorkStateMent(form){
+	var $form = $(form);
+	$form.find("input[name='stepType']").val(1);
+	$form.submit();
+}
+
+</script>
+<div class="pageContent">
+
+	<div class="treeleft">
+	{:W("ShowToLevelMenu")}
+		<div class="collapse" layoutH="40">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div></div>
+            <div class="work_statement">工作报告</div>
+            <div class="edit_work_lay">
+                <a class="edit_work_btn" href="#">写报告 <span class="icon-pencil"></span></a>
+            </div>
+            <div class="tml_divider"></div>
+            <div class="tml_bar_nav">
+                <ul class="bar_nav">
+                    <li class="active"><a href="__URL__/index/jump/1" target="ajax" rel='misworkstatementBox'>全部报告</a></li>
+                    <li><a href="__URL__/index/jump/1/typeid/97" target="ajax" rel='misworkstatementBox'>日报</a></li>
+                    <li><a href="__URL__/index/jump/1/typeid/98" target="ajax" rel='misworkstatementBox'>周报</a></li>
+                    <li><a href="__URL__/index/jump/1/typeid/99" target="ajax" rel='misworkstatementBox'>月报</a></li>
+                </ul>
+            </div>
+			<div class="clearfix" layoutH="200">
+				<div id='calendarWorkStatement'></div>
+			</div>
+		</div>
+	</div>
+	<div id="misworkstatementBox" class="unitBox treeright">
+		<include file="unitlist"/>
+	</div>
+</div>

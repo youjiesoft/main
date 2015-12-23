@@ -1,0 +1,100 @@
+<script>
+var id = '{$_GET[id]}';
+var check = '{$_GET[check]}'; 
+function inseradditionalconditions($form){
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		if(json.statusCode==DWZ.statusCode.ok){
+			$(this).logs(json.data);
+			 $("#dateconditions_lookup").val(json.data);
+			$.pdialog.closeCurrent(); 
+		}
+	});
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/additionaldateconditions" class="pageForm required-validate" onsubmit="return inseradditionalconditions(this)">
+	    <div class="pageFormContent" layoutH="0">
+	    <input type="hidden" name="issave" value="1"/>
+<div class="tableItem">
+	<div>
+        <div class="tml_search_tips" style="width: 93.2%;margin: 0 auto;">
+            <p class="search_tips_title"><span class="icon-comments" style="margin-right: 5px"></span>友情提示： </p>
+            <p class="search_tips_center">1、【lookup对应字段】不选择表示直接使用当前表单中的字段名称做为过滤条件检索字段。</p>
+            <p class="search_tips_center">2、如果lookup对应字段下拉框无数据，请先保存lookup设置后再来进行对应关系设置！</p>
+            <p class="search_tips_center">3、对应字段被重复定义关联时只有最后一项有效，之前数据全被覆盖！</p>
+        </div>
+        <p class="zi_title_lay" style="width: 95%; margin: 10px auto;">
+            <span class="zi_title">当前表单字段</span>
+        </p>
+				<table class="tml_set_table" style="width: 95%; margin: 0px auto; text-align: center;">
+				  <col width="10%">
+				  <col width="40%" />
+				  <col width="40%" />
+				<thead>
+				<tr>
+					<th>选择</th>
+					<th>字段</th>
+					<th>lookup对应字段</th>
+					</tr>
+				</thead>
+				<tbody>
+				{~$index=0;}
+				 <volist name='MisDynamicFormProperyList' id="MisDynamicFormProperyVo" >
+				 	<tr>
+				 		<td>
+				 			<input type="checkbox"   <if condition="$additional[proexp][$MisDynamicFormProperyVo.id]">checked</if> value="{$MisDynamicFormProperyVo.id}"   name="proexp[{$index}]" />
+                        </td>
+				 		<td>
+				 			{$MisDynamicFormProperyVo.title}
+				 		</td>
+				 		<td>
+				 		<div class="list_group_lay">
+				 		<select class="select2 list_select2" name="relation[{$index}]" style="width: 160px;">
+				 			<option value="">选择对应字段</option>
+				 			<?php foreach($lookupConfig as $key=>$val){  ?>
+				 			<option  <if condition="$additional[proexp][$MisDynamicFormProperyVo.id] eq $key">selected</if> value="{$key}">{$val}</option>
+				 			<?php }  ?>
+				 		</select>
+				 		</div>
+				 		</td>
+				 	</tr>
+				 	{~$index++;}
+				 </volist>
+				</tbody>
+				</table>
+	<div>
+
+        <p class="zi_title_lay" style="width: 95%; margin: 10px auto;">
+            <span class="zi_title">系统字段</span>
+        </p>
+	<div class="process_condition_lay">
+                <div class="process_condition_header">
+                    <span class="pch_one">选择</span>
+                    <span class="pch_two">字段</span>
+                </div>
+                <volist name='SystemFieldList' id="SystemFieldVo" >
+                    <div class="tml-row process_condition_con">
+                        <div  class="tml-form-col pcc_left">
+                            <input type="checkbox"  <if condition="$additional[sysexp][$key]">checked</if>  value="{$key}"   name="sysexp[]" />
+                        </div>
+                        <div class="tml-form-col pcc_right">
+                            <label>{$SystemFieldVo}</label>
+                        </div>
+                    </div>
+                </volist>
+			</div>
+	</div>
+	</div>
+	<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystempanel_edit">
+				<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<!--<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>-->
+			</ul>
+	</div>
+	</form>
+	</div>
+</div>

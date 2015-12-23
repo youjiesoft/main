@@ -1,0 +1,36 @@
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>职务编号：</label>
+				<input type="text" class="required" name="code" />
+			</div>
+			<div class="unit">
+				<label>职务名称：</label>
+				<input type="text" class="required" name="name" />
+			</div>
+			<div class="unit">
+				<label>状 态：</label>
+				<SELECT name="status">
+					<option value="1">启用</option>
+					<option value="0">禁用</option>
+				</SELECT>
+			</div>
+
+		</div>
+
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.MisSystemDuty_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+		</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+

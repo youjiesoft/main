@@ -1,0 +1,49 @@
+<script>
+	//链接    系统公告
+	function systemAnnouncementCreateid(ids,title){
+		navTab.openTab("__MODULE__","__URL__/index/createid/"+ids,{title:title, fresh:true});
+		return false;
+	}
+</script>
+<volist id="vo" name="list" key="key2">
+<div class="xyqa-main-item">
+	<h2>
+		<span class="xyqa-favoriting" style="color:skyblue;" title="删除"><input type="checkbox" name="id" value="{$vo['id']}" /></span>
+		<span class="xyqa-title"  <if condition="$vo.status eq '-1'">style="text-decoration:line-through"</if>><a href="__URL__/view/id/{$vo.id}" target="navTab" title="{$vo.title}" rel="__MODULE__/view" mask="true" >{$vo['title']}</a><if condition="$vo.status eq '-1'"><span style="color:gray">[已删除]</span></if><span class="xyqa-title-new"><img alt="new" src="__PUBLIC__/Images/xyimages/article_new.png" /></span></span>
+	</h2>
+	<span class="xyqa-title-img"><img alt="new" src="__PUBLIC__/Images/xyimages/article_title.png" /></span>
+	<div class="xyqa-view clearfix">
+		<div class="xyqa-view-main" >
+			<div class="xyqa-view-content" style="text-indent: 2em;Line-height:20px">{$vo['content']}<br /><a target="navTab" title="{$vo['title']}"  href="{$vo['url']}">{$vo['url']}</a></div>
+				<div class="clearfix">
+					<span class="xyqa-q-view-avatar-meta xyqa-q-view-buttons">
+					<if condition="$_SESSION.a eq 1 or $_SESSION.missystemannouncement_edit">
+						<a class="xyqa-form-light-button xyqa-form-light-button-edit" href="__URL__/edit/id/{$vo.id}" target="navTab"  title="系统公告编辑" width="760" height="460" mask="">
+							<span>{$Think.lang.edit}</span>
+						</a>&nbsp;
+						</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.missystemannouncement_view">
+						<a class="xyqa-form-light-button xyqa-form-light-button-view" href="__URL__/view/id/{$vo.id}" target="navTab" title="{$vo.title}" rel="__MODULE__/view" mask="true" >
+							<span>查看</span>
+						</a>
+					</if>
+					<span class="xyqa-q-view-meta">
+						<span class="xyqa-q-view-what">发布时间:</span>
+						<span class="xyqa-q-view-when">
+							<span class="xyqa-q-view-when-data">
+								<span class="xypublished">{$vo.createtime|transTime='Y-m-d H:i'}</span>
+							</span>
+						</span>&nbsp;&nbsp;
+						<span class="xyqa-q-view-who">
+							<span class="xyqa-q-view-who-pad">作者:{$vo.createid|getFieldBy='id','name','user'}</span>
+							<span class="xyqa-q-view-who-data">
+								<a class="xyqa-user-link"  href="javascript:" style="cursor:pointer;" onclick="return parent.systemAnnouncementCreateid('{$vo['createid']}','系统公告');">{$vo['name']}</a>
+							</span>
+						</span>
+					</span>
+				</span>
+			</div>
+		</div>
+	</div>
+</div>
+</volist>

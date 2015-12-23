@@ -1,0 +1,205 @@
+<script>
+(function(){
+	var messageType = "{$_REQUEST['messageType']}";
+	if(messageType){
+		var obj = $("li.js-"+messageType+"-cu").find("a");
+		if(messageType=='inboxself'){
+			var sign=0;
+		}else{
+			var sign=1;
+		}
+		var url = obj.attr("href");
+		var id = "{$_REQUEST['id']}";
+		//如果有值，直接跳转到具体某张页面
+		if(id) {
+			url="__APP__/MisMessageInbox/lookupreadmessage/fullmodel/1/frmae/1/important/0/id/"+id;
+		}
+		$("#jbsxBoxMessage").loadUrl(url,{},function(){
+	    	$("#jbsxBoxMessage").find("[layoutH]").layoutH();});
+		obj.addClass('cu');
+	}
+    var a = $('#mailTypeLink').find('a');
+    $(a).on('click',function(){
+    	a.removeClass('cu');
+    	$(this).addClass('cu');
+    });
+})();
+//点击树执行函数的Content 
+/*
+ * event, treeId, treeNode,点击树返回的参数
+ * whickInputValue，whickInputpositionValue获得相应页面的隐藏域的值 isCopyOrReci:字符串，用来做判断的 ,默认是收件人ulid
+ * ulId 抄送人ulid
+ */
+function zTreeOnClickContent(event, treeId, treeNode,whickInputValue,whickInputpositionValue,isCopyOrReci,ulId){
+	var otherulid ='';
+    if (whickInputpositionValue == isCopyOrReci) {
+        otherulid = isCopyOrReci;
+        var recipient = 'recipient';
+        var recipientname = 'recipientname';
+        var emailName = 'email';
+    } else {
+        otherulid = ulId;
+        var recipient = 'copytopeopleid';
+        var recipientname = 'copytopeoplename';
+        var emailName = 'emailCopy'
+    }
+    if (treeNode.id > 0) {
+        var $strHtml = appendUserHtml(whickInputpositionValue,recipient,treeNode.id,treeNode.name, recipientname,otherulid,treeNode.email,emailName);
+        $(whickInputValue).children().last().before($strHtml);
+    }else {
+        var userid = treeNode.userid;//从后台获取到用户名和id 
+        var username = treeNode.username;
+        var email = treeNode.email;
+        var userarr = userid.split(",");
+        var usernamearr = username.split(",");//再转换成数组，获得数组的长度，再循环添加到相应的ulid中
+        var emailarr = email.split(",");
+        for(i = 0; i < userarr.length; i++) {
+            var $strHtml = appendUserHtml(whickInputpositionValue,recipient,userarr[i],usernamearr[i], recipientname,otherulid,emailarr[i],emailName);
+            $(whickInputValue).children().last().before($strHtml);
+        }
+    }
+    $(whickInputValue).find('input').focus();
+}
+//清除联系人
+/**
+ * number 表示选择的是收件人还是抄送人，ullid表示的是收件人或抄送人的ulid  
+ */
+function clearreceverMismessage(number,ulId){
+    if(number == '1'){
+        $("#"+ulId).empty();
+        var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput" inputName="recipient" chainname="recipientname" emailName="email" tabindex="1" autocomplete="off"></li>';
+        
+    }else{
+        $("#"+ulId).empty();
+        var $string = '<li class="addresseeText"><input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" type="text" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput" inputName="copytopeopleid" chainname="copytopeoplename" emailName="emailCopy" tabindex="1" autocomplete="off"></li>';
+    }
+    $('#'+ulId).append($string);
+    $('#'+ulId).find('input').focus();
+}
+//显示抄送接收人表单
+/*vname表示的是抄送人对应的tr的id 
+ * isCopy表示有添加抄送人那几个字 的id  
+ * reciulid表示是收件人的ulid 
+ * copytopeopulid表示的是抄送人id
+function IscopyToAdd(vname,isCopy,reciulid,copytopeopulid){
+    var value = $('#'+vname).attr('vname');
+    if(value == 1){
+        $('#'+vname).hide();
+        $('#'+isCopy).text('添加抄送人');
+        $('#'+vname).attr('vname',0);
+        $('#'+reciulid).css({"background": "#fff","border-left":"1px solid #ccc"});
+        $('#'+reciulid).find('input').focus();
+    }else{
+        $('#'+vname).show();
+        $('#'+isCopy).text('删除抄送人');
+        $('#'+vname).attr('vname',1);
+        $('#'+copytopeopulid).empty();
+        var $string = '<li class="addresseeText"><input type="text" onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" checkfor="MisMessage" callback="addresseeInput" show="" class="checkByInput" inputName="copytopeopleid" chainname="copytopeoplename" emailName="emailCopy" tabindex="1" autocomplete="off"></li>';
+        $('#'+copytopeopulid).append($string);
+        $('#'+copytopeopulid).css({"background": "#fff","border-left":"1px solid #ccc"});
+        $('#'+reciulid).css({"background": "#f0f0f0","border-left":"1px solid #cccccc" });
+        $('#'+copytopeopulid).find('input').focus();
+    }
+}
+ */
+/*
+eagle:当提交时，如果是发送，调用这个方法，修正了提交到控制器中的哪个方法中去。]
+* type:is update or insert
+*/
+function commitviewAdd($this,type){
+    var $form = $($this);
+    $(":input[name='commit']",$form).val(1);
+    $form.attr("action","__URL__/"+type+"/navTabId/__MODULE__" );
+    return validateCallback($form, navTabAjaxDone);
+};
+//three search for right.treeType:生成tree的ul id.submitId:提交按钮的id.inputId:search box id.
+function SearchNodeKeysWriteForm(submitId,inputId,treeType){
+    $('#'+submitId).attr("onclick","SearchZTreeNode('"+treeType+"','"+inputId+"')");
+}
+
+//单个Li的点击事件 
+$(document).ready(function(){
+    $('#Mismessage_add, #Mismessage_add_copyTo').each(function(i, el){
+        var $this = $(el);
+        $this.bind('click', function (e){
+        	addressee.selectToggle(e);
+        });
+    });
+});
+// 单击收件 触发函数
+function onClickInboxEmail(){
+	$('#mailTypeLink').find('a').each(function(i){
+		if(i===0){
+	        $(this).addClass('cu');
+		} else {
+	        $(this).removeClass('cu');
+		}
+	});
+}
+</script>
+<div class="pageContent xymail">
+	<div class="xymailSide" layoutH="0">
+		<div>
+			<div class="xymailIcon">
+				<span>邮件系统</span>
+			</div>
+            <div class="tml_mail_rb" layoutH="40">
+                <div class="xymailTool">
+                    <!--<a class="tml-btn tml-btn-blue tml-mr5" rel="jbsxBoxMessage" onclick="onClickInboxEmail();" target="ajax" href="__APP__/MisMessageInbox/index/frame/1/fullmodel/1"><span class="xymailReadBtn"></span>收信</a>-->
+                    <a class="tml-btn tml_btn_f00" rel="jbsxBoxMessage" target="ajax" href="__APP__/MisMessage/writeForm" onclick="$('#mailTypeLink').find('a').removeClass('cu');">写邮件 <i class="icon-pencil"></i></a>
+                </div>
+                <div class="tml_divider"><span></span></div>
+                <div class="xymailTop hide">
+                    <span class="tml-c-white">邮件箱</span>
+                </div>
+                <div class="xymailCon" id="mailTypeLink">
+                    <ul class="tml_mail_ul">
+                        <li class="js-inboxself-cu">
+                            <a class="first" target="ajax" rel="jbsxBoxMessage" href="__APP__/MisMessageInbox/index/frame/1/fullmodel/1">
+                                <span class="tml-label tml-bg-orange tml_color_b32525 tml-mt5 right js-selfemail">{$countInboxMessage}</span>
+                                <span>收件箱</span>
+                                <img src="__PUBLIC__/Images/xyimages/article_new.png" <if condition="$countInboxMessage eq '0'"> class="hide js-selfimg" <else/> class="js-selfimg" </if> />
+                            </a>
+                        </li>
+                        <li class="js-drafts-cu">
+                            <a target="ajax" rel="jbsxBoxMessage" href="__APP__/MisMessageDrafts/index/frame/1/messageType/drafts">草稿箱<span></span></a>
+                        </li>
+                        <li class="js-inboxsystem-cu">
+                            <a target="ajax" rel="jbsxBoxMessage"  href="__APP__/MisMessageInbox/index/messageType/1/frame/1/fullmodel/1" rel="jbsxBoxMessage">
+                            	<span class="tml-label tml-bg-orange tml_color_b32525 tml-mt5 right js-systememail">{$countSystemMessage}</span>
+                            	<span>系统信息</span>
+                                <img src="__PUBLIC__/Images/xyimages/article_new.png" <if condition="$countSystemMessage eq '0'"> class="hide js-systemimg" <else/> class="js-systemimg" </if> />
+                            </a>
+                        </li>
+                        <li>
+                            <a target="ajax" rel="jbsxBoxMessage" href="__APP__/MisMessageOutbox/index/frame/1/">已发送<span></span></a>
+                        </li>
+                        <li>
+                            <a target="ajax" rel="jbsxBoxMessage" href="__APP__/MisMessageRecycle/index/frame/1/">废纸篓<span></span></a>
+                        </li>
+                        <li>
+                            <a target="ajax" rel="jbsxBoxMessage" href="__APP__/MisMessageInbox/index/important/1/frame/1/fullmodel/1">重要邮件<span class="xyStarActive"></span></a>
+                        </li>
+                        <li>
+                            <a class="last" target="ajax" rel="jbsxBoxMessage" href="__APP__/MisMessage/messageconfig/frame/1/">邮箱配置<span></span></a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tml_divider"><span></span></div>
+                <div class="xymailTop hide">
+                    <span class="tml-c-white">外部收件箱</span>
+                </div>
+                <div class="xymailCon" id="mailTypeLink">
+                    <ul class="tml_mail_ul">
+                        <li>
+                            <a class="first last" <if condition="$url"> rel="interEmailBoxMessage" target="_blank"  href="http://mail.{$url}?"<else/>target="ajax" rel="jbsxBoxMessage" href="__APP__/MisMessage/messageconfig/frame/1/"</if>>外邮登录</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+		</div>
+	</div>
+	<div id="jbsxBoxMessage" class="unitBox">
+		<if condition="!$_REQUEST['messageType']"><include file="writeForm"  /></if>
+	</div>
+</div>

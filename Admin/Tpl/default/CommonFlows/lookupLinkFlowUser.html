@@ -1,0 +1,63 @@
+<script>
+	function updateLinkFlows(form) {
+		alertMsg.confirm("您选择的操作将不可以修改，是否确定要连接选择的流程审核人?", {
+			okCall : function() {
+				var $form = $(form);
+				$.ajax({
+					type : form.method || 'POST',
+					url : $form.attr("action"),
+					data : $form.serializeArray(),
+					dataType : "json",
+					cache : false,
+					success : function(json) {
+						DWZ.ajaxDone(json);
+						if (json.statusCode == DWZ.statusCode.ok) {
+							var data = JSON.parse(json.data) || eval("(" + json.data + ")");
+							pr.fnInit("prcslist", data, nodeClick = function() {
+							}, labelClass = 'aLabel', labelFunction = function(e) {
+								var label = e.getElement();//获得label元素
+								var lineIndex = $(label).index('.aLabel');//获取线的索引
+								label.style.display = 'none';
+								return (lineIndex + 1).toString();//只能返回字符串
+							});
+							$.pdialog.closeCurrent();
+						}
+					},
+					error : DWZ.ajaxError
+				});
+			}
+		});
+		return false;
+	}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/lookupUpdateLinkFlows" class="pageForm required-validate" onsubmit="return updateLinkFlows(this);">
+	<input type="hidden" name="ids" value="{$ids}" />
+	<input type="hidden" name="key" value="{$key}" />
+	<div class="pageFormContent">
+		<div style="color: red;" class="p5"><strong style="font-size: 14px;">警告：</strong>审核连接人确认后是不可修改，请仔细操作！</div>
+		<div class="tml-row">
+			<h3 class="tml-h3">人员列表</h3>
+			<ul style="text-align: center;" layoutH="114">
+				<if condition="count($list) gt 0">
+					<volist id="vo" name="list">
+						<li>
+							<label>{$vo['name']}</label><input type="checkbox" class="switch-check" name="linkkeys[]" value="{$vo['key']}">
+						</li>
+					</volist>
+				<else/>
+					<li>没有可以连接的审核人</li>
+				</if>
+			</ul>
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<if condition="count($list) gt 0">
+				<li><button class="tml-btn tml-btn-blue" type="submit">确定</button></li>
+			</if>
+			<li><button class="tml-btn close">取消</button></li>
+		</ul>
+	</div>
+	</form>
+</div>

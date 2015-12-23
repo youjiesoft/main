@@ -1,0 +1,67 @@
+		<style>
+		.tml-form-row label.tmp_label{margin-left:0px;width: 120px;float: none;font: 14px/30px "Microsoft Yahei","微软雅黑",sans-serif;}
+		.tml-form-row label.tmp_label:hover{color:#006699;}
+		</style>
+	<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisAutoZyr/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent"/>
+			<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+				<div class="new_version_page">
+					<div class="new_version_page_header pageFormContent ">视图表单
+					</div><style>
+.cell_left{
+    text-align: center;
+}
+.cell_right{
+    color:#0090ff;
+}
+</style>
+
+<table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+	<tbody>
+		<tr>
+			<td>视图英文名称：</td>
+			<td class="cell_right" width="21%" >{$vo.name}</td>
+			<td class="cell_left" width="12%">视图中文名:</td>
+			<td class="cell_right" width="21%" >{$vo['title']}</td>
+			<td class="cell_left" width="12%">模型名称:</td>
+			<td class="cell_right" width="21%" >{$vo['modelname']|getFieldBy='name','title','node'}</td>
+		</tr>
+		<tr>
+		<td>Sql语句</td>
+		<td colspan="5">{$vo['spellsql']}</td>
+		</tr>
+		<tr>
+		<td class="cell_right" width="21%" colspan="6">
+			<table class="data-table tml-table-w" >
+				<thead>
+					<tr>
+						<th>字段名称</th>
+						<th>别名</th>
+						<th>表名</th>
+					</tr>
+				</thead>
+				<tbody>
+					{~$key=0;}
+					<volist name="innerTabelObjdatatable2Data" id="item">
+					<tr>
+						<td>{$item.field}</td>
+						<td>{$item.otherfield}</td>
+						<td>{$item.tablename}</td>
+					{~$key++}
+					</tr>
+					</volist>
+				</tbody>
+			</table>
+		</td>
+		
+		</tr>
+	</tbody>
+</table>
+		{:W('ShowAction')}
+				</div>
+			</div>
+		</form>
+	</div>
+	</div>

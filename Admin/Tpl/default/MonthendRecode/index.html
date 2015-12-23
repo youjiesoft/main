@@ -1,0 +1,73 @@
+<style>
+.monthly li{ line-height:25px; font-size:14px;}
+.monthly span{ font-size:14px;}
+</style>
+<form id="pagerForm" action="__URL__/index" method="post">
+    <input type="hidden" name="pageNum" value="1"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+    <input type="hidden" name="modelname" value="{$modelname}">
+    <input type="hidden" name="jump" value="1">
+</form>
+<div class="pageHeader">
+    <form rel="pagerForm" action="__URL__/settlement" method="post">
+        <input type="hidden" name="modelname" value="{$modelname}">
+        <input type="hidden" name="jump" value="1">
+        <ul class="monthly">
+            <li>上次物料月结月份：<span>{$lastyear}年{$lastmonth}月份</span></li>
+            <li>本次物料月结月份：<span>{$periodObj["onyear"]}年{$periodObj["onmonth"]}月份</span></li>
+            <li>截止日期：<span>{$endDate}</span>
+            <li><input type="submit" value="进行月结" <if condition="$isAllow eq 0">disabled='disabled'</if> /></li>
+        </ul>
+    </form>
+</div>
+<div class="pageHeader">
+    <form rel="pagerForm" onsubmit="return divSearch(this,'unitExchangeBox');" action="__URL__/index" method="post">
+        <input type="hidden" name="modelname" value="{$modelname}">
+        <input type="hidden" name="jump" value="1">
+        <div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <td>
+                        <select class="combox" name="year" onchange="return divSearch(this.form,'unitExchangeBox');">
+                            <volist id="vo" name="yearlist">
+                                <option  value="{$vo['onyear']}" <eq name="year" value="$vo['onyear']">selected</eq> >{$vo['onyear']}</option>
+                            </volist>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+           <if condition="$_SESSION.a eq 1 or $_SESSION.monthendrecode_edit">
+                <li><a class="detail tml-btn tml_look_btn tml_mp" href="__URL__/detail/year/{$year}/month/{month}/" target="navTab" mask="true" rel="__MODULE__edit" warn="请选择信息"><span><span class="icon icon-eye-open icon_lrp"></span>查看明细</span></a></li>
+            </if>
+            <!-- 
+            <if condition="$_SESSION.a eq 1 or $_SESSION.historydecldatain_export ">
+                <li><a href="__URL__/export/year/{$year}/month/{month}/" target="outexcel" class="edit"><span>导出EXCEL</span></a></li>
+            </if>
+             -->
+        </ul>
+    </div>
+    
+    <table class="table" width="100%" layoutH="222">
+        <thead>
+            <tr>
+                <th>序号</th>
+                <th>月份</th>
+            </tr>
+        </thead>
+        <tbody>
+        <volist id="vo" name="monthlist" key="key">
+            <tr target="month" rel="{$vo['onmonth']}">
+                <td>{$key}</td>
+                <td>{$vo['onmonth']}</td>
+            </tr>
+        </volist>
+        </tbody>
+    </table>
+</div>

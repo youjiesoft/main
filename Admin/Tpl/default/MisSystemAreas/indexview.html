@@ -1,0 +1,83 @@
+<style>
+.keepContentCenter {
+    padding:15px 0px 0px 15px;
+}
+</style>
+
+<script type="text/javascript">
+$('select[name="parentid"],input[name="name"]').on("change",function(){
+	var parentid=$('select[name="parentid"]').val();
+	$.ajax({
+		type:'POST',
+		url:TP_APP + '/MisSystemAreas/lookupGetJoin',
+		data:"parentid="+parentid,
+		dataType:"json",
+		async:false,
+		cache:false,
+		global:false,
+		success:function(data){
+			console.log(data);
+			var joinname=data;
+			var name=$('input[name="name"]').val();
+			if(joinname==null){
+				$('textarea[name="joinname"]').val(name);
+			}else{
+				$('textarea[name="joinname"]').val(joinname+','+name);
+			}
+		},
+		error:DWZ.ajaxError
+	});
+})
+
+</script>
+<div class="pageContent" layoutH="53">
+	<form id="pagerForm" action="__URL__/index" method="post">
+
+	</form>
+	 <form rel="pagerForm" onsubmit="return divSearch(this, 'MisSaleIntentionTypesview')" action="__URL__/index" method="post">
+		 <input type="hidden" value="1" name="jump"/>
+		  <input type="hidden" value="{$vo.id}" name="cy"/>
+	  </form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			 <li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="dialog" mask="true" width="730" height="450" title="新增分类"><span><span class="icon icon-plus icon_lrp"></span>新增分类</span></a></li>
+		    <li><a title="<if condition="$hasproduct">此类型下存在物料，谨慎删除！<else />确定要删除此分类吗?</if>" target="ajaxTodo" href="__URL__/delete/id/{$vo['id']}/navTabId/__MODULE__" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-plus icon_lrp"></span>删除</span></a></li>
+		</ul>
+	</div>
+	
+	<div class="pageFormContent new_basis_archives_page">
+		<div class="new_version_page_content">
+			<if condition="$vo">
+				<form method="post" action="__URL__/update/rel/MisSystemAreasview" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+							<div class="col_1_3 form_group_lay field_shuidewan " >
+								<label class="label_new">{$fields["id"]}:</label>
+								<input   type="text"  name="id" class=" required input_new  input_new  " value="{$vo.id}"><div class="display_none {$classNodeSettingArr["id"]}">{$vo.id}</div>
+							</div>
+							<div class="col_1_3 form_group_lay">
+								<label class="label_new">{$fields["name"]}:</label>
+								<input type="text" name="name" class="required input_new " maxlength="40" value="{$vo['name']}" />
+							</div>	
+							<!-- text组件 end -->
+							<!-- text组件 start -->
+							<div class="col_1_3 form_group_lay field_shiduoren " >
+								  <label class="label_new">{$fields["parentid"]}：</label>
+			                   {:W('ShowSelect',array($vo['parentid'],array('   ',array('type'=>'table',array('readonly'=>'0','targevent'=>'','actionName'=>'MisSystemAreas','names'=>'parentid','defaultcheckitem'=>'','defaultval'=>'0','defaulttext'=>'顶级节点','table'=>'mis_system_areas', 'id'=>'id','name'=>'name','conditions'=>'','parentid'=>'','mulit'=>'0','isnextend'=>'1','treeheight'=>'','treewidth'=>'','key'=>'','isedit'=>'1','showtype'=>'0')))))}
+						 </div>
+			                <div class="col_1_7 form_group_lay ">
+				                <label class="label_new">{$fields["joinname"]}：</label>
+				                <textarea name="joinname" readonly="readonly" class="text_area" rows="2" maxlength="200" cols="60">{$vo.joinname}</textarea>
+				            </div>
+							<!-- text组件 end --><div class="clear"></div>
+						{:W('MisSystemOrderno',array(1))}
+						<div class="formBar">
+							<ul>
+								<li><button type="submit" class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+							</ul>
+						</div>
+					</form>
+				<else/>
+				{:W('MisSystemOrderno')}
+				</if>
+			</div>
+		</div>
+</div>

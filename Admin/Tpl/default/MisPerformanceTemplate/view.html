@@ -1,0 +1,40 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/misperformancetemplate_rightcontent_tree" class="pageForm required-validate"
+    onsubmit="return refreshTreeEdit(this,'name','misperformancetemplate_rightcontent_tree');" >
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">	
+				<div class="tml-form-col">
+					<label>模板类别：</label>
+					<select name="typeid" class="combox">
+						<volist name="typelist" id="list">
+							<option <if condition="$vo.typeid eq $key"> selected </if> value={$key}>{$list}</option>
+						</volist>
+					</select>
+				</div>
+			<div class="tml-form-col">
+				<label>模板名称：</label>
+				<input type="text" class="required" maxlength="10" name="name" value="{$vo.name}" />
+			</div>
+			<div class="tml-form-col">
+				<label>模板最高分：</label>
+				<input type="text" class="required number" maxlength="25" name="mostscore" value="{$vo.mostscore}" />
+			</div>
+		</div>	
+			<div class="tml-form-row" >
+				<label>备注：</label>
+				<textarea name="remark" maxlength="200" >{$vo.remark}</textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misproductunit_update">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

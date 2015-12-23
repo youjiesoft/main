@@ -1,0 +1,112 @@
+<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this, navTabAjaxDone)" enctype="multipart/form-data">
+	<input type="hidden" name="id" value="{$vo.id}" >
+	<input type="hidden" name="ide" value="{$ide}" >
+	<input type="hidden" name="employeeid" value="{$vo.employeeid}" >
+	<input type="hidden" name="jump" value="2">
+	<input type="hidden" name="type" value="1">
+	<input type="hidden" name="multi_lookup_reset">
+	<div class="pageFormContent applecloth" layoutH="40">
+		<div class="keepContentCenter keepContentCenterCondensed">
+			<div class="contentTitle contentTitle_center">员工合同管理
+				{:W('ShowOrderno',array(0,'mis_hr_basic_employee_contract',$vo['orderno']))}
+			</div>
+			<fieldset>
+				<legend class="fieldset_legend_toggle"><b>基本信息</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label><span style="letter-spacing:26.4px;">姓</span>名：</label>
+					    <input type="text" class="required org.name" name="name" readonly="readonly" value="{$vo.name}"/>
+					</div>
+					<div class="tml-form-col">
+						<label><span style="letter-spacing:26.4px;">性</span>别：</label>
+						<if condition="$vo.sex eq 0"><input type="text" readonly="readonly" value="女"/></if>
+						<if condition="$vo.sex eq 1"><input type="text" readonly="readonly" value="男"/></if>
+					</div>
+					<div class="tml-form-col">
+						<label>合同类型：</label>
+						<input type="text" readonly="readonly" value="{:getSelectByName('employeecontracttype',$vo['contracttype'])}"/>
+					</div>
+					<if condition="$vo.contracttype eq '协议'">
+						<div class="tml-form-col">
+							<label>协议类型：</label>
+							<input type="text" readonly="readonly" value="{:getSelectByName('agreetypeid',$vo['protocoltype'])}"/>
+						</div>
+					</if>
+					<div class="tml-form-col">
+						<label>联系电话：</label>
+					    <input type="text"  name="tel" class="org.tel" value="{$vo.tel}" readonly="readonly"/>
+					</div>
+					<div class="tml-form-col">
+						<label>身份证号：</label>
+					    <input type="text"  name="cardid" class="org.chinaid" readonly="readonly" value="{$vo.cardid}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>户口类型：</label> 
+						 <input type="text" readonly="readonly" value="{:getSelectByname('accounttype',$vo['accounttype'])}" /> 
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>家庭住址：</label>
+				    <input type="text"  name="familyaddress" class="org.address" value="{$vo.familyaddress}" readonly="readonly"/>
+				</div>
+				<div class="tml-form-row">
+					<label>通迅地址：</label>
+				    <input type="text"  name="newsleaddress" class="org.nativeaddress" value="{$vo.newsleaddress}" readonly="readonly"/>
+				</div>
+			</fieldset>
+			<fieldset>
+				<legend class="fieldset_legend_toggle"><b>合同期限</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>期限类型：</label>
+						<input type="text" readonly="readonly" value="{$vo['limittype']}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>签订期限：</label>
+						<input type="text" readonly="readonly" value="{$vo['fixed']}"/>
+					</div>
+				</div>
+				<div class="tml-row">	
+					<div class="tml-form-col">
+						<label>开始日期：</label>
+						<span class="xyInputWithUnit">
+						    <input type="text"  name="starttime" class="tml-border-r0 Wdate" readonly="readonly"  value="{$vo.starttime|transtime}"/>
+						    <span class="xyInputWithUnitButton inputDateGrayButton"></span>
+					    </span>
+					</div>
+					<div class="divdisplay tml-form-col">
+							<label>结束日期：</label>
+							<span class="xyInputWithUnit">
+							    <input type="text"  name="endtime" class="tml-border-r0 Wdate" readonly="readonly" value="{$vo.endtime|transtime}"/>
+							    <span class="xyInputWithUnitButton inputDateGrayButton"></span>
+						    </span>
+					</div>
+				</div>
+				<div class="tml-form-row">
+                     <label>备注：</label>
+                     <textarea  readonly="readonly" name="remark" minlength="0" maxlength="100" class="textInput">{$vo.remark}</textarea>
+	           </div>
+			</fieldset>
+			<fieldset>
+				<legend class="fieldset_legend_toggle"><b>附件信息</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+				<label>附&nbsp;&nbsp;&nbsp;&nbsp;件：</label>
+				<if condition="$attarry">
+				<volist name="attarry" id="att">
+					<p style="padding:0;">
+						<a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/Uploads/{$att['attached']}">
+							<span class="info">{$key+1}&nbsp;&nbsp;&nbsp;{$att['upname']}</span>
+						</a>
+					</p>
+				</volist>
+				<else/>
+				<b>无</b>
+				</if>
+			</fieldset>
+	<div class="formBar">
+		<ul>
+           <li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+		</ul>
+	</div>
+		</div>
+	</div>
+</form>

@@ -1,0 +1,841 @@
+<style>
+.dragItemsContainer .dragItems{cursor: move; margin: 5px 5px ; width:150px; height:30px; background-color:#e7eff0;}
+.dragItems .tml-w100 ,.dragItems .tml-form-col ,.dragItems .tml-form-row {display:none}
+.dragItemsContainer .dragItems:hover{border:1px red dotted;}
+#nbmDroppable div.tml-form-col:hover , #nbmDroppable div.tml-form-row:hover{outline: 1px red dashed;background-color: #8bc5ff}
+.nbm_highlight{outline: 1px #8bc5ff dashed ;background-color: #8bc5ff; }
+#nbmDroppable div.tml-row {outline: 1px #8bc5ff dashed; margin-top:10px;}
+#nbmDroppable div.tml-row  div.tml-row{ outline: 2px red dashed; margin-top:10px; }
+.rightToggleCollapse{background-color: #e7eff0; border-style: solid;border-width: 1px 1px 0;display: block;height: 32px;overflow: hidden;}
+</style>
+
+<script>
+
+function DynamicnavTabDone(json){
+    DWZ.ajaxDone(json);
+    if(json.statusCode==DWZ.statusCode.ok){
+        
+        navTabAjaxDone(json);
+        navTab.closeCurrentTab();
+    }
+}
+
+var tagIndex=0;
+var reservedField=['id','name','title' , 'ptid' , 'ptmid' , 'addtimme' , 'autor'];//系统保留字段名称
+var allowType=['select','radio','checkbox'];//允许配置默认选项数据标签 
+var containerObj = $('#nbmDroppable');
+$(function() {
+	if(containerObj.find('.nbmmove').length){
+		tagIndex = containerObj.find('.nbmmove').attr('checkOrder').length ;
+	}
+    $('#nbmDroppable fieldset').sortable({
+        revert:true,
+        opacity: 0.6 ,
+        tolerance: 'intersect', //鼠标指针重叠元素时重新排序 
+        items : 'div.nbmmove', 
+        //cancel:'div.tml-row',//哪些元素不可移动 
+        //handle:'div',
+        distance : 1 , // 决定至少要在元素上面拖动多少像素后,触发排序动作 
+        cursorAt : ' top, left', //当开始移动时，鼠标定位在的某个位置上 
+        placeholder:'tml-form-col nbm_highlight',
+        start:function(e,u){
+            if(u.item.attr('class').indexOf('dragItems')>-1){
+                //如果是从左侧拖到此处的需要做内容转换 
+                var c = u.item.children();
+                u.item.removeClass();
+                u.item.addClass(c.attr('class'));
+                u.item.html(c.html());
+                u.item.attr('data',c.attr('data'));
+                //var hid = $('<input type="hidden" value="'+c.attr('data')+'" name="catalog" />'); 
+                //写入附加属性 
+                u.item.append($('<input type="hidden" value="'+c.attr('data')+'" name="catalog">'));
+                u.item.append($('<input type="hidden" value="" name="sort">'));
+                u.item.append($('<input type="hidden" value="" name="fields">'));
+                u.item.append($('<input type="hidden" value="" name="ids">'));
+                u.item.append($('<input type="hidden" name="title" value="" />'));
+                u.item.append($('<input type="hidden" name="checkfunc" value="" />'));
+        		u.item.append($('<input type="hidden" name="issearchlist" value="" />'));
+				u.item.append($('<input type="hidden" name="columnscheckexist" value="" />'));
+				u.item.append($('<input type="hidden" name="tabletype" value="VARCHAR" />'));
+				u.item.append($('<input type="hidden" name="defaultval" value="" />'));
+				u.item.append($('<input type="hidden" name="length" value="11" />'));
+				u.item.append($('<input type="hidden" name="showoption" value="" />'));
+				u.item.append($('<input type="hidden" name="subimporttableobj" value="" />'));
+				u.item.append($('<input type="hidden" name="subimporttablefieldobj" value="" />'));
+				u.item.append($('<input type="hidden" name="subimporttablefield2obj" value="" />'));
+            }else{
+                u.item.css({'border':'5px pink solid'});
+            }
+            //生成编号 
+            if(u.item.attr('checkOrder')==undefined){
+            	u.item.find('label:first').text(u.item.find('label:first').text()+'__'+tagIndex);
+                u.item.attr('checkOrder',u.item.attr('data')+tagIndex);
+                //u.item.find('input[type="hidden"][name^="catalog"]').attr('name','catalog['+u.item.attr('data')+tagIndex+']');
+                u.item.find('input[type="hidden"]').each(function(){
+                	$(this).attr('name', $(this).attr('name')+'['+u.item.attr('data')+tagIndex+']');
+                	if($(this).attr('name').indexOf('fields') > -1){
+                        $(this).val(u.item.attr('data')+tagIndex);
+                    }
+                	if($(this).attr('name').indexOf('title') > -1){
+                        $(this).val(u.item.find('label:first').text());
+                    }
+                	/*
+                	if($(this).attr('name').indexOf('fields') > -1){
+                        $(this).val(u.item.attr('data')+tagIndex);
+                    }else{
+                           $(this).attr('name', $(this).attr('name')+'['+u.item.attr('data')+tagIndex+']');
+                    }
+                	*/
+                	
+                });
+                tagIndex++;
+            }
+            
+            if(u.item.attr('class').indexOf('tml-form-row') >-1){
+            	$(this).sortable('option', 'placeholder', 'tml-form-row nbm_highlight');
+            }else{
+            	$(this).sortable('option', 'placeholder', 'tml-form-col nbm_highlight');
+            }
+            $('.nbm_highlight').css({'height':u.item.height(),'width':u.item.width()});
+            return u;
+        },
+        sort:function(e,u){
+        	
+        },
+        change:function(e,u){
+        	
+        },
+        beforeStop:function(e,u){
+            u.item.removeAttr('style');
+        },
+        stop:function(e,u){
+            //清除空<div class="tml-row">
+        	$(this).find('div.tml-row').each(function(i,v){
+            	$(v).removeAttr('checkorder');
+                if(isNullorEmpty($(v).html()=='')){
+                	$(v).remove();
+                }
+             });
+        	//触发combox选中重新计算显示框位置 
+        	$(this).parent().find('.select').click();
+        },deactivate:function(e,u){
+            //l('我是移入');
+        	 //console.log('当前样式：'+u.item.attr('class')+' parent class:'+u.item.parent().attr('class'));
+        	// 拖入时如果本身样式没有tml-form-row 且 父级样式没有 tml-row 那么给当前项加上一个容器 
+             if(u.item.attr('class').indexOf('tml-form-col') > -1 && u.item.parent().attr('class').indexOf('tml-row') == -1){
+                 //不能单独成行，加个成行标签 
+                 var curItem = u.item.clone();
+                 u.item.removeClass();
+                 curItem.removeAttr('style');
+                 //u.item.removeAttr('checkorder');
+                 u.item.removeAttr('title');
+                 u.item.removeAttr('data');
+                 u.item.addClass('tml-row');
+                 u.item.html('');
+                 u.item.append(curItem);
+             }
+             //console.log('my prev item class:' + u.item.prev().attr('class') +'__next'+ u.item.next().attr('class')+'__isnullorempty:' + isNullorEmpty(u.item.parent().attr('class')));
+        	//当前项为可成行元素， 父级为tml-row 
+             if(u.item.attr('class').indexOf('tml-form-row') > -1 && u.item.parent().attr('class').indexOf('tml-row') > -1){
+            	 if(isNullorEmpty(u.item.prev().attr('class'))==false){ //第一个位置 
+                	 //console.log('befor input:');
+                	 u.item.parent().before(u.item);
+                 }
+            	 if(isNullorEmpty(u.item.prev().attr('class'))){ // 前后都有不成行，生成新容器
+            		 if(u.item.prev().attr('class').indexOf('tml-form-col') > -1){
+            			 var c = u.item.parent().children();
+            			 var curIndex = c.index(u.item);
+            			 //取前部份
+            			 var prevObj = new Array();
+            			 var nextObj = new Array();
+            			 c.each(function(k , v){
+            				 if(k < curIndex){
+            					 prevObj.push(v);
+            				 }
+            				 if(k>curIndex){
+            					 nextObj.push(v);
+            				 }
+        				 });
+        				 preRowContainer = $('<div class="tml-row" c=1></div>');
+        				 nextRowContainer = $('<div class="tml-row" c=2></div>');
+        				 $.each(prevObj , function(k,v){
+        					 preRowContainer.append($(v));
+           				 });
+           				 
+        				 $.each(nextObj , function(k,v){
+        					 nextRowContainer.append($(v));
+           				 });
+
+        				 u.item.parent().before(preRowContainer);
+        				 preRowContainer.after(u.item);
+        				 u.item.after(nextRowContainer);
+        				 //u.item.parent().remove();
+            			 //console.log( curIndex );
+            			 //console.log( prevObj.length + '__' + nextObj.length);
+            			 
+            			 //console.log( prevObj +'__'+nextObj );
+            		 }
+            	 }
+            	 if(isNullorEmpty(u.item.next().attr('class')) == false){ //最后一个位置 
+            		 //console.log('after input:');
+            		 u.item.parent().after(u.item);
+            	 }
+             }
+             //为属性栏赋值 
+             $('#nbmDroppable .nbmmove').unbind("click");
+             $('#nbmDroppable .nbmmove').click(function(){
+                 initPanel($(this));
+             });
+             
+             var allItem = containerObj.find('div.nbmmove');
+             allItem.each(function(k,v){
+            	 $(v).find('input[type="hidden"][name^="sort"]').val(k);
+             });
+             
+        }
+    });
+    $("#sortable1").disableSelection();
+    $('#nbmDroppable .nbmmove').unbind("click");
+	 $('#nbmDroppable .nbmmove').click(function(){
+		 initPanel($(this));
+	 });
+			 
+    $('#toolBarPanel .dragItems').draggable({
+        helper:'clone',
+        addClasses:false,
+        cursorAt: { left: 5 ,top: 1 },// 当开始移动时，鼠标定位在的某个位置 
+        start:function(e , u){
+        	$("#nbmDroppable").css({'background-color': '#ccc',height:$("#nbmDroppable").height()+70});
+        	var item = $(u.helper); // .html('开始移动');
+            u.item= item;
+            var c = u.item.children();
+            u.item.removeClass();
+            u.item.addClass(c.attr('class'));
+            u.item.html(c.html());
+            u.item.attr('data',c.attr('data'));
+            u.item.addClass('nbm_highlight');
+            if(u.item.attr('class').indexOf('tml-form-row') >-1){
+                $(this).draggable('option', 'placeholder', 'tml-form-row nbm_highlight');
+            }else{
+                $(this).draggable('option', 'placeholder', 'tml-form-col nbm_highlight');
+            }
+            return u;
+        },
+        stop:function(e,u){
+        	$("#nbmDroppable").removeAttr('style');//不清空样式，不然无法拖入组件
+        },
+        connectToSortable:'#nbmDroppable > fieldset'
+    });
+
+    $("#rightToolbar").toggle(function () {
+       	$('#rightToolbar_c').animate({ width: 'toggle', opacity: 'toggle' }, "slow");
+       }, function () {
+       	$('#rightToolbar_c').animate({ width: 'toggle', opacity: 'toggle' }, "slow");
+    });
+    $("#defaultval").blur(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            //找到对应对象 
+            changorcreatehidden(check, $(this).val(), 'defaultval');
+        }
+    });
+    $("#tablelength").blur(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            //找到对应对象 
+            changorcreatehidden(check, $(this).val(), 'length');
+        }
+    });
+    $("#showoption").blur(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            //找到对应对象 
+            changorcreatehidden(check, $(this).val(), 'showoption');
+        }
+    });
+    $("#title").blur(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            //找到对应对象 
+            $('div[checkorder="'+check+'"]').find('label:first').text($(this).val());
+            changorcreatehidden(check, $(this).val(), 'title');
+        }
+    });
+    $('#formName').blur(function(){
+        $('h2.form-affix-title').text($(this).val());
+    });
+    $("#names").blur(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识
+        var curAllNames = new Array();
+        containerObj.find('input[type="hidden"][name^="fields"]').each(function(k,v){
+			if(check != $(this).parent().attr('checkorder')){
+				curAllNames.push($(this).val());
+			}
+        });
+        if($.inArray($(this).val() , reservedField) >-1 ){
+            alert('当前输入：'+$(this).val()+' 为系统保留使用 ！请更换');
+            $(this).focus();
+            $(this).val(check);
+            return;
+        }
+        if($.inArray($(this).val() , curAllNames ) >-1){
+            alert('当前输入：'+$(this).val()+' 已存在，请更换');
+            $(this).focus();
+            $(this).val(check);
+            return;
+        }
+        if(isNullorEmpty(check)){
+            //找到对应对象 
+            var curObj = containerObj.find('div[checkorder="'+check+'"]');
+            curObj.attr('names',$(this).val());
+            var tagName = $(this).val();
+            //将之前的 name值修改掉 
+            curObj.find('input[type="hidden"]').each(function(k,v){
+                /*if($(this).attr('name').indexOf('fields') > -1){
+                    $(this).val(tagName);
+                }else{*/
+                    var cname = $(this).attr('name');
+                    var temp = cname.split('[');
+                    $(this).attr('name',temp[0]+'['+tagName+']');
+                    if($(this).attr('name').indexOf('fields') > -1){
+                        $(this).val(tagName);
+                    }
+                // }
+            });
+        }
+    });
+    $('#columnscheckexist').click(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        var val = '';
+        if($(this).attr("checked")){
+            val = $(this).val();
+        }
+        if(isNullorEmpty(check)){
+            changorcreatehidden(check, val, 'columnscheckexist');
+        }
+    });
+    $('#issearchlist').click(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        var val = '';
+        if($(this).attr("checked")){
+            val = $(this).val();
+        }
+        if(isNullorEmpty(check)){
+            changorcreatehidden(check, val, 'searchlist');
+        }
+    });
+    
+    $('#tabletype').change(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            changorcreatehidden(check, $(this).val(), 'tabletype');
+        }
+    });
+    
+    $('#checkfunc').change(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            changorcreatehidden(check, $(this).val(), 'checkfunc');
+        }
+    });
+    /* ********************************************
+    *               绑定表 
+    ********************************************** */
+    $('#subimporttableobj').change(function(){
+		//console.log('我要执行change函数');
+         var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+         if(isNullorEmpty(check)){
+                 changorcreatehidden(check, $(this).val(), 'subimporttableobj');
+				 if(!isNullorEmpty($(this).val())){
+					 changorcreatehidden(check, '', 'subimporttablefieldobj');
+					 changorcreatehidden(check, '', 'subimporttablefield2obj');
+					 var opt ='<option value="">请选择映射字段</option>';
+					 $('#subimporttablefieldobj').html(opt);
+					 $('#subimporttablefield2obj').html(opt);
+					 return;
+				}
+                 $.ajax({
+                     url:'__URL__/comboxgetTableField',
+                     type:'post',
+                     data:{table:$(this).val()},
+                     dataType:'json',
+                     success:function(data) {
+                         if(data) {
+                             var opt;
+                             $.each(data ,function(k,v){
+                                 opt += '<option value="'+v[0]+'">'+v[1]+'</option>';
+                             });
+                             
+                             $('#subimporttablefieldobj').html(opt);
+                             $('#subimporttablefield2obj').html(opt);
+                             
+                             var obj =  containerObj.find('div[checkorder="'+check+'"]');
+                             var names = obj.find('input[type="hidden"][name^="fields"]').val();
+                             var subimporttablefieldobjVal = '';
+                             if(isNullorEmpty(getCurVal(obj,'subimporttablefieldobj',names))){
+                                 subimporttablefieldobjVal = getCurVal(obj,'subimporttablefieldobj',names);
+                             }
+                             $("#subimporttablefieldobj").val(subimporttablefieldobjVal);
+                             
+                             var subimporttablefield2objVal = '';
+                             if(isNullorEmpty(getCurVal(obj,'subimporttablefield2obj',names))){
+                                 subimporttablefield2objVal = getCurVal(obj,'subimporttablefield2obj',names);
+                             }
+                             $("#subimporttablefield2obj").val(subimporttablefield2objVal);
+                             
+                         }
+                     }
+                 });
+             
+         }
+    });
+    
+    $('#subimporttablefieldobj').change(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            changorcreatehidden(check, $(this).val(), 'subimporttablefieldobj');
+        }
+    });
+    $('#subimporttablefield2obj').change(function(){
+        var check = $('#hidObj').val();//用以保存当前操作对象唯一标识 
+        if(isNullorEmpty(check)){
+            changorcreatehidden(check, $(this).val(), 'subimporttablefield2obj');
+        }
+    });
+  
+    function changorcreatehidden( check , val , tagName ) {
+		//console.log(val+'我要赋值'+check);
+        var curTag =  containerObj.find('div[checkorder="'+check+'"]');
+        var names = check;
+        //验证当前标签的name前缀 
+        if(isNullorEmpty(curTag.attr('names'))){
+            names = curTag.attr('names');
+        }
+        //验证是否已存在当前属性隐藏标签 
+        if($('input[type="hidden"][name="'+tagName+'['+names+']"]').length){
+            $('input[type="hidden"][name="'+tagName+'['+names+']"]').val(val);
+        }else{
+            var temp = $('<input type="hidden" />');
+            temp.attr('name',tagName+"["+names+"]");
+            temp.val(val);
+             containerObj.find('div[checkorder="'+check+'"]').append(temp);
+        }
+     }
+    function initPanel(obj){
+        
+    	//初始化属性栏值 
+        var names = $(obj).attr('checkorder');
+        if($.inArray(getCurVal(obj,'catalog',names) , allowType) > -1){
+        	$('#showoption').removeAttr('disabled');
+        }else{
+        	$('#showoption').attr('disabled',true);
+        }
+        
+        $('#hidObj').val(names);
+        if($(obj).attr('names')){
+        	names = $(obj).attr('names');
+        }
+        $('#names').val(names);
+        /* ***************************************************
+        *                   关联查询初初始化
+        ***************************************************** */
+		// 临时保存值
+		var temp1 = getCurVal(obj,'subimporttableobj',names);
+		var temp2 = getCurVal(obj,'subimporttablefieldobj',names);
+		var temp3 = getCurVal(obj,'subimporttablefield2obj',names);
+		// end 
+		//console.log($('#subimporttableobj option'));
+        if($('#subimporttableobj option').length <= 1){
+            $.ajax({
+            	url:'__URL__/getTables',
+            	type:'post',
+            	dataType:'json',
+            	success:function(data){
+					
+            		if(data){
+            			var opt= '<option value="">请选择映射表</option>';
+            			$.each(data ,function(k,v){
+            				opt += '<option value="'+k+'">'+v+'</option>';
+            			});
+            			$('#subimporttableobj').html(opt);
+						
+						changorcreatehidden(names, temp1, 'subimporttableobj');
+						changorcreatehidden(names, temp2, 'subimporttablefieldobj');
+						changorcreatehidden(names, temp3, 'subimporttablefield2obj');
+            		}
+            	}
+            });
+        }
+        var subimporttableobjVal = '';
+        if(isNullorEmpty(getCurVal(obj,'subimporttableobj',names))){
+        	subimporttableobjVal = getCurVal(obj,'subimporttableobj',names);
+        }
+        $("#subimporttableobj").val(subimporttableobjVal);
+        $("#subimporttableobj").change();
+        
+        /* ***************************************************
+        *                   文本框 
+        **************************************************** */
+        var titleVal = $(obj).find('label').text();
+        if(isNullorEmpty(getCurVal(obj,'title',names))){
+        	titleVal = getCurVal(obj,'title',names);
+        }
+        $("#title").val(titleVal);
+        
+        var defaultvalVal = '';
+        if(isNullorEmpty(getCurVal(obj,'defaultval',names))){
+        	defaultvalVal = getCurVal(obj,'defaultval',names);
+        }
+        $("#defaultval").val(defaultvalVal);
+        
+        var tablelengthVal = '';
+        if(isNullorEmpty(getCurVal(obj,'length',names))){
+        	tablelengthVal = getCurVal(obj,'length',names);
+        }
+        $("#tablelength").val(tablelengthVal);
+        
+        
+        var showoptionVal = '';
+        if(isNullorEmpty(getCurVal(obj,'showoption',names))){
+        	showoptionVal = getCurVal(obj,'showoption',names);
+        }
+        $("#showoption").val(showoptionVal);
+        /* **************************************************
+        *               下拉框
+        **************************************************** */
+        var checkfuncVal = '';
+        if(isNullorEmpty(getCurVal(obj,'checkfunc',names))){
+        	checkfuncVal = getCurVal(obj,'checkfunc',names);
+        }
+        $("#checkfunc").val(checkfuncVal);
+        
+        var tabletypeVal='';
+        if(isNullorEmpty(getCurVal(obj,'tabletype',names))){
+        	tabletypeVal = getCurVal(obj,'tabletype',names);
+        }
+        $("#tabletype").val(tabletypeVal);
+        
+        /** ****************************************************
+        *                   复选框
+        ******************************************************* */
+        var columnscheckexistVal=false;
+        if(isNullorEmpty(getCurVal(obj,'columnscheckexist',names))){
+        	columnscheckexistVal = true;
+        }
+        $("#columnscheckexist").attr('checked',columnscheckexistVal);
+        
+        var issearchlistVal=false;
+        if(getCurVal(obj,'searchlist',names) >0){
+            issearchlistVal = true;
+        }
+        $("#issearchlist").attr('checked',issearchlistVal);
+    }
+
+	
+	
+	
+	
+	
+    function getCurVal(obj , item , ide){
+    	var curVal='';
+    	if($(obj).find('input[type="hidden"][name="'+item+'['+ide+']"]')){
+    		curVal = $(obj).find('input[type="hidden"][name="'+item+'['+ide+']"]').val();
+        }
+    	return curVal;
+    }
+    /**
+    * 赋值
+    * @parame object	obj		当前操作对象  
+    * @parame string	item	值写入对象的ID值
+    * @parame function	callback	
+    */
+    function ttt(obj , item ,callback){
+        //获取当前操作标签的唯一标识 
+    	 var ide = $(obj).attr('checkorder');
+    	 //
+    	 if(typeof(callback) == 'function'){
+    		 callback();
+    	 }else{
+        	 if(isNullorEmpty($(obj).attr('names'))){
+        		 ide = $(obj).attr('names');
+        	 }
+        	 if(obj.find('input[type="hidden"][name="'+item+'['+ide+']"]')){}
+        	 $('#'+item).val(ide);
+    	 }
+    	 $('#hidObj').val(ide);
+    }
+	
+	
+	
+	
+	
+});
+
+
+</script>
+
+<div class="page">
+    <div class="pageContent">
+    <form id="nbmForm" method="post" action="<if condition="$vo.actiontitle">__URL__/visualmodify<else/>__URL__/visualadd</if>" class="pageForm required-validate" onsubmit="return iframeCallback(this,DynamicnavTabDone);" >
+        <div class="pageFormContent" layoutH="58">
+             <!-- 编辑区预览 -->
+             <div class="pageContent">
+                 <div class="pageFormContent applecloth anchorsToolBarParent" layoutH="56">
+                     <div class="keepContentCenter form-affix-content">
+                        <!-- 标题 -->
+                        <H2 class="contentTitle contentTitle_center form-affix-title">
+                        <if condition="$vo.actiontitle">
+                            {$vo.actiontitle}
+                            <input type="hidden" name="excelsource" value="{$vo.tpl}" />
+                            <input type="hidden" name="dynamicformid" value="{$vo.id}" />
+                            
+                        <else/>
+                                                                        请在属性中设置表单属性
+                        </if>
+                            <span class="auto_code">
+                                <b>No.</b>
+                                <input type="text" name="orderno" value="{$orderno}" //>
+                                <span class="xyNextButtonDisable"></span>
+                            </span>
+                        </H2>
+                        <!-- 标题end -->
+                        <!-- 列表 -->
+                         <div id="nbmDroppable">
+                           <fieldset style="min-height: 150px; min-width: 790px;">
+                                <legend class="fieldset_legend_toggle">
+                                    <b>申请信息</b>
+                                </legend>
+                                
+                                {$html}
+                            </fieldset>
+                        </div>
+                        <!-- 列表end -->
+                    </div>
+                </div>
+            </div>
+            <!-- 编辑区预览 end-->
+        </div>
+        <!-- 工具框 -->
+        <div class="" style="position: fixed; top:150px;">
+        <fieldset class="dragItemsContainer" id="toolBarPanel" >
+            <div id="dragText" class="dragItems" title="短文本框">
+                <div class="tml-form-col nbmmove" data='text'>
+                    <label>短文本框</label>
+                    <input type="text">
+                </div>
+            </div>
+            <div id="dragSelect"  class="dragItems" title="下拉框 ">
+                    <div class="tml-form-col nbmmove" data='select'>
+                        <label>下拉:</label>
+                        <select class="combox">
+                        </select>
+                    </div>
+            </div>
+            <div id="dragRadio"  class="dragItems" title="单选按钮">
+                <div class="tml-form-row nbmmove" data='radio'>
+                    <label>选择按钮</label>
+                    <div class="tml-radio">
+                        <label>
+                            <input type="radio" name="exampleRadio">这是一个单选按钮
+                        </label>
+                    </div>
+                </div>
+            </div>
+             <div id="dragArea"  class="dragItems" title="文本域">
+                <div class="tml-form-row nbmmove" data='textarea'>
+                  <label>文本域</label>
+                  <textarea rows="4"></textarea>
+                </div>
+            </div>
+            <div id="dragCheckbox" class="dragItems" title="复选按钮">
+                <div class="tml-form-row nbmmove" data='checkbox'>
+                    <label>选择按钮</label>
+                    <div class="left tml-checkbox tml-w100">
+                      <label>
+                        <input type="checkbox">复选按钮
+                      </label>
+                    </div>
+                </div>
+            </div>
+            <div id="dragDate"  class="dragItems" title="日期选择">
+                <div class="tml-form-col nbmmove" data='date'>
+                    <label>日期选择</label>
+                    <div class="tml-input-append">
+                        <input type="text">
+                        <a class="input-addon input-addon-calendar" href="#"></a>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        </div>
+        <!-- 工具框end -->
+        
+        <!-- 属性框  -->
+		<div class="" style="position: fixed;right:20px; top:150px;" >
+			<div class="rightToggleCollapse" id="rightToolbar"><h2>主菜单</h2></div>
+			<div class="accordion" style="width:300px;" id="rightToolbar_c">
+				<div class="accordionHeader">
+					<h2>字段属性</h2>
+				</div>
+				<div class="accordionContent" style="height:200px">
+					<input type="hidden" id="hidObj" />
+                    <table>
+                        <tr>
+                            <td class="title">Title:</td>
+                            <td class="item"><input type="text" id="title" /></td>
+                        </tr>
+                        <tr>
+                            <td class="title">Name :</td>
+                            <td class="item"><input type="text" id="names" /></td>
+                        </tr>
+                        <tr>
+                            <td class="title">验证:</td>
+                            <td class="item">
+                                <select id="checkfunc" style="width: 120px;">
+                                    <option value="">无需验证</option>
+                                    <option value="required">必填</option>
+                                    <option value="eamil">邮箱</option>
+                                    <option value="url">网址</option>
+                                    <option value="number">整数</option>
+                                    <option value="double">浮点数</option>
+                                    <option value="english">字母</option>
+                                </select>
+                        </td>
+                        </tr>
+                        <tr>
+                            <td class="title">添加列表搜索:</td>
+                            <td class="item"><input type="checkbox" id="issearchlist" value="1" /></td>
+                        </tr>
+                        <tr>
+                            <td class="title">验证唯一:</td>
+                            <td class="item"><input type="checkbox" id="columnscheckexist" value="1" /></td>
+                        </tr>
+                        <tr>
+                            <td class="title">字段类型:</td>
+                            <td class="item">
+                                <select id="tabletype" >
+                                    <option value="VARCHAR">VARCHAR</option>
+                                    <option value="INT">INT</option>
+                                    <option value="TEXT">TEXT</option>
+                                    <option value="FLOAT">FLOAT</option>
+                                    <option value="DECIMAL">DECIMAL</option>
+                                    <option value="SMALLINT">SMALLINT</option>
+                                    <option value="TINYINT">TINYINT</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="title">字段默认值:</td>
+                            <td class="item"><input type="text" id="defaultval" /></td>
+                        </tr>
+                        
+                         <tr>
+                            <td class="title"> 默认选项数据:</td>
+                            <td class="item"><input type="text" id="showoption" /></td>
+                        </tr>
+                        
+                         <tr>
+                            <td class="title">数据源</td>
+                            <td class="item">&nbsp;&nbsp;绑定表
+                                <select id="subimporttableobj" style="width: 120px;">
+									<option value="">请选择映射表</option>
+								</select>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="title"></td>
+                            <td class="item">绑定字段
+                                <select id="subimporttablefieldobj" style="width: 120px;">
+                                    <option value="">请选择映射字段</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="title"></td>
+                            <td class="item">显示字段
+                                <select id="subimporttablefield2obj" style="width: 120px;">
+                                    <option value="">请选择映射字段</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td class="title">表字段长度：</td>
+                            <td class="item"><input type="text" id="tablelength"  /></td>
+                        </tr>
+                        
+                         <tr>
+                            <td class="title"></td>
+                            <td class="item"></td>
+                        </tr>
+                    </table>
+                    
+                                          
+				</div>
+               <div class="accordionHeader">
+                    <h2>表单属性</h2>
+                </div>
+                <div class="accordionContent">
+                
+                <!-- ****** begin ****** -->
+                <table>
+                	<tr>
+                		<td colspan="2">
+                			 <select class="combox modeltype" name="modeltype">
+			                    <option value="add">创建新节点</option>
+			                    <option value="update" >更新以有节点</option>
+			                </select>
+                		</td>
+                	</tr>
+                	<tr>
+                		<td colspan="2">
+                		 <span class="info add">父节点：</span>
+	                    <select name="parentnodename" class="combox">
+	                        <volist name="nodelist" id="n">
+	                            <option value="{$n['id']}">{$n['title']}</option>
+	                            <if condition="isset($n['children'])">
+	                                <volist name="n.children" id="n2">
+	                                    <option value="{$key}">&nbsp;&nbsp;&nbsp;&nbsp;{$n2}</option>
+	                                </volist>
+	                            </if>
+	                        </volist>
+	                    </select>
+	                        是否新增节点:<input class="enterIndex" type="checkbox" value="1" name="insertnode">
+                		</td>
+                	</tr>
+                </table>
+               
+                <span class="info">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <div class="adddiv">
+                   <br/>
+                                             <br/>
+                                                节点名称:<input name="nodename" class="required textInput lettersonly" value="{$vo.actionname}" <if condition="$vo.actionname">readonly="readonly"</if> />只能输入英文<br/>
+                                                 显示名称 :<input id="formName" name="nodetitle" class="required textInput" value="{$vo.actiontitle}" /><br/>
+                                                 
+                                                是否创建数据库表:<input type="checkbox" name="inserttable" value="1" /><br/>
+                                                是否有审批流:<input type="checkbox" name="isaudit" value="1" />
+                                                
+                </div>
+                <div class="editdiv" style="display:none;" >
+                    <select name="parentnodename2" class="combox">
+                        <volist name="nodemodellist" id="n1">
+                            <option value="{$n1['id']}">{$n1['title']}</option>
+                        </volist>
+                    </select>
+                </div>
+                <!-- ****** end ******** -->
+                </div>
+			</div>
+		</div>
+		<!-- 属性框end  -->
+
+        <div class="formBar">
+            <ul>
+            <if condition="$_SESSION.a eq 1 or $_SESSION.misdynamicformmanage_insert">
+                <li><button class="tml-btn tml-btn-primary" type="submit"><if condition="$step eq 1">{$Think.lang.nextstep}<else />{$Think.lang.save}</if></button></li>
+            </if>
+                <li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+            </ul>
+        </div>
+    </form>
+    </div>
+</div>

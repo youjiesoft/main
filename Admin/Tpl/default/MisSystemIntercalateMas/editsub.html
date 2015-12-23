@@ -1,0 +1,56 @@
+<style>
+.tml-form-row label.tmp_label {
+	margin-left: 0px;
+	width: 120px;
+	float: none;
+	font: 14px/30px "Microsoft Yahei", "微软雅黑", sans-serif;
+}
+
+.tml-form-row label.tmp_label:hover {
+	color: #006699;
+}
+
+</style>
+
+<div class="page">
+	<div class="pageContent">
+		<form method="post"
+			action="__URL__/updatesub/rel/missystempanellookupindex"
+			class="pageForm required-validate"
+			onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$vo.id}">
+			<div class="pageFormContent" layoutH="58">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>快捷导航名称：</label>
+						<input type="text" class="required" name="name" value="{$vo.name}" />
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-row ">
+						<label>引用方式：</label>
+						<input   name="type" <if condition="$vo['type'] eq '1'">checked="checked" </if> type="radio" value="1" />
+						 url跳转
+						<input  name="type" type="radio" <if condition="$vo['type'] eq '2'">checked="checked" </if>  value="2" /> 
+							执行方法
+					</div>
+				</div>
+				<div class="tml-row ">
+					<div class="tml-form-col" >
+						<label>方法名称：</label>
+						<input type="text" name="exemethod"  value="{$vo['exemethod']}">
+					</div>
+					</div>
+				<div class="tml-row ">
+					<div class="tml-form-row " >
+						<label>url地址：</label>
+						<input type="text" name="url"  value="{$vo['url']}">
+					</div>
+					</div>
+				</div>
+				{:W('ShowAction')}
+		</form>
+
+	</div>
+</div>
+

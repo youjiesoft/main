@@ -1,0 +1,237 @@
+<!--
+
+选人组件功能升级：
+	1、可同时选择人员与部门数据。
+	
+功能实现及添加相关关键代码。
+	1、在需要使用在人员选择中选取部门数据的位置添加属性：
+		data-group、sysUser。
+		sysUser 值为定值 sysfields。
+		data-group="groupname,title,text;groupid,id,hidden,1"。
+	参数解析
+		groupname,title,text
+		参数是按位置计算的，
+			[0] 调用组件页面标签的name值。
+			[1] 在弹出页面中从数据源中取值的key值。
+			[2] 调用组件页面中生成的标签类型，text标识的会在生成hidden标签的同时另生成一个span标签作为显示内容 。
+			[3] 标识当前字段是否为唯一值，作用有 对已选择数据的除重处理等。
+		
+		
+		
+-->
+<script type="text/javascript">
+var ulid = '{$ulid}';// 插入UL的id
+var data = '{$data}';// 插入的数据
+var groupData = '{$groupData}';
+//生成联系人树
+$(document).ready(function(){
+    var zNodes = {$usertree};
+    var zNodesProcessRole = {$sysCompanytree};
+    var zNodesrolegroup = {$rolegrouptree};
+    var setting = {
+        view: {
+            selectedMulti: false,
+            fontCss: getFontCss
+        },
+        data: {
+            simpleData: {
+                enable: true
+            }
+        },
+        callback: {
+            onClick: zTreeMultipleOnClick
+        }
+    };
+    $.fn.zTree.init($("#MultipleUserTree"), setting, zNodes);
+    $.fn.zTree.init($("#MultipleSystemCTree"), setting, zNodesProcessRole);
+    $.fn.zTree.init($("#MultipleRolegroupTree"), setting, zNodesrolegroup);
+    getParentObj();
+    countSelectUserNum();// 计算已选人员
+});
+// 获取已选择的人
+function getParentObj(){
+	var pul = $("#"+ulid);
+	var newul = pul.clone(true);
+	newul.find("input.checkByInput").parent().remove();
+	//屈强@20140620为兼容插件：tagsinput添加的过滤代码
+	newul.find("input.checkByInputPlugs").parent().remove();
+	$("#js-selectUserList").html(newul.html());
+}
+// 选 择 接收人
+function zTreeMultipleOnClick(event, treeId, treeNode) {
+	var tempdata = '';
+	var type = $('#'+treeId).data('type');
+	switch(type){
+		case 'department':
+			tempdata = data;
+			break;
+		case 'group':
+			tempdata = groupData;
+			break;
+		case 'company':
+			tempdata = data;
+			break;
+		default:
+			tempdata = data;
+			break;
+	}
+	//console.log(tempdata);
+	//console.log(treeNode);
+	if(!isNullorEmpty(tempdata))
+		return;
+	var dataarr = tempdata.split(";");
+	var inputfields = new Array();// 创建字段别名数组
+	var fields = new Array();// 创建字段数组
+	var types = new Array();// 创建字段类型数组
+	var datas = new Array();// 创建字段对应值
+	var onlyfield = "";// 创建字段唯一值验证
+	for(i = 0; i < dataarr.length; i++) {
+		var objArr = dataarr[i].split(",");//将字段进行分组
+		inputfields[i] = objArr[0];// 赋值给别名字段数组
+		fields[i] = objArr[1];// 赋值给字段数组
+		datas[i] = treeNode[objArr[1]]||"";
+		types[i] = objArr[2];// 赋值给字段类型数组
+		if(objArr[3]){
+			onlyfield = objArr[0];// 赋值给字段唯一值
+		}
+	}
+	var results = "";// 结果集
+	// 生成多选用户
+	if(datas[0]){
+		var arr = datas[0].split(",");
+		// 循环第一个字段的值
+		for(i = 0; i < arr.length; i++) {
+			var isTrue = true;// 初始化用户判断
+			var str = "<li>";
+			// 循环字段
+			for(j = 0; j < fields.length; j++) {
+				// 将字段里的值进行分组
+				var bojarr = datas[j].split(",");
+				// 查找是否有重复值
+				if(inputfields[j] == onlyfield){
+					//console.log($("#js-selectUserList").find('input[name="'+onlyfield+'[\'{$sysUser}\'][]"]'));
+					//console.log('input[name="'+onlyfield+'[\'{$sysUser}\'][]"]');
+					$("#js-selectUserList").find('input[name="'+onlyfield+'[{$sysUser}][]"]').each(function(){
+						if($(this).val() === bojarr[i]) {
+							isTrue = false;
+						}
+					});
+				}
+				// 构造 隐藏值
+				str += "<input type='hidden' name=\""+inputfields[j]+"[{$sysUser}][]\" value='"+bojarr[i]+"'>";
+				// 设置显示值
+				if(types[j] == "text") {
+					str += "<span>"+bojarr[i]+"</span>";
+				}
+			}
+			// 添加删除
+			str += "<a class='delAddressee' title='删除' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>";
+			str += "</li>";
+			// 判断是否存在这个用户，存在才会添加
+			if(isTrue){
+				results += str;
+			}
+		}
+	}
+	// 往显示位置添加结果集
+	$("#js-selectUserList").append(results);
+	countSelectUserNum();
+}
+// 计算已选用户数量
+function countSelectUserNum(){
+	var user = $("#js-selectUserList").find("li");
+	var userNum = user.length;
+	if(!userNum){
+		userNum = 0;
+	}
+	$("#js-selectUserNum").text(userNum);
+}
+// 保存所选的人
+function saveSelectUserList(){
+	var userList = $("#js-selectUserList");
+	var checkobj = $("#"+ulid).find("input.checkByInput");
+	var checkobjplugs = $("#"+ulid).find("input.checkByInputPlugs");
+	//
+	if(checkobj.length>0){
+		checkobj.parent().siblings().remove();
+		checkobj.parent().before(userList.html());
+	}else if(checkobjplugs.length>0){
+		//屈强@20140620为兼容插件：tagsinput添加的过滤代码
+		checkobjplugs.parent().siblings().remove();
+		checkobjplugs.parent().before(userList.html());
+	} else {
+		$("#"+ulid).html(userList.html());
+	}
+	$.pdialog.closeCurrent();
+}
+// 清除已选的人
+function clearSelectUserList(){
+	$("#js-selectUserList").html("");
+	countSelectUserNum();
+}
+// 删除一个选择的人
+function removeSelectUser(){
+	$("#js-selectUserList").find("li:hover").remove();
+	countSelectUserNum();
+}
+</script>
+<div id="checkUserObj" class="pageContent">
+	<div class="address-dialog-body">
+		<div class="tml-row">
+			<div class="grid-50 left">
+				<h3 class="tml-h3">人员列表（{$num}）</h3>
+				<div class="address-dialog-box">
+					<div id="tabs" class="tabs" currentindex="0" eventtype="click" style="margin: 1px;">
+						<div class="tabsHeader">
+							<div class="tabsHeaderContent">
+								<ul>
+									<li ><a href="#"><span>部门</span></a></li>
+									<li ><a href="#"><span>用户组</span></a></li>
+									<li ><a href="#"><span>公司</span></a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="tabsContent" style="background: none repeat scroll 0 0 #FFFFFF;border: none;">
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="MultipleUserTreeSearchNodeKeys"/>
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('MultipleUserTree','MultipleUserTreeSearchNodeKeys')"/>
+								</div>
+								<ul data-type="department" id="MultipleUserTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="MultipleRolegroupTreeSearchNodeKeys" />
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('MultipleRolegroupTree','MultipleRolegroupTreeSearchNodeKeys')"/>
+								</div>
+								<ul data-type="group" id="MultipleRolegroupTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+							<div>
+								<div class="xysearcher">
+									<input class="js-searchZTreeSubmit" type="text" id="MultipleSystemCTreeeSearchNodeKeys" />
+									<input class="searchBtn" type="button" onclick="SearchZTreeNode('MultipleSystemCTree','MultipleSystemCTreeeSearchNodeKeys')"/>
+								</div>
+								<ul data-type="company" id="MultipleSystemCTree" class="ztree" style="height: 270px; overflow: auto;"></ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="grid-50 right">
+				<h3 class="tml-h3">已选列表（<span id="js-selectUserNum">0</span>）</h3>
+				<div class="address-dialog-box">
+					<ul class="address-dialog-list" id="js-selectUserList" onclick="removeSelectUser();">
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button class="tml-btn tml-btn-blue" onclick="saveSelectUserList();">确定</button></li>
+			<li><button class="tml-btn tml-btn-primary" onclick="clearSelectUserList();">清除</button></li>
+			<li><button class="tml-btn close">取消</button></li>
+		</ul>
+	</div>
+</div>

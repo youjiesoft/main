@@ -1,0 +1,35 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" <if condition="$typeid eq 1">action="__URL__/insert/navTabId/__MODULE__"<else/>action="__URL__/insert/rel/MisSystemAnnouncementSetBox"</if>  class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="typeid" value="{$typeid}" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="58">
+            <div class="tml-row">
+				<div class="tml-form-col">
+					<label>编码：</label>
+					<input type="text" name="code" value="" maxlength="50" />
+				</div>
+				<if condition="$typeid eq 2">
+					<div class="tml-form-col">
+						<label>类型：</label>
+						<select class="combox" name="pid">
+							<volist name="plist" id="plists">
+								<option <if condition="$pid eq $plists.id">selected</if> value="{$plists.id}">{$plists.name}</option>
+							</volist>
+						</select>
+					</div>
+				</if>
+				<div class="tml-form-col">
+					<label>名称：</label>
+					<input type="text" name="name" class="required" value="" maxlength="50" />
+				</div>
+			</div>
+				<div class="tml-form-row">
+					<label>备注：</label>
+					<TEXTAREA style="width:400px;" rows="2" cols="30" name="remark"></TEXTAREA>
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

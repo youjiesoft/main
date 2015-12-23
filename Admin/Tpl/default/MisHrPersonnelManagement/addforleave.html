@@ -1,0 +1,99 @@
+<script>
+/* 	var $box=$.pdialog.getCurrent();
+	$("input:[name='endleavedate']",$box).blur(function(){
+		$("input:[name='hours']",$box).val("");
+	});
+	$("input:[name='beginleavedate']",$box).blur(function(){
+		$("input:[name='hours']",$box).val("");
+	}); */
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="dotype" value="流程新建" />
+			<input type="hidden" name="beforeInsert" value="1" />
+			<input type="hidden" name="refreshtabs[closeall]" value="1" />
+			<input  type="hidden" name="forleavetype" value="3"/> <!-- 代办请假申请单 正式代办 -->
+				<div class="contentTitle contentTitle_center">代办请假申请单
+					
+				</div>
+				<div class="pageFormContent xyEmployee" layoutH="105">
+				<fieldset>
+				<div class="tml-row">
+				{:W('ShowOrderno',array(1,'mis_hr_personnel_leave_info'))}
+					<div class="tml-form-col">
+						<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+						<div class="tml-input-append">
+						<input type="text" name="name"  size="15" readonly="readonly"  value="{$MisHrBasicEmployeeList.name}" autocomplete="off" class="org.name checkByInput inputCheckForButton "  />
+						<input type="hidden"  value="{$MisHrBasicEmployeeList.id}" class="org.id" name="personid"/>
+						 <a class="input-addon  input-addon-userplus" href="__URL__/lookupmanage/type/3" lookupGroup="org">查找带回</a>
+						</div>
+					</div> 
+				<div class="tml-form-col">
+					<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+					<input type="text" class="org.deptname" value="{$MisHrBasicEmployeeList.deptid|getFieldBy='id','name','mis_system_department'}" readonly="readonly" />
+					<input type="hidden" class="org.deptid"  value="{$MisHrBasicEmployeeList.deptid}" name="deptid"/>
+				</div>
+				<div class="tml-form-col">
+					<label> 职&nbsp;&nbsp;&nbsp;&nbsp;级： </label>
+					<input type="text" class="org.dutyname" name="cname" value="{$MisHrBasicEmployeeList.dutylevelid|getFieldBy='id','name','duty'}" readonly="readonly" />
+				 	<input type="hidden" class="org.dutyid"  name="dutylevelid" value="{$MisHrBasicEmployeeList.dutylevelid}" readonly="readonly"/> <!-- 职级编号 -->
+				</div>
+					</div>
+				</fieldset>
+				<fieldset>
+				<legend class="fieldset_legend_toggle"><b>请假类别：</b></legend>
+					<div class="clearfix" style="margin:0 0 0 72px;">
+					<volist name="typelist" id="tplist">
+						<label style="width:18%;"><input type="radio" name="leavetype" value="{$key}"/>&nbsp;{$tplist}</label>
+					</volist>
+					</div>
+			</fieldset>
+				<fieldset>
+				<legend class="fieldset_legend_toggle"><b>请假时间：</b></legend>
+			<div class="tml-form-row">
+				<label class="form-label">请假时间：</label>
+				<div class="tml-input-group">
+					<div class="tml-input-append">
+						 <input type="text" name="beginleavedate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"  format="{dateFmt:'yyyy-MM-dd HH:mm',onpicked:proctime}"  class="Wdate" value="{$time|transTime='Y-m-d H:i'}" />
+						 <span class="input-addon input-addon-calendar"></span>
+					</div>
+					<span class="tml-form-text">&nbsp;----&nbsp;</span>
+					<div class="tml-input-append">
+						 <input type="text" name="endleavedate" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" format="{dateFmt:'yyyy-MM-dd HH:mm',onpicked:proctime}" class="tml-border-r0 Wdate required" value=""  />
+						<span class="input-addon input-addon-calendar"></span>
+					</div>
+					<span class="tml-form-text">&nbsp;&nbsp;&nbsp;合计&nbsp;</span>
+					<input type="text" class="text-input required" name="hours" value="" />
+				</div>
+			</div>
+			</fieldset>
+			<fieldset>
+					<legend class="fieldset_legend_toggle"><b>请假原因</b></legend>
+              	<div class="tml-form-row">
+              		<textarea style="width: 492px; height: 44px;" name="remark" class="required"></textarea>
+				</div>
+			</fieldset>
+			<fieldset>
+					<legend class="fieldset_legend_toggle"><b>工作交接</b></legend>
+              	<div class="tml-form-row">
+              		<textarea style="width: 492px; height: 44px;" name="leaveagency"></textarea>
+				</div>
+			</fieldset><br/>
+			<div class="employeeFooter">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>申&nbsp;请&nbsp;人：</label>
+					<input type="text" class="textInput" readonly="readonly" value="{$Think.SESSION.loginUserName}"/>
+				</div>	
+				<div class="tml-form-col">
+					<label>申请时间：</label>
+					<input name="applicationdate" type="text" size="19"  readonly="readonly" value="{$time|transTime}" />
+				</div>
+			</div>
+			</div>
+		</div>
+		{:W('ShowAction')}
+		</form>
+	</div>
+</div>

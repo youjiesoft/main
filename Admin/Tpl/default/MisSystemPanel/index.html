@@ -1,0 +1,20 @@
+<div class="pageContent">
+	<div class="tabs" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+						<li><a href="__URL__/index/type/1" rel="missystempanel_index" class="j-ajax"><span>面板管理</span></a></li>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.missystempanelrole_index">
+						<li><a href="__APP__/MisSystemPanelRole/index" rel="missystempanelrole_index" class="j-ajax"><span>面板授权</span></a></li>
+					</if>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent tml-p0">
+				<div id="missystempanel_index"></div>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystempanelrole_index">
+				<div id="missystempanelrole_index"></div>
+			</if>
+		</div>
+	</div>
+</div>

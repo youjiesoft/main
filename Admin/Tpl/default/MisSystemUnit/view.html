@@ -1,0 +1,39 @@
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisSystemUnit/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			{:W('HiddenInput',$vo)}
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="masid" value="{$vo['id']}" />
+			<div class="pageFormContent new_version_page_content" layoutH="58">
+				<table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+					<tbody>
+						<tr>
+							<td class="cell_left" width="12%">编号:</td>
+							<td class="cell_right" width="21%" colspan="5">{:W('ShowOrderno',array(2,'mis_system_unit',$vo['orderno']))}</td>
+						</tr>
+						<tr>
+							<td class="cell_left" width="12%">单位类型:</td>
+							<td class="cell_right" width="21%" >{$vo['danweileixing']|getFieldBy='id','name','mis_system_unit_type'}</td>
+							<td class="cell_left" width="12%">单位名称:</td>
+							<td class="cell_right" width="21%" >{$vo['danweimingchen']}</td>
+							<td class="cell_left" width="12%">单位代码:</td>
+							<td class="cell_right" width="21%" >{$vo['danweidaima']}</td>
+						</tr>
+						<tr>
+							<td class="cell_left" width="12%">是否基本单位</td>
+							<td class="cell_right" width="21%" >{$vo['isbase']|getSelectlistValue='YesOrNo'}</td>
+							<td class="cell_left" width="12%">数据类型:</td>
+							<td class="cell_right" width="21%" >{$vo['danweizhuangtai']|getSelectlistValue='unittype'}</td>
+							<td class="cell_left" width="12%"></td>
+							<td class="cell_right" width="21%" ></td>
+						</tr>
+					</tbody>
+				</table>
+							<!-- text组件 end -->
+		<div class="clear"></div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+
+

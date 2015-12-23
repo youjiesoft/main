@@ -1,0 +1,115 @@
+<div class="tml-row depict_warp">
+    {~$indexView=0;}
+    <ul class="system_word_ul">
+        <volist name="systemUserFieldInfo" id="item" keys="key">
+            <if condition="$item.canuse eq 1">
+                <li>
+                    <if condition="$propertyfieldlist">
+                        <input type="checkbox" <if condition=" in_array($key, $propertyfieldlist)">checked="checked"</if> value="1" name="system[fieldshow][{$indexView}]" class="nbm_ckb nbm_ckb_{$key}"  data-order="nbm_ckb_{$key}"/>
+                        <else/>
+                        <input type="checkbox" <if condition="$key eq 'orderno'">checked="checked"</if> value="1" name="system[fieldshow][{$indexView}]" class="nbm_ckb nbm_ckb_{$key}"  data-order="nbm_ckb_{$key}"/>
+                    </if>
+                    <input type="text" class="" value="{$key}"  readonly="readonly" placeholder="请输入英文名称"  name="system[fieldname][{$indexView}]">
+
+                    <input type="text" class="" <if condition="$propertyFieldTitle[$key]"> value="{$propertyFieldTitle[$key]}" <else/> value="{$item.title}"</if>
+                    readonly="readonly" placeholder="请输入中文标题" name="system[fieldtitle][{$indexView}]">
+
+                    <input type="text" name="system[fieldtype][{$indexView}]" value="{$item.type}" readonly="readonly" />
+                    <input type="text" class="" readonly="readonly" value="1" placeholder="请输入权重"
+                    name="system[fieldweight][{$indexView}]" />
+                     <select class="" name="system[fieldcategory][{$index}]" style="display:none;">
+                        <option value="text" weight="1" selected="selected">短文本框 </option>
+                    </select>
+                </li>
+                {~$indexView++;}
+            </if>
+             
+        </volist>
+    </ul>
+</div>
+<div class="tml-row depict_warp nbm_system_field_list" style="display: none;">
+<table class="new_table">
+    <colgroup>
+        <col width="20%">
+        </col>
+        <col width="20%">
+        </col>
+        <col width="10%">
+        </col>
+        <col width="10%">
+        </col>
+        <col width="10%">
+        </col>
+        <col width="10%">
+        </col>
+        <col width="10%">
+        </col>
+    </colgroup>
+    <tbody>
+        {~$index=0;}
+        <volist name="systemUserFieldInfo" id="item" keys="key">
+            <if condition="$item.canuse eq 1">
+                <tr>
+                    <td>
+                    <input type="text" class="" value="{$key}"
+                    readonly="readonly" placeholder="请输入英文名称"  name="system[fieldname][{$index}]">
+                    </td>
+                    <td>
+                    <input type="text" class="" <if condition="$propertyFieldTitle[$key]"> value="{$propertyFieldTitle[$key]}" <else/> value="{$item.title}"</if>
+                    readonly="readonly" placeholder="请输入中文标题" name="system[fieldtitle][{$index}]">
+                    </td>
+                    <td>
+                    <input type="text" name="system[fieldtype][{$index}]" value="{$item.type}" readonly="readonly" />
+                    <td>
+                    <input type="text" class="" readonly="readonly"
+                    value="{$item.length}" placeholder="请输入字段长度"
+                    name="system[fieldlength][{$index}]">
+                    </td>
+                    <td>
+                    <select class="select2 opweight  enterIndex" name="system[fieldcategory][{$index}]">
+                        <option value="text" weight="1" selected="selected">短文本框 </option>
+                    </select></td>
+                    <td>
+                    <input type="text" class="" readonly="readonly" value="1" placeholder="请输入权重"
+                    name="systemfieldweight[{$index}]" />
+                    </td>
+                    <td>
+                    <if condition="$propertyfieldlist">
+                        <input type="checkbox" <if condition=" in_array($key, $propertyfieldlist)">checked="checked"</if> value="1" name="system[fieldshow][{$index}]"  class="nbm_ckb nbm_ckb_{$key}"  data-order="nbm_ckb_{$key}"/>
+                        <else/>
+                        <input type="checkbox" <if condition="$key eq 'orderno'">checked="checked"</if> value="1" name="system[fieldshow][{$index}]" class="nbm_ckb nbm_ckb_{$key}"  data-order="nbm_ckb_{$key}"/>
+                    </if></td>
+                </tr>
+                 {~$index++;}
+                <else />
+                <tr>
+                    <td>{$key}</td>
+                    <td>{$item.title}</td>
+                    <td>{$item.type}</td>
+                    <td>{$item.length}</td>
+                    <td>组件类型</td>
+                    <td>权重</td>
+                    <td>不显示</td>
+                </tr>
+                 
+            </if>
+          
+        </volist>
+
+    </tbody>
+</table>
+</div>
+<script type="text/javascript" charset="utf-8">
+	//系统字段组件化-优化操作
+	$(function() {
+		$('input.nbm_ckb').click(function() {
+			var ckd = $(this).attr('checked');
+			ckd = ckd == 'true' || ckd == 'checked' ? true : false;
+			var order = $(this).data('order');
+			$('.' + order).not(this).attr('checked', ckd);
+			$(this).logs(order + '__' + ckd);
+		});
+	});
+
+</script>
+

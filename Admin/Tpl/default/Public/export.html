@@ -1,0 +1,28 @@
+<form  action="__URL__/exportByToolbarSearch/modelname/{$modelname}" method="post">
+<input type="hidden" name="id" value="{$id}">
+<div class="pageContent">
+	<table class="table" layoutH="55" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<th><input type="checkbox" group="field[]" class="checkboxCtrl"></th>
+				<th>字段名称</th>
+				<th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist name="list" id="volist">
+				<tr rel="{$volist['Field']}" onclick="onTrClickCheckbox(this,'field[]')">
+					<td><input type="checkbox" value="{$volist['Field']}" name="field[]"></td>
+					<td>{$volist['name']}</td>
+					<td>{$volist['showname']}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="formBar">
+			<ul>
+			<li><button class="tml-btn tml-btn-primary" type="submit">开始导出</button></li>
+		</ul>
+	</div>
+</div>
+</form>

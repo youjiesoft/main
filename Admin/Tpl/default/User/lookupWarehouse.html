@@ -1,0 +1,45 @@
+<form id="pagerForm" action="__URL__/lookupWarehouse" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this,'editXxBox');" action="__URL__/lookupWarehouse" method="post">
+	<input type="hidden" name="userid" value="{$userid}" />
+</form>
+<div style="border:1px solid #99bbe8;border-top:none;border-right:none;">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li>
+				<a class="add" href="__APP__/UserWarehouse/add/userid/{$userid}" width="730" height="400" mask="true" rel="lookupAddRoleadd" title="仓库权限_新增" target="dialog" >
+					<span>{$Think.lang.add}</span>
+				</a>
+			</li>
+			<li>
+				<a class="delete" href="__APP__/UserWarehouse/delete/id/{sid_node}/rel/editXxBox" target="ajaxTodo" title="你确定要删除吗？" warn="请选择仓库">
+					<span>{$Think.lang.del}</span>
+				</a>
+			</li>
+		</ul>
+		<span class="tml-help-inline">{$userid|getFieldBy='id','name','user'}--->具有以下仓库权限</span>
+	</div>
+	<table class="table" width="100%" layoutH="71">
+		<thead>
+			<tr>
+			   <th width="24">序号</th>
+				<th>仓库</th>
+				<th>状态</th>
+				<th>项目</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist name="list" id="vo">
+				<tr target="sid_node" rel="{$vo['id']}">
+					<td  class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td>{$vo.whname}</td>
+					<td>{$vo.projectType}</td>
+					<td><if condition="$vo.projectid"><a target="navTab" title="项目资料_编辑" rel="MisSalesProjectedit" href="__APP__/MisSalesProject/edit/id/{$vo.projectid}">查看</a><else/>查看</if></td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+</div>

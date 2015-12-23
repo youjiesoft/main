@@ -1,0 +1,38 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<div class="pageFormContent" layoutH="48">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>{$fields["custtypeid"]}:</label>
+						<input type="text" name="custtypeid" readonly="readonly"  class="  " value="{$vo['custtypeid']|getFieldBy='id','name','mis_sale_client_type'}">
+					
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["hyid"]}:</label>
+						<input type="text" class="  " readonly="readonly"   value="{$vo['hyid']|getFieldBy='id','name','mis_sale_profession'}" />
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["cylid"]}:</label>
+						<input type="text" class="  " readonly="readonly" disabled="disabled"  value="{$vo['cylid']|getFieldBy='id','name','mis_sale_industry'}" />
+					</div>
+					<div class="tml-form-col " >
+						<label>{$fields["formtype"]}:</label>
+						<input type="text" class="  " readonly="readonly" disabled="disabled"  value="{$vo['formtype']|getFieldBy='id','name','mis_system_flow_inventory_type'}" />
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["companyid"]}:</label>
+						<input type="text" class="  " readonly="readonly" disabled="disabled"  value="{$vo['companyid']|getFieldBy='id','name','mis_system_company'}" />
+					</div>
+					<div class="tml-form-col ">
+						<label>{$fields["formobj"]}:</label>
+						<input type="text" name="formobj" readonly="readonly" value="{$vo['formobj']}">
+					</div>
+			</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

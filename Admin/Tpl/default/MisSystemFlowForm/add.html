@@ -1,0 +1,73 @@
+<script type="text/javascript">
+	var tp = '{$typelist}';
+	var $defaultval = '{$Think.get.pid}';
+	var $defaultval1 = '{$Think.get.tid}';
+	$(function(){
+		var conf = new Object();
+		var json=DWZ.jsonEval(tp);
+		conf.data =json;
+		conf.ids ='.sel1,.sel2'; 
+		conf.tag = 'a,b'; conf.pid = 'parentid';
+		conf.tex ='name'; 
+		conf.val = 'id'; conf.defaultVal = $defaultval1+','+$defaultval;
+		conf.header="请选择";
+		$.linkage(conf); 
+	}); 
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/rel/MisSystemFlowForm_left" class="pageForm required-validate" onsubmit="return iframeCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<div class="pageFormContent" layoutH="48">
+				<div class="tml-row">
+					{:W('ShowOrderno',array('1','mis_system_flow_form'))}
+					<div class="tml-form-col">
+						<label>{$fields["name"]}:</label>
+						<input  type="text" name="name" class="required" value="">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["supcategory"]}:</label>
+						<select class="chosen sel1 required" name="supcategory"></select>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["category"]}:</label>
+						<select class="chosen sel2 required" name="category"></select>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>{$fields["isopen"]}:</label>
+						 <div class="left tml-radio tml-w40">
+	                    	<label>
+	                    		<input type="radio" name="isopen"  value="1">是
+	                    	</label>
+	                    </div>
+	                    <div class="left tml-radio tml-w40">
+	                    	<label>
+	                    		<input type="radio" name="isopen"  checked value="0">否
+	                    	</label>
+	                    </div>
+					</div>
+				</div>
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>{$fields["days"]}:</label>
+						<div class="tml-input-append">
+							<input  type="text" name="days" class="number" value="">
+							<span class="input-addon-unit" title="天">天</span>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["sort"]}:</label>
+						<input  type="text" name="sort" class="" value="">
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["notes"]}:</label>
+					<textarea cols="80" rows="2"  name="notes"></textarea>
+				</div>
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

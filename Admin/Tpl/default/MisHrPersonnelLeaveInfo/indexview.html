@@ -1,0 +1,76 @@
+<div class="pageContent">	
+	<form id="pagerForm" action="__URL__/index/type/1" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}"/>
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleaveinfo_add ">
+				<li>
+					<a class="add" href="__URL__/add" rel="__MODULE__add" target="dialog" mask="true" height="520" width="720" title="员工请假_新增"><span>{$Think.lang.add}</span></a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleaveinfo_delete ">
+				<li>
+					<a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/navTabId/__MODULE__" mask="false" class="delete">
+					<span>{$Think.lang.del}</span>
+					</a>
+				</li>
+			</if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+        <form rel="pagerForm" onsubmit="return  divSearch(this, '__MODULE__indexview');" action="__URL__/index/type/1" method="post">
+            <div class="searchBar">
+                <table class="searchContent">
+                    <tr>
+                        <include file="Public:quickSearchConditionForAudit" />
+                        <if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleaveinfo_exportbysearchhtml ">
+                        <td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index/type/1','__URL__/exportBysearchHtml');">导出</button></td>
+                        </if>
+                    </tr>
+                </table>
+            </div>
+        </form>
+	</div>
+	<table class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+				<th><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+				<volist id="vo" name="detailList">
+					<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+				</volist>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list" key="key2">
+				<tr target="sid_node" rel="{$vo['id']}" dheight="520" dwidth="720" drel="__MODULE__edit" <if condition="$vo['auditState'] gt 0"> title="员工请假_查看" <else /> title="员工请假_编辑" </if> ondblclick="ondblclick_dialog(this,navTab.getCurrentPanel(),'__URL__/edit/id/{$vo['id']}');">
+				  <td><input type="checkbox" <if condition="$vo['auditState'] neq 0 ">disabled="true" border:none; background-color:#FFF"<else/> name="id" </if> value="{$vo['id']}" /></td>
+				   <volist id="vo1" name="detailList">
+						<td width="{$vo1[widths]}" field="{$vo1[name]}">
+							<if condition="count($vo1['func']) gt 0">
+								<volist name="vo1.func" id="nam">
+									<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+                                             {:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+                                             <if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+								</volist>
+							<else />
+							{$vo[$vo1['name']]}
+							</if>
+						</td>
+					</volist>
+			    </tr>
+		    </volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination"rel="__MODULE__indexview" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>	
+</div>

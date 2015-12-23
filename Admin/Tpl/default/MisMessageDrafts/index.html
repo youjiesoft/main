@@ -1,0 +1,115 @@
+<script>
+$(document).ready(function(){
+	refreshEmailCount();
+});
+function lookupmessagedrafts(id){
+	$("#mismessagedraftsdetail").attr("href","__URL__/edit/id/"+id);
+	$("#mismessagedraftsdetail").click();
+}
+</script>
+<div id="messageinboxindexdiv">
+<div class="pageContent" id="mismessagedrafts_index">
+	<form id="pagerForm" action="__URL__/index" method="post">
+			<input type="hidden" name="pageNum" value="1"/>
+			<input type="hidden" name="orderField" value="{$order}" />
+			<input type="hidden" name="orderDirection" value="{$sort}" />
+		</form>
+		<div class="panelBar">
+			<ul class="toolBar">
+				
+				<li><a class="delete tml-btn tml_mp tml_look_btn" title="删除后草稿将无法恢复，您确定要删除吗？" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage" class="delete tbmaildel"><span class="tml_lp icon-trash">&nbsp;{$Think.lang.del}</span></a></li>
+				<li class="tml_none_border" style="diapaly:none;">
+					<a id="mismessagedraftsdetail" class="tbmaildel" target="ajax" title="" rel="jbsxBoxMessage" >
+				</a>
+			</li>
+			</ul>
+		</div>
+	<div class="clearfix">
+		<div class="xyMailTable" >
+			<table class="xyTable" width="100%" style="table-layout:fixed;">
+				<thead>
+					<tr>
+					<th style="width:30px;padding-left: 12px;"><input type="checkbox" group="id" class="checkboxCtrl"></th>
+					<th style="width:70px;">编号</th>
+					<th style="width:100px;">收件人</th>
+					<th style="width:100px;">抄送人</th>
+					<th style="width:700px;">标题</th>
+					<th style="width:150px;">时间</th>
+				</tr>
+				</thead>
+            </table>
+            <div layoutH="146">
+                <table class="tml-table-w">
+    				<tbody id="messageTablelist">
+				    	<volist id="vo" name="list">
+						<tr target="sid_node" rel="{$vo.id}" onclick="lookupmessagedrafts({$vo['id']});">
+							<td style="width:30px;padding-left: 12px;"><input type="checkbox" value="{$vo.id}" name="id"></td>
+							<td style="width:70px;">{$vo.id}</td>
+							<td style="width:100px;">{$vo.sendid|getFieldBy='id','recipientname','MisMessage'}</td>
+							<td style="width:100px;">{$vo.sendid|getFieldBy='id','copytopeoplename','MisMessage'}</td>
+							<td style="width:700px;">{$vo.sendid|getFieldBy='id','title','MisMessage'}</td>
+							<td style="width:150px;">{$vo.createtime|transTime='Y-m-d H:i:s'}</td>
+						</tr>
+					</volist>
+    				</tbody>
+    			</table>
+            </div>
+         <div class="panelBar panelPageBar">
+			<div class="pages">
+				<span>共{$totalCount}条</span>
+			</div>
+		    <div class="pagination" targetType="navTab" rel="mismessagedrafts_index" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+		</div>
+	</div>
+</div>
+</div>
+</div>
+<!-- 
+
+<div class="pageContent" id="mismessagedrafts_index" >
+		<form id="pagerForm" action="__URL__/index" method="post">
+			<input type="hidden" name="pageNum" value="1"/>
+			<input type="hidden" name="orderField" value="{$order}" />
+			<input type="hidden" name="orderDirection" value="{$sort}" />
+		</form>
+		<div class="panelBar">
+			<ul class="toolBar">
+				
+				<li><a class="delete tml-btn tml_mp tml_look_btn" title="删除后草稿将无法恢复，您确定要删除吗？" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage" class="delete tbmaildel"><span class="tml_lp icon-trash">&nbsp;{$Think.lang.del}</span></a></li>
+				<li class="tml_none_border" style="diapaly:none;">
+					<a id="mismessagedraftsdetail" class="tbmaildel" target="ajax" title="" rel="jbsxBoxMessage" >
+				</a>
+			</li>
+			</ul>
+		</div>
+		<table class="table" width="100%" layoutH="141">
+			<thead>
+				<tr>
+					<th style="width:30px;padding-left: 12px;"><input type="checkbox" group="id" class="checkboxCtrl"></th>
+					<th style="width:70px;">编号</th>
+					<th style="width:100px;">收件人</th>
+					<th style="width:100px;">抄送人</th>
+					<th style="width:700px;">标题</th>
+					<th style="width:150px;">时间</th>
+				</tr>
+			</thead>
+			<tbody>
+				<volist id="vo" name="list">
+					<tr target="sid_node" rel="{$vo.id}" onclick="lookupmessagedrafts({$vo['id']});">
+						<td style="width:30px;padding-left: 12px;"><input type="checkbox" value="{$vo.id}" name="id"></td>
+						<td style="width:70px;">{$vo.id}</td>
+						<td style="width:100px;">{$vo.sendid|getFieldBy='id','recipientname','MisMessage'}</td>
+						<td style="width:100px;">{$vo.sendid|getFieldBy='id','copytopeoplename','MisMessage'}</td>
+						<td style="width:700px;">{$vo.sendid|getFieldBy='id','title','MisMessage'}</td>
+						<td style="width:150px;">{$vo.createtime|transTime='Y-m-d H:i:s'}</td>
+					</tr>
+				</volist> 
+			</tbody>
+		</table>
+		<div class="panelBar panelPageBar">
+			<div class="pages">
+				<span>共{$totalCount}条</span>
+			</div>
+		    <div class="pagination" targetType="navTab" rel="mismessagedrafts_index" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+		</div>
+</div>-->

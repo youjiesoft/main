@@ -1,0 +1,31 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" >
+
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>{$fields["code"]}：</label>
+				<input type="text" class="required" maxlength="10"  name="code" value="{$vo.code}" />
+			</div>
+			<div class="unit">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required" maxlength="25" name="name" value="{$vo.name}" />
+			</div>
+			<div class="unit" style="width:500px;">
+	                    <label>{$fields["remark"]}：</label>
+	                    <textarea name="remark" class="textInput" maxlength="100" rows="2" cols="40">{$vo.remark}</textarea>
+            </div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemmotorcycle_update">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>

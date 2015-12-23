@@ -1,0 +1,52 @@
+<form id="pagerForm" action="__URL__" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemduty_add"><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="navTab" mask="true"><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemduty_delete"><li><a class="delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_node}/navTabId/__MODULE__" target="ajaxTodo" calback="navTabAjaxDone" title="你确定要删除吗？" warn="请选择节点"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemduty_edit"><li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}" target="navTab" mask="true" warn="请选择节点"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span></a></li></if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+	</div>
+
+	<table class="list" width="100%" layoutH="75">
+		<thead>
+		<tr>
+			<th width="25"><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+			<th field="id" width="85">职务编号</th>
+			<th field="name">职务名称</th>
+
+			<th field="status" type="status">职务状态</th>
+			<th>{$Think.lang.action}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr target="sid_node" rel="{$vo['id']}" onclick="onTrClickCheckbox(this,'id')">
+				<td><input type="checkbox" name="id" value="{$vo['id']}" /></td>
+				<td field="code">{$vo['code']}</td>
+				<td field="name">{$vo['name']}</td>
+
+				<td field="status" type="status">{$vo['status']|getStatus}</td>
+				<td>{$vo['status']|showStatus=$vo['id']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

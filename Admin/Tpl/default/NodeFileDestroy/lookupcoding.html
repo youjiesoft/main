@@ -1,0 +1,43 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupinsertCoding/rel/jbsxNodeBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<if  condition="($voList.tablename neq null)">
+			<input type="hidden" name="type" value="edit">
+		</if>
+		
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+                <div class="tml-form-col">
+                    <label>模块名</label>
+                    <input type="text" class="required alphanumeric" readonly="readonly" name="tablename" value="{$vo.name}">
+                </div>
+    
+                <div class="tml-form-col">
+                    <label>名称：</label>
+                    <input type="text" class="required"  name="title"  readonly="readonly" maxlength="25"  value="{$vo.title}">
+                </div>
+                <div class="tml-form-col">
+                    <label>最大级数：</label>
+                    <input type="text" class="number required "  name="maxlevels" <if condition="$voList.levelreadonly neq 0">readonly="readonly"</if>  max="13" <if condition="$voList.maxlevels eq null"> value="13"<else />value="{$voList.maxlevels}"</if> >
+                </div>
+                <div class="tml-form-col">
+                    <label>最大长度：</label>
+                    <input type="text" class="number required"  name="maxlenght" max="40" <if condition="$voList.levelreadonly neq 0">readonly="readonly"</if> <if condition="$voList.maxlevels eq null"> value="40"<else />value="{$voList.maxlenght}"</if> >
+                </div>
+                <div class="tml-form-col">
+                    <label>单级最大长度：</label>
+                    <input type="text" class="number required"  name="singlelenght" min="1" <if condition="$voList.levelreadonly neq 0">readonly="readonly"</if> max="9"  <if condition="$voList.maxlevels eq null"> value="9"<else />value="{$voList.singlelenght}"</if>>
+                </div>
+			</div>
+		</div>
+			<div class="formBar">
+			<ul>
+				<if condition="($_SESSION.a eq 1 or $_SESSION.node_insert) and $voList.levelreadonly eq 0">
+					<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">{$Think.lang.save}</button></li>
+				</if>
+				<li><button type="button" class="close   tml_formBar_btn tml_formBar_btn_blue enterIndex">{$Think.lang.close}</button></li>
+			</ul>
+		</div> 
+	</form>
+	</div>
+</div>

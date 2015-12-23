@@ -1,0 +1,114 @@
+<style>
+.pageFormContent2 p {
+    height: 21px;
+    width: 680px;
+}
+
+.eagleSearchDivInner {
+    display: block;
+    overflow: auto;
+    float: right;
+    width: auto;
+    height: auto;
+    min-width: 200px;
+    border: solid 1px #B8D0D6;
+    line-height: 21px;
+    background: #fff;
+}
+</style>
+<div class="pageContent">
+    <form method="post" action="__URL__/update" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+        <div class="unitBox">
+            <input type="hidden" name="commit" value="0">
+            <input type="hidden" name="rel" value="MisUserEventslookuptraceindex" />
+            <input type="hidden" name="id" value="{$vo.id}">
+            <input type="hidden" name="iseditor" value="1">
+            <div class="pageFormContent" layoutH="61">
+                <p style="width:100%;">
+                    <label>主要内容：</label>
+                    <input type="text" value="{$vo.text}" class="required" name="text" style="width:330px;margin-right:2px;" />&nbsp;&nbsp;
+                    <span class="combox-auto left">
+                        <select class="combox"  name="scheduletype">
+                            <option <eq name="vo.scheduletype" value="1">selected</eq> value="1">个人</option>
+                            <option <eq name="vo.scheduletype" value="2">selected</eq> value="2">工作</option>
+                        </select>
+                    </span>
+                </p>
+                <p style="width:283px;">
+                    <label>起止日期：</label>
+                    <span class="xyInputWithUnit">
+                        <input type="text"  name="startdate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" class="Wdate js-wdate" value="{$vo.startdate|transTime='Y-m-d H:i:s'}" />
+                        <a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+                    </span>
+                </p>
+                <p style="width:283px;">
+                    <label style="width:36px;">至：</label>
+                    <span class="xyInputWithUnit">
+                        <input type="text" name="enddate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" class="Wdate js-wdate" value="{$vo.enddate|transTime='Y-m-d H:i:s'}" />
+                        <a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+                    </span>
+                </p>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>颜色标记：</label>
+                   <volist name="bgcolor" id="bgcolorvo">
+                        <label style="width:64px;">
+                        <input type="radio" value="{$bgcolorvo.index}" name="importancedegree" <if condition="$bgcolorvo.index eq $vo.importancedegree">checked</if>>
+                        <span class="tml-label {$bgcolorvo.color} tml-w30" style="margin:1px 0 1px 10px;">&nbsp;</span>
+                        </label>
+                   </volist>
+                </div>
+                <div class="clear"></div>
+                <div>
+                    <label>关联人员：</label>
+                        <ul class="addressee left" id="writeFormUserTraceEditEvents" style="height:25px;width:390px;border:1px #ccc solid;">
+                            <if condition="$personidary">
+                            <volist name="personidary" id="personidaryvo">
+                                <li>
+                                    <input type='hidden' name="personid[]" value="{$personidaryvo}"/>
+                                    <span>{$personnameary[$key]}</span>
+                                </li>
+                            </volist>
+                            </if>
+                        </ul>
+                </div>
+                <dl class="nowrap">
+                    <dt>信息：</dt>
+                    <dd>
+                        <textarea class="editor" name="details" style="height:220px;width:432px;" tools="mini">{$vo.details}</textarea>
+                    </dd>
+                </dl>
+                <dl class="nowrap">
+                    <dt>附件信息：</dt>
+                </dl>
+                <dl class="nowrap">
+                    <dt>&nbsp;</dt>
+                    <dd>
+                        <span id="swfupload_misuserevents_add-queue" class="info uploadify_queue">
+                            <if condition="$attarry">
+                                <volist name="attarry" id="att">
+                                    <div class="uploadify-queue-item">
+                                        <span class="fileName"><a href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank">{$att['upname']}</a></span>
+                                        <a href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="tml-icon tml-icon-file"></span><span class="tml-icon-text">归档</span></a>
+                                    </div>
+                                     
+                                </volist>
+                            </if>
+                        </span>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li>
+                    <div class="button">
+                        <div class="buttonContent">
+                            <button type="button" class="close">{$Think.lang.close}</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </form>
+</div>

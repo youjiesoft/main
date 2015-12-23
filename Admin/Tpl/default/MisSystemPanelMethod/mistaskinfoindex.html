@@ -1,0 +1,19 @@
+<if condition="$mistaskinfo">
+<div class="data">
+	<ul>
+		<if condition="$mistasktype eq 2">
+		<volist id="taskvo" name="mistaskinfo">
+			<li class="clearfix"><a class="hellip" href="__APP__/MisTaskAdscription/edit/id/{$taskvo['id']}" mask="true" target="navTab" title="任务执行" rel="MisTaskAdscriptionedit">{$taskvo['title']}</a></li>
+		</volist>
+		<else/>
+		<volist id="taskvo" name="mistaskinfo">
+			<li class="clearfix"><a class="hellip" href="__APP__/MisTaskInformation/edit/id/{$taskvo['id']}" mask="true" target="navTab" title="编辑/查看任务" rel="MisTaskInformationedit">{$taskvo['title']}</a></li>
+		</volist>
+		</if>
+	</ul>
+</div>
+<else/>
+<div class="noData">
+	没有任务
+</div>
+</if>

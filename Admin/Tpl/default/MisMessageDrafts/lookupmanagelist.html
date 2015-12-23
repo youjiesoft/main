@@ -1,0 +1,115 @@
+<script>
+function get_mesmessagedrafts_checkbox_userindex(ulId){
+	var  $box = $.pdialog.getCurrent();
+    var id;
+    var name;
+    var email;
+    $box.find(".Mismessagedrafts_index_class").find("input[type='checkbox']").each(function(){
+        if($(this).attr("checked")=='checked'){
+            id = $(this).attr("userid");
+            name = $(this).attr("username");
+            email = $(this).attr("emailName");
+            get_mesmessagedrafts_userindex(id,name,ulId,email);
+        }
+    });
+}
+function get_mesmessagedrafts_userindex(id,name,ulId,email){
+	if( ulId == 'Mismessage_edit' ){
+        var $strHtml = appendUserHtml('Mismessage_edit','recipient',id,name, 'recipientname','',email,'email');
+        $("#Mismessage_edit").children().last().before($strHtml);
+        $("#Mismessage_edit").find('input').focus();
+    }else if(ulId == 'Mismessage_edit_copyTo'){
+        var $strHtml = appendUserHtml('Mismessage_edit_copyTo','copytopeopleid',id,name, 'copytopeoplename','',email,'emailCopy');
+        $("#Mismessage_edit_copyTo").children().last().before($strHtml);
+        $("#Mismessage_edit_copyTo").find('input').focus();
+    }
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupmanage/ulId/{$ulId}" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageHeader">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'positiveBox');" action="__URL__/lookupmanage/ulId/{$ulId}" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<input type="hidden" id="ulId" name="ulId" value="{$ulId}">
+		<div class="searchBar" style="height:50px;">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div class="unit">
+							请输入关键字：
+							<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+					</td>
+					<td>
+						<select class="combox" name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li>
+						<button class="tml-btn tml-btn-default mr5" type="submit">{$Think.lang.subsearch}</button>
+						<button class="tml-btn tml-btn-primary" type="button" multLookup="orgmsgdrafts" onclick="get_mesmessagedrafts_checkbox_userindex('{$ulId}')">选择带回</button>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>
+<div>
+	<table class="table" width="99%" layoutH="119">
+		<thead>
+			<tr>
+				<th width="20"><input type="checkbox" class="checkboxCtrl" group="orgmsgdrafts" /></th>
+				<th width="20">ID</th>
+				<th>员工编号</th>
+				<th>员工姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+				<th>入职时间</th>
+				<th>转正时间	</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody class="Mismessagedrafts_index_class" >
+		<volist id="vo" name="list">
+			<tr>
+				<td><input type="checkbox" name="orgmsgdrafts" value="{ mangid:'{$vo.id}', name:'{$vo.name}'}" userid="{$vo.id}" username="{$vo.name}" emailName="{$vo.email}" /></td>
+				<td>{$vo['id']}</td>
+				<td>{$vo['orderno']}</td>
+				<td>{$vo['name']}</td>
+				<td>{$vo['deptname']}</td>
+				<td>{$vo['dutyname']}</td>
+				<td>{$vo['indate']|transTime}</td>
+				<td>{$vo['transferdate']|transTime}</td>
+				<td>
+					<a class="btnSelect" onclick="get_mesmessagedrafts_userindex('{$vo.id}','{$vo.name}','{$ulId}','{$vo.email}')"
+						href="javascript:$.bringBack({ mangid:'{$vo.id}', name:'{$vo.name}' ,sex:'{$vo.sex}',sexname:'{$vo.sex|getS}',deptid:'{$vo.deptid}',deptname:'{$vo.deptname}',dutylevelid:'{$vo.dutylevelid}',dutyname:'{$vo.dutyname}',dutylevelname:'{$vo.dutylevelname}',transferdate:'{$vo[transferdate]|transTime}',indate:'{$vo[indate]|transTime}'})"
+						title="查找带回">选择</a>
+				</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="positiveBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

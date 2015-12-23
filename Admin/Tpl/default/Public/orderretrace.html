@@ -1,0 +1,107 @@
+<SCRIPT type="text/javascript">
+		<!--
+		function getFontCss(treeId, treeNode) {
+			return (!!treeNode.highlight) ? {color:"#A60000", "font-weight":"bold"} : {color:"#333", "font-weight":"normal"};
+		}
+		var fontCss = {};
+		var nodeList = new Array();
+		function searchNode(e) {
+			var $treeDemos = $("ul[name=treeDemo]");
+			$treeDemos.each(function(n){
+				var treeDemo = $(this).attr("id");
+				var zTree = $.fn.zTree.getZTreeObj(treeDemo);
+				var value = $.trim(key.get(0).value);
+				var keyType = "name";
+				if (key.hasClass("empty")) {
+					value = "";
+				}
+				if (value === "") return;
+				if(nodeList[n]){
+					for( var i=0, l=nodeList[n].length; i<l; i++) {
+						nodeList[n][i].highlight = false;
+						zTree.updateNode(nodeList[n][i]);
+					}
+				}
+				//updateNodes(false);
+				nodeList[n] = zTree.getNodesByParamFuzzy(keyType, value);
+				//updateNodes(true);
+				for( var i=0, l=nodeList[n].length; i<l; i++) {
+					nodeList[n][i].highlight = true;
+					zTree.updateNode(nodeList[n][i]);
+				}
+			});
+		}
+		var key;
+		function updateNodes(highlight) {
+			var $treeDemos = $("ul[name=treeDemo]");
+			$treeDemos.each(function(){
+				var treeDemo = $(this).attr("id");
+				var zTree = $.fn.zTree.getZTreeObj(treeDemo);
+			});
+		}
+		function focusKey(e) {
+			if (key.hasClass("empty")) {
+				key.removeClass("empty");
+			}
+		}
+		function blurKey(e) {
+			if (key.get(0).value === "") {
+				key.addClass("empty");
+			}
+		}
+		$(document).ready(function(){
+			var $input = $(":input[name=zNodes]");
+			$input.each(function(){
+				var setting = {
+						data: {
+							key: {
+								title: "t"
+							},
+							simpleData: {
+								enable: true
+							}				
+						},
+						view: {
+							fontCss: getFontCss
+						}
+					};
+				var zNodes = $(this).val();
+				var treeDemo = $(this).next();
+				var zNodes = new Function("return " + zNodes)();
+				$.fn.zTree.init(treeDemo, setting, zNodes);
+			});
+			key = $("#key");
+			key.bind("focus", focusKey)
+			.bind("blur", blurKey)
+			.bind("propertychange", searchNode)
+			.bind("input", searchNode);
+		});
+		//-->
+	</SCRIPT>
+<div class="pageContent">
+<input type="text" id="key" value="" class="empty" /><br/>
+	<table width="100%">
+		<tr>
+			<volist id="vo" name="arr2">
+				<td>
+					<table width="100%" layoutH="45">
+						<thead style='background:url("__PUBLIC__/dwz2/themes/default/images/grid/tableth.png") repeat-x scroll 0 0 #F0EFF0;'>
+							<tr>
+								<th style="text-align:center; padding:1px 2px; line-height:21px; border-right: solid 1px #D0D0D0; border-bottom:solid 1px #D0D0D0; font-weight:bolder;">
+									{$vo['name']}
+								</th>
+							</tr>
+						</thead>
+						<tr>
+							<td>
+								<if condition="$vo.zNodes">
+									<input type="hidden" name="zNodes" value='{$vo.zNodes}'><ul id="{$key}" name="treeDemo" class="ztree"></ul>
+								</if>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</volist>
+		</tr>
+	</table>
+</div>

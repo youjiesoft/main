@@ -1,0 +1,56 @@
+<style>
+.allbutton{ background:url(__PUBLIC__/Images/add_btn.gif) no-repeat; width:76px; height:23px;
+border:0px; cursor:pointer;}
+</style>
+<script>
+    $(".s_button").live("click",
+    function() {
+        var p = $(this);
+        var appid=p.attr("rstid");
+        $.post("__URL__/update/navTabId/__MODULE__",{"appid":appid,"do":"add"},
+        function(q) {
+            p.val(q);
+            //p.val("已经添加");
+            p.removeClass("s_button");
+        })
+    });
+    $(".cancel_btn").live("click",
+    function() {
+        var p = $(this);
+        var appid=p.attr("rstid");
+        $.post("__URL__/update/navTabId/__MODULE__",{"appid":appid,"do":"delete"},
+        function(q) {
+            p.val(q);
+            //p.val("已经添加");
+            p.removeClass("cancel_btn");
+        })
+    });
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this,dialogAjaxDone);" enctype="multipart/form-data" target="callbackframe">
+		<input type="hidden" name="user_id" value="<?php echo $_SESSION[C('USER_AUTH_KEY')] ?>">
+		<input type="hidden" name="ajax" value="1">
+		<div class="pageFormContent" layoutH="58">
+                    <if condition="count($list) gt 0">
+                        <volist id="vo" name="list">
+                            <div class="unit" style="width:500px;">
+                                                            <label>APP名称:</label>
+                                    <label>{$vo.title}</label>
+                                    <?php $ismy=0; if(in_array($vo[id],$myapps)) $ismy=1; ?>
+                                    <if condition="$ismy eq 0">
+                                    <label class="fr"><input type="button" class="allbutton s_button" value="添加应用"  rstid="{$vo.id}"/></label>
+                                    <else />
+                                    <label class="fr"><input type="button" class="allbutton cancel_btn" value="取消应用"  rstid="{$vo.id}"/></label>
+                                    </if>
+                                                    </div>
+                        </volist>
+                        <else />
+                        <div class="unit" style="width:500px;">Sorry,暂时没有可添加的应用!</div>
+                    </if>
+                    
+		</div>
+	</form>
+	</div>
+</div>
+

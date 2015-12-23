@@ -1,0 +1,179 @@
+<if condition="$_GET['viewtype'] neq 'view'">
+		<script type="text/javascript">
+			function reschange() {
+				 var fieldtype="{$_REQUEST['fieldtype']}";
+				 var url="";
+				 var bindrdid="{$_REQUEST['bindrdid']}";
+				 var bindaname="{$_REQUEST['bindaname']}";
+				 var bindtype="{$_REQUEST['bindtype']}";
+				 var urdataroamid="{$_REQUEST['urdataroamid']}";
+				 var func = "{$func}";
+				 var $box=navTab.getCurrentPanel();
+				if(fieldtype){
+				    var typeval="{$_REQUEST[$_REQUEST['fieldtype']]}"; 
+				    url="__URL__/miniindex/func/"+func+"/bindtype/"+bindtype+"/bindaname/"+bindaname+"/fieldtype/"+fieldtype+"/"+fieldtype+"/"+typeval+"/bindrdid/"+bindrdid+"/urdataroamid/"+urdataroamid;
+				}else{
+					 url="__URL__/miniindex/func/"+func+"/bindtype/"+bindtype+"/bindaname/"+bindaname+"/bindid/{$_REQUEST['bindid']}/bindrdid/"+bindrdid+"/urdataroamid/"+urdataroamid;
+				}
+				$box.find("##nodeName#_miniindex").loadUrl(url, {},function() {
+				$box.find("##nodeName#_miniindex").find("[layoutH]").layoutH();},false);
+			}
+		</script>
+		</if>
+		{~$appendPageContentArr = getBindTabsContent('#nodeName#',$vo,'view','',$main)}
+		{$appendPageContentArr[6]}
+		<div class="pageContent min_index_lay">
+			<div id="#nodeName#_miniindex">
+				<form id="pagerForm" action="__URL__/miniindex/type/1" method="post">
+					<input type="hidden" name="pageNum" value="1" />
+					<input type="hidden" name="orderField" value="{$order}" />
+					<input type="hidden" name="orderDirection" value="{$sort}" />
+					<input type="hidden" name="bindid" value="{$_REQUEST['bindid']}" />
+				</form>
+				<if condition="$_GET['minitype'] neq 1">
+				<div class="into_table_lay nbm_noborder nbm_new_style">
+					<div class="dataTableBtn">
+					<div class="toolBar">
+									<a class="js-resit tml-btn tml_look_btn tml_mp" mask="true" href="#" title="" onclick="reschange()">
+										<span class="tml_lp">
+											刷新
+										</span>
+									</a>
+									<a class="xyAdvancedSearch tml-btn tml_look_btn tml_mp" title="" href="__APP__/Search/advancedsearch/model/{$ename}/searchbyinc/{$searchbyinc}"
+									rel="__MODULE__advancedsearch" width="700" height="500" target="dialog"
+									mask="true">
+										<span class="tml_lp">
+											高级查找
+										</span>
+									</a>
+									<a class="xyAdvancedSearch tml-btn tml_look_btn tml_mp" title="" href="__URL__/lookupUserSetField/model/{$ename}"
+									rel="__MODULE__userSetField" width="700" height="500" target="dialog" mask="true"
+									title="列表设置">
+										<span class="tml_lp">
+											设置
+										</span>
+									</a>
+									<a class="xyOutput tml-btn tml_look_btn tml_mp" title="" href="#" type="button" onclick="exportBysearch(this.form,'__URL__/index','__URL__/exportBysearchHtml');">
+										<span class="tml_lp">
+											导出
+										</span>
+									</a>
+							</div>
+						</div>	
+					</div>		
+				</if>
+				<div class="into_table_lay nbm_noborder">
+				<table id="data_table_{$appendPageContentArr[7]}"  class="into_table_new nbm_data_table data_table_{$appendPageContentArr[7]}" 
+				 {:W('FormCondition',array($func,'data'=>$addvo))}>
+					<thead ename="{$ename}">
+						<tr>
+							<th template_key="serial">
+								序号
+							</th>
+							<volist id="vo" name="detailList">
+								<if condition="$vo[shows] eq 1  and $vo[name] neq 'action'">
+								<th
+				                  <if condition="$vo[widths]">width="{$vo[widths]}" style="width：{$vo[widths]}px;max-width:{$vo[widths]}px;min-width:{$vo[widths]}px;"</if>
+				                  <if condition="$vo[datatable]">{$vo[datatable]}</if>
+								  <if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>
+								>{$vo[showname]}
+								</th>
+								<!--类型-->
+								</if>
+							</volist>
+				            <th template_key="action" template_data='{"post_table":"table"}'>
+								操作
+							</th>
+							<if condition="$_GET['minitype'] eq 1">
+							 <th>
+								操作
+							</th>
+							</if>
+						</tr>
+					</thead>
+					<tbody {$appendPageContentArr[5]}>
+					<volist id="vo" name="list" key="key2">
+						<tr target="sid_node" rel="{$vo['id']}"  data-tool='{$vo[classarr]}'>
+							<td class="tml-first-td">{$key2}</td>
+							<volist id="vo1" name="detailList">
+								<if condition="$vo1[shows] eq 1 and $vo1[name] neq 'action'">
+									<td width="{$vo1[widths]}" class="{$vo1.name}" content="{$vo[$vo1['name']]}">
+										<if condition="$vo1['fieldcategory'] eq 'upload'">
+										<div class="list_group_lay">
+											<div class="js_privyIndex">
+											<a 
+											title="附件管理" 
+											class="tml_task_btn" 
+											style="padding:3px 10px;" 
+											href="javascript:;" 
+											id="DT_upload_{$vo1['field']}#index#" 
+											rel_index="#index#" 
+											rel_url="__URL__/DT_uploadnew"
+											rel_subid="0" 
+											rel_fieldname = "{$vo1['field']}"
+											rel_tablename = "{#nodeName#}"
+											rel_tableid = "{$vo['id']}"
+											rel_type = "view"
+											rel_name="" 
+											onclick="DTopenFile(this)">
+											附件管理(<span class="attached_count">{$item.id|getDTCount=$vo['id'],$tableModelname,###,$val->fieldname}</span>)
+											</a></div></div>
+										<elseif condition="count($vo1['func']) gt 0" />
+											<volist name="vo1.func" id="nam">
+												<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+													{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+												<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+											</volist>
+										<else />
+											{$vo[$vo1['name']]}
+										</if>
+									</td>
+								</if>
+							</volist>
+				            <td>
+								<a title="修改" target="navTab" rel="miniedit" href="__URL__/edit/id/{$vo['id']}" class="into_table_btn"><span class="icon-pencil"></span></a>
+				                 <a title="查看" target="navTab" rel="miniview" href="__URL__/view/id/{$vo['id']}/eid/{$vo['id']}" class="into_table_btn"><span class="icon-eye-open"></span></a>
+						        <php>
+								//首先来判断是否为组合表
+								$dataInfo=D("MisAutoBind")->getBindVo(#nodeName#,$vo['id']);
+								if($dataInfo){
+						           		$url='__APP__/'.$dataInfo['modelname'];
+						           		$tableid=$dataInfo['tableid'];
+								}else{
+						            	$url='__URL__';	
+						            	$tableid=$vo['id'];
+								}
+								</php>
+ 								 <a title="导出Word" href="{$url}/export_word_one/id/{$tableid}" class="into_table_btn"><span class="icon-share"></span></a>  
+				                 <button style="margin-left:0;" class="into_table_new_trash_tr into_table_btn itb_del" del_id="{$vo['id']}" del_table="#tableName#" del_url="__URL__/delsubinfo" type="button" title="删除"><span class="icon-remove"></span></button>
+								 <input type="hidden" value="{$vo['id']}" name="datatable[#index#][table][id]">
+				            </td>
+				            <if condition="$_GET['minitype'] eq 1">
+				            <td>
+								<a title="查看" target="navTab" rel="miniview" href="__URL__/view/id/{$vo['id']}/eid/{$vo['id']}" class="into_table_btn"><span class="icon-eye-open"></span></a>
+						        <php>
+								//首先来判断是否为组合表
+								$dataInfo=D("MisAutoBind")->getBindVo(#nodeName#,$vo['id']);
+								if($dataInfo){
+						           		$url='__APP__/'.$dataInfo['modelname'];
+						           		$tableid=$dataInfo['tableid'];
+								}else{
+						            	$url='__URL__';	
+						            	$tableid=$vo['id'];
+								}
+								</php>
+ 								 <a title="导出Word" href="{$url}/export_word_one/id/{$tableid}" class="into_table_btn"><span class="icon-share"></span></a>  
+				                 <input type="hidden" value="{$vo['id']}" name="datatable[#index#][table][id]">
+				            </td>
+							</if>				                 		
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+			<div class="appendcontent" style="display:none;">
+				{$appendPageContentArr[2]}
+				{$appendPageContentArr[3]}
+			</div>
+		</div>
+	</div>

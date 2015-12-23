@@ -1,0 +1,186 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 初始化树
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#MisPerformancePlanPutTreeDemo"), setting, zNodes);
+	// 合并行
+	var kpitype = "";
+	var kpitypetd = null;
+	var rowspan = 1;
+	var $box=navTab.getCurrentPanel();
+	$box.find(".plankpitype").each(function(){
+		var val = $(this).text();
+		if(val != kpitype){
+			kpitype = val;
+			kpitypetd = $(this);
+			rowspan = 1;
+			$(this).attr("rowspan",rowspan);
+		} else {
+			rowspan = rowspan+1;
+			kpitypetd.attr("rowspan",rowspan);
+			$(this).remove();
+		}
+	});
+});
+/**
+ * 作用为全选操作
+ * $this 当前对象
+ * serchid 需全选的checkbox外围对象id
+ */
+function groupCheckAllPlanUsers($this,serchid){
+	$("#"+serchid).find("input:checkbox").each(function(){
+		if($($this).is(":checked")){
+			if(!$(this).attr("checked")){
+				$(this).attr('checked',$($this).is(":checked"));
+				$(this).parents("tr:first").addClass("selected");
+				$(this).parents("tr:first").addClass("checkedbox");
+				eval($(this).attr("onclick"));
+			}
+		} else {
+			$(this).attr('checked',$($this).is(":checked"));
+			$(this).parents("tr:first").removeClass("selected");
+			$(this).parents("tr:first").removeClass("checkedbox");
+			eval($(this).attr("onclick"));
+		}
+	});
+}
+//暂停此条计划
+function stopAndUpdatePlan($id){
+	var $box=navTab.getCurrentPanel();
+	alertMsg.confirm("您确定暂停此条计划吗？", {
+		okCall: function(){
+			$.ajax({
+				type: 'POST',
+				url: "__URL__/stopAndUpdatePlan",
+				data: {id:$id},
+				success: function(message){
+					 if(message){
+						 alertMsg.correct("此条计划暂停成功！");
+						 $box.find("#misperformanceplanput_lookupmanagestop").hide();
+						 $box.find("#misperformanceplanput_lookupmanageplan").show();
+					 } 
+				}
+			}); 
+		}
+	});
+}
+/**
+ * 删除已选择的人员
+ * $this 当前对象
+ * id 当前值
+ * $lookputusersid checkbox外围对象id
+ */
+function dellookputusers($this,id,$lookputusersid){
+	$("#"+$lookputusersid).find('tr').each(function(){
+		var rel = $(this).attr('rel');
+		if(id == rel){
+			$(this).removeClass("selected");
+			$(this).removeClass("checkedbox");
+			$(this).find("input[type='checkbox']:first").removeAttr("checked");
+		}
+	});
+	$($this).parents("tr:first").remove();
+}
+function startAndUpdatePlan($form){
+	$($form).attr("action", TP_APP + "/MisPerformancePlanPut/startAndUpdate/navTabId/MisPerformancePlanPut");
+	return validateCallback($form,function(json){
+		navTabAjaxDone(json);
+		if (json.statusCode == DWZ.statusCode.ok) {
+			navTab.closeCurrentTab();
+		}
+	});
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__edit" class="pageForm required-validate"  onsubmit="return validateCallback(this,navTabAjaxDone);"  >
+	<input type="hidden" name="id" value="{$vo['id']}" />
+	<input type="hidden" name="ostatus" value="{$vo['ostatus']}" />
+	<!-- 操作栏  start -->
+	<div class="panelBar">
+		<table style="height:25px;">
+			<tbody>
+				<tr>
+					<td>
+						<span id="misperformanceplanput_lookupmanageplan" <if condition="$vo.ostatus =='2'">style="display:none"<else/>style="display:block"</if>>
+						<a class="tml-btn tml-btn-gray mr5" lookupgroup="orgmsg" href="__URL__/lookupmanage/putid/{$vo.id}/type/1">设置被考核人</a>
+						<if condition="$vo.byusers">
+						<a class="tml-btn tml-btn-gray mr5" lookupgroup="orgmsg" href="__URL__/lookupmanageplanperson/planid/{$vo.id}/type/1">设置评分人</a>
+						<else/>
+						<a class="tml-btn tml-btn-disabled mr5" href="javascript:;">设置评分人</a>
+						</if>
+						<if condition="!$vo.byusers || !$vo.inusers"><button type="button" class="tml-btn tml-btn-disabled mr5" > <else/> <button class="tml-btn tml-btn-gray mr5" type="submit"> </if>保存</button>
+						<if condition="!$vo.byusers || !$vo.inusers"><button class="tml-btn tml-btn-disabled mr5" type="button" > <else/><button class="tml-btn tml-btn-gray mr5" type="button" onclick="startAndUpdatePlan(this.form);"></if>保存启动</button>
+						</span>
+						<span id="misperformanceplanput_lookupmanagestop" <if condition="$vo.ostatus =='2'">style="display:block"<else/>style="display:none"</if>>
+						<button class="tml-btn tml-btn-gray" type="button" onclick="stopAndUpdatePlan('{$vo.id}');">暂停</button>
+						</span>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!-- 操作栏  end 内容start -->
+	<!-- 树start -->
+	<div class="treeleft">
+		<div class="collapse" layoutH="41">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse"><h2></h2><div></div></div>
+			<ul id="MisPerformancePlanPutTreeDemo" class="ztree xyTree" layoutH="51"></ul>
+		</div>
+	</div>
+	<!-- 树end -->
+	<div class="pageContent tml-bg-white" layoutH="41">
+		<table class="tml-table">
+			<thead>
+				<tr>
+					<th class="tml-text-c" rowspan="2">考核分类名称</th>
+					<th class="tml-text-c" rowspan="2">考核项目名称</th>
+					<volist id="stype" name="vo.setscoretype">
+						<th colspan="{:count($vo['inuserstype'][$stype])}" style="text-align: center;">
+							{$stype|getFieldBy=###,'id','name','mis_performance_type'}({$vo['inusersqz'][$stype]}%)
+						</th>
+					</volist>
+				</tr>
+				<tr>
+					<volist id="stype" name="vo.setscoretype">
+						<volist id="inuser" name="vo['inuserstype'][$stype]">
+							<th style="text-align: center;">{$inuser|getFieldBy=###,'id','name','User'}</th>
+						</volist>
+					</volist>
+				</tr>
+			</thead>
+			<tbody>
+				<volist id="plan" name="planandinusers" key="key1">
+					<tr>
+						<td class="plankpitype">{$plan['kpitypename']}({$plan['kpitypeqz']}%)</td>
+						<td>{$plan['kpiname']}</td>
+						<volist id="stype" name="vo.setscoretype">
+							<volist id="inuser" name="vo['inuserstype'][$stype]">
+								<td class="tml-text-c">
+									<input type="checkbox" name="inuserkpi[{$plan['id']}{$inuser}]" value="{$plan.id}"
+									<if condition="in_array($plan.id, $inuserskpi[$inuser])"> checked = "checked" </if>>
+								</td>
+							</volist>
+						</volist>
+					</tr>
+				</volist>
+			</tbody>
+		</table>
+	</div>
+	<!-- 内容end -->
+	</form>
+</div>

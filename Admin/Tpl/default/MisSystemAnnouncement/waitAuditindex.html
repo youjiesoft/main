@@ -1,0 +1,40 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#missystemannouncementwaitaudittree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("missystemannouncementwaitaudittree");
+    var valid='1';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse">
+				<h2></h2>
+				<div></div>
+            </div>
+			<ul id="missystemannouncementwaitaudittree" class="ztree" layoutH="38"></ul>
+		</div>
+	</div>
+	<div id="missystemannouncementwaitaudittype" class="unitBox treeright">
+		<include file="waitAuditindexview"  />
+	</div>
+</div>

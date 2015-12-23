@@ -1,0 +1,191 @@
+<script>
+$(function(){
+	var box=$.pdialog.getCurrent();
+	var vo = '{$jsonvo}';
+	if(vo){
+		vo = $.parseJSON(vo);
+	}
+	//获取选择模型下的数据表 ----- 模型中文名input框赋值
+	$("select[name='actionname']",box).change(function(){		
+		var model = $(this).val();
+		console.log(model);
+		var title = $(this).find("option:selected").text();
+		$("input[name='actiontitle']").val(title);
+		$.ajax({
+			 type: 'POST',
+	         url : "__URL__/gettables",
+	         data: {model:model},
+	         global:false,
+	         dataType:'json',
+	         success:function(list){
+	        	 if(list){
+	        		 var html='';
+	        		 
+	        		 $.each(list,function(i,v){
+	        			var sel = '';
+	        			 if(vo){
+	        				 if(vo["table"]==i){
+	        					 sel = "selected";
+	        				 }
+	        			 }
+	        			 html += '<option value="'+i+'" '+sel+'>'+v+'</option>';
+	        		 })
+	        		 $("select[name='table']").html(html).select2().change();
+	        	 }else{
+	        		 $("select[name='table']").html('');
+	        	 }
+	         }
+		});
+	});	
+
+	$("select[name='actionname']").change();
+	//获取选择数据表下的单、复选框、下拉框、lookup字段  --- 数据表中文名input框赋值
+	$("select[name='table']",box).change(function(){
+		var model = $("select[name='actionname']",box).val();		
+		var table = $(this).val();
+		var title = $(this).find("option:selected").text();
+		$("input[name='tabletitle']").val(title);
+		$.ajax({
+			 type: 'POST',
+	         url : "__URL__/gettablefields",
+	         data: {table:table,model:model},
+	         global:false,
+	         dataType:'json',
+	         success:function(res){
+	        	 if(res){
+	        		 var html='';
+	        		 $.each(res,function(i,v){
+		        		 var sell = '';
+
+		        		 if(vo){
+		        			 if(vo["field"]==i){
+		        			 	sell = 'selected';
+		        			 }
+		        			 console.log(i+'=========='+vo.field);
+		        		 }
+	        			 html += '<option value="'+i+'" '+sell+'>'+v+'</option>';
+	        		 })
+	        		 $("select[name='field']",box).html(html).select2().change();
+	        	 }else{
+	        		 $("select[name='field']",box).html('').change();
+	        	 }
+	         }
+		});
+	});
+	//字段中文名input框赋值
+	$("select[name='field']").change(function(){
+		var title = $(this).find("option:selected").text();
+		$("input[name='fieldtitle']").val(title);
+	})
+	
+	//删除选择字段所有的权限分配
+	$("a.deleteCarrier").click(function(){
+		
+	});
+	
+});
+var accesscontenttypeval = $("input[name='accesscontenttype']:checked").val();
+function deleteCarrier(){
+	if(confirm('选择删除将会把对该字段设置过的权限分配全部清除，是否继续?')){
+		var box=$.pdialog.getCurrent();
+		var id = $("input[name='id']",box).val();
+		$.ajax({
+			type: 'POST',
+	         url : "__URL__/deleteCarrierForId",
+	         data: {id:id},
+	         global:false,
+	         dataType:'text',
+	         success:function(res){
+	        	 console.log(res);
+	         }
+		});
+	}else{
+		$("input[name='accesscontenttype']").attr("checked",false);
+		$("input[name='accesscontenttype'][value='"+accesscontenttypeval+"']").attr("checked",true);
+	}
+} 
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/MisSystemDataAccessBOX" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input name="id" type="hidden" value="{$vo.id}">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">			
+			<if condition="$havesub eq 0">
+				<!-- select组件 start -->
+				<div class="tml-form-col ">
+					<label>模型名称:</label>
+					<select   name="actionname"  class="select2">
+					<option value=''>请选择</option>
+					<volist name="list" id="mv">
+						<option value="{$mv.ename}" <if condition="$mv.ename eq $vo.actionname">selected</if>>{$mv.title}</option>
+					</volist>					
+					</select>
+					<input name="actiontitle" value='' type="hidden">
+				</div>
+				<!-- select组件 end -->
+				<div class="tml-form-col ">
+					<label>数据表名称:</label>
+					<select   name="table"  class="select2">
+					
+					</select>
+					<input name="tabletitle" value='' type="hidden">
+				
+				</div>
+				<!-- text组件 start -->
+				<div class="tml-form-col " >
+					<label>字段:</label>
+					<select   name="field"  class="select2">
+					
+					</select>
+					<input name="fieldtitle" value='' type="hidden">
+				</div>
+			<else/>
+				<div class="tml-form-col ">
+					<label>模型名称:</label>
+					<input name="actiontitle" type="text" readonly  value="{$vo.actiontitle}">
+					<input name="actionname" value='{$vo.actionname}' type="hidden">
+				</div>
+				<!-- select组件 end -->
+				<div class="tml-form-col ">
+					<label>数据表名称:</label>					
+					<input name="tabletitle" type="text" readonly  value="{$vo.tabletitle}">
+					<input name="table" value='{$vo.table}' type="hidden">
+				
+				</div>
+				<!-- text组件 start -->
+				<div class="tml-form-col " >
+					<label>字段:</label>					
+					<input name="field" type="hidden"  value="{$vo.field}">
+					<input name="fieldtitle" readonly value='{$vo.fieldtitle}' type="text">
+				</div>
+			</if>	
+				
+				
+				
+				
+				
+					<div class="tml-form-col " >
+						<label>授权方式:</label>					
+						<input type="radio" name="accesscontenttype" value='2' onchange="deleteCarrier();" <if condition="$vo['accesscontenttype'] eq 2">checked</if>>分组授权
+						<input type="radio" name="accesscontenttype" value='1' onchange="deleteCarrier();" <if condition="$vo['accesscontenttype'] neq 2">checked</if>>直接授权
+					</div>
+				
+				<!-- text组件 end -->
+				<div class="tml-form-col ">
+					<label>是否开启:</label>
+					<input type="radio" name="startstatus" value='1' <if condition="$vo['startstatus'] eq 1">checked</if>>开启
+					<input type="radio" name="startstatus" value='0' <if condition="$vo['startstatus'] neq 1">checked</if>>不开启
+				</div>
+				<div class="tml-form-col ">
+					<label>是否全控制:</label>
+					<input type="radio" name="isalldata" value='1'  <if condition="$vo['isalldata'] eq 1">checked</if>>是
+					<input type="radio" name="isalldata" value='0'  <if condition="$vo['isalldata'] eq 0">checked</if>>否
+				</div>
+		</div>
+<!-- 		<div class="tml-row">
+			<a href="#" class="deleteCarrier">删除该字段所有的权限配置</a>__URL__/delCarrier/id/{$vo.id}
+		</div> -->
+		</div>
+	{:W('ShowAction')}
+	</form>
+</div>

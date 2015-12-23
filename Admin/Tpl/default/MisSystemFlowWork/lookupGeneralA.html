@@ -1,0 +1,113 @@
+<script>
+function setWorkFieldsVal($id,$name,$type){
+	var $obj=navTab.getCurrentPanel();
+	if($type==1){
+		$obj.find("input[name='predecessorid']").val($id);
+		$obj.find("input[name='predecessoridval']").val($name);
+	}else if($type==2){
+		$obj.find("input[name='successorid']").val($id);
+		$obj.find("input[name='successoridval']").val($name);
+	}else if($type==3){
+		$obj.find("input[name='quote']").val($id);
+		$obj.find("input[name='quotename']").val($name);
+	}else if($type==4){
+		$obj.find("input[name='sourcemodel']").val($id);
+		$obj.find("input[name='datasourcename']").val($name); 
+	}else if($type==5){
+		$obj.find("input[name='disabledobj']").val($id);
+		$obj.find("input[name='disabledobjname']").val($name); 
+	}
+	$.pdialog.closeCurrent();
+}
+</script>
+<div class="pageContent">
+	<form id="pagerForm" action="__URL__/lookupGeneralA" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+		<input type="hidden" name="conditions" value="{$conditions}" />
+		<input type="hidden" name="type" value="{$type}" />
+	</form>
+	<div class="panelBar">
+		<form  onsubmit="return dialogSearch(this);" rel="pagerForm" action="__URL__/lookupGeneralA" method="post">
+			<input type="hidden" name="conditions" value="{$conditions}" />
+			<input type="hidden" name="type" value="{$type}" />
+			<div class="searchBar">
+                  <table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+								<volist id="qsl" name="quickSearchList">
+									<option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+								</volist>
+							</select>
+							<input type="hidden" name="time" value="{$time}" />
+						</td>
+						<td class="tml_select_option_center">
+							<volist id="qsl" name="quickSearchList">
+								<if condition="$qsl['quickname'] eq $quicksearchby">
+									<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+										{$qsl['html']}
+									</div>
+								<else/>
+									<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+										{$qsl['html']}
+									</div>
+								</if>
+							</volist>
+						</td>
+						<td class="tml_select_option_right">
+							<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+						</td>
+						<td>
+							<a class="xyAdvancedSearch" href="__APP__/Search/advancedsearch/model/{$model}" rel="__MODULE__advancedsubsearch" width="700" height="500" target="dialog" mask="true">高级检索</a>
+						</td>
+					</tr>
+				</table>
+              </div>
+          </form>
+	</div>
+	<table class="table" layoutH="{$layoutH}" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<volist id="vos" name="detailList">
+			    	<if condition="$vos[shows] eq 1"><th <if condition="$vos[widths]">width="{$vos[widths]}"</if><if condition="$vos[sorts]">orderField="{$vos[sortname]}" class="{$sort}"</if>>{$vos[showname]}</th></if>	<!--类型-->
+			    </volist>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo2" name="list" key="key2">
+				<tr>
+					<volist id="vo1" name="detailList">
+						<if condition="$vo1[shows] eq 1">
+							<td width="{$vo1[widths]}">
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+										<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+										{:getConfigFunction($vo2[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+										<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+								{$vo2[$vo1['name']]}
+								</if>
+							</td>
+						</if>
+					</volist>
+					<if condition="$type eq 4"> 
+						<td><a class="btnSelect" href='javascript:void(0)' onclick="setWorkFieldsVal('{$vo2['formobj']}','{$vo2['formobj']|getFieldBy='name','title','node'}','{$type}');" title="查找带回">选择</a></td>
+						<else/>
+						<td><a class="btnSelect" href='javascript:void(0)' onclick="setWorkFieldsVal('{$vo2['id']}','{$vo2['name']}','{$type}');" title="查找带回">选择</a></td>
+					</if>
+				</tr>
+		    </volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}">
+		</div>
+	</div>
+</div>

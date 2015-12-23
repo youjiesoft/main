@@ -1,0 +1,58 @@
+<style>
+#fifter .close{
+	background:url('__PUBLIC__/dwz2/themes/default/images/dialog/dialogpanel_icon.png') no-repeat;
+	text-indent:-1000px;
+	height:19px;
+	width:19px;
+	display:inline-block;
+	margin-left:5px;
+}
+#fifter .close:hover{
+	background-position:0 -50px;
+}
+</style>
+<div class="pageContent">
+	<form method="post" action="{$action}" class="pageForm" onsubmit="return navTabSearch(this);">
+		<div id="fifter" class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label field="{$field}">{$showname}</label>
+				<empty name="type">
+					<input type="text" size="25" name="{$field}" />
+				<else />
+					<if condition="$type eq 'group'">
+						<select name="{$field}" >
+							<volist name="list" id="list">
+								<option value="{$list.id}">{$list.name}</option>
+							</volist>
+						</select>
+					<elseif condition="$type eq 'time'" />
+						<input class="date" readonly="readonly" type="text" size="10" name="{$filed1}" />
+						<span class="limit" style="float:left;">&nbsp;&nbsp;-&nbsp;&nbsp;</span>
+						<input class="date" readonly="readonly" type="text" size="10" name="{$filed2}" />
+					<elseif condition="$type eq 'count'" />
+						<input type="text" size="5" name="{$field}" />
+							<label style="width:36px;">规则</label>
+							<select name="reg">
+								<option value="eq">等于</option>
+								<option value="egt">大于等于</option>
+								<option value="elt">小于等于</option>
+							</select>
+					<elseif condition="$type eq 'status'" />
+						<select name="{$field}">
+							<option value="1">正常</option>
+							<option value="0">禁用</option>
+							<option value="-1">删除</option>
+						</select>
+					</if>
+				</empty>
+				<a href="#close" onclick="del_current_fifter(this);" class="close">close</a>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.search}</button></div></div></li>
+				<li><div class="buttonActive"><div class="buttonContent"><button onclick="addFifterItem();" type="button">新增查找项</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,32 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+
+	$.fn.zTree.init($("#ztree_mishrpersonneladdressbook"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="close">
+			<div class="clearfix p5">
+				<input class="tree-search-input" type="text" id="MisSystemCarSearchNodeKeys" />
+				<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('ztree_mishrpersonneladdressbook','MisSystemCarSearchNodeKeys')" type="button">搜索</button>
+			</div>
+			<ul id="ztree_mishrpersonneladdressbook" class="ztree" layoutH="44"></ul>
+		</div>
+	</div>
+	<div id="mishrpersonneladdressbookBox" class="missystemcarBox treeright">
+		<include file="lookupmanagelist" />
+	</div>
+</div>

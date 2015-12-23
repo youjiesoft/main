@@ -1,0 +1,37 @@
+ <input type="hidden" name="subtable" value={$subtale}>
+        <volist name="dt" id="v">
+            <if condition="$key eq $subtable">
+                <table class="tml_set_table">
+                    <tr>
+                        <td style="width: 50px;">
+                            <input type="checkbox" name="masid" value="{$masid}" onclick="choisealldata(this);" group="{$subtable}">
+                        </td>
+                        <volist name="v['list']" id="vv" key="ii">
+                            <td>{$vv.title}<input type="hidden" name="fields[]" value="{$key}|{$subtable}"></td>
+                        </volist>
+                    </tr>
+                    <volist name="list['list']" id="vvv" key="iii">
+                        <tr>
+                            <td>
+                                <php>
+                                $a = '';
+                                foreach($seclist as $key=>$val){
+                                    if($vvv['masid']==$val['mainid']&&$subtable==$val['subtable']&&$vvv['json_code']==$val['subjson']) $a=1;
+                                }
+                                </php>
+                                <input type="checkbox" <if condition="$a">checked="checked"</if> class="{$subtable}"  name="list[]" onclick="soninsert(this);" upkey="{$vvv.masid}" value='{$vvv.json_code}|{$subtable}|{$vvv.masid}'>
+                            </td>
+                            <volist name="v['list']" id="dtv">
+                                <php>$dtfield = $key;</php>
+                                <volist name="vvv" id="vvvv">
+                                	<php>$alias = $key."_alias"; </php>
+                                    <if condition="$key eq $dtfield">
+                                        <td><if condition="$vvv[$alias]">{$vvv[$alias]}<else/>{$vvvv}</if></td>
+                                    </if>
+                                </volist>
+                            </volist>
+                        </tr>
+                    </volist>
+                </table>
+            </if>
+        </volist>

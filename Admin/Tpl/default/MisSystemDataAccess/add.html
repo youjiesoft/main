@@ -1,0 +1,116 @@
+<script>
+$(function(){
+	var box=$.pdialog.getCurrent();
+	//获取选择模型下的数据表 ----- 模型中文名input框赋值
+	$("select[name='actionname']",box).change(function(){		
+		var model = $(this).val();
+		var title = $(this).find("option:selected").text();
+		$("input[name='actiontitle']").val(title);
+		$.ajax({
+			 type: 'POST',
+	         url : "__URL__/gettables",
+	         data: {model:model},
+	         global:false,
+	         dataType:'json',
+	         success:function(list){
+	        	 if(list){
+	        		 var html='';
+	        		 
+	        		 $.each(list,function(i,v){
+	        			 html += '<option value="'+i+'">'+v+'</option>';
+	        		 })
+	        		 $("select[name='table']").html(html).select2().change();
+	        	 }else{
+	        		 $("select[name='table']").html('').change();
+	        	 }
+	         }
+		});
+	});	
+	//获取选择数据表下的单、复选框、下拉框、lookup字段  --- 数据表中文名input框赋值
+	$("select[name='table']",box).change(function(){
+		var model = $("select[name='actionname']",box).val();		
+		var table = $(this).val();
+		var title = $(this).find("option:selected").text();
+		$("input[name='tabletitle']").val(title);
+		$.ajax({
+			 type: 'POST',
+	         url : "__URL__/gettablefields",
+	         data: {table:table,model:model},
+	         global:false,
+	         dataType:'json',
+	         success:function(res){
+	        	 console.log(res);
+	        	 if(res){
+	        		 var html='';
+	        		 
+	        		 $.each(res,function(i,v){
+	        			 html += '<option value="'+i+'">'+v+'</option>';
+	        		 })
+	        		 $("select[name='field']",box).html(html).select2().change();
+	        	 }else{
+	        		 $("select[name='field']",box).html('').change();
+	        	 }
+	         }
+		});
+	});
+	//字段中文名input框赋值
+	$("select[name='field']").change(function(){
+		var title = $(this).find("option:selected").text();
+		$("input[name='fieldtitle']").val(title);
+	})
+});
+
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/MisSystemDataAccessBOX" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<!-- select组件 start -->
+				<div class="tml-form-col ">
+					<label>模型名称:</label>
+					<select   name="actionname"  class="select2">
+					<option value=''>请选择</option>
+					<volist name="list" id="mv">
+						<option value="{$mv.ename}">{$mv.title}</option>
+					</volist>					
+					</select>
+					<input name="actiontitle" value='' type="hidden">
+				</div>
+				<!-- select组件 end -->
+				<div class="tml-form-col ">
+					<label>数据表名称:</label>
+					<select   name="table"  class="select2">
+					
+					</select>
+					<input name="tabletitle" value='' type="hidden">
+				
+				</div>
+				<!-- text组件 start -->
+				<div class="tml-form-col " >
+					<label>字段:</label>
+					<select   name="field"  class="select2">
+					
+					</select>
+					<input name="fieldtitle" value='' type="hidden">
+				</div>
+				<div class="tml-form-col " >
+					<label>授权方式:</label>					
+					<input type="radio" name="accesscontenttype" value='2' checked>分组授权
+					<input type="radio" name="accesscontenttype" value='1'>直接授权
+				</div>
+				<!-- text组件 end -->
+				<div class="tml-form-col ">
+					<label>是否开启:</label>
+					<input type="radio" name="startstatus" value='1' checked>开启
+					<input type="radio" name="startstatus" value='0'>不开启
+				</div>
+				<div class="tml-form-col ">
+					<label>是否全控制:</label>
+					<input type="radio" name="isalldata" value='1' checked>是
+					<input type="radio" name="isalldata" value='0'>否
+				</div>
+		</div>
+		</div>
+	{:W('ShowAction')}
+	</form>
+</div>

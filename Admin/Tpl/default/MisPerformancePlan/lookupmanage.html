@@ -1,0 +1,31 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#hrpersonnelpositive"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="close">
+			<div class="clearfix p5">
+				<input class="tree-search-input" type="text" id="MisHrPersonnelTrainingManageSearchNodeKeys" />
+				<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('hrpersonnelpositive','MisHrPersonnelTrainingManageSearchNodeKeys')" type="button">搜索</button>
+			</div>
+			<ul id="hrpersonnelpositive" class="ztree" layoutH="44" ></ul>
+		</div>
+	</div>
+	<div id="positiveBox" class="positiveBox treeright">
+		<include file="lookupmanagelist" />
+	</div>
+</div>

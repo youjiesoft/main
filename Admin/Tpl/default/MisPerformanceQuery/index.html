@@ -1,0 +1,34 @@
+<script>
+//左边树形菜单
+$(document).ready(function(){
+    var zNodes = {$mpquertTreearr};
+    var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+    $.fn.zTree.init($("#MisPerformanceQueryZnodes"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+            <div class="toggleCollapse"><div></div></div>
+        </div>
+        <div class="close">
+            <div class="toggleCollapse" ><h2></h2><div></div></div>
+            <ul id="MisPerformanceQueryZnodes" class="ztree" layoutH="10"></ul>
+        </div>
+	</div>
+	<div id="MisPerformanceQueryRel" class="MisPerformanceQueryRel treeright">
+		<include file="unitlist" />
+	</div>
+</div>

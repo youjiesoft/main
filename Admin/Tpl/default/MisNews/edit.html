@@ -1,0 +1,51 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+			  		<div class="tml-form-row">
+			  			<label>标&nbsp;&nbsp;&nbsp;题：</label>
+			  			<input type="text"  name="title"   class="required" maxlength="100" style="width:571px;" value="{$vo.title}" />
+			  			<input type="hidden" name="type" value="company"/>
+			  		</div>
+			  		
+			  		<div class="tml-form-row">
+			  			<label>{$fields["url"]}：</label>
+			  			<input type="text"  name="url" class="url textInput" maxlength="500"  style="width:571px;" value="{$vo.url}" />
+			  		</div>
+			  		<!-- <div class="tml-form-col">
+			  			<label>{$fields["userid"]}：</label>
+				  		<select  name="userid" class="combox required">
+	                         <option selected value="">&mdash;&mdash;选择&mdash;&mdash;</option>
+	                         <volist id="ulist" name="ulist">
+	                              <option  value="{$key}">{$ulist}</option>
+	                         </volist>
+	                     </select>
+	                </div> -->
+	          </div>
+	          <div class="tml-form-row">
+			  			<label>内&nbsp;&nbsp;&nbsp;容：</label>
+			  			<textarea class="ueditor"  name="content" style="height:140px;width:580px;">{$vo.content} </textarea>
+			  		</div>      
+	    	  <div class="tml-form-row">
+		    	 <label>备&nbsp;&nbsp;&nbsp;&nbsp;注：</label>
+				 <textarea name="remark" rows="3" maxlength="200" style="width:571px;">{$vo.remark} </textarea>
+			 </div>
+			  <div class="tml-form-row"></div>
+			  <div class="tml-form-row"></div>
+			<div class="tml-row">
+					<div class="tml-form-col">
+						<label>制&nbsp;单&nbsp;人：</label>
+						<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}"/>
+					</div>	
+					<div class="tml-form-col">
+						<label>制单时间：</label>
+						 <input name="createtime" type="text" readonly="readonly" value="{$vo.createtime|transTime}"  />
+					</div>	
+				</div>
+		</div>
+		 {:W('ShowAction',array('data'=>$vo))}
+	</form>
+	</div>
+</div>

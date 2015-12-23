@@ -1,0 +1,47 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+            <input type="hidden" name="type" value="{$type}" />
+			<input type="hidden" name="ajax" value="1">
+	        <input type="hidden" name="rel" value="misexecutiontype" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+            <div class="pageFormContent" layoutH="58">
+            <p>
+				<label>{$fields["code"]}：</label>
+				<input type="text" value="{$code}" class="required textInput alphanumeric" <if condition='$writable eq 0'> readonly="readonly" </if> minlength="2" maxlength="10" name="code"/>
+			</p>
+            <p>
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required textInput" name="name"  minlength="2" maxlength="25"/>
+			</p>
+            <p>
+            <label>{$fields["typeid"]}：</label>
+				  <select name="typeid" class="required combox">
+					  <volist id="vo" name="list">
+					  	<option <if condition="$type eq $vo['type']">selected="selected"</if> value="{$vo['type']}">{$vo['typename']}</option>
+					  </volist>
+				  </select>
+			</p>
+			<dl class="nowrap">
+				<dt>
+					<label style="padding: 0px;">{$fields["remark"]}：</label>
+				</dt>
+				<dd>
+					<TEXTAREA cols="50" rows="2" name="remark"></TEXTAREA>
+				</dd>
+			</dl>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misexecutiontype_insert">
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+
+	</div>
+</div>
+
+

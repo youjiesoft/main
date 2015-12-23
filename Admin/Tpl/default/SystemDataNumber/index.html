@@ -1,0 +1,45 @@
+ <script>
+$(document).ready(function(){
+	var zNodes = {$returnarr};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#SystemDataNumberTree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("SystemDataNumberTree");
+	var valid='{$check}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+}); 
+</script> 
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+<div class="treeleft">
+	<div class="work_statement"></div>
+	<div class="collapse" layoutH="0">
+		<div class="toggleCollapse"><div></div></div>
+	</div>
+	<div class="close">
+		<div class="toggleCollapse" ><h2></h2><div></div></div>
+		<div class="clearfix p5">
+			<div class="xysearcher">
+			<input class="js-searchZTreeSubmit" class="tree-search-input" type="text" id="SystemDataNumberTreeSearchNodeKeys" />
+			<input id="SearchSubmit" class="searchBtn" type="button" onclick="SearchZTreeNode('SystemDataNumberTree','SystemDataNumberTreeSearchNodeKeys')">
+			</div>
+		</div>
+		<ul id="SystemDataNumberTree" class="ztree" layoutH="45"></ul>
+	</div>
+</div>
+ <div id="SystemDataNumberBox" class="unitBox treeright">
+	<include file="indexview" />
+</div>
+</div>
+
+

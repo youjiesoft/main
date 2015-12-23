@@ -1,0 +1,203 @@
+<script>
+function GetServerTime() {
+	var dates = new Date();
+	var $box=navTab.getCurrentPanel();
+    $box.find(".endtime").each(function(){
+	   var cc = $(this).text();
+	   var endtimes = cc.replace(/-/g,'/');
+	   var urodz     = new Date(endtimes);
+	   dates.setTime(dates.getTime()+250);
+	   days    = Number((Number(urodz) - Number(dates)) / 1000 / 60 / 60 / 24);
+	   daysRound   = Math.floor(days);
+	   hours    = (urodz - dates) / 1000 / 60 / 60 - (24 * daysRound);
+	   hoursRound   = Math.floor(hours);
+	   minutes   = (urodz - dates) / 1000 /60 - (24 * 60 * daysRound) - (60 * hoursRound);
+	   minutesRound  = Math.floor(minutes);
+	   seconds   = (urodz - dates) / 1000 - (24 * 60 * 60 * daysRound) - (60 * 60 * hoursRound) - (60 * minutesRound);
+	   secondsRound  = Math.round(seconds);
+	   var tianshu = daysRound;
+	   var xiaoshi = hoursRound + ":" + minutesRound + ":" + secondsRound;
+	   if(tianshu<0){
+		   $(this).parent().find('.downtime').empty().html('<span style="color:#ff0000">已过期</span>');
+	   }else{
+		   $(this).parent().find('.downtime').empty().html(tianshu+"天"+xiaoshi);
+	   }
+   });
+}
+setInterval("GetServerTime()", 250);
+;(function(){
+    //工作流栏目收缩展开
+    $('.Lookupteaceindex').bind('click', function(e){
+        var $target = $(e.target);
+        if($target.hasClass('expanddl')){
+            $target.parent('dt').siblings('dd').slideDown(200);
+            $target.siblings('.expanddl').removeClass('expanddl').addClass('collapsedl');
+            e.target.className = 'collapsedl';
+        } else if($target.hasClass('collapsedl')){
+            $target.parent('dt').siblings('dd').slideUp(200);
+            $target.siblings('.collapsedl').removeClass('collapsedl').addClass('expanddl');
+            e.target.className = 'expanddl';
+        }
+    });
+})();
+</script>
+<form id="pagerForm" action="__URL__/lookuptraceindex" method="post">
+    <input type="hidden" name="pageNum" value="1"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <li>
+                <a class="addCalendar" href="__URL__/lookuptraceadd/stype/1" target="dialog" height="600" width="700" rel="__MODULE__add" title="新增工作任务" mask="true"><span>{$Think.lang.add}</span></a>
+            </li>
+        </ul>
+    </div>
+    <div class="Lookupteaceindex pageContent" layoutH="68">
+    <dl>
+        <dt class="clearfix"><a href="#" class="collapsedl"></a><span class="collapsedl"><b>今天&nbsp;&nbsp;{$today1|transTime='Y-m-d'}</b></span></dt>
+        <dd>
+            <table class="table" width="100%">
+                <volist id="todayList" name="todayList">
+                    <tr>
+                        <td width="20%">{$todayList['text']|missubstr=###,40,true}</td>
+                        <td width="8%">{$todayList['scheduletype']|excelTplselected=###,'1:个人日程,2:工作日程'}</td>
+                        <td width="8%">{$todayList['importancedegree']|excelTplselected=###,'1:一般处理,2:优先处理,3:急需处理'}</td>
+                        <td width="10%">{$todayList['startdate']|transTime='Y-m-d H:i:s'}</td>
+                        <td width="10%" class="endtime">{$todayList['enddate']|transTime='Y-m-d H:i:s'}</td>
+                        <td width="10%" class="downtime">33333333</td>
+                        <td width="17%">{$todayList['personname']|missubstr=###,40,true}</td>
+                        <td style="color:red">
+                        <if condition="$todayList['createid'] eq $loginuserid">
+                        <a href="__URL__/lookuptraceedit/id/{$todayList['id']}" style="color:blue" rel="adn"  target="dialog" mask="true" height="600" width="700" >修改</a>&nbsp;&nbsp;
+                        </if>
+                        <a href="__URL__/lookupview/id/{$todayList['id']}" target="dialog" style="color:blue" mask="true" height="600" width="700" >查看</a></td>
+                    </tr>
+                </volist>
+                <volist id="arrList" key="key" name='arrList'>
+                    <tr>
+                        <td width="20%">{$arrList.key}</td>
+                        <td width="8%"></td>
+                        <td width="8%"></td>
+                        <td width="10%"></td>
+                        <td width="10%"></td>
+                        <td width="10%"></td>
+                        <td width="17%"></td>
+                        <td>&nbsp;&nbsp;</td>
+                    </tr>
+                </volist>
+            </table>
+        </dd>
+    </dl>
+    <dl>
+        <dt class="clearfix"><a href="#" class="collapsedl"></a><span class="collapsedl"><b>明天&nbsp;&nbsp;{$tomorrow1|transTime='Y-m-d'}</b></span></dt>
+        <dd>
+        <table class="table" width="100%">
+            <tbody>
+            <volist id="tomorrowList" name="tomorrowList">
+                <tr>
+                    <td width="20%">{$tomorrowList['text']|missubstr=###,40,true}</td>
+                    <td width="8%">{$tomorrowList['scheduletype']|excelTplselected=###,'1:个人日程,2:工作日程'}</td>
+                    <td width="8%">{$tomorrowList['importancedegree']|excelTplselected=###,'1:一般处理,2:优先处理,3:急需处理'}</td>
+                    <td width="10%">{$tomorrowList['startdate']|transTime='Y-m-d H:i:s'}</td>
+                    <td width="10%" class="endtime">{$tomorrowList['enddate']|transTime='Y-m-d H:i:s'}</td>
+                    <td width="10%" class="downtime">33333333</td>
+                    <td width="17%">{$tomorrowList['personname']|missubstr=###,40,true}</td>
+                    <td>
+                    <if condition="$tomorrowList['createid'] eq $loginuserid">
+                    <a href="__URL__/lookuptraceedit/id/{$tomorrowList['id']}" target="dialog" style="color:blue" mask="true" rel="adn"  height="600" width="700" >修改</a>&nbsp;&nbsp;
+                    </if>
+                    <a href="__URL__/lookupview/id/{$tomorrowList['id']}" target="dialog" style="color:blue" mask="true" height="600" width="700" >查看</a></td>
+                </tr>
+            </volist>
+            <volist id="tomorrowArrList" key="key" name='tomorrowArrList'>
+                <tr>
+                    <td width="20%">{$arrList.key}</td>
+                    <td width="8%"></td>
+                    <td width="8%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="17%"></td>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+            </volist>
+            </tbody>
+        </table>
+        </dd>
+    </dl>
+    <dl>
+        <dt class="clearfix"><a href="#" class="collapsedl"></a><span class="collapsedl"><b>明天以后</b></span></dt>
+        <dd>
+        <table class="table" width="100%">
+            <tbody>
+            <volist id="tomorrowafterList" name="tomorrowafterList">
+                <tr>
+                    <td width="20%">{$tomorrowafterList['text']|missubstr=###,40,true}</td>
+                    <td width="8%">{$tomorrowafterList['scheduletype']|excelTplselected=###,'1:个人日程,2:工作日程'}</td>
+                    <td width="8%">{$tomorrowafterList['importancedegree']|excelTplselected=###,'1:一般处理,2:优先处理,3:急需处理'}</td>
+                    <td width="10%">{$tomorrowafterList['startdate']|transTime='Y-m-d H:i:s'}</td>
+                    <td width="10%" class="endtime">{$tomorrowafterList['enddate']|transTime='Y-m-d H:i:s'}</td>
+                    <td width="10%" class="downtime">33333333</td>
+                    <td width="17%">{$tomorrowafterList['personname']|missubstr=###,40,true}</td>
+                    <td>
+                    <if condition="$tomorrowafterList['createid'] eq $loginuserid">
+                    <a href="__URL__/lookuptraceedit/id/{$tomorrowafterList['id']}"  style="color:blue" target="dialog" mask="true" rel="adn"  height="600" width="700" >修改</a>&nbsp;&nbsp;
+                    </if>
+                    <a href="__URL__/lookupview/id/{$tomorrowafterList['id']}" style="color:blue" target="dialog" mask="true"height="600" width="700" >查看</a></td>
+                </tr>
+            </volist>
+            <volist id="beforArrList" key="key" name='beforArrList'>
+                <tr>
+                    <td width="20%">{$arrList.key}</td>
+                    <td width="8%"></td>
+                    <td width="8%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="10%"></td>
+                    <td width="17%"></td>
+                    <td>&nbsp;&nbsp;</td>
+                </tr>
+            </volist>
+            <if condition="$countresult gt 5">
+                <tr style="text-align:center;">
+                    <td colspan="8" text-align="center"><a href="__URL__/lookupMoreresoult/daysa/4" style="color:blue" target="dialog" rel="adn"  mask="true" height="500" width="700">查看更多</a></td>
+                </tr>
+            </if>
+            </tbody>
+        </table>
+        </dd>
+    </dl>
+    <dl>
+        <dt class="clearfix"><a href="#" class="collapsedl"></a><span class="collapsedl"><b>今天以前</b></span></dt>
+        <dd>
+        <table class="table" width="100%">
+            <tbody>
+            <volist id="todaybeforeList" name="todaybeforeList">
+                <tr>
+                    <td width="20%">{$todaybeforeList['text']|missubstr=###,40,true}</td>
+                    <td width="8%">{$todaybeforeList['scheduletype']|excelTplselected=###,'1:个人日程,2:工作日程'}</td>
+                    <td width="8%">{$todaybeforeList['importancedegree']|excelTplselected=###,'1:一般处理,2:优先处理,3:急需处理'}</td>
+                    <td width="10%">{$todaybeforeList['startdate']|transTime='Y-m-d H:i:s'}</td>
+                    <td width="10%" class="endtime">{$todaybeforeList['enddate']|transTime='Y-m-d H:i:s'}</td>
+                    <td width="10%" class="downtime">33333333</td>
+                    <td width="17%">{$todaybeforeList['personname']|missubstr=###,40,true}</td>
+                    <td>
+                    <if condition="$todaybeforeList['createid'] eq $loginuserid">
+                    <a href="__URL__/lookuptraceedit/id/{$todaybeforeList['id']}" style="color:blue" target="dialog" mask="true" height="600" rel="adn"  width="700" >修改</a>&nbsp;&nbsp;
+                    </if>
+                    <a href="__URL__/lookupview/id/{$todaybeforeList['id']}" style="color:blue" target="dialog" mask="true" height="600" width="700" >查看</a></td>
+                </tr>
+            </volist>
+            <if condition="$count gt 5">
+                <tr style="text-align:center;">
+                    <td colspan="8"><a href="__URL__/lookupMoreresoult/daysa/3" style="color:blue" target="dialog" mask="true" height="500" width="700" >查看更多</a></td>
+                </tr>
+            </if>
+            </tbody>
+        </table>
+        </dd>
+    </dl>
+    </div>
+</div>

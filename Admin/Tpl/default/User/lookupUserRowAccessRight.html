@@ -1,0 +1,36 @@
+<form onsubmit="return validateCallback(this, navTabAjaxDone);" action="__URL__/lookupUpdateUserRowAccess" method="post">
+    <input type="hidden" name="md" value="{$md}">
+    <input type="hidden" name="userid" value="{$userid}">
+	<div class="panelBar tml-border-t1">
+		<ul class="toolBar">
+		    <li><a class="edit tml-btn tml_look_btn tml_mp" href="#" ><span><span class="icon icon-hand-right icon_lrp"></span>{$rolegroupid|getFieldBy='id','name','rolegroup'} ——> 组所有授权</span></a></li>
+		</ul>
+	</div>
+	<table class="table" width="100%" layoutH="107">
+		<thead>
+			<tr>
+			    <th>字段英文</th>
+				<th>字段中文</th>
+				<th>列可见</th>
+				<th>列不可见</th>
+			</tr>
+		</thead>
+		<tbody>
+		    <volist id="vlist" name="list">
+		    	<if condition="$vlist.shows eq 1">
+			    	<tr>
+			    		<td>{$vlist.name}</td>
+			    		<td>{$vlist.showname}</td>
+			    		<td><input type="radio" name="allow[{$key}]" value="1" <if condition="$vlist.ischeck eq 1">checked</if>/></td>
+			    		<td><input type="radio" name="allow[{$key}]" value="0" <if condition="$vlist.ischeck eq 0">checked</if>/></td>
+			    	</tr>
+		    	</if>
+		    </volist>
+		</tbody>
+	</table>
+	<div class="formBar">
+		<ul>
+			<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}权限</button></li>
+		</ul>
+	</div>
+</form>

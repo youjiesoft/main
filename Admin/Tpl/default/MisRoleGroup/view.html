@@ -1,0 +1,40 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<input type="hidden" name="rolegroup_id" value="{$vo.rolegroup_id}" >
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+				<select name="deptid" class="combox required">
+					{$deptlist}
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required" name="name" maxlength="25" value="{$vo.name}" />
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["sort"]}：</label>
+				<input type="text" name="sort" maxlength="4" value="{$vo.sort}" />
+			</div>
+			<div class="tml-form-col">
+                <label>状态：</label>
+                <select name="status" class="combox">
+                    <option value="1" <if condition="$vo['status'] eq 1">selected</if> >启用</option>
+                    <option value="0" <if condition="$vo['status'] eq 0">selected</if> >禁用</option>
+                </select>
+            </div>
+		</div>			
+			<div class="tml-form-row">
+                <label>{$fields["remark"]}：</label>
+                <textarea name="remark" class="textInput" maxlength="100" rows="4" cols="40">{$vo.remark}</textarea>
+            </div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+
+	</div>
+</div>
+

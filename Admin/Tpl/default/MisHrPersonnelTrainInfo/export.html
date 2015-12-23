@@ -1,0 +1,34 @@
+<form id="pagerForm" action="__URL__/lookup" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="name" value="{$name}"/>
+</form>
+<form  action="__URL__/export/modelname/{$modelname}" method="post">
+<input type="hidden" name="id" value="{$id}">
+<div class="pageContent">
+	<table class="table" layoutH="55" targetType="dialog" width="100%">
+		<thead>
+			<tr>
+				<th><input type="checkbox" group="field[]" class="checkboxCtrl"></th>
+				<th>字段名称</th>
+				<th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist name="list" id="volist">
+				<tr rel="{$volist['Field']}" onclick="onTrClickCheckbox(this,'field[]')">
+					<td><input type="checkbox" value="{$volist['Field']}" name="field[]"></td>
+					<td>{$volist['Field']}</td>
+					<td>{$volist['Comment']}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="formBar">
+			<ul>
+			<li><div class="buttonActive"><div class="buttonContent"><button type="submit">开始导出</button></div></div></li>
+		</ul>
+	</div>
+</div>
+</form>

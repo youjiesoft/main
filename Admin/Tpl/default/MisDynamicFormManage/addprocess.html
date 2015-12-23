@@ -1,0 +1,27 @@
+<div class="wf_explanation">
+    <span class="processgraph_title">自定义流程图</span>
+</div>
+<div class="pageContent temp_page_Content" style="border-left: 2px solid #d8d8d8;">
+	<!-- 默认为新增界面 -->
+	<form method="post" action="__APP__/ProcessManage/insert/navTabId/MisDynamicFormManageaddprocess" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+   		<input type="hidden" name="nodename" value="{$modelname}" />
+   		<input type="hidden" name="id"  value="{$pInfoVo.id}" />
+   		<div class="process_set_box">
+            <label for="processName">流程名称:</label>
+            <input class="process_name required" type="text" id="processName" name="name" value="{$pInfoVo.name}"/>
+            <label for="processType">流程类型:</label>
+            <select id="processType" name="catgory" class="select2 process_type">
+                <option value="1" <if condition="$pInfoVo.catgory eq 1">selected</if> >固定流程</option>
+                <option value="2" <if condition="$pInfoVo.catgory eq 2">selected</if> >变更流程</option>
+            </select>
+            <span class="processgraph_tips"><i class="icon-comments"></i> 操作提示：请在流程节点上单击右键进行流程设置</span>
+        </div>
+        <include file="ProcessManage:commonFlowWidget" />
+        
+        <div class="formBar" style="margin:0px;">
+			<ul>
+				<li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}流程</button></li>
+			</ul>
+		</div>
+    </form>
+</div>

@@ -1,0 +1,55 @@
+<form id="pagerForm" method="post" action="__URL__/lookup/search/{$lookup_ename}">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<div style="padding:0;" class="pageHeader"></div>
+<div class="pageContent" id="lookup">
+	<form rel="pagerForm" onsubmit="return dialogSearch(this);" action="__URL__/lookup/search/{$lookup_ename}" method="post">
+		<empty name="lookup_error">
+			<table class="table" width="99%" layoutH="50">
+				<thead ename="{$lookup_ename}">
+				<tr>
+					<th style="display:none;"><input type="text" name="id" /></th>
+					<volist id="vo" name="lookup_list">
+						<if condition="$vo[name] neq action">
+				    	<th <if condition="$vo[widths]">width="{$vo[widths]}"</if> >{$vo[showname]}</th></if>
+				   		</if>
+				    </volist>
+				    <th>查找带回</th>
+				</tr>
+				</thead>
+				<tbody>
+				<volist id="vo" name="list">
+					<tr target="sid_node" rel="{$vo['id']}" title="{$vo['name']}">
+						<td style="display:none;"><input type="text" name="id" value="{$vo['id']}" /></td>
+						<volist id="vo1" name="lookup_list">
+							<if condition="$vo1[shows] eq 1 and $vo1[name] neq action">
+							<td field="{$vo1[name]}">
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+									<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+									{$vo[$vo1['name']]}
+								</if>
+							</td>
+							</if>
+						</volist>
+						<td><a class="btnSelect" href="javascript:$.bringBack({ id :'{$vo.id}', name:'{$vo.name}',ordermasid:'{$vo.id}',orderno:'{$vo.orderno}',sacnoid :'{$vo.contid}', currencyid :'{$vo.custcurid}',userid:'{$vo.custuserid}',paymentid:'{$vo.custpaymentid}',paymethod:'{$vo.custpaymethod}',accountid:'{$vo.custbankid}' ,bank:'{$vo.custbankid}',bankcode:'{$vo.bacode}' , customerid:'{$vo.customerid}', scode :'{$vo.concode}','cname':'{$vo.custname}' })" title="查找带回">选择</a></td>
+					</tr>
+				</volist>
+				</tbody>
+			</table>
+		<else />
+			<font color="red">找不到ename为 {$lookup_search} 的搜索模板</font>
+		</empty>
+	</form>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

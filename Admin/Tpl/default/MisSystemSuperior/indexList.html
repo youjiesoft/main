@@ -1,0 +1,65 @@
+<style>
+	.work_group_sort_clear {
+		padding: 0 20px;
+	}
+	.work_group_sort_clear dd {
+		float:none;
+		margin-bottom: 10px;
+	}
+	.work_group_sort_clear .work_box {
+		width: 120px;
+		margin: 10px 0 0 15px;
+	}
+	.work_group_sort_clear dt,
+	.work_group_sort_clear .work_box_number,
+	.work_group_sort_clear .work_box_title {
+		line-height: 35px;
+	}
+	.work_group_sort_clear .execute_takes_btn {
+		padding: 5px 0;
+	}
+	.work_group_sort_clear .work_lmb {
+		margin-bottom: 5px;
+	}
+</style>
+<div class="pageContent" style="background: #fff;">
+	<div class="pageContent applecloth">
+        <div class="work_shortcut_top lookup_top_header">下级审核</div>
+        <div class="set_configure" layoutH="95">
+        <dl class="work_group_sort work_group_sort_clear">
+	        <volist name="deptidArr" id="deptname">
+	        	<dt>{$deptname}<dt>
+	        	<div class="tml_style_line tml_slb_blue work_lmb gml-work-lmb"></div>
+	        	<dd>
+					<ul class="clearfix" style="width:100%;">
+						<volist name="deptidListArr" id="deptlist">
+							<volist name="vorr" id="void">
+						        <if condition="$void['user'] eq $deptlist['userid']">
+									<if condition="$deptlist['name'] eq $deptname">
+										<li class="left">
+											<div class="work_box">
+												<div class="work_box_title">{$User[$deptlist['userid']]['name']}</div>
+									            <div class="pro_style_line"></div>
+									            <volist name="vorr" id="void">
+								                <if condition="$void['user'] eq $deptlist['userid']">
+									            <div class="work_box_number">共有：(&nbsp;{$void['count']}&nbsp;)条…</div>
+												<div class="">
+									            <a class="execute_takes_btn" rel="MisSystemSuperior" title="下级审核" target="navTab" href="__URL__/index/jump/jump/md/MisSystemSuperior/rel/MisSystemSuperiorbox/userid/{$void['user']}" title="{$void['title']}">
+									            <span class="icon icon-play-circle"></span> 查看
+									            </a>
+									            <div class="clear"></div>
+												</div>
+											</div>
+										<li>
+									</if>
+								</if>
+							</volist>
+						</volist>
+					</ul>
+				</dd>
+	        </volist>
+	        </dl>
+        </div>
+	</div>
+
+</div>

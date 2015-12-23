@@ -1,0 +1,110 @@
+<script>
+$(function(){
+	$val='{$searchby}';
+	if($val=='name'){
+		$("input[name='keyword']").attr("placeholder","搜索姓名");
+	}
+	if($val=='mis_system_department-name'){
+		$("input[name='keyword']").attr("placeholder","搜索部门");
+	}
+	if($val=='duty-name'){
+		$("input[name='keyword']").attr("placeholder","搜索职位");
+	}
+	if($val=='dutyname'){
+		$("input[name='keyword']").attr("placeholder","搜索职级");
+	}
+	if($val=='all'){
+		$("input[name='keyword']").attr("placeholder","搜索员工姓名,部门,职位,职级");
+	}
+});
+function MisHrBecomeEmployee_lookupmanagelist(){
+	var val = "0";
+	$(".MisHrBecomeEmployeelist").find("input[type='checkbox']").each(function(){
+		if($(this).attr("checked")=='checked'){
+			 var result= DWZ.jsonEval($(this).attr('value'));
+			val += '_' +result.id;
+		}
+	});
+	//var oldval = $("input[name='hrsearchlist']").val();
+	$("input[name='lookuphrsearchlist']").val(val);
+	//alert($("input[name='hrsearchlist']").val());
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupmanage" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'positiveBox');" action="__URL__/lookupmanage" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="step" value="{$step}">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="becomehrsearchlist" value="{$becomehrsearchlist}"/>
+		<div class="searchBar" style="margin-top:3px;">
+			<table class="searchContent">
+				<tr>
+					<td>
+							<input type="text" placeholder="搜索员工姓名,部门,职位,职级" name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox"  onchange="changeInput(this)"  name="searchby">
+							   <option value="all"   <if condition="$searchby eq 'all'">selected</if> >全部</option>
+								<option value="name"  <if condition="$searchby eq 'name'">selected</if> >姓名</option>
+								<option value="mis_system_department-name"     <if condition="$searchby eq 'mis_system_department-name'">selected</if> >部门</option>
+								<option value="dutyname"   <if condition="$searchby eq 'dutyname'">selected</if> >职级</option>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />			
+						<!-- <select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select> -->
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+					 <td><button class="xyBack" type="button" <if condition="$step">onclick="mishragentbecomeemployee_editselect(this)" <else/> onclick="mishragentbecomeemployee_addselect(this)"</if> warn="请选择人员">选择带回</button></td> 
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="77">
+		<thead>
+			<tr>
+				<th width="20"><input type="checkbox"  class="checkboxCtrl" group="orgId" /></th>
+				<th>ID</th>
+				<th>员工姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+				<th>职务</th>
+				<th>入职时间</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody   class="MisHrAgentBecomeEmployeeaddlist">
+		<volist id="vo" name="list">
+			<tr onclick="onTrClickCheckbox(this,'orgId');">
+				<td><input type="checkbox" name="orgId"  <if condition="$vo.isselected eq '1'">checked="checked"</if>   value="{ id:'{$vo.id}', name:'{$vo.name}'}" userid="{$vo.id}" username="{$vo.name}" /></td>
+				<td>{$vo['id']}</td>
+				<td>{$vo['name']}</td>
+				<td>{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+				<td>{$vo['dutylevelid']|getFieldBy='id','name','duty'}</td>
+				<td>{$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}</td>
+				<td>{$vo['indate']|transTime}</td>
+				<td>
+					<a class="btnSelect"     <if condition="$step">onclick="mishragentbecomeemployee_editpeople('{$vo.id}','{$vo.name}')" <else/>onclick="mishragentbecomeemployee_addpeople('{$vo.id}','{$vo.name}')" </if> href="javascript:$.bringBack({ id:'{$vo.id}', name:'{$vo.name}',dutylevelid:'{$vo.dutylevelid}',dutyname:'{$vo.dutylevelid|getFieldBy='id','name','duty'}',deptid:'{$vo.deptid}',worktype:'{$vo.worktype}',worktypename:'{$vo.worktype|getFieldBy='id','name','mis_hr_job_info'}',deptname:'{$vo.deptid|getFieldBy='id','name','mis_system_department'}',indate:'{$vo.indate|transtime}',transferdate:'{$vo.transferdate|transtime}'})" title="查找带回">选择</a>
+				</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="positiveBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

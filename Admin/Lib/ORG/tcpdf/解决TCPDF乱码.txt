@@ -1,0 +1,99 @@
+PHP生成PDF完美支持中文,解决TCPDF乱码
+
+PHP生成PDF格式文件以TCPDF为基础，TCPDF是一个用于快速生成PDF文件的PHP5函数包。TCPDF基于FPDF进行扩展和改进。支持UTF-8，Unicode，HTML和 XHTML。在基于PHP开发的Web应用中，使用它来输出PDF文件是绝佳的选择。但毕竟这款开源软件是外国人开发的，对中文的支持也不是那么尽如人 意，因此我们需要对它作进一步的强化。
+首先要到TCPDF官网下载TCPDF最新版。访问http://www.tcpdf.org ，单击导航条上的”Download”链接，即可下载到最新版本的TCPDF压缩包。因为里面包含了许多的TCPDF范例和字体文件，因此下载的文件比较大，大概有10M左右。下载完后解压它，会得到一个名为tcpdf的目录，此目录的结构大概是这样的：
+
+将此目录移动到WEB网站的根目录下(假设您使用的是Apache，并且使用80端口，如有不同请根据实际情况修改)，打开浏览器，访问 http://localhost/tcpdf/ 应该就可以看到此目录下的文件和文件夹列表。由于TCPDF已经自带了一些范例，因此为了节省时间，我们可以直接对范例进行修改再使用。打开tcpdf目 录下的examples目录，下面有50多个范例文件，其中example_038.php就是用来测试东亚字体的(比如简体/繁体中文、日文等等)，打开此文件，找到$pdf->SetFont 这一行，修改为：
+
+    $pdf->SetFont(‘stsongstdlight’, ”, 20);
+
+ 
+
+这一行代码的作用是设置PDF正文所用的字体及字号。其中”stsongstdlight”表示”STSongStdLight”字体，这是Adobe Reader的默认简体中文字体，TCPDF中已经内置这个字体的配置文件，我们只需直接调用即可。接下来，
+
+ 
+
+    $pdf->Write(0,’敏捷的棕毛狐狸跃过那只懒狗‘, ”, 0, ’L', true, 0, false, false, 0);
+
+    $pdf->Write(0,’The quick brown fox jumps over the lazy dog.’, ”, 0, ’L', true, 0, false, false, 0);
+
+    $pdf->Write(0,’1234567890′, ”, 0, ’L', true, 0, false, false, 0);
+
+保存，然后访问 http://localhost/tcpdf/examples/example_038.php 就可以生成一份PDF文档了:
+
+使用默认中文字体生成的PDF文件
+
+这种方式生成的PDF文件的优点是：文件体积小，生成快速。但也有缺点是，没有嵌入中文字体，只限于安装了Adobe Reader之后才能正常显示。那万一用户使用的是FoxIt Reader或者是Linux操作系统呢？显示效果就不一样了。因此，为了保证生成的PDF文件在任何环境下都有同样的显示效果，嵌入字体是必需的。
+Windows下有很多中文字体，但是我们要用在TCPDF中的中文字体有下面几个要求：
+
+· 支持Unicode，因为TCPDF支持的是Unicode;
+
+· 体积越小越好;
+
+· 最好是也支持繁体中文;
+
+这样看来，微软雅黑以及方正的一些字体都符合要求。但是他们都是商业字体，而且个头都不小，以微软雅黑为例，msyh.ttf 文件就超过10M，如果使用它，生成的PDF文件体积也会很大。
+综合考虑，我觉得”Droid Sans Fallback”字体符合要求：
+
+· 首先它是免费字体;
+
+· 其次它也是Unicode编码，支持简体繁体中文以及日文韩文等等;
+
+· 然后它的体积很小，不超过5M。
+
+然而TCPDF不支持TTF字体文件，因此我们先将它转换成TCPDF支持的格式，然后再使用。在TCPDF目录下有个fonts子目录，这个子目录下又有个utils，这里面带有一个字体转换工具ttf2ufm.exe。下面是转换的步骤：
+在网上很容易找到Droid Sans Fallback字体的下载链接，因此在这里就没有必要多做描述了。我们把下载到的 DroidSansFallback.ttf 复制到 TCPDF\fonts\utils 下面，然后打开Windows的命令行，切换到此路径下，输入如下命令：
+
+    D:\www\tcpdf\fonts\utils>ttf2ufm -a -F DroidSansFallback.ttf
+
+等待一段时间，等到命令行窗口显示
+
+“Finished - font files created”
+
+之后，可以发现此目录下生成了DroidSansFallback.afm,DroidSansFallback.t1a 和 DroidSansFallback.ufm 这三个文件。
+在命令行中输入
+
+    “C:\Program Files\WAMP\PHP5\php.exe” -q makefont.php DroidSansFallback.ttf DroidSansFallback.ufm
+
+说明：这里的”C:\Program Files\WAMP\PHP5\php.exe”为php.exe文件所在的路径，请根据实际情况输入。回车运行之后，稍等片刻，命令行窗口中会提示
+
+Font definition file generated
+
+至此大功告成。将生成的droidsansfallback.php、droidsansfallback.z以及droidsansfallback.ctg.z这三个文件复制到 TCPDF\fonts 下面即可。
+
+生成不成功也没问题，另一个方法是到Joomla中文官网http://www.joomlagate.com下载Joomla中文程序找到\language\pdf_fonts目录下复制droidsansfallback.php、droidsansfallback.z以及droidsansfallback.ctg.z这三个文件也是可以的
+打开example_038.php文件，将
+
+    $pdf->SetFont(‘stsongstdlight’, ”, 20);
+
+修改为
+
+    $pdf->SetFont(‘droidsansfallback’, ”, 20);
+
+这样就能够调用我们刚才生成的字体，再访问 http://localhost/tcpdf/examples/example_038.php 就可以看到重新生成的PDF文档。
+
+嵌入DroidSansFallback字体后的PDF文档
+
+附注：SetHeaderData里中文的解决方法为：tcpdf\config\tcpdf_config.php
+
+    define (‘PDF_FONT_NAME_MAIN’, ’helvetica’);
+
+    改为： define (‘PDF_FONT_NAME_MAIN’, ’stsongstdlight’);
+
+    define (‘PDF_FONT_NAME_DATA’, ’helvetica’);
+
+    改为： define (‘PDF_FONT_NAME_DATA’, ’stsongstdlight’);
+
+就可以把example_038.php文件中的
+
+    $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.’ 038′, PDF_HEADER_STRING);
+
+改为：
+
+    $pdf->SetHeaderData(PDF_HEADER_LOGO,PDF_HEADER_LOGO_WIDTH,’中文头部’, ’作者和版权’);
+
+假如你的网站源码为GBK格式 输出的PDF内容为乱码的话 就需要做个简单的转换了，把需要打出的中文文字做
+
+    iconv(“gb2312//TRANSLIT”,’utf-8′,$str);
+
+    $pdf->Write(0,iconv(“gb2312//TRANSLIT”,’utf-8′,’解决GBK网站输出中文乱码问题‘), ”, 0, ’L', true, 0, false, false, 0);

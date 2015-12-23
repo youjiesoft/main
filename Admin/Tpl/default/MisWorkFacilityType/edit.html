@@ -1,0 +1,64 @@
+<include file="Public:pagerForm" />
+	<div class="page">
+		<div class="pageContent">
+			<form method="post"
+			<if condition="$vo.pid eq 0">
+			 action="__URL__/update/navTabId/__MODULE__" 
+			 <else/>
+			  action="__URL__/update/rel/misworkfacilitytype" 
+			 </if>
+			 class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+				<input type="hidden" name="id" value="{$vo['id']}" />
+				<input type="hidden" name="md" value="MisWorkFacilityType" />
+				<div class="pageFormContent" layoutH="58">
+					<div>
+						<div class="tml-form-row">
+							<label>分类编码：</label>
+							<input type="text" name="orderno" class="required"  <if condition='$writable eq 0'> readonly="readonly" </if> value="{$vo['orderno']}">
+						</div>
+						<div class="tml-form-row">
+							<label>分类名称：</label>
+							<input type="text" name="name" class="required" value="{$vo['name']}" />
+						</div>
+						<if condition="$vo.pid neq 0">
+						<div class="tml-form-row">
+							<label class="left tml-pt5">父级节点：</label>
+							<select name="pid" class="combox">
+								<option value="0">顶级分类</option>
+								<volist name="MisWorkFacilityTypeList" id="t">
+									<option <if condition="$vo.pid eq $key">selected="selected"</if> value="{$key}" <if condition="$vo['pid'] eq $key">selected</if> >{$t}</option>
+								</volist>
+							</select>
+							</div>
+						</if>
+						<div class="tml-form-row">
+							<label>说&nbsp;&nbsp;&nbsp;&nbsp;明：</label>
+							<textarea name="remark" >{$vo["remark"]}</textarea>
+						</div>
+					</div>
+				</div>
+				<div class="formBar">
+					 {:W('ShowAction')}
+				</div>
+			</form>
+		</div>
+	</div>
+	<script>
+		function deleteRecordFacility(form,id,model,types){
+			if(id) {
+				var $form = $(form);
+				alertMsg.confirm('确定要删除该数据？',{
+					okCall:function(){
+						$form.attr("action", TP_APP + "/" + model + "/delete/id/" + id + "/navTabId/" + model);
+						if(types == 'dialog'){
+							$.pdialog.closeCurrent();
+						}
+						if(types == 'navTab'){
+							navTab.closeCurrentTab();
+						}
+						return validateCallback($form,navTabAjaxDone);
+					}
+				})
+			}
+		}
+	</script>

@@ -1,0 +1,87 @@
+<script type="text/javascript">
+	var tp = '{$typelist}';
+	$(function(){
+		var conf = new Object();
+		var json=DWZ.jsonEval(tp);
+		conf.data =json;
+		conf.ids ='.editsel1,.editsel2'; 
+		conf.tag = 'a,b'; conf.pid = 'parentid';
+		conf.tex ='name'; 
+		conf.val = 'id'; conf.defaultVal='{$vo.supcategory},{$vo.category}';
+		$.linkage(conf);
+	}); 
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/MisSystemProjectTemplete_left"  class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent"><!-- 关闭当前窗口 -->
+		<input type="hidden" name="refreshtabs[data]" value="1"><!-- 关闭当前窗口 -->
+		
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<div class="pageFormContent applecloth anchorsToolBarParen" layoutH="40" >
+			<div class="new_version_page ">
+				<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">项目标签管理</span></div>
+				<div class="new_version_page_content">
+					{:W('ShowOrderno',array(4,'mis_system_project_templete',$vo['orderno'],array('contentcls'=>'col_1_2 form_group_lay field_orderno', 'inputcls'=>'class="input_new " ','title'=>$fields["orderno"],'isshow'=>1)))}
+					<!-- text组件 start -->
+					<div class="col_1_3 form_group_lay field_xingming " >
+						<label class="label_new">{$fields["name"]}:</label>
+						<input type="text"  name="name" class=" input_new input_new" value="{$vo['name']}">
+					</div>
+					<!-- text组件 end -->
+					<!-- select组件 start -->
+					<div class="col_1_3 form_group_lay">
+						<label class="label_new">{$fields["supcategory"]}:</label>
+						<select name="supcategory" class="select2 required select_elm editsel1">
+							<option>--请选择--</option>
+						</select>
+					</div>
+					<div class="col_1_3 form_group_lay">
+						<label class="label_new">{$fields["category"]}:</label>
+						<select name="category" class="select2 required select_elm editsel2">
+							<option>--请选择--</option>
+						</select>
+					</div>
+					<div class="col_1_3 form_group_lay field_hy combox_tree" >
+							<label class="label_new">{$fields["xiangmuleixing"]}:</label>
+						{:W('ShowSelect',array($vo['xiangmuleixing'],array('  ',array('type'=>'table',array('readonly'=>'1','targevent'=>'','actionName'=>'MisAutoPvb','names'=>'xiangmuleixing','defaultcheckitem'=>'','defaultval'=>'','defaulttext'=>'--请选择--','table'=>'mis_auto_ocqwl', 'id'=>'orderno','name'=>'name','conditions'=>'','parentid'=>'','mulit'=>'','isnextend'=>'','treeheight'=>'','treewidth'=>'','key'=>'','isedit'=>'1','showtype'=>'0')))))}<div class="display_none {$classNodeSettingArr['xiangmuleixing']}">{$vo['xiangmuleixing']|getFieldBy='orderno','name','mis_auto_ocqwl'}</div>
+					</div>
+								
+					<!-- select组件 end -->
+					<!-- select组件 start -->
+						<div class="col_1_3 form_group_lay field_custtypeid ">
+							<label class="label_new">{$fields["custtypeid"]}:</label>
+							{:W('ShowSelect',array($vo['custtypeid'],array('',array('type'=>'table',array('readonly'=>'','targevent'=>'','actionName'=>'MisSystemProjectTemplete','names'=>'custtypeid','defaultcheckitem'=>'','defaultval'=>'','defaulttext'=>'请选择','table'=>'mis_sale_client_type', 'id'=>'id','name'=>'name','conditions'=>'','parentid'=>'','mulit'=>'','isnextend'=>'','treeheight'=>'','treewidth'=>'','key'=>'','isedit'=>'1')))))}
+						</div>
+						<!-- select组件 end -->
+						<!-- select组件 start -->
+						<div class="col_1_3 form_group_lay field_hy combox_tree" >
+							<label class="label_new">{$fields["hyid"]}:</label>
+							{:W('ShowSelect',array($vo['hyid'],array('readonly ',array('type'=>'table',array('readonly'=>'1','targevent'=>'','actionName'=>'MisSystemProjectTemplete','names'=>'hyid','defaultcheckitem'=>'','defaultval'=>'','defaulttext'=>'请选择','table'=>'mis_sale_profession', 'id'=>'id','name'=>'name','conditions'=>'','parentid'=>'parentid','mulit'=>'0','isnextend'=>'1','treeheight'=>'','treewidth'=>'','key'=>'','isedit'=>'1','showtype'=>'0')))))}
+						</div>
+						<!-- select组件 end -->
+ 
+						<!-- select组件 start -->
+						<div class="col_1_3 form_group_lay field_cyl ">
+							<label class="label_new">{$fields["cylid"]}:</label>
+							{:W('ShowSelect',array($vo['cylid'],array('',array('type'=>'table',array('readonly'=>'','targevent'=>'','actionName'=>'MisSystemProjectTemplete','names'=>'cylid','defaultcheckitem'=>'','defaultval'=>'','defaulttext'=>'请选择','table'=>'mis_sale_industry', 'id'=>'id','name'=>'name','conditions'=>'','parentid'=>'','mulit'=>'','isnextend'=>'','treeheight'=>'','treewidth'=>'','key'=>'','isedit'=>'1')))))}
+						</div>
+						<!-- select组件 end -->
+						<!-- select组件 start -->
+						<div class="col_1_3 form_group_lay field_xingbie " >
+							<label class="label_new">{$fields["zhuangtai"]}:</label>
+							{:W('ShowSelect',array($vo['zhuangtai'],array('',array('type'=>'selectlist',array('readonly'=>'1','targevent'=>'','actionName'=>'MisSystemProjectTemplete','names'=>'zhuangtai','defaultcheckitem'=>'','defaultval'=>'','defaulttext'=>'','table'=>'', 'id'=>'','name'=>'','conditions'=>'','parentid'=>'','mulit'=>'','isnextend'=>'','treeheight'=>'','treewidth'=>'','key'=>'StartOrForbidden','isedit'=>'1','showtype'=>'0')))))}
+						</div>
+						<!-- select组件 end -->
+						<!-- upload组件 start -->
+						<div class="col_1_7 form_group_lay field_upload38 " >
+							{:W('ShowUpload',array("0"=>$uploadarry["upload3"],"1"=>upload3,"2"=>$fields[upload3],"3"=>"","4"=>"*.docx"))}
+						</div>
+						<!-- upload组件 end -->
+				</div>
+				 {:W('ShowAction')}
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

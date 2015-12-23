@@ -1,0 +1,217 @@
+<script>
+function fn(string, obj) {
+	string = string.replace(/\s/g, '');
+	if ("" === string) {
+		return false;
+	}
+	if (/[\+\-\*\/]{2,}/.test(string)) {
+		return false;
+	}
+	if (/\(\)/.test(string)) {
+		return false;
+	}
+	var stack = [];
+	for (var i = 0,item; i < string.length; i++) {
+		item = string.charAt(i);
+		if ('(' === item) {
+			stack.push('(');
+		} else if (')' === item) {
+			if (stack.length > 0) {
+				stack.pop();
+			} else {
+				return false;
+			}
+		}
+	}
+	if (0 !== stack.length) {
+		return false;
+	}
+	if (/\([\+\-\*\/]/.test(string)) {
+		return false;
+	}
+	if (/[\+\-\*\/]\)/.test(string)) {
+		return false;
+	}
+	 if (/[^\(\+\-\*\/]\(/.test(string)) {
+		return false;
+	} 
+	if (/\)[^\+\-\*\)\/]/.test(string)) {
+		return false;
+	}
+	var tmpStr = string.replace(/[\(\)\+\-\*\/]{1,}/g, '`');
+	var array = tmpStr.split('`');
+	for (var i = 0,item; i < array.length; i++) {
+		item = array[i];
+		if (/[A-Z]/i.test(item) && 'undefined' === typeof(obj[item])) {
+			return false;
+		}
+	}
+	return true;
+}
+
+function checkFormul(obj){
+	var formula=obj;
+    // 测试  
+    var calarray='{$calarray}';
+    var fields =$.parseJSON(calarray);
+    // 提交到服务器端的字符串不应该包含空白符，或者应该禁止用户输入空白符  
+   var result= fn(formula, fields);  
+   /*  if(result==false){
+    	alert("公式不正确");
+    	return false;
+    } */
+}
+$(function(){
+	$('.gongshi').on('keyup',function(){
+		var tagname = $(this).closest('td').find('input[type="hidden"]').val();
+		var curName = $(this).val();
+		if(tagname && curName ){
+			curName = curName.replaceAll(tagname.toLowerCase(),'');
+			curName = curName.replaceAll(tagname.toUpperCase(),'');
+			$(this).val(curName);
+		}
+	});
+	$('select[name^="type["]').each(function(){
+		
+		if($(this).val()==2 || $(this).val()==3){
+			chageSelectReadonly($(this).closest('td').next('td').find('select') , 'disabled' , 'remove');
+		} else{
+			chageSelectReadonly($(this).closest('td').next('td').find('select') , 'disabled' , 'add');
+		}
+	});
+	$('select[name^="type["]').change(function(){
+		if($(this).val()==2 || $(this).val()==3){
+			chageSelectReadonly($(this).closest('td').next('td').find('select') , 'disabled' , 'remove');
+		} else{
+			chageSelectReadonly($(this).closest('td').next('td').find('select') , 'disabled' , 'add');
+		}
+	});
+	function chageSelectReadonly(obj , cls , type){
+		console.log(obj);
+		if(typeof(cls)!='undefined' && typeof(type)!='undefined'){
+			if(type=='add'){
+				obj.attr(cls,true);
+				obj.find('option:selected').removeAttr('selected');
+			}else
+				obj.removeAttr(cls);
+		}
+		obj.select2();
+	}
+	// type[{$vo.id}]
+	// jindu[{$vo.id}]
+	
+});
+</script>
+<link href="__PUBLIC__/Css/tmlstyle/model.css" rel="stylesheet" type="text/css" media="screen" />
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/calculatedatatable" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+	    <div class="pageFormContent" layoutH="68">
+	    <input type="hidden" name="calstatus" value='2'>
+	    <input type="hidden" name="formid" value='{$formid}'>
+	    <input type="hidden" name="propertyid" value="{$propertyid}">
+	     <table class="new_table" cellspacing="0" style="line-height:32px;" >
+                <tbody class="list_table">
+                    <tr class="list_table_header">
+                        <td class="cell_left" width="20%">可用字段对应编号</td>
+                        <td class="cell_right" width="80%">
+								<volist name="rs" id="rsvo">
+									<input type="hidden" name="pid[{$rsvo.ASCII}]" value="{$rsvo.id}"/>
+									<span>{$rsvo.ASCII}：</span>
+									<span>{$rsvo.fieldtitle}</span>
+									&nbsp;&nbsp;&nbsp;
+								</volist>
+						</td>
+                     
+                    </tr>
+        </tbody>
+       </table>
+<div class="tableItem">
+	<div class="list_header">
+	</div>
+	<table class="new_table" index="1">
+		<colgroup>
+			<col width="12%"></col>
+			<col width="12%"></col>
+			<col width="10%"></col>
+			<col width="15%"></col>
+			<col width="20%"></col>
+			<col width="15%"></col>
+			<col width="10%"></col>
+			
+		</colgroup>
+		<thead>
+		<tr>
+			<th >字段名称（英文）</th>
+			<th>字段标题（中文）</th>
+			<th >组件类型</th>
+			<th >计算类型</th>
+			<th >公式</th>
+			<th >精度</th>
+			<th >计算值有效位数</th>
+		</tr>
+		</thead>
+		<tbody id="misdynamicformmanageforfield">
+		<volist name="rs" id="vo">
+			<tr>
+				<td>{$vo.fieldname}</td>
+				<td>{$vo.fieldtitle}</td>
+				<td>
+				<if condition="$vo.category eq 'text'">
+					文本框
+				<elseif condition="$vo.category eq 'date'" />
+				日期组件
+				</if>
+				</td>
+				<td>
+					<select  class="select2" name="type[{$vo.id}]" >
+						<option <if condition="$vo.type eq 1">selected</if> value="1">文本公式</option>
+						<option <if condition="$vo.type eq 2">selected</if>  value="2">两个日期差</option>
+						<option <if condition="$vo.type eq 3">selected</if>  value="3" >日期增减</option>
+						<option <if condition="$vo.type eq 4">selected</if>  value="4" >文本拼接</option>
+					</select>
+				</td>
+				
+				<td>
+				<input type="hidden" id="{$vo.id}"  value="{$vo.ASCII}"/>
+				<input class="gongshi" name="formula[{$vo.id}]" onchange="checkFormul(this.value)" placeholder="请输入公式"  value="{$vo.formula}" type="text"  />
+				</td>
+				<td>
+					<select  class="select2 " name="jindu[{$vo.id}]" title="" tabindex="-1">
+	               		<option >请选择</option>
+	               		<option <if condition="$vo.jindu eq 'y'">selected</if> value="y">年</option>
+	               		<option <if condition="$vo.jindu eq 'm'">selected</if> value="m">月</option>
+	               		<option <if condition="$vo.jindu eq 'd'">selected</if> value="d">日</option>
+	               		<option <if condition="$vo.jindu eq 'h'">selected</if> value="h">时</option>
+	               		<option <if condition="$vo.jindu eq 'i'">selected</if> value="i">分</option>
+	               		<option <if condition="$vo.jindu eq 's'">selected</if> value="s">秒</option>
+	               	</select>
+             	</td>
+				<td>
+				<input name="validdigit[{$vo.id}]"  <if condition="$vo.validdigit neq null">value="{$vo.validdigit}"<else/>value="0" </if>type="text"  />
+				</td>
+			</tr>
+			</volist>
+		</tbody>
+		</table>
+	</div>
+<br />
+		<div class="tml-row" style="width:96%;margin: 0 auto;">
+            <div class="tml_search_tips">
+            <div class="search_tips_title">友情提示：</div>
+            <p class="search_tips_center">1、只能进行加(+)、减(-)、乘(*)、除(/)的操作</p>
+            <p class="search_tips_center">2、括号只能输入英文()</p>
+            <p class="search_tips_center">3、禁止使用空格</p>
+            <p class="search_tips_center">4、本字段不能写本字段编号</p>
+            <p class="search_tips_center">5、正确写法：A+B-C*D 或(A+B)*C/D 错误写法：A+B-CD(乘法必须*链接)或 (a+B)*C/D+F(不能包含除可用字段之外的字符)</p>
+            </div>
+        </div>
+	</div>
+        <div class="formBar">
+			<ul>
+				<li><button type="submit"  class="tml_formBar_btn tml_formBar_btn_blue">保存</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

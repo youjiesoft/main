@@ -1,0 +1,74 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mistoreadstatement_delete">
+				<li>
+					<a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__APP__/MisWorkReadStatement/delete/rel/misworkstatementBox" class="delete">
+						<span>{$Think.lang.del}</span>
+					</a>
+				</li>
+			</if>
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>
+		<form rel="pagerForm" onsubmit="return divSearch(this, 'misworkstatementBox');" action="__URL__/index" method="post">
+			<input type="hidden" name="jump" value="1">
+			<input type="hidden" name="type" value="2">
+			<input type="hidden" name="readstatus" value="{$readstatus}">
+			<input type="hidden" name="md" value="MisWorkReadStatement">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchCondition" />
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<table class="table" width="100%" layoutH="96" style="border-top: 1px solid #D0D0D0">
+		<thead  ename="{$ename}">
+			<tr>
+				<th width='24'>序号</th>
+				<volist id="vo" name="detailList">
+			    	<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="misworkstatementBox" orderField="{$vo[showname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+			    </volist>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list" key="key2">
+			<tr target="sid_node" rel="{$vo['id']}" data-tool={$vo['classarr']} onclick="onTrClickCheckbox(this,'id')" title="工作报告_编辑" ondblclick="ondblclick_navTab(this,'__MODULE__edit','__APP__/MisWorkReadStatement/edit/id/{$vo[id]}');">
+				<td class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+				<volist id="vo1" name="detailList">
+					<if condition="$vo1[shows] eq 1">
+					<td field="{$vo1[name]}" width="{$vo1[widths]}">
+						<if condition="count($vo1['func']) gt 0">
+							<volist name="vo1.func" id="nam">
+								<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+								{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+								<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+							</volist>
+						<else />
+						{$vo[$vo1['name']]}
+						</if>
+					</td>
+					</if>
+				</volist>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="misworkstatementBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

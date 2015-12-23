@@ -1,0 +1,40 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="_blank" rel="MisSystemAnnouncement" title="{$name}" href="__APP__/MisSystemPanelMethod/systemNoticeslookup/type/{$ptypelist}"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <!--<div class="tml_bottom_style"></div>-->
+    <div class="part_content">
+        <if condition="$snlist">
+            <div class="data">
+                <ul class="tml_uli_show4">
+                    <volist id="snvo" name="snlist">
+                        <li>
+                        	<a class="clearfix" rel="MisSystemAnnouncementview" target="_blank" title="系统公告查看" href="__APP__/MisSystemPanelMethod/systemNoticesview/id/{$snvo['id']}/type/{$snvo['type']}">
+                        		<span class="hellip" style="width:70%">
+                        			<strong style="color:#363636;">【{$snvo['type']|getFieldBy="id","name","mis_system_announcement_set"}】</strong>
+                        			{$snvo['title']|missubstr=###,70,true}&nbsp;
+                        		</span>
+                        			<em style="width:22%;padding-right:5px;">
+                        			<if condition="$snvo['new'] eq 1">
+                        				<strong class="i-new"></strong>
+                        			<else/>
+                        				<strong>&nbsp;&nbsp;</strong>
+                        			</if>
+                        				&nbsp;{$snvo['sendtime']|transTime='Y-m-d'}
+                        			</em>
+                        	</a>
+                       </li>
+                    </volist>
+                </ul>
+            </div>
+        <else/>
+        <div class="noData">
+            没有系统公告
+        </div>
+        </if>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

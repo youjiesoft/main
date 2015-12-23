@@ -1,0 +1,28 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" id="search_form" action="" class="pageForm required-validate" onsubmit="return searchSubmit(this);" >
+		<input type="hidden" name="model" value="{$model}" />
+		<input type="hidden" name="viewname" value="{$viewname}" />
+		<input type="hidden" name="searchbyinc" value="{$searchbyinc}" />
+		<div class="pageFormContent" layoutH="58" style="padding-top: 10px;">
+			<div class="advancedSearchForm" style="min-height:210px;">
+				<volist id="qsl" name="detailList">
+					<div class="tml-form-row"><label title="{$qsl['showname']}">{$qsl['showname']}:</label>{$qsl['html']}</div>
+				</volist>
+				<input type="hidden" name="search_flag" value="1" />
+			</div>
+			<div class="tml_search_tips">
+				<div class="search_tips_title">友情提示：</div>
+				<p class="search_tips_center">1、不作为查找条件的字段可不填内容</p>
+				<p class="search_tips_center">2、多搜索方式和单搜索一样</p>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" onclick="searchSubmit();" type="button">{$Think.lang.search}</button></li>
+				<!--<li><button type="tml_select_btn tml_formBar_btn_red" class="tml-btn close">{$Think.lang.close}</button></li>-->
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

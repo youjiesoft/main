@@ -1,0 +1,17 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="navTab" rel="MisUserEvents" title="重要日程" href="__APP__/MisUserEvents/index"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <div class="xytag">
+            <a class="active" href="#" onclick="getSchedule(this,1)">我的日程</a> | <a href="#" onclick="getSchedule(this,2)">协同日程</a> | <a  rel="MisUserEvents" href="__APP__/MisUserEvents/add/type/1" target="dialog" mask="true" width="750" height="550">新增日程</a>
+        </div>
+        <div id="schedule">
+            <include file="MisSystemPanelMethod:scheduleindex" />
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

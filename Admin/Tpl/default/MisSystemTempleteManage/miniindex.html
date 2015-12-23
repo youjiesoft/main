@@ -1,0 +1,110 @@
+		<if condition="$_GET['viewtype'] neq 'view'">
+		<script type="text/javascript">
+			function reschange() {
+				 var fieldtype="{$_REQUEST['fieldtype']}";
+				 var url="";
+				if(fieldtype){
+				    var typeval="{$_REQUEST[$_REQUEST['fieldtype']]}";
+				    url="__URL__/miniindex/fieldtype/"+fieldtype+"/"+fieldtype+"/"+typeval;
+				}else{
+					 url="__URL__/miniindex/bindid/{$_REQUEST['bindid']}";
+				}
+				$("#MisAutoQcz_miniindex").loadUrl(url, {},function() {
+					$("#MisAutoQcz_miniindex").find("[layoutH]").layoutH();},false);
+			}
+		</script>
+		</if>
+		<div class="pageContent min_index_lay">
+			<div id="MisAutoQcz_miniindex">
+				<form id="pagerForm" action="__URL__/miniindex/type/1" method="post">
+					<input type="hidden" name="pageNum" value="1" />
+					<input type="hidden" name="orderField" value="{$order}" />
+					<input type="hidden" name="orderDirection" value="{$sort}" />
+					<input type="hidden" name="bindid" value="{$_REQUEST['bindid']}" />
+				</form>
+				<if condition="$_GET['minitype'] neq 1">
+				<div class="into_table_lay nbm_noborder nbm_new_style">
+					<div class="dataTableBtn">
+					<div class="toolBar">
+									<a class="js-resit tml-btn tml_look_btn tml_mp" mask="true" href="#" title="" onclick="reschange()">
+										<span class="tml_lp">
+											刷新
+										</span>
+									</a>
+									<a class="xyAdvancedSearch tml-btn tml_look_btn tml_mp" title="" href="__APP__/Search/advancedsearch/model/{$ename}/searchbyinc/{$searchbyinc}"
+									rel="__MODULE__advancedsearch" width="700" height="500" target="dialog"
+									mask="true">
+										<span class="tml_lp">
+											高级查找
+										</span>
+									</a>
+									<a class="xyAdvancedSearch tml-btn tml_look_btn tml_mp" title="" href="__URL__/lookupUserSetField/model/{$ename}"
+									rel="__MODULE__userSetField" width="700" height="500" target="dialog" mask="true"
+									title="列表设置">
+										<span class="tml_lp">
+											设置
+										</span>
+									</a>
+									<a class="xyOutput tml-btn tml_look_btn tml_mp" title="" href="#" type="button" onclick="exportBysearch(this.form,'__URL__/index','__URL__/exportBysearchHtml');">
+										<span class="tml_lp">
+											导出
+										</span>
+									</a>
+						</div>
+					</div>			
+				</if>
+				<table  class="into_table_new nbm_data_table" 
+				 {:W('FormCondition',array('edit'))}>
+					<thead ename="{$ename}">
+						<tr>
+							<th template_key="serial">
+								序号
+							</th>
+							<volist id="vo" name="detailList">
+								<if condition="$vo[shows] eq 1  and $vo[name] neq 'action'">
+								<th
+				                  <if condition="$vo[widths]">width="{$vo[widths]}"</if>
+				                  <if condition="$vo[datatable]">{$vo[datatable]}</if>
+								  <if condition="$vo[sorts]">orderField="{$vo[sortname]}" class="{$sort}"</if>
+								>{$vo[showname]}
+								</th>
+								</if>
+								<!--类型-->
+							</volist>
+				            <th template_key="action" template_data='{"post_table":"table"}'>
+								操作
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+					<volist id="vo" name="list" key="key2">
+						<tr target="sid_node" rel="{$vo['id']}"  data-tool='{$vo[classarr]}'>
+							<td class="tml-first-td">{$key2}</td>
+							<volist id="vo1" name="detailList">
+								<if condition="$vo1[shows] eq 1 and $vo1[name] neq 'action'">
+									<td width="{$vo1[widths]}">
+										<if condition="count($vo1['func']) gt 0">
+											<volist name="vo1.func" id="nam">
+												<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+													{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+												<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+											</volist>
+										<else />
+											{$vo[$vo1['name']]}
+										</if>
+									</td>
+								</if>
+							</volist>
+				            <td>
+								<a title="修改" target="navTab" rel="miniedit" href="__URL__/edit/id/{$vo['id']}" class="js-edit edit tml-btn tml_look_btn tml_mp"><span>修改</span></a>
+				                 <a title="查看" target="navTab" rel="miniview" href="__URL__/view/id/{$vo['id']}/eid/{$vo['id']}" class="js-view icon tml-btn tml_look_btn tml_mp"><span>查看</span></a>
+				                 <button class="into_table_new_trash_tr " del_id="{$vo['id']}" del_table="" del_url="__URL__/delsubinfo" type="button">删除</button>
+								 <input type="hidden" value="{$vo['id']}" name="datatable[#index#][table][id]">
+								 <button class="save_row_btn" post_id="undefined" post_table="mis_auto_lhikt_sub_datatable5" post_url="__URL__/onesave" rel_type="save" type="button" style="display:none;">保存</button>
+				            </td>
+						</tr>
+					</volist>
+					</tbody>
+				</table>
+			</div>
+		</div>

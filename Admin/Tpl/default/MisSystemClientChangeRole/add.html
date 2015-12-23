@@ -1,0 +1,19 @@
+<script>$(function(){	var box = navTab.getCurrentPanel();	var userid = $("input[name='userid']",box).val();	var id = $("input[name='id']",box).val();	$("select.changelist",box).change(function(){		$("input[name='modelname']",box).val($(this).val());	});	$("button.shouquan",box).click(function(){		var modelname = $("select.changelist",box).val();		var content = $("input[name='content']").val();		var isall = $("input[name='isall']").val();		var title = "选择授权数据";		var rel = "lookupGetDetailList";			options = {width:900,height:500,mask:true};			options.param={modelname:modelname,userid:userid,id:id,content:content,isall:isall};		var url="__URL__/lookupGetDetailList";		DWZ.debug(url);		if(!url.isFinishedTm()){		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));		return false;}		$.pdialog.open(url,rel,title,options);		});})</script><div class="page">
+	<div class="pageContent">
+			<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME">layoutH="40"</if>>
+				<div class="new_version_page ">
+					<form method="post"  action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);"><a name='MisAutoZnu_add_top'></a>
+						<input type="hidden" name="userid" value="{$userid}">
+						<input type="hidden" name="id" value="{$id}">
+						<if condition="$_GET['viewtype'] neq 'view'">
+						<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">转授权编辑</span></div>
+						</if>
+						<div class="new_version_page_content">
+							<!-- text组件 start -->							<div class="col_1_1 form_group_lay" >
+								<label class="">授权模块:</label>
+								<select class="select2 select_elm changelist" >								<option value=''>请选择</option>									<!-- <option value="">请选择</option> -->									<volist name='nodelist' id='nv'>									<option value='{$key}' <if condition="$vo['modelname'] eq $key">selected</if>>{$nv}</option>									</volist>								</select>								<input type="hidden" name="modelname" value="{$vo['modelname']}">								</div>							<div class="col_1_7 form_group_lay">								<label class=""><button type="button" class="shouquan" value="">编辑授权</button></label>															</div>							<!-- text组件 end -->							<div id="detaillist_add">								<input type='hidden' name="content" value="{$vo['content']}">								<input type='hidden' name='isall' value="{$vo['isall']}">							</div>
+								{:W('ShowAction')}
+							</div>
+					</form>				</div>
+			</div>
+	</div></div>

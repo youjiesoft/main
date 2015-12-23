@@ -1,0 +1,76 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#missystemreporttree"), setting, zNodes);
+});
+function hr_refreshdialog1(json){
+	dialogAjaxDone(json);
+	if(json.statusCode == DWZ.statusCode.ok){
+		var refreshtabs = json.refreshtabs;
+		var tab = refreshtabs.ntdata;
+		var ids = refreshtabs.ids || json.data;
+		var url="__URL__/add";
+		ondblclick_dialog("a.add","div#missystempanel_index", url);
+	}
+}
+function chooiseWorkType(obj,$selectid) {
+	var deptid = $(obj).val();
+	var $ref = $("#"+$selectid);
+	$.ajax({
+		type : 'POST',
+		dataType : "json",
+		url : "__URL__/comboxrefreshIntomas",
+		cache : false,
+		global:false,
+		data : {
+			deptid : deptid
+		},
+		success : function(json) {
+			var html = '';
+			html += '<option value="0">请选择岗位</option>'; 
+			$.each(json, function(i) {
+				if (json[i] && json[i].length > 1) {
+					html += '<option value="'+json[i][0]+'">&nbsp;&nbsp;' + json[i][1]
+							+ '</option>';
+				}
+			});
+			var $refCombox = $ref.parents("div.combox:first");
+			$ref.html(html).insertAfter($refCombox);
+			$refCombox.remove();
+			$ref.combox();
+		},
+		error : DWZ.ajaxError
+	})
+};
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="MisSystemReportSearchNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('missystemreporttree','MisSystemReportSearchNodeKeys')">搜索</button>
+				</div>
+			</div>
+			<ul id="missystemreporttree" class="ztree" layoutH="71"></ul>
+		</div>
+	</div>
+	<div id="missystemreportlookupindex" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

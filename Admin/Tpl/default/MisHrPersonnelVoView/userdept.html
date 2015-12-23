@@ -1,0 +1,30 @@
+<div class="pageContent">
+	<table class="table" width="99%" layoutH="60">
+		<thead>
+			<tr>
+				<th width="35">序号</th>
+				<th>所属公司</th>
+				<th>入职部门</th>
+				<th>企业岗位</th>
+				<th>企业职级</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist id="vo" name="list">
+				<tr>
+					<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td>{$vo['companyid']|getFieldBy='id','name','mis_system_company'}</td>
+					<td>{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+					<td>{$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}</td>
+					<td>{$vo['dutyid']|getFieldBy='id','name','MisSystemDuty'}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmTrainForm" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

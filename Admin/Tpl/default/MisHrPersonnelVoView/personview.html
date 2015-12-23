@@ -1,0 +1,54 @@
+<div class="pageContent" style="border:none;">
+	<div class="pageFormContent" layoutH="55" style="border:none;">
+		<fieldset>
+			<legend class="fieldset_legend_toggle">家庭成员</legend>
+			<table class="data-table" cellspacing="0" width="100%" >
+				<thead>
+				 	<tr>
+				 		<th width="40"><strong>序号</strong></th>
+				 		<th width="80"><strong>姓名</strong></th>
+				 		<th width="60"><strong>关系</strong></th>
+				 		<th width="120"><strong>工作单位</strong></th>
+				 		<th><strong>联系电话</strong></th>
+				 	</tr>
+				</thead>
+				<tbody>
+			 	<volist name="familyList" id="vos">
+			 		<tr>
+				 		<td>{$key+1}</td>
+				 		<td>{$vos.privyname}</td>
+				 		<td>{$vos.relation}</td>
+				 		<td>{$vos.privycompany}</td>
+				 		<td>{$vos.privytel}</td>
+					</tr>
+				</volist>
+				</tbody>
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend class="fieldset_legend_toggle">介绍人</legend>
+			<table class="data-table" cellspacing="0" width="100%">
+				<thead>
+			 	<tr>
+			 		<td width="40"><strong>序号</strong></td>
+			 		<td width="80"><strong>姓名</strong></td>
+			 		<td width="60"><strong>关系</strong></td>
+			 		<td width="120"><strong>联系电话</strong></td>
+			 		<td><strong>备注</strong></td>
+			 	</tr>
+				</thead>
+				<tbody>
+			 	<volist name="introducerList" id="vos">
+			 		<tr>
+				 		<td>{$key+1}</td>
+				 		<td>{$vos.privyname}</td>
+				 		<td>{$vos.relation}</td>
+				 		<td>{$vos.privytel}</td>
+				 		<td>{$vos.remark}</td>
+				 	</tr>
+			 	</volist>
+				</tbody>
+			</table>
+		</fieldset>
+	</div>
+</div>

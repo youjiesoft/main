@@ -1,0 +1,100 @@
+<form id="pagerForm" action="__URL__/lookupmanage/workstatus/{$workstatus}" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'positiveBox');" action="__URL__/lookupmanage/workstatus/{$workstatus}" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+							<input type="text" placeholder="搜索员工姓名,部门,职位,职级" name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox"  onchange="changeInput(this)"  name="searchby">
+					  		   <option value="all"   <if condition="$searchby eq 'all'">selected</if> >全部</option>
+								<option value="name"  <if condition="$searchby eq 'name'">selected</if> >姓名</option>
+								<option value="mis_system_department-name"     <if condition="$searchby eq 'mis_system_department-name'">selected</if> >部门</option>
+								<option value="dutyname"   <if condition="$searchby eq 'dutyname'">selected</if> >职级</option>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />			
+						<!-- <select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select> -->
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="77">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>员工姓名</th>
+				<th>性别</th>
+				<th>年龄</th>
+				<th>部门</th>
+				<th>职位</th>
+				<th>工种</th>
+				<th>联系方式</th>
+				<th>身份证号</th>
+				<th>入职时间</th>
+				<th>转正时间</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody   class="Basicsaleprojectlist">
+		<volist id="vo" name="list">
+			<tr onclick="onTrClickCheckbox(this,'orgId');MisHrBasicEmployee_lookupmanagelist()">
+				<td>{$vo['id']}</td>
+				<td>{$vo['name']}</td>
+				<td><if condition="$vo.sex eq '1'">男 <else/> 女</if></td>
+				<td>{$vo['age']}</td>
+				<td>{$vo['deptid']|getFieldBy='id','name','mis_system_department'}</td>
+				<td>{$vo['dutyname']}</td>
+				<td> 
+				 {$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}
+				</td>
+				<td>{$vo['phone']}</td>
+				<td>{$vo['chinaid']}</td>
+				<td>{$vo['indate']|transTime}</td>
+				<td>{$vo['transferdate']|transTime}</td>
+				<td>
+					<a class="btnSelect" href="javascript:$.bringBack({ id:'{$vo.id}',
+					orderno:'{$vo.orderno}',
+					sex:'{$vo.sex}',
+					age:'{$vo.age}',
+					dutyname:'{$vo.dutyname}',
+					dutylevelid:'{$vo.dutylevelid}',
+					deptid:'{$vo.deptid}',
+					deptname:'{$vo.deptid|getFieldBy='id','name','mis_system_department'}',
+					dutyname:'{$vo.dutylevelid|getFieldBy='id','name','duty'}',
+					worktype:'{$vo.worktype}',
+					chinaid:'{$vo.chinaid}',
+					name:'{$vo.name}',
+					transferdate:'{$vo.transferdate}'})" title="查找带回">选择</a>
+				</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="positiveBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>
+
+
+

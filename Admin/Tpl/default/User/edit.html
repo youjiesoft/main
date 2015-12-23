@@ -1,0 +1,147 @@
+<div class="page">
+<div class="pageContent" id="useredit">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="id" value="{$vo.id}" />
+			<input type="hidden" name="userid"  value="{$vo.id}" />
+			<div class="pageFormContent" layoutH="40">
+                <div class="keepContentCenter form-affix-content">
+                    <div class="contentTitle contentTitle_center form-affix-title">后台用户编辑</div>
+				<input type="hidden" name="sex" check_key="othersex" value="{$vo.sex}" />
+                    <div class="tml-row">
+                        <div class="tml-form-col">
+                            <label>人事员工：</label>
+                            <input type="text" readonly="readonly" name="name" value="{$vo.name}" show="name" class="required" autocomplete="off">
+                            <input type="hidden" name="employeid" value="{$vo.employeid}"/>
+                        </div>
+                        <a class="tml-btn tml_look_btn tml_mp" target="navTab" href="__URL__/lookuproleView/userid/{$vo.id}" rel="editXxBox" title="查看用户权限" target="ajax" ><span class="icon-eye-open"></span> 查看用户权限</a>
+                        <a class="tml-btn tml_look_btn tml_mp" target="navTab" href="__URL__/userAuthorizeA/userid/{$vo.id}" rel="editXxBox" title="用户权限" target="ajax" ><span class="icon-legal"></span> 用户授权</a>
+                    </div>
+                    <div class="tml-row">
+                        <div class="tml-form-col">
+                            <label>英文登录名：</label>
+                            <input type="text" class="required" name="account2" value="{$vo.account}">
+                        </div>
+                    </div>
+                        <!--<div class="tml-form-col">-->
+                            <!--<label>中文登录名：</label>-->
+                            <!--<input type="text" class="" check_key="username" name="zhname" value="{$vo.zhname}"/>-->
+                        <!--</div>-->
+
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>主角色：</label>
+						<input type="hidden" name="old_attachrole" value="{$vo.attachrole}"/>
+						<input type="hidden" name="attachrole[]" value="{$vo.role_id}"/>
+						<input type="text"  readonly="readonly" value="{$vo.role_id|getFieldBy='id','name','rolegroup'}"/>
+					</div>
+					<a class="tml-btn tml_look_btn tml_mp" href="__URL__/addRoleGroupHtml/selectId/editrole_id" id="editrole_id" rel="Rolegroupedit" target="dialog" mask="true" title="新增角色" >
+                        <span class="icon-plus"></span> 新增角色
+					</a>
+					<a class="tml-btn tml_look_btn tml_mp" href="__URL__/roleGroupAuthorizeD/rolegroupid/{$vo.role_id}" oldhref="__URL__/roleGroupAuthorizeD/rolegroupid" target="navTab" id="editrole_accuss" rel="editXxBox" title="查看角色权限" target="ajax" >
+                        <span class="icon-eye-open"></span> 查看角色权限
+					</a>
+				</div>
+				<div class="tml-form-row">
+					<label>辅助角色：</label>
+					<!--<span class="tml-help-inline" style="color:red;">点击角色可以查看权限</span>-->
+					<ul class="addressee left" id="edit_user_rolegroup" style="_display:inline;height:32px;margin:5px 0 0;width:660px; border-radius: 4px">
+						<volist name="attachrole" id="atrole">
+					 		<li>
+					 		    <input type='hidden' name="attachrole[]" value="{$atrole}"/>
+                               <a class='add' href='__URL__/roleGroupAuthorizeD/rolegroupid/{$atrole}' rel='editXxBox' title='查看角色权限' target='ajax' ><span>{$atrole|getFieldBy='id','name','rolegroup'}</span></a>
+                               <a  class="delAddressee" title='删除该功能' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>
+					 		</li>
+					 	</volist>
+					</ul>
+                    <a class="tml-btn tml_look_btn tml_mp"  style="margin-left: 10px; margin-top: 8px;" href="__URL__/lookrolegroup/stepType/2/obj/edit_user_rolegroup/objname/editXxBox" width="720" height="480" lookupGroup="org1"><span class="icon-plus"></span> 添加辅助角色</a>
+                    <!--<a class="rear_end_btn" href="__URL__/lookrolegroup/stepType/2/obj/edit_user_rolegroup/objname/editXxBox" width="380" height="480" lookupGroup="org1">-->
+                        <!--<span>添加辅助角色</span>-->
+                    <!--</a>-->
+				</div>
+                <div class="tml-row">
+					<div class="tml-form-col">
+					<label>辅岗及主岗：</label>
+						<a class="tml-btn tml_look_btn tml_mp" target="navTab" href="__URL__/deptDuty/userid/{$vo.id}" rel="editXxBox" title="查看部门职级" target="ajax">
+	                        <span class="icon-eye-open"></span> 查看
+						</a>
+					</div>
+				<div class="tml-row">
+				<!-- <div class="tml-form-row">
+					<label>仓储权限：</label>
+					<a class="button tml-mr5" href="__URL__/lookupWarehouse/userid/{$vo.id}" rel="editXxBox" title="查看仓库所有权限" target="ajax" >
+						<span>查看更多</span>
+					</a>
+					<a class="button" target="dialog" title="仓库权限_新增" width="730" height="400" rel="lookupAddRoleadd" mask="true" href="__APP__/UserWarehouse/add/userid/{$vo.id}">
+						<span>新增</span>
+					</a>
+				</div> -->
+				<div class="tml-form-col">
+					<label>流程角色：</label>
+					<a class="tml-btn tml_look_btn tml_mp" target="navTab" href="__URL__/lookupProcessRole/userid/{$vo.id}" rel="editXxBox" title="查看仓库所有权限" target="ajax" >
+                        <span class="icon-eye-open"></span> 查看更多
+					</a>
+				</div>
+                </div>
+                 <div class="tml-form-col">
+                    <label>安全等级：</label>
+                    <input type="text" name="anquandengji" maxlength="20"   value="{$vo.anquandengji}"/>
+                </div>
+                 <div class="tml-form-col">
+                    <label>上级：</label>
+                   <div class="tml-input-lookup">
+					<input class="orgDBC706.name nbm input_new half_angle_input o  active_lookup textInput enterIndex readonly" type="text"  value="{$vo.shangji|getFieldBy='id','name','User'}" readonly="readonly" autocomplete="off" lporder="kehumingchen" lpself="name" lpfor="orgDBC706.id" lpkey="2ba96fc5ab7bef0ac9a4d3f5d72bb1f0" callback="lookup_counter_check">
+					<input class=" orgDBC706.id " type="hidden" value="{$vo.shangji}" name="shangji">
+					<a class="icon_elm mid_icon_elm icon-plus" lookupgroup="orgDBC706" href="__URL__/lookupGenerals" param="lookupchoice=2ba96fc5ab7bef0ac9a4d3f5d72bb1f0&newconditions=" condition="" newconditions="" syscondition=""></a>
+					<a class="icon_elm icon-trash" onclick="clearOrg('orgDBC706');" href="javascript:void(0);" title="清空信息-可读写"></a>
+					</div>
+                </div>
+                <div class="tml-form-col">
+                    <label>外网登录地址：</label>
+                    <input type="text" value="http://"/>
+                </div>
+                <div class="tml-form-col">
+                    <label>内网登录地址：</label>
+                    <input type="text" value="http://"/>
+                </div>
+                <div class="tml-form-col">
+                    <label>{$fields["qq"]}：</label>
+                    <input type="text" name="qq" maxlength="20" value="{$vo.qq}"/>
+                </div>
+				<div class="tml-form-col">
+					<label>电话：</label>
+					<input type="text" name="mobile" value="{$vo.mobile}" maxlength="20"  check_key="othermobilephone"/>
+				</div>
+				<div class="tml-form-col">
+					<label>{$fields["email"]}：</label>
+					<input type="text" name="email" maxlength="100" class="  email org1.email" value="{$vo.email}"  check_key="otheremail"/>
+				</div>
+				<!-- <div class="tml-form-row">
+					<label>采购人员：</label>
+					<input type="checkbox" class="textInput" <if condition="$vo['ispur'] eq 1">checked="checked"</if> name="ispur"/>
+					<span class="info" style="color:red;">&nbsp;&nbsp;&nbsp;(选中则为采购组织中的人员)</span>
+				</div> -->
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select class=" select2 original_width_select2"  name="status">
+						<option <eq name="vo.status" value="1" >selected</eq> value="1">启用</option>
+						<option <eq name="vo.status" value="0" >selected</eq> value="0">禁用</option>
+					</select>
+					<!-- <label style="width:60px;">排序：</label><input type="text" name="sort" size="3" class="" value="{$vo.sort}"/> -->
+				</div>
+				<div class="tml-form-col">
+					<label>{$fields["remark"]}：</label>
+					<textarea class="large bLeft" name="remark" rows="3" style="width:800px;">{$vo.remark}</textarea>
+				</div>
+				</div>
+				<div class="tml-text-c">
+					<button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button>
+				</div>
+			</div>
+		</form>
+	<!--<div id="editXxBox" class="unitBox treeright" style="overflow:hidden;">-->
+		 <!--<include file="lookupuserdept" />-->
+	<!--</div>-->
+</div>
+</div>
+</div>

@@ -1,0 +1,30 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/rel/editXxBox" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent" layoutH="58">
+			<div class="unit">
+				<label>部门：</label>
+				<select name="deptid" class="combox">
+					{$html}
+				</select>
+			</div>
+			<div class="unit">
+				<label>职级：</label>
+				<select name="dutyid" class="combox">
+					<volist name="dutylist" id="vos">
+						<option value="{$key}"<if condition="$key eq $vo['dutyid']">selected</if>>{$vos}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="unit"  style="width:500px;">
+				<label>备注：</label>
+				<textarea name="remark" rows="2" maxlength="200" cols="40"></textarea>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

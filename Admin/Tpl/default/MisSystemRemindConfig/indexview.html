@@ -1,0 +1,201 @@
+<script type="text/javascript">
+$(function(){
+	initTableWNEWOne("#MisSystemRemindConfigAdd");
+	var $box = navTab.getCurrentPanel();
+	$("tbody",$box).dragsort({
+		dragSelector : "div.dragdiv",
+		dragBetween : true,
+		dragEnd : saveThOrder
+	});
+	function saveThOrder(){
+		
+	}
+});
+function changelength(obj){
+	if($(obj).attr("checked") == 'checked'){
+		$(obj).closest("tr").find("input.fieldlength").addClass("required");
+		$(obj).closest("tr").find("input.fieldlength").attr("disabled",false);
+	}else{
+		
+		$(obj).closest("tr").find("input.fieldlength").val('10');
+		$(obj).closest("tr").find("input.fieldlength").removeClass("required").attr("disabled",true);
+	}
+}
+</script>
+
+<div class="pageContent" layoutH="48">
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form rel="pagerForm" onSubmit="return  divSearch(this,'MisSystemRemindConfigBox');" action="__URL__/index" method="post">
+	<input type="hidden" name="jump" value="1" />
+	<input type="hidden" name="aname" value="{$actionname}" />
+	      
+  </form>
+	<div class="pageFormContent new_basis_archives_page">
+		<div class="new_version_page_content">
+			<form method="post" action="__URL__/insert/rel/MisSystemRemindConfigBox"  class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" >
+				<input type="hidden" name="actionname" value="{$actionname}"/>        
+				<input type="hidden" name="isedit" value="{$isedit}"/> 	
+					<div class="col_1_7 form_group_lay ">
+					   <table class="into_table_new nbm_data_table" table_data='{"searching":true,"re_id":1,"search_column":0,"addRow":false,"paging":false}' id="MisSystemRemindConfigAdd">
+					   		<thead>
+					   			<tr>
+					   				<th></th>
+					   				<th>字段英文</th>
+					   				<th>字段中文</th>
+					   				<th>字段选择</th>
+					   				<th>字段长度</th>
+					   				<th>通知字段</th>
+					   			</tr>
+					   		</thead>
+					   		<tbody>
+					   			<volist name="newfields" id="fv">
+					   			<tr>
+					   				<td>
+			                    	 	<div class="dragdiv">
+						 					<a href="javascript:;" class="">
+												<span class="icon-move"></span>
+											</a>
+										</div>
+									</td>
+					   				<td><div class="list_group_lay">{$fv.name}</div></td>
+					   				<td><div class="list_group_lay">{$fv.title}</div></td>
+					   				<td><div class="list_group_lay"><input class="list_input" type="checkbox"  name="field[{$key}]" onchange="changelength(this)" value="{$key}" <if condition="$vo[$key]">checked</if>></div></td>
+					   				<td><div class="list_group_lay"><input name="fieldlegth[{$key}]" <if condition='$vo[$key]'>value="{$vo[$key]}" class="list_input fieldlength required" <else/>value="10" class="list_input fieldlength" disabled="disabled"</if>></div></td>
+					   				<td><div class="list_group_lay"><input name="userfield[{$key}]" type="checkbox" value="{$key}" class="list_input " <if condition="$fv.userfield neq 1">disabled="disabled"</if><if condition='in_array($key,$userfield) and $fv[userfield] eq 1'>checked="checked"</if>></div></td>
+					   			</tr>
+					   			</volist>
+					   		</tbody>
+					   
+					   
+					   </table>
+				    </div>
+				<div class="formBar">
+				    <ul>
+					    <li><button type="submit" class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+				    	<li><button type="button" class="tml_formBar_btn tml_formBar_btn_red" onclick="deleteRecord(this,'{$vo.id}','__MODULE__');">删除</button></li>
+				    </ul>
+			    </div>
+					</form>
+			</div>
+		</div>
+	</div>
+<!-- 
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			<volist name="toolbarextension" id="toolb">
+				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+					<li>{$toolb['html']}</li>
+				</if>
+			</volist>
+		</ul>		
+	</div>
+	<div class="pageFormContent">
+		<div class="keepContentCenter form-affix-content" layoutH="120">
+			<form method="post"  <if condition="$vo.id">action="__URL__/update/navTabId/__MODULE__"<else/>action="__URL__/insert/navTabId/__MODULE__"</if>  class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" >
+				<input type="hidden" name="oldparentid" value="{$vo.parentid}"/>
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+						<b>基础信息</b>
+						<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+					</legend>
+					<div class="tml-form-col">
+						<label class="tml-text-r">部门编号：</label>
+						<input type="text" value="{$vo.orderno}"   name="orderno"  class="required" style="width:300px;" autocomplete="off" />
+					</div>
+					<div class="tml-form-col">
+						<label class="tml-text-r">部门名称：</label>
+						<input type="hidden"  name="id" value="{$vo.id}"/>
+						<input type="text" value="{$vo.name}" name="name"  class="required" style="width:300px;" autocomplete="off" />
+					</div>
+					<div class="tml-form-col">
+						<label class="tml-text-r">隶属公司：</label>
+						<select name="companyid"  class="select2 list_select2" >
+							<volist name="MisSystemCompanyList" id="MisSystemCompanyVo">
+								<option value="{$key}" <if condition="$key eq  $vo.companyid||$companyid eq $key">selected="selected"</if>>{$MisSystemCompanyVo}</option>
+							</volist>
+						</select>
+					</div>
+					<div class="tml-form-col">
+					    <label class="tml-text-r">部门管理员</label>
+					    <div class="tml-input-append2">
+							<input type="text" name="managename" readonly style="width:270px;" value="{$vo.manageid|getFieldBy='id','name','user'}" checkfor="MisMessage" show="name" insert="id" class="selectaudituser.managename checkByInput" autocomplete="off" />
+							<input type="hidden" name="manageid" class="selectaudituser.manageid" value="{$vo.manageid}" />
+							<a href="javascript:;" data="selectaudituser;manageid,userid;managename,username" class="input-addon input-addon-userplus checkUser">选择人员</a>
+					   </div>
+				    </div>
+					<div class="tml-form-col">
+						<label class="tml-text-r">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label>
+						<div class="tml-radio left tml-w80">
+							<label>
+								<input type="radio"  checked  value="1" name="status"/>启用
+							</label>
+						</div>
+						<div class="tml-radio left tml-w80">
+							<label>
+								<input type="radio"  value="0" name="status"/>禁用
+							</label>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label class="tml-text-r">部门性质：</label>
+						<select name="category"  class="select2 list_select2" >
+							<option value="">请选择</option>
+							{:getDataBaseByHtml('mis_auto_nuvhi',array('selected'=>$vo['category']))}
+						</select>
+					</div>
+					<div class="tml-form-col">
+					    <label class="tml-text-r">管理区域：</label>
+						<div class="tml-input-append2">
+							 <input type="hidden"  name="quyu" readonly="readonly" value="{$vo.quyu}" class="orgquyu.userid" />
+							 <input type="text"   disabled="disabled"  value="{$vo.quyu|getFieldsName='orderno','name','mis_auto_jcztc'}" class="textInput nocheckfor orgquyu.name " readonly="readonly" />
+							 <a class="new_icon_elm midden_icon_elm icon-plus neibu" lookupgroup="orgquyu" href="__URL__/lookupBackendQuyu"></a>
+							<a title="清空信息" class="new_icon_elm icon-trash " href="javascript:void(0);" onclick="clearOrgname('orgquyu');"></a>
+						</div>
+				    </div>
+				</fieldset>
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+						<b>部门角色</b>
+						<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+					</legend>
+					<volist name="orglist" id="list">
+						<div class="tml-form-row">
+							<label class="tml-text-r">{$list.name}：</label>
+							<ul class="addressee left checkTo" id="organizational_list{$list.id}" style="width:300px;" autocomplete="off">
+								<volist name="relist[$list['id']][0]" id="r">
+									<li>
+										<input type="hidden" name="recipientname{$list.id}[]"value="{$r|getFieldBy='id','name','user'}">
+										<span>{$r|getFieldBy='id','name','user'}</span>
+										<input type="hidden" name="recipient{$list.id}[]" value="{$r}">
+										<a class="delAddressee" title="删除" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" href="javascript:;">x</a>
+									</li>
+								</volist>
+								<li class="addresseeText">
+	                                  <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);"
+	                               	  onfocus="addressee.clearVal(this);"
+	                                  type="text" checkfor="MisMessage" callback="addresseeInput" 
+	                                  show="" class="checkByInput addresseeTextInput" inputName="recipient{$list.id}" chainname="recipientname{$list.id}" 
+	                                  emailName="email{$list.id}" tabindex="1" autocomplete="off"  >
+	                            </li>
+                            </ul>
+							<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="organizational_list{$list.id}" data="recipientname{$list.id},username,text;recipient{$list.id},userid,hidden,1;">查找带回</a>&nbsp;
+							<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverdeptUser('{$list.id}','organizational_list{$list.id}');" title="清空用户"></a>
+						</div>
+					</volist>
+				</fieldset>
+				 {:W('MisSystemOrderno',array(1))}
+				<div class="formBar">
+				    <ul>
+					    <li><button type="submit" class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+				    	<li><button type="button" class="tml_formBar_btn tml_formBar_btn_red" onclick="deleteRecord(this,'{$vo.id}','__MODULE__');">删除</button></li>
+				    </ul>
+			    </div>
+			</form>	
+		</div>
+	</div>														
+</div>-->

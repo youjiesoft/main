@@ -1,0 +1,98 @@
+<script>
+//上传图片JS
+function missystemfunctionalbox_picture_editphoto(file, data, response) {
+		var $box = navTab.getCurrentPanel();
+		var s = data.split(TP_PUBLIC + "/Uploadstemp/");
+		$("#swf_upload_missystemfunctionalbox_editphoto_save_name").val(s[1]);
+		var upload_name = $("#swf_upload_missystemfunctionalbox_editphoto_save_name").val();
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookuploadimg",
+			data : {
+				'upload_name' : upload_name
+			},
+			success : function(re) {
+				 $("#missystemfunctionalbox_picture_editphoto").attr("src","__PUBLIC__/Uploads/"+re);
+				 $("input[name='logo']").val(re);
+			}
+		});
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$vo.id}"/>
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="logo"/>
+			<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>{$fields["code"]}：</label>
+					<input type="text" name="code" value="{$vo.code}" maxlength="50" />
+				</div>
+				<div class="tml-form-col">
+					<label>{$fields["name"]}：</label>
+					<input type="text" name="name" class="required" value="{$vo.name}" maxlength="50" />
+				</div>
+			</div>
+				<div class="tml-form-row">
+					<label>{$fields["link"]}：</label>
+					<select name='qlink'  class="combox">
+						<option value="1" <if condition="$vo.qlink eq 'http://'">selected="selected"</if>>http://</option>
+						<option value='2'<if condition="$vo.qlink eq 'https://'">selected="selected"</if>>https://</option>
+					</select>
+					<input style="width:150px;" type="text" name="link" value="{$vo.link}" class="required " />
+				</div>
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>{$fields["isblank"]}：</label>
+                    <div class="tml-checkbox">
+						<input type="checkbox" name="isblank" <if condition="$vo.isblank eq '_blank'">checked="checked"</if> value="_blank" />
+                    </div>
+				</div>
+				<div class="tml-form-col">
+					<label>{$fields["nodeid"]}：</label>
+					<select name='groupid' class="combox" >
+						<option value="0">请选择</option>
+						<volist name="list" id="list">
+						<option value="{$list.id}" <if condition="$list.id eq $vo.groupid">selected="selected"</if>>{$list.name}</option>
+						</volist>
+					</select>
+				</div>
+				<div class="tml-form-col">
+				<label>{$fields["logo"]}：</label>
+					<p>
+						<span  style="width: 64px; height: 64px; display:block; border: 1px solid #ccc;overflow:hidden; ">
+						<img id="missystemfunctionalbox_picture_editphoto"
+							style="border: 2px solid #f1f1f1;  background-color:#468cda;  width: 64px; height: 64px;"
+							 <if  condition="$vo.logo"> src="__PUBLIC__/Uploads/{$vo.logo}" <else/> src="__PUBLIC__/Images/xyimages/xyheader_image.jpg" </if>>  
+						</span>
+						<input name="swf_upload_missystemfunctionalbox_add_name" id="swf_upload_missystemfunctionalbox_editphoto_save_name" value="{$vo.logo}" type="hidden" />
+						<br />
+						 <input id="swfupload_missystemfunctionalbox_editphoto" onUploadSuccess="missystemfunctionalbox_picture_editphoto" type="file" auto="true" multi="false" type="file" uploader="true" fileSizeLimit="2000KB" fileTypeExts="*.jpg;*.jpeg;*.gif;*.png;"
+												   fileTypeDesc="*.jpg;*.jpeg;*.gif;*.png;" name="missystemfunctionalbox_editphoto_file" formData="{ uploadpath:'MisSystemFunctionalBox' }" />
+						<span style="color:red">*请上传64*64logo</span>
+					</p>
+				</div>
+			</div>
+				<div class="tml-form-row">
+					<label>备注：</label>
+					<TEXTAREA style="width:400px;" rows="2" cols="30" name="remark"></TEXTAREA>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<if
+						condition="$_SESSION.a eq 1 or $_SESSION.missystemfunctionalbox_update">
+					<li>
+						<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+					</li>
+					</if>
+					<li>
+						<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

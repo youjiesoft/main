@@ -1,0 +1,75 @@
+<div class="page">
+    <div class="pageContent">
+        <div class="panelBar">
+            <ul class="toolBar">
+            </ul>
+        </div>
+        <div class="clearfix xyTask">
+            <div class="xyTaskPanel" style="width:48%;">
+                <div class="xyTaskPanelHeader xyTaskIAsk">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+					<if condition='$myoutquestion'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>标题</th>
+									<th>关联任务</th>
+                                    <th>提问人</th>
+                                    <th style="width:150px;">提问时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="overquestionvo" name="myoutquestion" key="key2">
+                                <tr target="sid_node" rel="{$overquestionvo['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="450" dwidth="600" title="查看问题" drel="__MODULE__edit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$overquestionvo.id}");'>
+									<td>{$overquestionvo['title']|missubstr=###,40,true}</td>
+                                    <td>{$overquestionvo['sourceid']|getFieldBy='id','title','mistask'|missubstr=###,50,true}</td>
+                                    <td>{$overquestionvo['createid']|getFieldBy='id','name','user'}</td>
+                                    <td>{$overquestionvo['createtime']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">暂无数据</div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyTaskPanel" style="width:48%;">
+                <div class="xyTaskPanelHeader xyTaskISolve">
+                    <div class="xyTaskPanelHeaderCon">
+                    </div>
+                </div>
+                <div class="xyTaskPanelContent">
+                    <if condition='$myinquestion'>
+                        <table class="table" width="100%" layoutH="186">
+                            <thead ename="{$ename}">
+                                <tr>
+                                    <th>标题</th>
+									<th>关联任务</th>
+                                    <th>提问人</th>
+                                    <th style="width:150px;">提问时间</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <volist id="noquestionvo" name="myinquestion" key="key2">
+                                <tr target="sid_node" rel="{$noquestionvo['id']}" onclick="onTrClickCheckbox(this,'id')" dheight="450" dwidth="600" title="查看问题" drel="__MODULE__edit" ondblclick='ondblclick_dialog(this,navTab.getCurrentPanel(),"__URL__/edit/id/{$noquestionvo.id}");'>
+                                    <td>{$noquestionvo['title']|missubstr=###,40,true}</td>
+                                    <td>{$noquestionvo['sourceid']|getFieldBy='id','title','mistask'|missubstr=###,50,true}</td>
+                                    <td>{$noquestionvo['createid']|getFieldBy='id','name','user'}</td>
+                                    <td>{$noquestionvo['createtime']|transTime='Y-m-d H:i:s'}</td>
+                                </tr>
+                            </volist>
+                            </tbody>
+                        </table>
+                    <else />
+                        <div class="xyTaskNoData" layoutH="160">暂无数据</div>
+                    </if>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

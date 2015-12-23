@@ -1,0 +1,39 @@
+<div class="page">
+	<!-- <h2 style="line-height:24px;text-align:center;">{$pname}</h2> -->
+	<div class="pageContent" layoutH="0">
+        <div class="xyprocess">
+            <div class="process_con">
+                <volist name="history" id="historyvo">
+                <div class="process_node process_pass">
+                    <div class="process_time">
+                        <span>{$historyvo['timediffer']}</span>
+                    </div>
+                    <div class="process_approve">
+                        <div class="process_approve_leader">
+                            <a class="process_approve_leader_trigger" style="color:#003366;" target="dialog" mask="true" height="400" width="550" title="{$vo['name']}审核人" rel="__MODULE__seeProcessDetail3" href="{$vo['url']}">
+                                <span>{$historyvo['exestatus']|excelTplselected='1:发布,2:修改,3:执行,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,11:转派,12:继续,13:申请审核'}</span>
+                            </a>
+                        </div>
+                        <div class="process_approve_date"><span>{$historyvo["createtime"]|date='Y-m-d H时i分',###}</span></div>
+                    </div>
+                    <div class="process_text">
+                        <div class="process_result">
+                                <p class="process_result_p" title="{$vo['doinfo']}">{$historyvo['createid']|getFieldBy='id','name','User'}
+                                    <if condition="$historyvo['feedback']">：{$historyvo['feedback']}</if>
+                                    <span class="process_result_hellip">...</span>
+                                </p>
+                        </div>
+                        <a class="process_result_more" href="#" title="点击查看更多">查看更多</a>
+                        <div class="process_count"><span title="{$vo['dotype']}">{$key+1}</span></div>
+                    </div>
+                </div>
+                </volist>
+                <div class="process_end">
+                <span class="num">[任务]</span>
+                <span>{$task['title']}</span>
+                </div>
+            </div>
+        </div>
+        
+	</div>
+</div>

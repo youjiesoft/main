@@ -1,0 +1,89 @@
+<script>
+	function misworkplan_onbluredit(){
+		var $box=navTab.getCurrentPanel();
+		var d =  $("#misworkplan_edit_changedate").val();
+		var type = $("#workplanedittypeid option:selected").text();
+		var oldname = "{$username}";
+		var title = "";
+		if(type == "日计划"){
+			title = d + '_' + oldname + '_' +type;
+		} else if(type == "周计划"){
+			var date = new Date(d.replace("年","-").replace("月","-").replace("日",""));
+			var week = getIso8601Week(date);
+			date.setDate(date.getDate() + 4 - (date.getDay() || 7));
+			title = date.getFullYear() + "年第" + week + "周" + '_' + oldname + '_' +type;
+		} else if(type == "月计划"){
+			var date = new Date(d.replace("年","-").replace("月","-").replace("日",""));
+			var month = (date.getMonth()+1);
+			if(month<10) month = "0" + month;
+			title = date.getFullYear() + "年" + month + "月" + '_' + oldname + '_' +type;
+		}
+		$("#misworkplan_edit_changetitle").text(title);
+		$box.find("input[name='title']").val(title);
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="iseditor" value="1">
+			<input type="hidden" name="stepType" value="0">
+			<input type="hidden" name="id" value="{$vo.id}"/>
+			<input type="hidden" name="title" value="{$vo.title}">
+			<div class="pageFormContent applecloth" layoutH="56">
+				<div class="keepContentCenter kkuupp">
+					<H2 class="contentTitle contentTitle_center"><span style="color:red;">[工作报告]</span><span id="misworkplan_edit_changetitle">
+						{$vo.title}
+					</span></H2>
+					<fieldset>
+					<div class="tml-form-row">
+						<label>计划摘要：</label>
+						<input type="text" name="summary" <eq name="vo.readstatus" value="1">readonly</eq> value="{$vo['summary']}" />
+						<input type="hidden" value="{$vo.code}" name="code"/>
+					</div>
+					<div class="tml-form-row">
+	                    <label>查阅人：</label>
+	                    <ul id="misworkplan_one_edit" class="addressee left checkTo" style="width:563px;">
+	                    <volist name="lookpeople" id="pvo">
+	                    <li>
+							<input type="hidden" value="{$pvo|getfieldby='id','name','user'}" name="lookpeoplename[]">
+							<span>{$pvo|getfieldby='id','name','user'}</span>
+							<input type="hidden" value="{$pvo}" name="lookpeople[]">
+							<a class="delAddressee" href="javascript:;" onclick="this.parentNode.parentNode.removeChild(this.parentNode);" title="删除">x</a>
+						</li>
+						</volist>
+						<li class="addresseeText">
+							<input class="checkByInput addresseeTextInput textInput" type="text" autocomplete="off" tabindex="1" callback="addresseeInput" chainname="lookpeoplename" inputname="lookpeople" show="" checkfor="MisMessage" autofocus="autofocus" onfocus="addressee.clearVal(this);" onkeydown="addressee.del(this, event);" onclick="addressee.unselect(this);">
+						</li>
+						</ul>
+						<a class="input-addon input-addon-addon input-addon-userplus checkUser" data="lookpeoplename,username,text;lookpeople,userid,hidden,1" ulid="misworkplan_one_edit" href="javascript:;">查找带回</a>
+						<a class="input-addon input-addon-recycle" title="清空接收用户" onclick="clearreceverMismessage('1','misworkplan_one_edit');" href="javascript:;"></a>
+	                </div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label style="width:86px;">计划类型：</label>
+							<select name="typeid" id="workplanedittypeid" class="combox" onchange="misworkplan_onbluredit();">
+								{:getSelectByHtml('workplan','select',$vo['typeid'])}
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label style="width:123px;">计划时间：</label>
+							<div class="tml-input-append">
+								<input type="text" id="misworkplan_edit_changedate" class="Wdate js-wdate" name="plantime" value="{$vo.plantime|transTime}" />
+	                        	<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+	                        </div>
+                        </div>
+					</div>
+					<div class="tml-form-row">
+						<label>计划内容：</label>
+						<textarea class="ueditor" name="content" style="height:240px;width:630px;">{$vo.content}</textarea>
+					</div>
+					<!-- 附件信息 -->
+					{:W('ShowUpload',$attarry)}
+					</fieldset>
+				</div> 
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

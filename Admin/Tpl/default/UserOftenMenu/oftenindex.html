@@ -1,0 +1,32 @@
+<!-- 
+<div class="tml-text-r tml-pos-abs" style="right: 10px;top: 10px;z-index: 2;">
+	<a class="tml-btn tml-btn-default tml_add_btn"   href="__URL__/lookupuserindex/type/2" target="dialog" rel="__MODULE__add" width="770" height="530"><span class="icon icon-plus">常用</span>  </a>
+</div>
+ -->
+<!-- <h3>常用</h3> -->
+<ul class="clearfix xyuseapp tml-mt5">
+	<volist id="workvo" name="workoftenList">
+		<if condition="$workvo['rel'] && $workvo['title'] && $workvo['url'] && $workvo['icon']">
+			<li>
+				<a href="__APP__/{$workvo['url']}" target="navTab" rel="{$workvo['rel']}" >
+					<img alt="{$workvo['title']}" width="50" height="50px" src="__PUBLIC__/Images/xyicon/{$workvo['icon']}" />
+					<span>{$workvo['title']}</span>
+				</a>
+				<if condition="!$workvo.isdefault"><a id="{$workvo['id']}" class="delapp" href="#" onclick="delOften(this);"></a></if>
+			</li>
+		</if>
+	</volist>
+	<li>
+		<a href="__APP__/UserOftenMenu/oftenadd" target="dialog" rel="__MODULE__add" width="770" height="530">
+			<img width="50" height="50px" src="__PUBLIC__/Images/xyicon/set_icon.png" alt=""/>
+			<span>常用设置</span>
+		</a>
+    </li>
+</ul>
+<script type="text/javascript">
+		/* 常用功能删除按钮显示
+		*/
+$(document).ready(function(){
+	$(".xyuseapp li").hoverClass("hover");
+});
+</script>

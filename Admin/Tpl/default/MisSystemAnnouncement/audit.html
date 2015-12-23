@@ -1,0 +1,137 @@
+<script>
+//提交按钮 点击事件,2--审核通过,3--审核未通过  
+function missystemannouncementaudit(form,stepobj){
+	var $box=navTab.getCurrentPanel();//找到当前窗体
+	if(stepobj){
+		$box.find("#editstepannout").val(stepobj);
+	}
+	if(stepobj == 3){
+		$box.find("input[name='audittime']").attr('value','');
+	}
+	$(form).submit();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form id="pagerForm" action="__URL__/index" method="post">
+
+	</form>
+	 <form rel="pagerForm" onsubmit="return divSearch(this, '__MODULE__indexview')" action="__URL__/index" method="post">
+		 <input type="hidden" value="1" name="jump"/>
+		  <input type="hidden" value="3" name="waitAudit"/>
+	  </form>
+	<form method="post" action="__URL__/announcementAuditUpdate/rel/__MODULE__indexview" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<input type="hidden" name="audittime" value="{$time}"/>
+	    <input type="hidden" name="callbackType" value="closeCurrent">
+	    <input type="hidden" name="refreshtabs[data]" value="1" />
+	    <input type="hidden" name="iseditor" value="1">
+	    <input type="hidden" id="editstepannout" name="auditstatus" value="2" />
+		<div class="pageFormContent" layoutH="56">
+			<div class="keepContentCenter">
+			<H2 class="contentTitle contentTitle_center">系统公告</H2>
+				<fieldset>
+					<div class="tml-form-row">
+						<label>公告标题：</label>
+						<input type="text" readonly="readonly" value="{$vo.title}"/>
+					</div>
+					<div class="tml-row">
+					<div class="tml-form-col">
+						<label>类&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;型：</label>
+						<input type="text" readonly="readonly" value="{$list}"/>
+					</div>
+					<div class="tml-form-col" <if condition="!$plist"> style="display:none" </if>>
+						<input type="text" readonly="readonly" value="{$plist}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>发布范围：</label>
+						<if condition="$personidList">
+							<input type="text" readonly="readonly" value="按照人员发布"/>
+						<else/>
+							<input type="text" readonly="readonly" value="按照部门发布"/>
+						</if>
+					</div>
+					</div>
+					<div class="tml-form-row" <if condition="$personidList">style="display:none;"</if>>
+						<label>选择部门：</label>
+						<ul id="deptclearedit" class="addressee left" style="border:1px #ccc solid; background-color:#F8F8F8;width:620px">
+							<volist name='deptList' id="dept">
+								<li>
+									<span><if condition="$dept neq '全体部门'">{$dept|getFieldBy='id','name','mis_system_department'}<else/>{$dept}</if></span><!-- 通过id取name值,在 mis_system_department表-->
+								</li>
+							</volist>
+						</ul>
+					</div>
+					<div class="tml-form-row" <if condition="!$personidList">style="display:none;"</if>>
+						<label>选择人员:</label>
+						<ul id="personclearedit" class="addressee left" style="border:1px #ccc solid; background-color:#F8F8F8;width:620px;">
+							<volist name='personidList' id="person">
+								<li>
+									<span>{$person|getFieldBy='id','name','user'}</span>
+								</li>
+							</volist>
+						</ul>
+		            </div>
+		            <div class="tml-row">
+					<div class="tml-form-col">
+						<label>是否置顶：</label>
+						<if condition="$vo.top eq 1">
+						<input type="text" value="是" readonly="readonly"/>
+						<else/>
+						<input type="text" value="否" readonly="readonly"/>
+						</if>
+					</div>
+					<div class="tml-form-col" <if condition="$vo.top eq 2">style="display:none;"</if>>
+						<label>置顶有效期：</label>
+						<input type="text" value="{$vo.toptime|transtime}" readonly="readonly"/>
+					</div>
+					<div class="tml-form-col">
+						<label>生效时间：</label>
+					   	<input type="text" value="{$vo.starttime|transtime}" readonly="readonly" value="{$vo.starttime|transtime}"/>
+					</div>
+					<div class="tml-form-col">
+						<label>截止时间：</label>
+					   	<input type="text" placeholder="为空则不终止" readonly="readonly" value="{$vo.endtime|transtime}"/>
+					</div>
+					</div>
+					<div class="tml-form-row">
+						<label>内&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容：</label>
+						<textarea class="ueditor" readonly name="content" style="height:240px;width:630px;">{$vo.content}</textarea>
+					</div>
+					<if condition="$attarry">
+					<div class="tml-form-row">
+						<label>上传附件：</label>
+					</div>
+					<div class="tml-form-row"><!--此处为上传列表-->
+						<label>&nbsp;</label>
+						<span id="swfupload_missystemannouncement_edit-queue" class="info uploadify-queue">
+                            <volist name="attarry" id="att">
+                             <div class="uploadify-queue-item">
+                     <!-- 附件名 --><span class="fileName">
+                                     <a href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}" target="_blank">{$att['upname']}</a>
+                                 </span>-
+                                 <a class="tml-btn tml-btn-small tml-btn-green tml-ml5" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="icon icon-file"></span> 归档</a>
+                             </div>
+                            </volist> 
+						</span>
+					</div>
+					</if>
+				</fieldset>
+				<fieldset>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>发&nbsp;布&nbsp;&nbsp;人：</label>
+							<input type="text" class="textInput" readonly="readonly" value="{$vo.createid|getFieldBy='id','name','user'}"/>
+						</div>
+						<div class="tml-form-col">
+							<label>发布时间：</label>
+					   		<input type="text" value="{$vo.createtime|transtime}" readonly="readonly" />
+						</div>
+					</div>
+				</fieldset>
+		 {:W('ShowAction')}
+			</div>
+		</div>
+	</form>
+	</div>
+</div>

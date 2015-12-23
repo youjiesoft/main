@@ -1,0 +1,117 @@
+<style>
+.closese{
+	background:url('__PUBLIC__/dwz2/themes/default/images/dialog/dialogpanel_icon.png') no-repeat;
+	text-indent:-1000px;
+	height:19px;
+	width:19px;
+	display:inline-block;
+	margin-left:5px;
+}
+.closese:hover{
+	background-position:0 -50px;
+}
+#all_address label{
+	width:300px;
+}
+</style>
+<div class="pageContent">
+	<form method="post" action="__URL__/save" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+		<div class="pageFormContent" layoutH="56">
+			<div style="float:left;width:480px;">
+				<p>
+					<label style="width:200px;">请选择要添加的模板类型：</label>
+				</p>
+				<p>
+					<input title="全局地址" type="radio" name="select_tmp" value="0" checked /> 全局地址
+				</p>
+				<volist id="vo" name="tmps">
+					<p>
+						<input title="{$vo.name}" type="radio" name="select_tmp" value="{$vo.type}" /> {$vo.name}
+					</p>
+				</volist>
+				<p>
+					<label style="width:100px;">输入邮件地址：</label>
+					<input id="address" type="text" size="20" />
+					<input type="button" value="添加" onclick="addEmail();" />
+					<input type="button" value="选择" onclick="showAddress();" />
+					<input type="hidden" name="addresses" id="addresses" value="{$empobject}" />
+				</p>
+				<p>
+					<label><b>默认发送地址：</b></label>
+				</p>
+				<p style="height:auto;">
+					<label id="notic" style="display:none;width:200px;color:red"></label>
+				</p>
+				<div id="all_address">
+					<volist id="list" name="addresses">
+						<p onmouseover="highlight(this);" onmouseout="unhighlight(this);">
+							<label title="{$list.db_address}">{$list.tmp_type} {$list.email}</label>
+							<a href='#close' onclick='del_current_email(this);' class='closese'>close</a>
+						</p>
+					</volist>
+				</div>
+
+				<!-- 测试发送START -->
+				<script>
+				function sendTest(){
+					var subject = $('#subject').val();
+					var body = $('#body').val();
+					var type = $('#type').val();
+					var orderno = $('#orderno').val();
+					$.post(TP_APP + '/Email/test', {subject: subject, body: body, type: type, orderno: orderno}, function(data){
+						$('#notic').html(data);
+					});
+				}
+				</script>
+				<p>
+					<label style="width:100px;">测试发送：</label>
+				</p>
+				<p>
+					<label style="width:100px;">输入模板类型：</label>
+					<input type="text" id="type" name="type" />
+				</p>
+				<p>
+					<label style="width:100px;">输入订单编号：</label>
+					<input type="text" id="orderno" name="orderno" />
+				</p>
+				<p>
+					<label style="width:100px;">输入邮件主题：</label>
+					<input type="text" id="subject" name="subject" />
+				</p>
+				<p>
+					<label style="width:100px;">输入邮件内容：</label>
+					<input type="text" id="body" name="body" />
+					<input type="button" onclick="sendTest();" value="点击发送" />
+				</p>
+				<!-- 测试发送END -->
+
+			</div>
+			<div style="float:left;width:300px;">
+				<p>
+					<b>模板设置：</b>
+					<volist id="list" name="tmps">
+						<div style="margin-top:5px;">
+							{$list.name}
+							<input type="hidden" name="tmp_type[]" value="{$list.type}" />
+						</div>
+						<div class="tmp_field">
+							<volist id="field" name="list['fields']">
+								<div style="margin-top:5px;">
+									<input style="margin-left:2em;" type="checkbox" name='field_{$list.type}[]' value="{$field.field}" {$field.check} /> {$field.field} - {$field.field_name}
+								</div>
+							</volist>
+							<div style="margin-top:5px;"><input style="margin-left:2em;" type="checkbox" class="checkboxCtrl" group="field_{$list.type}[]" /> 全选</div>
+						</div>
+					</volist>
+				</p>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.email_save">	
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+			</if>
+			</ul>
+		</div>
+	</form>
+</div>

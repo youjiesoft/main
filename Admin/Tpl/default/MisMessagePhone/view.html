@@ -1,0 +1,120 @@
+<script type="text/javascript">
+
+//选中哪个接收框 
+$('.checkTo').click(function(){
+	$(this).css({"background": "#fff","border-left":"1px solid #ccc"});
+    $('.contents').css({"background": "#f0f0f0","border-left":"1px solid #cccccc" });
+    $("input:[name='whickInput']").val("#Mismessagephone_add");
+    $("input:[name='whickInputposition']").val("Mismessagephone_add");
+    $(this).find("input").focus();
+ });
+$('.contents').click(function(){
+	$(this).css({"background": "#fff","border-left":"1px solid #ccc"});
+    $('.checkTo').css({"background": "#f0f0f0","border-left":"1px solid #cccccc" });
+    $(this).find("input").focus();
+ });
+//checkFor的callback函数
+function addresseeInput(obj,json){
+	var $ulId = obj.parents('td:first');
+    var $inputName = obj.attr('inputName');//获取需要插入到数据库的收件人id的name
+    var $chainname = obj.attr('chainname');//获取需要插入到数据库的收件人name的name 
+    var $mobileName = obj.attr('emailName');//获取需要插入到数据库的id的name 
+    var isTrue = true;
+    var $id = json.id;
+    var $name = json.name;
+    var $mobile = json.mobile;
+    $ulId.find("input[name='"+$inputName+"[]']").each(function(){
+        if($(this).val() == $id) {
+            isTrue = false;
+        }
+    });
+    if($mobile==''){
+    	alertMsg.error("该用户没有设置手机号码");
+    }
+    var $str = "";
+    if(isTrue){
+        $str += "<li>";
+        $str += "<input type='hidden' name='"+$inputName+"[]' value='"+$id+"'/>";
+        $str += "<span><input type='hidden' name='"+$chainname+"[]' value='"+$name+"'>"+$name+"</span>";
+        $str += "<input type='hidden' name='"+$mobileName+"[]' value='"+$mobile+"'>";
+        $str += "<a class='delAddressee' title='删除' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>";
+        $str += "</li>";
+        obj.val("");
+        obj.focus();
+        obj.parent().before($str);
+    }else {
+        obj.val("");
+    }
+}
+/*
+eagle:当提交时，如果是发送，调用这个方法，修正了提交到控制器中的哪个方法中去。]
+* type:is update or insert
+*/
+function commitviewAddWriteForm($this){
+    var $form = $($this);
+    $(":input[name='commit']",$form).val(1);
+    $form.attr("action","__URL__/update/rel/MisMessagePhoneModel" );
+    return validateCallback($form, dialogAjaxDone);
+};
+//清空
+function clearreceverMismessagephoneedit(ulId){
+     $("#"+ulId).empty();
+     var $string = ' <li class="addresseeText" id="Mismessagephone_editli">
+         <input type="text" onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);" onfocus="addressee.clearVal(this);" checkfor="MisMessageMobile" callback="addresseeInputphone" show="" class="checkByInput addresseeTextInput" inputName="recipient" chainname="recipientname" mobileName="mobile" tabindex="1" autocomplete="off">
+     </li>';
+    $('#'+ulId).append($string);
+    $('#'+ulId).find('input').focus();
+}
+</script>
+<div class="pageContent">
+	<div style="overflow:hidden;">
+		<form method="post" action="__URL__/update/rel/MisMessagePhoneModel" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+			<input type="hidden" name="commit" value="0">
+			<input type="hidden" name="id" value="{$vo['id']}">
+			<input type="hidden" name="interemail" value="0">
+			<input type="hidden" name="messageType" value="0">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<input type="hidden" name="messageTypeNmae" value="0">
+			<input type="hidden" name="iseditor" value="1">
+			<input type="hidden" name="whickInput" value="#Mismessagephone_add">  <!-- 接收人或抄送人，当选中后，选人时被添入当前激活的窗中；做中转存值-->
+			<input type="hidden" name="whickInputposition" value="Mismessagephone_add"> <!-- 用于判断加入的窗中 author: xiafengqing -->
+            <div class="pageFormContent clearfix" layoutH="55">
+				<fieldset>
+            		<div class="tml-form-row">
+						<label>接&nbsp;收&nbsp;人：</label>
+						<ul class="addressee left checkTo" id="Mismessagephone_edit" style="border:1px #ccc solid; background-color:white;width:82%;">
+						  <volist name="userArr" id="list">
+	                       		<li>
+	                       			<input type='hidden' name="recipient[]" value="{$list}"/>
+	                       			<input type="hidden" name="mobile[]" value="{$list|getfieldby='id','mobile','user'}"/>
+	        						<span>{$list|getfieldby='id','name','user'}</span>
+	        						<a class='delAddressee' title='删除' onclick='this.parentNode.parentNode.removeChild(this.parentNode);' href='javascript:;'>x</a>
+	                       		</li>
+                          </volist>
+						  <li class="addresseeText" id="Mismessagephone_editli">
+                               <input onclick="addressee.unselect(this);" onkeydown="addressee.del(this, event);"
+                            	onfocus="addressee.clearVal(this);"
+                               autofocus="autofocus" type="text" checkfor="MisMessageMobile" callback="addresseeInputphone" 
+                               show="" class="checkByInput addresseeTextInput" inputName="recipient" chainname="recipientname" 
+                               mobileName="mobile" tabindex="1" autocomplete="off">
+                               </li>
+                             </ul>
+                            <!-- checkFor带回来的值 -->
+						<a class="input-addon input-addon-userplus input-addon-addon checkUser" href="javascript:;" m="MisMessagePhone" ulid="Mismessagephone_edit" data="recipientname,username,text;recipient,userid,hidden,1;mobile,mobile,hidden">人员选择</a>
+						<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearreceverMismessagephoneedit('Mismessagephone_edit');"></a>
+					</div>
+					<div class="tml-form-row">
+						<label>正&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;文：</label>
+						<textarea name="content" style="height:150px;width:93.3%;" maxlength="300" class="contents required">{$vo['content']}</textarea>
+					</div>
+					<div class="tml-form-row">
+						<label>&nbsp;</label>
+						<span style="color:red;font-size:;">提示:发送信息长度不可以超过300字</span>
+					</div>
+				</fieldset>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>
+

@@ -1,0 +1,87 @@
+<script>
+	function showworkmessage(ob){
+		var $box=navTab.getCurrentPanel();
+		$box.find("#"+ob).siblings("li").hide();
+		$box.find("#"+ob).show();
+	}
+</script>
+<div class="pageContent">
+	<div class="pageContent applecloth" layoutH="28">
+		<ul class="clearfix">
+			<li class="left grid-50">
+				<div class="tml-m20 tml-p20">
+					<div class="no-data">
+						<img src="__PUBLIC__/Images/xyicon/gzxt.png" width="100">
+						<if condition="$oaitemdoing">
+							<span class="tml-badge tml-bg-orange">{$oaitemdoing}</span>
+							<div>工作协同<a class="tml-c-blue" href="javascript:;" onclick="showlimanageworkoa('MisOaItems_3','workoaitemsshow')">待办</a></div>
+						<else/>
+							<div>暂无工作协同<a class="tml-c-blue" href="__APP__/MisOaItems/add/type/3"  target="navTab" title="协同事项_新增" rel="MisOaItemsadd">发布新协同</a></div>
+						</if>
+					</div>
+				</div>
+			</li>
+			<li class="left grid-50">
+				<div class="tml-m20 tml-p20">
+					<div class="no-data">
+						<img src="__PUBLIC__/Images/xyicon/gzsp.png" width="100">
+						<if condition="$myworkwait">
+							<span class="tml-badge tml-bg-orange">{$myworkwait}</span>
+							<div>工作审批<a class="tml-c-blue" href="javascript:;" onclick="showlimanageworkoa('MisWorkMonitoring_1','workmonitoringshow')">审批</a></div>
+						<else/>
+							<div>暂无工作审批<a class="tml-c-blue" href="__URL__/index/jump/2" width="580" height="400" mask="true" target="dialog" rel="MisWorkExecutingbox" title="我的常用" >查看常用菜单</a></div>
+						</if>
+					</div>
+				</div>
+			</li>
+			<li class="left grid-50">
+				<div class="tml-m20 tml-p20">
+					<div class="no-data">
+						<img src="__PUBLIC__/Images/xyicon/gzzx.png" width="100">
+						<if condition="$arrlist['count']">
+							<span class="tml-badge tml-bg-orange">{$arrlist['count']}</span>
+							<div>工作执行<a class="tml-c-blue" href="javascript:;" onclick="showworkmessage('showWorkExecuting')">执行</a></div>
+						<else/>
+							<div>暂无工作执行<a class="tml-c-blue" onclick="showworkmessage('showWorkExecuting')" >查看历史记录</a></div>
+						</if>
+					</div>
+				</div>
+			</li>
+			<li class="left grid-50">
+				<div class="tml-m20 tml-p20">
+					<div class="no-data">
+						<img src="__PUBLIC__/Images/xyicon/gzzh.png" width="100">
+						<if condition="$Allinfonum">
+							<span class="tml-badge tml-bg-orange">{$Allinfonum}</span>
+							<div>工作知会<a class="tml-c-blue" href="javascript:;" onclick="showworkmessage('showWorkInformperson')">知会</a></div>
+						<else/>
+							<div>暂无工作知会<a class="tml-c-blue" onclick="showworkmessage('showWorkInformperson')" >查看历史记录</a></div>
+						</if>
+					</div>
+				</div>
+			</li>
+			<volist name="arrlist['list']" id="vo">
+				<li class="left grid-50" style="display:none;" id="showWorkExecuting">
+					<div class="tml-m20 tml-p20" style="background:#f3f3f3;border:1px solid #ccc;">
+						<h3 class="tml-h3">{$vo['title']}(&nbsp;<if condition="$vo['count']">{$vo['count']}<else/>0</if>&nbsp;)</h3>
+						<div class="divider-content help"><span></span></div>
+						<div>
+							<a class="tml-btn tml-btn-small tml-btn-primary mr10" onclick="showlimanageworkexecuting('{$vo.name}_1','workexecutingshow',0,'{$vo.name}')" ><span class="icon icon-play-circle"></span> 处理</a>
+							<a class="tml-btn tml-btn-small tml-btn-green" onclick="showlimanageworkexecuting('{$vo.name}_1','workexecutingshow',1,'{$vo.name}')" ><span class="icon icon-eye-open"></span> 查看</a>
+						</div>
+					</div>
+				</li>
+			</volist>
+			<volist name="arrinfolist" id="vo1">
+				<li class="left grid-50" style="display:none;" id="showWorkInformperson">
+					<div class="tml-m20 tml-p20" style="background:#f3f3f3;border:1px solid #ccc;">
+						<h3 class="tml-h3"><a class="" onclick="showlimanageworkoa('{$vo1.name}_2','workinformpersonshow')">{$vo1['cname']}(&nbsp;<if condition="$vo1['num']">{$vo1['num']}<else/>0</if>&nbsp;)</a></h3>
+					</div>
+				</li>
+			</volist>
+		</ul>
+	</div>
+	<div class="panelBar panelPageBar">
+		<div class="pagination"  rel="MisMessageDotypebox" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

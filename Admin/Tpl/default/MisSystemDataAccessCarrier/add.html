@@ -1,0 +1,92 @@
+
+
+<script>
+$(function(){
+	initTableWNEWOne("#accesscarrierdata");
+	var box = navTab.getCurrentPanel();
+	//选择模型更新设置好的可配置字段
+	$("select[name='model']").change(function(){
+		var model = $(this).val();
+		$.ajax({
+			 url:'__URL__/modelChangeGetRecord',
+             type:'post',
+             data:{model:model},
+             dataType:'JSON',
+             cache:false,
+			 async:false,  
+             success:function(msg){
+
+            	 var html = '';
+            	 if(msg){
+            		 $.each(msg,function(i,v){
+            			var oe = '';
+            			if(i%2 == 1){
+            				oe = 'even';
+            			}else{
+            				oe = 'old';
+            			}
+            			
+                 		html += '<tr class="'+oe+' xyz_choiceonefield" role="row">';
+                 		html += '<input name="id" type="hidden" value="'+v.id+'">';
+                 		html += '<td>'+v.actiontitle+'</td>';
+                 		html += '<td>'+v.tabletitle+'</td>';
+                 		html += '<td>'+v.fieldtitle+'</td>';
+                 		var typenamec='分组授权';
+                 		if(v.typename==1){
+                 			typenamec = '直接授权';
+                 		}
+                 		html += '<td>'+typenamec+'</td>';
+                 		html += '</tr>';
+                 	});
+            		 $("tbody",box).html(html);
+            	 }
+            	 initTableWNEWOne("#accesscarrierdata");
+             }
+		});
+	});
+	//点击获取字段对应数据表字段集或分组
+	$("tr.xyz_choiceonefield").on("click",function(){
+		var id = $(this).find("input[name='id']").val();
+		$.ajax({
+			 url:'__URL__/getFieldOrGroup',
+            type:'post',
+            data:{'id':id},
+            dataType:'json',
+            cache:false,
+				async:false,  
+            success:function(msg){
+           	 console.log(msg);
+            }
+		});
+	});
+});
+</script>
+<div class="pageContent">
+	<div>
+	<label>模块：</label>
+	<select name="model" class="select2" style="width:150px;" >
+		<option value="">请选择</option>
+		<volist name="modellist" id="mv">
+		<option value="{$mv.name}">{$mv.title}</option>
+		</volist>
+	</select>
+	</div>
+	<form method="post" action="__URL__/insert/rel/MisSystemDataAccessBOX" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="100">
+			<table class="into_table_new" table_data='{"searching":true,"re_id":1,"addRow":false,"paging":false,"scrollY":"200px","isYMInfo":false}' id="accesscarrierdata">
+			<thead>
+				<tr>
+					<th>模型名称</th>
+					<th>表名称</th>
+					<th>字段名称</th>
+					<th>授权类型</th>
+				</tr>
+			</thead>
+			<tbody>
+				
+			</tbody>
+			</table>
+		</div>
+	{:W('ShowAction')}
+	</form>
+</div>

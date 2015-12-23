@@ -1,0 +1,263 @@
+
+
+<script>
+$(function(){
+	initTableWNEWOne("#accesscarrierdata");
+	var box = navTab.getCurrentPanel();
+	//选择模型更新设置好的可配置字段
+	$("select[name='model']").change(function(){
+		$("tbody",box).html('');
+		$("tbody.fieldcontent",box).html('');
+		var model = $(this).val();
+		$.ajax({
+			 url:'__URL__/modelChangeGetRecord',
+             type:'post',
+             data:{model:model},
+             dataType:'JSON',
+             cache:false,
+			 async:false,  
+             success:function(msg){
+            	 var html = '';
+            	 var selecthtml='';
+            	 var selFieldObj = box.find('select.carrierfield');
+            	 if(msg){
+            		 $.each(msg,function(i,v){
+            			selecthtml +='<option value="'+v.field+'">'+v.fieldtitle+'</option>';
+                 	});
+            		 selFieldObj.html(selecthtml);
+            		 selFieldObj.select2().change();
+            	 }else{
+            		 selFieldObj.html('<option value="0">该字段没有设置权限控制</option>');
+            		 selFieldObj.select2();
+            	 }
+             }
+		});
+	});
+	function changedt($type){
+		//获取模型
+		 var model=$("select[name='model']").val();
+		//获取字段名称
+		 var carrierfield=$("select[name='carrierfield']").val();
+		//获取当前授权对象id
+		 var objid=$("input[name='objid']").val();
+		//获取当前授权对象类型
+		 var objtype=$("input[name='objtype']").val();
+		$.ajax({
+			 url:'__URL__/getFieldOrGroup',
+           type:'post',
+           data:{model:model,fieldname:carrierfield,objid:objid,objtype:objtype},
+           dataType:'json',
+           cache:false,
+			async:false,  
+           success:function(res){
+				$("input[name='accesscontentsource']",box).val(res.listsource);
+          		var accesscontent ='';
+          		var appendhtml='';
+          		var list = res.list;
+          		box.find("input[name='masid']").val(res['masid']);
+         		// box.find("input[name='id']").val(res['id']);
+         		//获取显示全部 还是已选排序
+        		 var isshow=$("input[name='showsta']:checked").val(); 
+          	 if(list &&!res.tree){
+          		 //隐藏树形
+          		box.find(".listtree").hide();
+          		 box.find(".listtree input").attr("disabled",true);
+          		 box.find(".listtype").show();
+          		 box.find(".listtype input").attr("disabled",false);
+          		 $.each(list,function(i,v){
+          			var title = '';
+       				title = v;
+       				accesscontent += '<tr>';
+       				appendhtml+= '<tr>';
+          			var ct = '';
+          			if(res['content'].length>0){
+          				$.each(res['content'],function(ctk,ctv){
+          					if(ctv == i){
+          						ct = "checked";
+          					}
+          				});
+          			}
+          			if(isshow==2){
+          				if(ct){
+         					 accesscontent += '<td>'+title+'</td>';
+                            // accesscontent += '<td><input style="display:none;" type="checkbox"></td>';
+                            //accesscontent += '<td><input style="display:none;" type="checkbox"></td>';
+                             accesscontent += '<td><input type="checkbox" name="accesscontent[]" value="'+i+'" '+ct+'></td>';
+                             accesscontent += "</tr>";
+          				}else{
+          					appendhtml+= '<td>'+title+'</td>';
+                            // appendhtml += '<td><input style="display:none;" type="checkbox"></td>';
+                            //appendhtml += '<td><input style="display:none;" type="checkbox"></td>';
+                             appendhtml += '<td><input type="checkbox" name="accesscontent[]" value="'+i+'" '+ct+'></td>';
+                             appendhtml += "</tr>";
+          				}
+          			}else{
+          				 accesscontent += '<td>'+title+'</td>';
+                         // accesscontent += '<td><input style="display:none;" type="checkbox"></td>';
+                         //accesscontent += '<td><input style="display:none;" type="checkbox"></td>';
+                          accesscontent += '<td><input type="checkbox" name="accesscontent[]" value="'+i+'" '+ct+'></td>';
+                          accesscontent += "</tr>";
+          			}
+          		 });
+          		if(isshow==2){
+          			$("tbody.fieldcontent",box).html(accesscontent);
+          			 $("tbody.fieldcontent",box).append(appendhtml);
+          		}else{
+          			$("tbody.fieldcontent",box).html(accesscontent);
+          		}
+          		 //$(".data_table").treegrid();
+          	 }else{
+          		 box.find(".listtree").show();
+          		 box.find(".listtree input").attr("disabled",false);
+          		 box.find(".listtype").hide();
+          		 box.find(".listtype input").attr("disabled",true);
+          		 var  tree=res.tree;
+          		// console.log(res);
+          		 if(res.treenode){
+          			 box.find("input[name='treenode']").val(res.treenode);
+          		 }else{
+          			box.find("input[name='treenode']").val('');
+          		 }
+          		var ztNodes=$.parseJSON(tree);
+         		 console.log(ztNodes);
+          		//zNodes = '';
+          		var setting = {
+          				view: {
+          	               selectedMulti: false,
+          	               fontCss: getFontCss
+          	           },
+          				data: {
+          					simpleData: {
+          						enable: true
+          					}
+          				},
+          	           check: {
+          	        	   autoCheckTrigger:true,
+          	        	   chkboxType:{ "Y" : "ps", "N" : "ps" },
+          	        	   chkStyle : "checkbox", 
+          	        	   enable : true,
+          	        	   nocheckInherit : false,
+          	        	   chkDisabledInherit : false,
+          	        	   radioType : "level"
+          	           },
+          				callback: {
+          					onCheck: zTreeAOnClick
+          				}
+          			};
+          		$.fn.zTree.init($("#MisSystemDataAccessCarrierTypeTree"), setting, ztNodes);
+          		var zTree1 = $.fn.zTree.getZTreeObj("MisSystemDataAccessCarrierTypeTree");
+          	 }
+           }
+		});
+	}
+	//点击获取字段对应数据表字段集或分组
+	$(".carrierfield").die("change");
+	$(".carrierfield").live("change",function(){	
+		changedt();
+	});
+	$("input[name='showsta']").live("click",function(){
+		changedt();
+	})
+});
+function zTreeAOnClick(e,treeId,treeNode){
+    var treeObj=$.fn.zTree.getZTreeObj("MisSystemDataAccessCarrierTypeTree"),
+    nodes=treeObj.getCheckedNodes(true),
+    v="";
+    for(var i=0;i<nodes.length;i++){
+   	 v+=nodes[i].id + ",";
+   	 nodes[i].getParentNode();
+
+    }
+    $("input[name='treenode']").val(v);
+}
+</script>
+<div class="pageContent" style="background: #fff;">
+    
+	<form method="post" action="__URL__/insert/rel/MisSystemDataAccessCarrierBOX"  class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		
+		<input type="hidden" name="objtype" value="{$objtype}">
+		<input type="hidden" name="objid" value="{$objid}">				
+		<input type="hidden" name="accesscontentsource" value="">
+		<input type="hidden" name="masid" value="">
+		<!-- <input type="hidden" name="id" value=""> -->
+		
+		<div class="work_shortcut_top lookup_top_header">配置数据权限</div>
+	    <div class="set_configure pl5">
+		<div class="public_warp">
+	        <label>模块：</label>
+	        <select name="model" class="select2" style="width:200px; margin-right: 20px;" >
+	            <option value="">请选择</option>
+	            <volist name="modellist" id="mv">
+	            <option value="{$mv.name}">{$mv.title}</option>
+	            </volist>
+	        </select>
+	        <label>字段：</label>
+	        <select name="carrierfield" class="select2 carrierfield" style="width:200px;" >
+	            <option value="">请选择--</option>
+	        </select>
+		</div>
+            <style>
+                .data_group_tree_lay {
+                    width: 100%;
+                }
+                .data_group_tree_lay .member_searcher {
+                    width: 240px;
+                    margin: 0;
+                }
+                .data_group_tree_lay .data_group_search {
+                    margin: 0 5px 10px 0;
+                }
+                .data_group_tree_lay .ztree li span {
+                    max-width: 300px;
+                }
+                .data_group_tree_lay .font_family_yah {
+                    font-family: "Microsoft Yahei";
+                    font-size: 14px;
+                    width: 25%;
+                }
+            </style>
+		<div class="pageFormContent">
+		    <div class="treeleft listtree data_group_tree_lay"  style="display:none;">
+			    <input type="hidden" name="treenode" value=""/> 
+				<input type="hidden" name="treetype" value="treetype">
+				<div class="collapse">
+					<div class="toggleCollapse"><div></div></div>
+				</div>
+				<div class="close">
+				   <div class="toggleCollapse"><h2></h2><div></div></div>
+					<div class="clearfix p5">
+						<div class="member_searcher right">
+							<input class="add_key left" id="MisSystemDataAccessCarrierTypeTreeSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+							<button class="btn_member icon-search right" onclick="SearchZTreeNode('MisSystemDataAccessCarrierTypeTree','MisSystemDataAccessCarrierTypeTreeSearchNodeKeys')" type="button"></button>
+						</div>
+					</div>
+					<ul id="MisSystemDataAccessCarrierTypeTree" class="ztree" layoutH="298"></ul>
+				</div>
+			</div>
+            <div class="listtype data_group_tree_lay" style="width:100%;">
+                <div class="member_searcher right data_group_search">
+                    <input class="searchCarrierzu add_key left" type="text">
+                    <button class="searchCarrierzu btn_member right font_family_yah" type="button">搜索组</button>
+                </div>
+                <div class="clear"></div>
+                <table  class="data_table" layoutH="275">
+                    <thead>
+                        <tr>
+                            <th>数据列表</th>
+                            <!-- <th>操作</th> -->
+                            <!--<th>浏览</th> -->
+                            <th>授权   <input type="radio" name="showsta" value="2"/> 显示已选  <input type="radio" name="showsta" checked="checked"    value="1"/> 显示全部   </th>
+                        </tr>
+                    </thead>
+                    <tbody class="fieldcontent"></tbody>
+                </table>
+            </div>
+		</div>
+		<div class="formBar">
+			<ul>
+	            <li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button></li>
+            </ul>
+         </div>
+        </div>
+	</form>
+</div>

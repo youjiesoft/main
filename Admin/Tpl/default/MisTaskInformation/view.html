@@ -1,0 +1,190 @@
+<script>
+	//加关注
+	function setmistaskAttention(obj, status, tableid, modelname){
+		$.ajax({
+			type : 'POST',
+            url  : '__URL__/lookupSetAttention',
+            data : {status:status,tableid:tableid,modelname:modelname,type:1},
+            success : function (succ){
+				if (succ == 1) {
+					$(obj).text('取消关注');
+				}
+				if (succ == 0) {
+					$(obj).text('+关注');
+				}
+			},
+			async:false,
+			global:false,
+		});
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+    <form method="post" id="mistaskinformationeditform" action="__URL__/update/navTabId/__MODULE__indexview" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+        <input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="iseditor" value="1">
+        <input type="hidden" name="id" value="{$vo['id']}"/>
+        <input type="hidden" name="assignstatus" value="{$vo['assignstatus']}"/>
+        <input type="hidden" name="taskid" value="{$vo['taskid']}"/>
+        <div class="pageFormContent applecloth" layoutH="55">
+            <div class="keepContentCenter">
+                <H2 class="contentTitle contentTitle_center">
+                    修改任务
+		    <span class="fontGray">
+                <a href="javascript:;" class="headProcessDetail" onclick="setmistaskAttention(this,'{$attent['status']}', '{$vo['id']}', 'MisTaskInformation');"><if condition="$attent['status'] eq '1'">[取消关注]<else/>[+关注]</if></a>
+            </span>
+                </H2>
+            <fieldset>
+                <legend class="fieldset_legend_toggle">
+					<b>基本信息</b>
+				</legend>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>{$fields["taskid"]}：</label>
+					<input type="text" name="title" class="required" style="width:520px;" maxlength="30" value="{$task['title']}" />
+                </div>
+				<p>
+                    <label>{$fields["urgentstatus"]}：</label>
+                    <select name="urgentstatus" class="combox">
+						<volist name="urgentstatuslist" id="urgentstatuslistvo">
+							<option value="{$key}" <if condition="$vo['urgentstatus'] eq $key">selected</if>>{$urgentstatuslistvo}</option>
+					    </volist>
+					</select>
+                </p>
+                <p>
+                    <label>{$fields["difficulty"]}：</label>
+                    <select name="difficulty" class="combox">
+						<volist name="difficultylist" id="difficultylistvo">
+							<option value="{$key}" <if condition="$vo['difficulty'] eq $key">selected</if>>{$difficultylistvo}</option>
+					    </volist>
+					</select>
+                </p>
+				<p>
+                    <label>{$fields["trackuser"]}：</label>
+                    <input type="text" readonly class="required" value="{$vo['trackuser']|getFieldBy='id','name','user'}" />
+                    <input type="hidden" readonly class="required" name="trackuser" value="{$vo['trackuser']}" />
+                </p>
+                <if condition="$isreplaprincipal">
+                    <p>
+                        <label>曾经执行人：</label>
+                        <input type="text" readonly class="required" value="{$vo['executeuser']|getFieldBy='id','name','user'}" />
+                    </p>
+                    <p>
+                        <label>现在执行人：</label>
+                        <input type="text" class="required executeorgedit.name textInput" name="executeusername" value="{$vo['executeuser']|getFieldBy='id','name','user'}" />
+                        <input type="hidden" class="required executeorgedit.personid textInput" name="executeuser" value="{$vo['executeuser']}" />
+                        <span class="info">
+                            <a class="input-addon input-addon-addon input-addon-add" lookupgroup="executeorgedit" href="__URL__/lookupmanage/type/exe">人员选择</a>
+                        </span>
+                    </p>
+                <else/>
+                     <p>
+                        <label>{$fields["executeuser"]}：</label>
+                        <input type="text" class="required executeorgedit.name textInput" name="executeusername" value="{$vo['executeuser']|getFieldBy='id','name','user'}" />
+                        <input type="hidden" class="required executeorgedit.personid textInput" name="executeuser" value="{$vo['executeuser']}" />
+                        <span class="info">
+                            <a class="input-addon input-addon-addon input-addon-add" lookupgroup="executeorgedit" href="__URL__/lookupmanage/type/exe">人员选择</a>
+                        </span>
+                    </p>
+                </if>
+                <input type="hidden" name="oldexecuteuser" value="{$vo['executeuser']}" />
+				<p>
+                    <label>{$fields["begindate"]}：</label>
+                    <span class="xyInputWithUnit">
+                        <input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="required tml-border-r0 Wdate" name="begindate" value="{$vo['begindate']|date='Y-m-d H:i',###}">
+                        <span class="input-addon input-addon-calendar"></span>
+                    </span>
+                </p>
+                <p>
+                    <label>{$fields["enddate"]}：</label>
+                    <span class="xyInputWithUnit">
+                        <input type="text" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})" class="required tml-border-r0 Wdate" name="enddate" value="{$vo['enddate']|date='Y-m-d H:i',###}">
+                        <span class="input-addon input-addon-calendar"></span>
+                    </span>
+                </p>
+				<div class="unit">
+                    <label>推送系统消息：</label>
+                    <input type="radio" name="ispushmsg" checked value="1">是&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input type="radio" name="ispushmsg"  value="0">否
+                </div>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>任务描述：</label>
+					<textarea style="width:526px;" class="editor" name="remark" rows="18" cols="60" tools="mini">{$vo['remark']}</textarea>
+				</div>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>上传附件：</label>
+                    <input id="swfupload_mistaskinformation_edit" type="file" uploader="true" name="mistaskinformation_edit_file" formData="{ uploadpath:'MisTaskInformation' }" />
+                    <input type="image" onclick="$('#swfupload_mistaskinformation_edit').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                    <dl class="nowrap"><!--此处为上传列表-->
+                        <dt><label>&nbsp;</label></dt>
+                        <dd>
+                            <span id="swfupload_mistaskinformation_edit-queue" class="info uploadify_queue">
+                                <if condition="$attarry">
+                                    <volist name="attarry" id="att">
+                                        <div class="uploadify-queue-item">
+                                            <div class="cancel">
+                                                <a  class="dellink" href="__URL__/lookupdelatt/id/{$att['id']}" rel="{$att['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swfupload_mistaskinformation_edit-queue" >X</a>
+                                            </div>
+                                            <span class="fileName"><a href="__PUBLIC__/{$att.attached}" target="_blank">{$att['upname']}</a></span>
+                                            <span class="data"> - 已经传</span>
+                                            <div class="uploadify-progress">
+                                            <div class="uploadify-progress-bar" style="width: 100%;"></div>
+                                            </div>
+                                        </div>
+                                    </volist>
+                                </if>
+                            </span>
+                        </dd>
+                    </dl>
+                </div>
+            </fieldset>
+            <if condition="$childtask">
+            <fieldset>
+                <legend class="fieldset_legend_toggle">
+					<b>子任务信息</b>
+				</legend>
+                <table class="xyDataTable" cellspacing="0" id="mistaskinformation_edit" width="100%" border="1" bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">
+                    <thead>
+                        <tr>
+                            <td><strong>任务名称</strong></td>
+                            <td><strong>任务描述</strong></td>
+                            <td><strong>开始时间</strong></td>
+                            <td><strong>结束时间</strong></td>
+                            <td><strong>负责人员</strong></td>
+                            <td><a href="javascript:;" onclick="edittask_mistaskinformation_edit();"><strong>查看</strong></a></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist id="vochildtask" name="childtask">
+                           <tr>
+                                <td>
+                                    {$vochildtask['title']}
+                                </td>
+                                <td>{$vochildtask['remark']}</td>
+                                <td>{$vochildtask['begindate']}</td>
+                                <td>{$vochildtask['enddate']}</td>
+                                <td>
+                                    {$vochildtask['executeuser']}
+                                </td>
+                                <td><a href='__URL__/lookupTask/id/{$vochildtask["id"]}' title='子任务查看' target='dialog' width='600' height='500' mask='true'>查看</a></td>
+                            </tr>
+                        </volist>
+                    </tbody>
+                </table>
+            </fieldset>
+            </if>
+            </div>   
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_update">
+                <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+            </if>
+			<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

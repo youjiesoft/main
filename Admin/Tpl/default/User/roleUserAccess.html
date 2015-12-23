@@ -1,0 +1,46 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$roleaccesstree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			check: {
+				enable: true,
+				chkboxType: {"Y":"ps","N":"ps"}
+			},
+			callback: {
+				onCheck: zTreeOnCheck
+			}
+		};
+	$.fn.zTree.init($("#roleUserAccessuserroleaccessright_index"), setting, zNodes);
+});
+function zTreeOnCheck(event, treeId, treeNode) {
+	
+}
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+<div class="treeleft">
+<div class="collapse" layoutH="10">
+	<div class="toggleCollapse"><div></div></div>
+</div>
+<div class="close">
+	<div class="toggleCollapse" ><h2></h2><div></div></div>
+	<div class="clearfix p5">
+		<input class="tree-search-input" type="text" id="roleUserAccessuserroleaccessright_indexSearchNodeKeys" />
+		<div class="buttonActive"><div class="buttonContent" onclick="SearchZTreeNode('roleUserAccessuserroleaccessright_index','roleUserAccessuserroleaccessright_indexSearchNodeKeys')"><button>搜索</button></div></div>
+		</div>
+		<ul id="roleUserAccessuserroleaccessright_index" class="ztree" layoutH="90"></ul>
+	</div>
+</div>
+<div id="roleUserAccessuserroleaccessright" class="unitBox treeright tml-border-b1">
+	<include file="roleUserAccessRight"  />
+</div>
+</div>

@@ -1,0 +1,81 @@
+<script>
+/**
+ * 取消表单默认submit事件。 【必须】
+ */
+$(function(){
+	$('#myForm').submit(function(data){
+		return false;
+	});
+});
+
+/**
+ * 表单submit事件中调用
+ * @parame obj 当前表单对象
+ * @parame aid 事件触发标签ID
+ * 数据封装格式：data:[[id:'1',name:'选择项',.....]]
+ */
+function newsubmit(obj,aid){
+	obj = $(obj);
+	obj.submit(function(data){
+		return false;
+	});
+	if(obj.valid()){
+		obj.ajaxSubmit(function(data){
+			if('string'==typeof(data)){
+				data=$.parseJSON(data);
+			}
+			if(!data.status){
+				alertMsg.error(data.message)
+				return;
+			}
+			$.pdialog.closeCurrent();
+			if('object'==typeof(data.data)){
+				var cont = $("#"+aid).prev();
+				var selObj = cont.find("select");
+				var showObj = cont.find("a:first");
+				var divCombox = cont.find("div:first");
+				selObj.children().attr('selected',false);
+				var optObj = $('#op_'+divCombox.attr('id'));
+				optObj.html(optObj.html().replace('class="selected"',''));
+				$.each(data.data , function(i,v){
+					var opt = $('<option></option>');
+					opt.val(v.id).text(v.name).attr('selected',true);
+					selObj.append(opt);
+					var li = '<li><a value="'+v.id+'" class="selected" href="#">'+v.name+'</a></li>';
+					optObj.append(li);
+					showObj.html(v.name);
+					if(typeof($("select",cont).attr('onchange'))=='string' || $("select",cont).data('events').change){
+						$("select",cont).trigger("change");//如果原对象有change事件则触发一次
+					}
+				});
+				
+				optObj.find('li a').click(function(){
+					var $this=$(this);
+					$this.parent().parent().find(".selected").removeClass("selected");
+					$this.addClass("selected");
+					showObj.text($this.text());
+					var $input=$("select",cont);
+					if($input.val()!=$this.attr("value")){
+						$("select",cont).val($this.attr("value")).trigger("change");
+					}
+				});
+			}
+		});
+	}
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/lookupInsertSelectValue/accesstype/{$_REQUEST['accesstype']}" class="pageForm required-validate" id="myForm" onsubmit="return newsubmit(this,'{$_REQUEST['aid']}')">
+		<input type="hidden" name="model" value="{$model}">
+		<div class="pageFormContent" layoutH="56">
+			<include file="$tplName" />
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent">
+				<button type="submit">{$Think.lang.save}</button>
+				</div></div></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,26 @@
+<volist id="depart" name="contact">
+<?php $i=1; $count=count($contact);?>
+<li>
+<if condition="$i lt $count">
+<div class="">
+<div class="first_expandable"></div>
+<div class="folder_expandable"></div>
+<a href="javascript:;">{$key}</a>
+</div>
+	<if condition="count($depart)">
+		<ul style="display: none;">
+			<volist id="vo" name="depart">
+				<li> <a href="javascript:;" onclick="addleteruser(this);" rel="{$vo['name']}">{$vo['name']}</a></li>
+			</volist>
+		</ul>
+	</if>
+<else />
+	<div class="">
+		<div class="last_expandable"></div>
+		<div class="folder_expandable"></div>
+		<a href="javascript:;">{$key}</a>
+	</div>
+</if>
+</li>
+<?php $i++; ?>
+</volist>

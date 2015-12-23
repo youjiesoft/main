@@ -1,0 +1,85 @@
+<style>
+.pageContent {
+    padding: 9px 20px 20px;
+    text-align: left;
+}
+.itemtitle h3 {
+float: left;
+margin-right: 20px;
+}
+h3 {
+color: #0099CC;
+font-size: 14px;
+margin-bottom: 10px;
+}
+
+
+.tab1 {
+    clear: both;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+
+.itemtitle ul {
+    float: left;
+    line-height: 18px;
+}
+ 
+.itemtitle .tab1 {
+    clear: none;
+}
+
+
+.stepstat li {
+    color: #CCCCCC;
+    float: left;
+    margin-right: 15px;
+}
+
+.stepstat .current {
+    color: #009900;
+} 
+.infobox{clear:both;margin-bottom:10px;padding:30px;text-align:center;border-top:4px solid #DEEFFA;border-bottom:4px solid #DEEEFA;background:#F2F9FD;zoom:1;}
+.infotitle1 {color: #0099CC;font-size: 14px;font-weight: 700;margin-bottom: 10px;}
+.infotitle1 .hide{display: none;}
+.marginbot{ margin-bottom:10px;}
+</style>
+<div class="pageContent upgrade" layoutH="36">
+
+    <div class="itemtitle">
+	<h3>在线升级</h3>
+    </div>
+    
+    <div class="infobox">
+	<h4 class="infotitle1">
+	    <span>{$msg}</span>
+	</h4>
+	<if condition="$check eq 1"><img src="__PUBLIC__/Images/ajax_loader.gif" class="marginbot" /></if>
+    </div> 
+    <script>
+	$(document).ready(function(){
+	    var c='{$check}';
+	    var ajaxbg=$("#background,#progressBar"); 
+	    if(c=='1'){
+		$(document).ajaxStart(function(){ajaxbg.hide();}).ajaxStop(function(){ajaxbg.hide();});
+		var url='{$linkurl}';
+		$.ajax({
+		    type: "POST",
+		    url: TP_APP + "/Public/check_upgrade",
+		    data: "",
+		    async:true,
+		    success: function(re){
+			if(re){
+			    var tabid="TMLupgrade";
+			    var title="系统升级_第一步";	    
+			    navTab.openTab(tabid, url, {title : title,fresh : false,data : {}});
+			}
+		    },
+		    global: false 
+		});
+	    }else{
+		$(document).ajaxStart(function(){ajaxbg.show();}).ajaxStop(function(){ajaxbg.hide();});
+	    }
+	});
+    </script>
+</div> 

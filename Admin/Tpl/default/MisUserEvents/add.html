@@ -1,0 +1,116 @@
+<script type="text/javascript">
+	function noneRefreshAdd($form){
+		var abc = $($form).find('input:radio[name="importancedegree"]:checked').val();
+		var className = "myblue";
+		if(abc == 2){
+			className = "myorange";
+		} else if(abc == 3){
+			className = "myred";
+		}
+	 	var startdate,title,enddate;
+        var inp = $($form).find('input').each(function(){
+            if($(this).attr('name') == 'startdate'){
+                startdate = $(this).val();
+            }
+            if($(this).attr('name') == 'enddate'){
+                enddate = $(this).val();
+            }
+            if($(this).attr('name') == 'text'){
+                title = $(this).val();
+            }
+        });
+        var select = $($form).find('select option:selected').text();
+	    return validateCallback($form, function(json){
+	        DWZ.ajaxDone(json);
+	        if(json.statusCode==DWZ.statusCode.ok){
+	             $("#calendarManage").fullCalendar('renderEvent', {
+	                 id:json.data,
+	                 title: "["+select+"]"+title,
+	                 start: startdate,
+	                 end: enddate,
+	                 className:className,
+	                 allDay:false
+    	         }, true);
+	             //刷新我的桌面日历上面的日程 
+	             $("#xypanel2").loadUrl(TP_APP+"/Index/lookupuserindex/workbench/1",{},function(){
+	            	$("#xypanel2").find("[layoutH]").layoutH();});
+	             
+	            $.pdialog.closeCurrent();
+	        }
+	    });
+	}
+	//清除联系人
+	function clearMisUserEventAdd(){
+        $("#writeFormUserAddEvents").empty();
+	}
+</script>
+<div class="pageContent">
+    <if condition="$type">
+	<form method="post" action="__APP__/MisUserEvents/insert/rel/schedule" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+    <else/>
+    <form method="post" action="__URL__/insert" class="pageForm required-validate" onsubmit="return noneRefreshAdd(this);">
+    </if>
+		<div id="jbsxBox_mismessage_writeform_one" class="unitBox">
+			<input type="hidden" name="commit" value="0">
+			<input type="hidden" name="iseditor" value="1">
+			<div class="pageFormContent tml_dialog_content" layoutH="50">
+                <div class="tml-form-row">
+                    <label>日程标题：</label>
+                    <input type="text" placeholder="请用简短的一句话描述日程标题" class="required" value="" name="text" style="width:396px;margin-right:2px;" />
+					<div class="left combox-auto">
+						<select class="combox" name="scheduletype">
+	                        <option value="2">工作</option>
+	                        <option value="1">个人</option>
+	                    </select>
+                    </div>
+                </div>
+				<div class="tml-form-row">
+                    <label>起止日期：</label>
+					<div class="tml-input-date">
+						<div class="tml-input-append">
+						  <input type="text" id="misusereventsstartdate" name="startdate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" data={maxDate:"#F{$dp.$D('misusereventsenddate')}"} class="Wdate js-wdate required" value="{$startdate|transTime='Y-m-d H:i:s'}" />
+						  <a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+						<span class="tml-form-text">&nbsp;至&nbsp;</span>
+						<div class="tml-input-append">
+							<input type="text" id="misusereventsenddate" name="enddate" format="{dateFmt:'yyyy-MM-dd HH:mm:ss'}" data={minDate:"#F{$dp.$D('misusereventsstartdate')}"} class="Wdate js-wdate required" value="{$enddate|transTime='Y-m-d H:i:s'}" />
+							<a href="javascript:;" class="input-addon input-addon-calendar js-inputCheckDate">选择</a>
+						</div>
+					</div>
+                </div>
+				<div class="tml-form-row">
+                    <label>颜色标记：</label>
+                   <volist name="bgcolor" id="bgcolorvo">
+				   <div class="left tml-radio tml-w60">
+					   <label>
+							<input type="radio" value="{$bgcolorvo.index}" name="importancedegree" <if condition="$bgcolorvo.index eq 1">checked</if>>
+							&nbsp;<span class="tml-label {$bgcolorvo.color} tml-w30">&nbsp;</span>
+					   </label>
+				   </div>
+				   </volist>
+                </div>
+                <div class="tml-form-row">
+                    <label>关联人员：</label>
+                        <ul class="addressee left checkTo" id="writeFormUserAddEvents" style="width:406px;">
+                        </ul>
+                	<a class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" ulid="writeFormUserAddEvents" data="personname,username,text;personid,userid,hidden,1;email,email,hidden">查找带回</a>
+                	<a class="input-addon input-addon-recycle" href="javascript:;" onclick="clearMisUserEventAdd();" title="清空接收用户"></a>
+                </div>
+				<div class="tml-form-row">
+					<label>日程内容：</label>
+					<textarea  name="details" style="height:110px;width:474px;" ></textarea>
+				</div>
+				<div class="tml-form-row">
+					<label>上传附件：</label>
+					<input id="swfupload_misuserevents_add" type="file" uploader="true" name="misuserevents_add_file" formData="{ uploadpath:'MisUserEvents' }" />
+					<input type="image" onclick="$('#swfupload_misuserevents_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+				</div>
+				<div class="tml-form-row">
+					<label>&nbsp;</label>
+					<span id="swfupload_misuserevents_add-queue" class="info uploadify-queue"></span>
+				</div>
+			</div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

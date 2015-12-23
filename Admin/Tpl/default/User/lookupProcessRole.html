@@ -1,0 +1,43 @@
+<form id="pagerForm" action="__URL__/lookupProcessRole" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this,'editXxBox');" action="__URL__/lookupProcessRole" method="post">
+	<input type="hidden" name="userid" value="{$userid}" />
+</form>
+<div>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li>
+				<a class="add js-add tml-btn tml_look_btn tml_mp" href="__APP__/ProcessRole/add/userid/{$userid}" rel="ProcessRoleadd" target="navTab" title="新增流程角色管理" >
+					<span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span>
+				</a>
+			</li>
+			<li>
+				<a class="edit js-edit tml-btn tml_look_btn tml_mp" href="__APP__/ProcessRole/edit/id/{sid_node}/rel/editXxBox" rel="ProcessRoleedit" target="navTab"  warn="请选择节点">
+					<span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.change}</span>
+				</a>
+			</li>
+		</ul>
+		<span class="tml-help-inline">{$userid|getFieldBy='id','name','user'}--->具有以下流程角色</span>
+	</div>
+	<table class="table" width="100%" layoutH="72">
+		<thead>
+			<tr>
+			   <th width="24">序号</th>
+				<th>角色名称</th>
+				<th>备注</th>
+			</tr>
+		</thead>
+		<tbody>
+			<volist name="list" id="vo">
+				<tr target="sid_node" rel="{$vo['id']}">
+					<td  class="tml-first-td">{$numPerPage*($currentPage-1)+$key+1}</td>
+					<td>{$vo.name}</td>
+					<td>{$vo.remark}</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+</div>

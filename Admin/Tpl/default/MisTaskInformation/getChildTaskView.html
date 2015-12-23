@@ -1,0 +1,63 @@
+<script>
+$(function(){
+	var $refBox=$("#mistaskinfogetchildview_{$task.id}").parents("div.layoutBox:first");
+	var iRefH=$refBox.height();
+	var iLayoutH=parseInt($("#mistaskinfogetchildview_{$task.id}").attr("layoutH"));
+	var height=iRefH-iLayoutH>50?iRefH-iLayoutH:50;
+	height = height-26;
+	var topicjson={$childlist};
+	grid = jQuery("#mistaskinfogetchildview_treegrid_{$task.id}");
+	grid.jqGrid({
+		datastr: topicjson,
+		datatype: "jsonstring",
+		height: height,
+		autowidth: true,
+		colNames: ["id","level","标题","parent","负责人","执行状态","紧急状态","困难度","进度",'查看'],
+		colModel: [
+		{name: "id",key:true,align:'center',width:80,hidden:true},
+		{ name: 'level', index: 'level', width: 60, align: 'center',hidden:true,resizable:false,
+		    cellattr: function(rowId, tv, rawObject, cm, rdata) {
+				return 'id=\'level' + rowId + "\'";
+		    }
+		},
+		{name: "title", editable:true ,align:'center',width:250, resizable: false},
+		{name: "parent", editable:true, hidden:true, align:'center', resizable: false},
+		{name: "executeusername", editable:true,align:'center',width:60, resizable: false},
+		{name: "executingstatus", editable:true,align:'center',width:60, resizable: false},
+		{name: "urgentstatus", editable:true,align:'center',width:60, resizable: false},
+		{name: "difficulty", editable:true,align:'center',width:60, resizable: false},
+		{name: "chedule", editable:true,align:'center',width:120, resizable: false},
+		{name: "toview", editable:true,align:'center',width:30, resizable: false},
+		],
+		treeGrid: true,
+		treeGridModel: "adjacency",
+		ExpandColumn: "title",
+		treeIcons: {leaf:'ui-icon-document-b'},
+		rowNum: 30,
+		jsonReader: {
+		    repeatitems: false,
+		    root: "response"
+		}
+	});
+});
+</script>
+<div class="keepContentCenter" style="width: auto;margin:0;padding:0px;" layoutH="75">
+    <div style="width:75%;float: left;">
+        <div style="width:100%;"  id="mistaskinfogetchildview_{$task.id}" layoutH="95">
+            <table id="mistaskinfogetchildview_treegrid_{$task.id}"></table>
+        </div>
+    </div>
+    <div style="float:right;border: 1px solid #B8D0D6;height:98%;width:24%;">
+        <h2 class="contentTitle fontGray contentTitle_center" style="padding-right:40px;">
+            发布人员
+        </h2>
+        <div style="width:150px;">
+            <volist name="alluserlist" id="listvo">
+                <span class="fontGray" style="margin: 5px 35px;text-align:center;line-height:30px;">
+                    {$listvo['dutyname']}： {$listvo['name']}
+                </span>
+                <br/>
+            </volist>
+        </div>
+    </div>
+</div>

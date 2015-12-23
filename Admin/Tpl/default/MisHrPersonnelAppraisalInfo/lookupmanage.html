@@ -1,0 +1,27 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#hrpersonnelpositive"), setting, zNodes);
+});
+</script>
+<div class="pageContent" style="border:0px;">
+	<div class="tabs">
+		<div class="tabsContent" style="border:0px; padding:0px;">
+			<div>
+				<div layoutH="10" style="float: left; display: block; overflow: auto; width: 200px; border: solid 1px #CCC; line-height: 21px; background: #fff">
+					<ul id="hrpersonnelpositive" class="ztree"></ul>
+				</div>
+				<div id="positiveBox" class="positiveBox" style="margin-left: 204px;">
+					<include file="lookupmanagelist" />
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

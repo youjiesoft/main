@@ -1,0 +1,30 @@
+<div class="page">
+    <div class="pageContent">
+        <form method="post" <if condition="$anwser">action="__URL__/update/navTabId/questioncondescription"<else/>action="__URL__/insert/navTabId/questioncondescription"</if>  class="pageForm required-validate" onsubmit="return validateCallback(this,taskquestion_refreshdialog);">
+            <input type="hidden" name="callbackType" value="closeCurrent">
+            <input type="hidden" name="refreshtabs[ntdata]" value="1">
+            <input type="hidden" name="refreshtabs[ids]" value="{$parentid}">
+            <input type="hidden" name="refreshtabs[closeall]" value="1">
+                
+            <input type="hidden" value="1" name="iseditor">
+            <input type="hidden" value="{$anwser['id']}" name="id">
+            <input type="hidden" name="type" value="{$type}">
+            <input type="hidden" name="parentid" value="{$parentid}">
+            <input type="hidden" name="sourcetype" value="{$sourcetype}">
+            <input type="hidden" name="sourceid" value="{$sourceid}">
+            <div class="pageFormContent" layoutH="56">
+                <dl class="nowrap">
+                    <dt>回复内容：</dt>
+                    <dd><textarea class="editor" name="content" tools="simple" rows="12" cols="50" >{$anwser['content']}</textarea></dd>
+                </dl>
+            </div>
+            <div class="formBar">
+                <ul>
+                <if condition="$_SESSION.a eq 1 or $_SESSION.misexpertquestionlist_insert">
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+                </if>
+                    <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+                </ul>
+            </div>
+    </form>
+</div>

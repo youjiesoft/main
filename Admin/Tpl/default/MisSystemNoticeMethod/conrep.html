@@ -1,0 +1,22 @@
+<!--  <volist name="commtypelist" id="Typelist">
+	<div class="box">
+		<div class="box-header">
+			<h2 class="box-title"><a href="__APP__/MisSystemPanelMethod/systemNoticeslookup/type/{$Typelist}">{$Typelist|getFieldBy='id','name','MisSystemAnnouncementSet'}</a></h2>
+		</div>
+		<div class="box-body">
+			<ul class="side-list">
+				<volist name="amlist[$Typelist]" id="titlelist"  >
+					<li>
+						<a href="__APP__/MisSystemPanelMethod/systemNoticesview/id/{$titlelist.id}/type/{$titlelist.type}">{$titlelist.title}</a>
+					</li>
+				</volist>
+			</ul>
+		</div>
+	</div>
+</volist> -->
+<ul class="link-list">
+	<li><a class="link link-4" href="__APP__/MisSystemPanelMethod/systemNoticeslookup" target="_black">公告中心</a></li>
+	<li><a class="link link-1"  href="__APP__/MisSystemNoticeMethod/knowledge">知识库</a></li>  
+	<li><a class="link link-2"  href="__APP__/MisSystemNoticeMethod/expertquestion">专家问答</a></li>
+	<li><a class="link link-3"  href="{$url}">公司网站</a></li>
+</ul>

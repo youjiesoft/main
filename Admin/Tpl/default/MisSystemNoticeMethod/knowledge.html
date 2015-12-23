@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>知识库</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/normalize.css?{:time()}" />
+        <link rel="stylesheet" href="__PUBLIC__/Css/sysAnnouncement/main.css?{:time()}" />
+        <script src="__PUBLIC__/Js/jquery-1.7.1.js" type="text/javascript"></script>
+        <script type="text/javascript">
+        	function showsontype(obj){
+        		$(obj).find("ul").show();
+        	}
+        	function hidesontype(obj){
+        		$(obj).find("ul").hide();
+        	}
+        </script>
+    </head>
+    <body>
+		<div class="k">
+			<div class="header">
+				<div class="container">
+					<h1 class="logo">
+						<if condition="$Copany_Info['picture']">
+							<img alt="logo" src="__PUBLIC__/Uploads/{$Copany_Info['picture']}" />
+						</if>
+					</h1>
+					<h2 class="title">&nbsp;知识库</h2>
+					<div class="search header-search">
+					<form action="__URL__/more" class="form search-form" method="get">
+						<input style="font-size:13px;" class="search-input" type="text" name='keywords' value='{$keywords}' placeholder="请输入时间如 2013-04-12或文章标题..."/>
+						<button class="search-btn" type="submit">搜索</button>
+						<div class="header-link"><a class="btn btn-info" href="__URL__/knowledgepublish">发表文章</a></div>
+					</form>
+				</div>
+				</div>
+			</div>
+			<!-- end header -->
+			<div class="container clearfix">
+				<div class="main">
+				<volist name="listarray" id="vt1" >
+					<div class="part">
+						<div class="box2 box2-main">
+							<div class="box2-header">
+								<div class="box-item">
+									<a href="__URL__/more/typeid/{$vt1['obj']['id']}/son/1">更多...</a>
+								</div>
+								<h2 class="box2-title"><span class="box2-title-txt">{$vt1['obj']['id']|getfieldby='id','name','mis_knowledge_type'}</span></h2>
+							</div>
+							<div class="box2-body">
+								<div class="box2-banner">
+									<img alt="" src="__PUBLIC__/Images/sysAnnouncement/banner.jpg" />
+								</div>
+								<ul class="k-list">
+									<volist name="vt1['list']" id="vos">
+										<li>
+											<span class="k-list-time"><time datetime="2013-12-25">{$vos.createtime|transTime}</time></span><!--  target="_black" -->
+											<a href="__URL__/knowledgedetail/categoryid/{$vos.categoryid}/id/{$vos.articleid}" title="{$vos.title}" >{$vos.title}</a>
+										</li>
+									</volist>
+								</ul>
+							</div>
+						</div><!-- end box -->
+					</div><!-- end part -->
+			  </volist>
+				<!-- 这是结束 -->
+				</div><!-- end main -->
+				<div class="sidebar">
+					<div>
+						<ul class="k-breadcrumb clearfix">
+							<li class="k-breadcrumb-history">
+								<a>当前位置:</a>
+							</li>
+							<li class="k-breadcrumb-history">
+								<a href="__URL__/knowledge">主页</a>
+							</li>
+						</ul>
+					</div>
+					<div class="column-box">
+						<div class="column-box-inner">
+							<div class="column-box-header">
+								<h2 class="column-box-title">栏目列表</h2>
+							</div>
+							<div class="column-box-body">
+								<ul class="column-list">
+										<volist name="listarray" id="vll">
+											<li onmouseover="showsontype(this)" onmouseout="hidesontype(this)">
+												<a href="__URL__/knowledgelist/typeid/{$vll['obj']['id']}">{$vll['obj']['id']|getfieldby='id','name','mis_knowledge_type'}</a>
+												<if condition="$vll['sontypelist']">
+													<ul class="column-sub-list" >
+														<volist name="vll['sontypelist']" id="sontypes">
+																<li><a href="__URL__/knowledgelist/id/{$sontypes['id']}/typeid/{$vll['obj']['id']}">{$sontypes['name']}</a></li>
+														</volist>
+													</ul>
+												</if>
+											</li>
+										</volist>
+								</ul>
+							</div>	
+							<!-- $vll['obj']['id']是子类的parentid. $vll['obj']['name']并不是顶级分类的id -->
+							<div class="column-box-footer"></div>
+						</div>
+					</div><!-- end column-box -->
+					<div class="box2 box-hot">
+						<div class="box2-header">
+							<h2 class="box2-title"><span class="box2-title-txt">热门关注</span></h2>
+						</div>
+						<div class="box2-body">
+							<ul class="hot-list">
+								<volist name="hotlist" id="vx">
+								<if condition="hotlist neq null">
+									<li>
+										<a href="__URL__/knowledgedetail/categoryid/{$vx.categoryid}/id/{$vx.id}">{$vx.title}</a>
+									</li>
+									<else/>
+									<li>
+										<a href="javascript:;">暂无数据</a>
+									</li>
+								</if>
+								</volist>
+							</ul>
+						</div>
+					</div>
+					<ul class="link-list">
+						<li><a class="link link-4" href="__APP__/MisSystemPanelMethod/systemNoticeslookup" target="_black">公告中心</a></li>
+						<li><a class="link link-2" href="__APP__/MisSystemNoticeMethod/expertquestion" target="_black">专家问答</a></li>
+						<li><a class="link link-3" href="{$url}" target="_black">公司网站</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- end container -->
+			<div class="footer">
+				<p>Copyright © 2014 {:C('COPYRIGHT')}</p>
+			</div>
+		</div>
+    </body>
+</html>

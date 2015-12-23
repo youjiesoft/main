@@ -1,0 +1,99 @@
+<div class="xyMailReadInner treeright" id="MessageCurrentReadprevfull" style="background: #f3f3f3;">
+    <ul class="xyMailReadTools clearfix">
+    	<li class="xyMailReadTool"><a class="tml-btn tml_look_btn tml_mp" rel="jbsxBoxMessage" href="__URL__/index/frmae/1/" target="ajax"><span class="icon-share"></span> 返回</a></li>
+        <li class="xyMailReadTool"><a class="tml-btn tml_look_btn tml_mp" rel="jbsxBoxMessage" title="确定要还原这条记录吗？" href="__URL__/rollback/id/{$id}/rel/jbsxBoxMessage" target="ajaxTodo"><span><span class="icon-reply-all"></span> 还原</span></a></li>
+        <li class="xyMailReadTool"><a class="tml-btn tml_look_btn tml_mp" title="确实要删除这条记录吗?" target="ajaxTodo" href="__URL__/delete/id/{$id}/rel/jbsxBoxMessage"><span><span class="icon-trash"></span> 删除</span></a></li>
+        <if condition="!$updataid">
+        	<li class="xyMailReadTool disabled">
+        		<a class="tml-btn tml_look_btn_gray tml_mp">
+                    <span class="icon icon-double-angle-left"> 上一封</span>
+        		</a>
+        	</li>
+        <else/>
+        	<li class="xyMailReadTool disabled">
+        		<a class="tml-btn tml_look_btn tml_mp" href="__URL__/lookupreadmessage/fullmodel/1/frmae/1/id/{$updataid}" target="ajax" rel="jbsxBoxMessage">
+                    <span class="icon icon-double-angle-left"> 上一封</span>
+        		</a>
+        	</li>
+        </if>
+        <if condition="!$downdataid">
+        	<li class="xyMailReadTool disabled">
+        		<a class="tml-btn tml_look_btn_gray tml_mp">
+                    下一封 <span class="icon icon-double-angle-right"></span>
+        		</a>
+        	</li>
+        <else/>
+        	<li class="xyMailReadTool disabled">
+        		<a class="tml-btn tml_look_btn tml_mp" href="__URL__/lookupreadmessage/fullmodel/1/frmae/1/id/{$downdataid}" target="ajax" rel="jbsxBoxMessage">
+                    下一封 <span class="icon icon-double-angle-right"></span>
+        		</a>
+        	</li>
+        </if>
+    </ul>
+    <form method="post" action="__URL__/insert/rel/messageinboxindexdiv" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+    <input type="hidden" name="commit" value="1"/>
+    <input type="hidden" name="iseditor" value="1">
+    <input type="hidden" name="recipient[]" value="{$default['createid']}"/>
+    <input type="hidden" name="recipientname[]" value="{$default['createid']|getFieldBy='id','name','User'}"/>
+    <input type="hidden" name="isreply" value="1"><!-- 有值表示回复 -->
+    <input type="hidden" name="replyid" value="{$default.id}">
+    <input type="hidden" name="title" value="{$default.title}"/>
+    <input type="hidden" name="quickreply" value="1"/>
+    <div class="xyMailReadContent">
+        <div class="xyMessage">
+            <div class="xyMessageHead">
+                <div class="clearfix xyMessageInfo">
+                    <div class="xyMessageTitle">
+                        <span class="xyMessageTitleCon"><if condition="$default.istranspond eq '1'"><em style="color:#999;">【转】</em></if>主题：{$default.title}</span>
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span>发件人：</span>
+                        <span class="tml-c-graydark">{$default['createid']|getFieldBy='id','name','User'}</span>
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span>发件时间：</span>
+                        <span class="tml-c-graydark">{$default['createtime']|transTime='Y-m-d H:i'}</span>
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span>收件人：</span>
+                        <span class="tml-c-graydark">{$default.recipientname}</span>
+                    </div>
+                    <if condition="$default.copytopeoplename">
+                        <div class="xyMessageInfoList">
+                            <span>抄送人：</span>
+                            <span class="tml-c-graydark">{$default.copytopeoplename}</span>
+                        </div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyMessageContent" <if condition="$default.copytopeoplename"> layoutH="220" <else/> layoutH="185" </if> >
+                <div class="xyMessageText">
+                    {$default['content']}
+                </div>
+                <if condition="$attarry">
+                <div class="xyMessageAttach">
+                    <div style="padding:6px 10px 6px 8px;">
+                        <div class="attach left"></div><strong>附件：</strong>
+                    </div>
+                    <div class="xyMessageAttachItems">
+                        <volist name="attarry" id="att">
+                            <div class="xyMessageAttachItem">
+                                <span class="tml-label tml-bg-orange tml-mr5">附件{$key+1}</span>
+                                <a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}"><span>{$att['upname']}</span></a>
+								<if condition="$att.isplay eq 1">
+									&nbsp;&nbsp;&nbsp;&nbsp;<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);">在线查看</a>
+								</if>
+								<a class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog">
+                                    <span class="tml-icon tml-icon-file"></span>
+                                    <span class="tml-icon-text">归档</span>
+                                </a>
+							</div>
+                        </volist>
+                    </div>
+                </div>
+                </if>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>

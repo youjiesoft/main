@@ -1,0 +1,567 @@
+<script>
+var nbmbind={
+		run : function(){
+			this.add();
+			this.del();
+		},
+		get : function() {
+			var obj = navTab.getCurrentPanel();
+			return obj;
+			//return $(document);
+		},
+		
+		del : function(){
+			// 删除行
+			var _this=this;
+			var box = this.get();
+			var delObj = $('a.nbm_bind_del');
+			delObj.die();
+			delObj.live('click',function(){
+				var trObj = box.find('tbody tr');
+				if(trObj.length >=1){
+					var delinbindname=$(this).closest('td').find("input[name='delinbindname']").val(); 
+					var _this=$(this).closest('tr');
+					if(delinbindname){
+						//判断当前行是否可以移除
+							 $.ajax({
+						         type: 'POST',
+						         url : "__URL__/lookupChangeField",
+						         data: {delinbindname:delinbindname,type:2},
+						         global:false,
+						         dataType:'json',
+						         success:function(list){
+						        	 if(list!=-1){
+						        		 alertMsg.error('当前绑定关系存在子级！');
+						        		 return false;
+						        		}else{
+						        			//移除添加至隐藏域
+						        			_this.remove();
+						        		 }
+						        	 }
+						         });
+					}else{
+						//移除添加至隐藏域
+						$(this).closest('tr').remove();
+					}
+					
+				}else{
+					alertMsg.error('只有一行了，不允许删除行');
+				}
+			});
+			//_this.run();
+		},
+		add : function(){
+			/*var _this=this;
+			var box = this.get();
+			var addObj = $(box).find('a.nbm_bind_add');
+			addObj.unbind('click');
+			addObj.on('click',function(){
+				var trObj = box.find('tr:last');
+				var cloneTr = trObj.clone(true);
+				box.append(cloneTr);
+				initChosen();
+			});
+			//_this.run();
+			*/
+			var box = this.get();
+			var _this = this;
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			var obj = $('a.nbm_bind_add');
+			obj.die();
+			obj.live("click",function(){
+				//var tr = $(this).closest('tr').prev('tr');
+				var tr = $(this).closest('table').find('tbody:first>tr:last');
+				var index = tr.closest('table').attr('index');
+				try {
+					index = parseInt(index, 10);
+				} catch(e) {
+					index = 0;
+				}
+				tr.find('select').select2("destroy");
+				var cloneTr = tr.clone();
+				tr.find('select').select2();
+				cloneTr.find('input[type="hidden"]').remove();
+				cloneTr.find(':input').each(function() {
+					var ids = $(this).attr('name');
+					// 当前组件的name值
+					if ( typeof (ids) == "string") {
+						var curNames = ids.replace(/(\[)+(\d)+(\])/g,  function(va) {
+								var curIndex = va.match(/\d+/g);
+								var i = parseInt(curIndex , 10);
+								var tabIds = '[' + (i + 1)+']';
+								return tabIds;
+							});
+						$(this).attr('name',curNames);
+					}
+					
+					if ($(this).attr('type') != "checkbox" && $(this).attr('type') != "radio") {
+						$(this).val('');
+					}
+					if ($(this)[0].tagName == "SELECT") {
+						var curTag = $(this);
+// 						// 加样式
+// 						var td = curTag.closest('td');
+// 						// 获取td
+// 						td.html('');
+// 						var divs = $('<div class="list_group_lay"></div>');
+// 						divs.append(curTag);
+// 						//移除现有td内容
+// 						td.append(divs);
+						//追加当前select
+						
+					}
+				});
+				var bindsort=box.find("input[name^='inbindsort']").length;
+				cloneTr.find("input[name^='inbindsort']").val(parseInt(bindsort)+1);
+				cloneTr.find('select').select2();
+				tr.after(cloneTr);
+				$('div.tableItem>table', this.get).initUI();
+				_this.run();
+			});
+			
+		},
+};
+
+	$(".nbm_bindcondition").die();
+	$(".nbm_bindcondition").live("click",function(){
+		var p = $(this).closest('td');
+		var divs = $('<div class="list_group_lay"></div>');
+		var sel = p.find('select:first').clone();
+		
+		sel.show();
+		divs.append(sel);
+		divs.append("<span class=\"icon-remove nbm_remove_bindcondition\"></span>");
+		p.append(divs);
+		p.find("select").select2();
+		p.find("span.nbm_remove_bindcondition").unbind('click');
+		p.find("span.nbm_remove_bindcondition").bind("click",function(){
+			$(this).closest('div.list_group_lay').remove();
+		});
+	});
+	
+	$("span.nbm_remove_bindcondition").die();
+	$("span.nbm_remove_bindcondition").live("click",function(){
+		$(this).closest('div.list_group_lay').remove();
+	});
+	
+	nbmbind.run();
+	function changeFieldBind(obj){
+		var val=$(obj).val();
+		var p = $(obj).closest('tr');
+		if(val!=0){
+			var selectVal=$(obj).find("option:selected").text();
+			//赋值给标题文本框
+			p.find("input[name^='inbindtitle']").val(selectVal);
+		}
+		/*var $box=navTab.getCurrentPanel();
+		 $.ajax({
+	         type: 'POST',
+	         url : "__URL__/lookupChangeField",
+	         data: {id:val},
+	         global:false,
+	         dataType:'json',
+	         success:function(list){
+	        	 var selhtml="<option selected='selected' value='0'>--请选择--</option>";
+	        	 var selFieldObj = $('select.nbm_bind_field',p);
+	             if(list) {
+	            	 // 得到字段显示下拉框对象 
+	            	 // 下拉选项对象
+	            	 if(list){
+		            	 $.each(list['list'] , function(i , v){
+		            		 selhtml+="<option value=\""+i+"\">"+v+"</option>";
+		            	 });
+	            	 }
+	             }
+	             selFieldObj.html(selhtml);
+	        	 //initChosen();
+	         }
+	     });
+		 */
+		
+	} 
+	function getroam(obj){
+		var sourcemodel = '{$actionname}';
+		var targetmodel = $(obj).val();
+		$.ajax({
+			type:"POST",
+			url:"__URL__/getroam",
+			data:{sourcemodel:sourcemodel,targetmodel:targetmodel},
+			dataType:"json",
+			global:false,
+			success:function(data){
+				/*  var html = '<select class="select2 list_select2 nbm_bind_table"  name="dataroamid[{$k}]" >'
+					 html += '<option value="">请选择</option>';
+				 if(data){
+					 $.each(data,function(i,v){
+						 html += '<option value="'+v["id"]+'">'+v['title']+'</option>';
+						 console.log(v);
+					 }) 
+				 }
+				 
+				 html +="</select>"; */
+				 var html = '';
+				 	
+				 if(data){
+					 html +='<div class="list_group_lay">';
+					 html += '<select class="select2 list_select2 nbm_bind_table"  name="dataroamid[{$k}]" >';
+					 html += '<option value="">请选择</option>';
+					 $.each(data,function(i,v){
+						 if(v){
+							 html += '<option value="'+v["id"]+'">'+v['title']+'</option>';
+							 //console.log(v);
+						 }
+						
+					 }) 
+					 html +="</select>";
+					 html +="</div>";
+					 html += '<a href="__APP__/MisSystemDataRoamMas/add/modelname/'+sourcemodel+'" rel="MisDataWanderBox" target="navTab" title="漫游添加">漫游添加</a>';
+				 }else{
+					 html += '<a href="__APP__/MisSystemDataRoamMas/add/modelname/'+sourcemodel+'" rel="MisDataWanderBox" target="navTab" title="漫游添加">点击配置相应的数据漫游</a>';
+				 }
+				 var ht= $(html).initUI();
+				$(obj).closest("tr").find("td.roamid").html(ht).find("select").select2();
+			
+			}
+		})
+	}
+</script>
+<form id="pagerForm" action="__URL__/index">
+	<input type="hidden" name="pageNum" value="{$pageNum}" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	<input type="hidden" name="deptid" value="{$deptid}" />
+	<input type="hidden" name="parentid" value="{$parentid}" />
+</form>
+	<form method="post"  action="__URL__/insert/navTabId/__MODULE__"  class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);" >
+	<input type="hidden" name="actionname" value="{$actionname}" />
+<div class="pageContent" style="background: #fff;">
+<div class="work_shortcut_top lookup_top_header">设置表单绑定关系</div>
+	<div class="set_configure" layoutH="95">
+		<table class="model_name_lay">
+			<tr>
+				<td width="15%" class="model_name_lay_left">
+					表单组合类型：
+				</td>
+				<td width="85%" class="model_name_lay_right">
+				<input type="radio" class="required"  <if condition="$formvodata[0]['typeid'] eq '0'">checked="checked"</if> <if condition="!$datasoucelist['list']">disabled="disabled" </if> name="typeid"  value="0"/>组合表单（有条件限制显示）
+				<input type="radio" class="required" <if condition="$formvodata[0]['typeid'] eq '1'">checked="checked"</if> name="typeid"  value="1"/>主从表单
+				</td>
+			</tr>
+			<tr>
+				 <td class="model_name_lay_left">
+					Action名称:
+				</td>
+				<td class="model_name_lay_right">
+					<span class="model_name">
+						 {$MisDynamicFormManageVo['actionname']}
+					</span>
+				</td>
+			</tr>
+			<tr>
+				 <td class="model_name_lay_left">
+					表单名称:
+				</td>
+				<td class="model_name_lay_right">
+					<span class="model_name">
+						 {$MisDynamicFormManageVo['actiontitle']}
+					 </span>
+				</td>
+			</tr>
+		</table>
+        <div style="width: 99%;padding-left: 11px">
+			<table class="into_table_new combination_list nbm_data_table" table_data='{"searching":false,"paging":false}'>
+					<thead>
+						<tr>
+							<th template_key="" class="model_name_lay_left">
+							   选择绑定表单
+							</th>
+							<th template_key="" class="model_name_lay_left">绑定标题</th>
+							<th template_key="" class="model_name_lay_left">排序</th>
+							<th template_key="" class="model_name_lay_left">
+							   绑定值（主从表单可不选）
+							</th>
+							<th template_key="" class="model_name_lay_left">
+							  数据漫游
+							</th>
+							<!-- <th template_key="" class="model_name_lay_left">
+							 主表带值
+							</th>
+							<th template_key=""  class="model_name_lay_left">
+								当前表对应
+							</th> -->
+							<th template_key=""  class="model_name_lay_left">
+								显示方式
+							</th>
+							<th  template_key=""  class="model_name_lay_left">
+							   	表单展示样式
+							</th>
+							<th  >是否同步删除</th>
+							<th template_key=""  class="model_name_lay_left">
+								操作
+							</th>
+						</tr>
+					<tbody>
+					<if condition="$formvodata">
+ 		<volist name="formvodata" id="item"  key="k">
+ 		<php>$ko = $key;</php>	
+			<tr>
+				<td> 
+				<div class="list_group_lay">
+					<select class="select2 list_select2 nbm_bind_table"  onchange="changeFieldBind(this)"   name="inbindaname[{$k}]" >
+						<volist name="MisDynamicFormManageList" id="MisDynamicFormManageVo"> 
+							<option <if condition="$item.inbindformid eq $key">selected</if>  value="{$key}">{$MisDynamicFormManageVo}</option>
+						</volist>
+					</select>
+				</div>
+				<input type="hidden" name="bindaname" value="{$item.bindaname}"/>
+				<input type="hidden" name="bindid[{$item.inbindaname}]" value="{$item.id}"/>
+				</td>
+				<td>
+				   <div class="list_group_lay">
+						<input type="text" class="list_input" name="inbindtitle[{$k}]" <if condition="$item.inbindtitle">value="{$item.inbindtitle}"<else/>value="{$item.inbindaname|getFieldBy='name','title','node'}"</if> />
+					</div>
+				</td>
+				<td>
+				   <div class="list_group_lay">
+						<input type="text" class="list_input" name="inbindsort[{$k}]" <if condition="$item.inbindsort">value="{$item.inbindsort}"<else/>value="{$k}"</if> />
+					</div>
+				</td>
+				<!-- 数据源 -->
+				<td> 
+					<div class="list_group_lay">
+					<select class="select2 list_select2 nbm_bind_table"  name="bindval[{$k}]" >
+						<option value="0">--请选择--</option>
+						<volist name="datasoucelist['list']" id="datasouceVo"> 
+							<option <if condition="$item.bindval eq $key">selected</if>  value="{$key}">{$datasouceVo}</option>
+						</volist>
+						 <option value="all" <if condition="$item.bindval eq 'all'">selected="selected"</if>>公共类型</option>
+					</select>
+					<input type="hidden" name="bindresult" value="{$datasoucelist.field}"/>
+ 					</div>
+ 				</td>
+ 				<!-- 漫游 -->
+				<td class="roamid">
+				  	 <div class="list_group_lay">
+				  	 		
+						 <select name="dataroamid[{$k}]" class="select2 list_select2  nbm_main_dataroamid" >
+							 <option value="0">--请选择--</option>
+							 <volist name="dataroam[$ko]" id="dav">
+							 	<option value="{$dav.id}" <if condition="$dav.id eq $item.dataroamid">selected</if>>{$dav.title}</option>
+							 </volist>
+						</select>
+					</div>
+					<a href="__APP__/MisSystemDataRoamMas/add/modelname/{$actionname}" rel="MisDataWanderBox" target="navTab" title="漫游添加">漫游添加</a>
+					 
+				 </td>
+				<!-- <td>
+				<input type="hidden" name="dataroamid[]" value="{$item.dataroamid}" />
+				 -->
+				<!-- 主表 -->
+				<!--<?php $backval=explode(',',$item['backval']); $inbackval=explode(',',$item['inbackval']);?>
+				 <if condition="$backval">
+					<volist name="backval" id="backvalvo" key="bi">
+						<div class="list_group_lay">
+						<select name="backval[{$item.inbindaname}][]" class="select2 list_select2" >
+							<option value="0">--请选择--</option>
+							<volist name="tablelist" id="tablevo">
+							 	<option value="{$tablevo.COLUMN_NAME}" <if condition="$backvalvo eq $tablevo.COLUMN_NAME">selected="selected"</if>>{$tablevo.COLUMN_COMMENT}</option>
+							 </volist>
+						</select>
+						<if condition="$bi eq '1'">
+							<span class="icon-plus nbm_bindcondition"></span>
+						<else/>
+							<span class="icon-remove nbm_remove_bindcondition"></span>
+						</if>
+						</div>
+					</volist>
+				<else/>
+				<div class="list_group_lay">
+				<select name="backval[{$item.inbindaname}][]" class="select2 list_select2" >
+					 <option value="0">--请选择--</option>
+					<volist name="tablelist" id="tablevo">
+					 <option value="{$tablevo.COLUMN_NAME}">{$tablevo.COLUMN_COMMENT}</option>
+					 </volist>
+				</select>
+				<span class="icon-plus nbm_bindcondition"></span>
+				</div>
+				</if>
+				</td> -->
+				<!-- 子表 -->
+				<!-- <td>
+				<if condition="$inbackval">
+					<volist name="inbackval" id="inbackvalvo" key="in">
+						<div class="list_group_lay">
+							<select  name="inbackval[{$item.inbindaname}][]" class="select2 nbm_bind_field list_select2" >
+								 <option value="0">--请选择--</option>
+								<volist name="item['tablelist']" id="tableinvo">
+								 <option value="{$tableinvo.COLUMN_NAME}" <if condition="$inbackvalvo eq $tableinvo.COLUMN_NAME">selected="selected"</if>>{$tableinvo.COLUMN_COMMENT}</option>
+								 </volist>
+							</select>
+							<if condition="$in eq '1'">
+								<span class="icon-plus nbm_bindcondition"></span>
+							<else/>
+								<span class="icon-remove nbm_remove_bindcondition"></span>
+							</if>
+						</div>
+					</volist>
+				<else/>
+					<div class="list_group_lay">
+						<select  name="inbackval[{$item.inbindaname}][]" class="select2  nbm_bind_fieldlist_select2" >
+							 <option value="0">--请选择--</option>
+							<volist name="item['tablelist']" id="tableinvo">
+							 <option value="{$tableinvo.COLUMN_NAME}">{$tableinvo.COLUMN_COMMENT}</option>
+							 </volist>
+						</select>
+						<span class="icon-plus nbm_bindcondition"></span>
+					</div>
+				</if>
+				</td> -->
+				<td>	
+					 <input type="radio"  name="bindtype[{$k}]" <if condition="$item.bindtype eq '0'">checked</if> value="0"/> 表单
+					<input type="radio" name="bindtype[{$k}]" <if condition="$item.bindtype eq '1'">checked</if> value="1"/> 列表-列表录入
+				  <input type="radio"  name="bindtype[{$k}]" <if condition="$item.bindtype eq '2'">checked</if>  value="2"/> 列表-表单录入
+				   <input type="radio"  name="bindtype[{$k}]" <if condition="$item.bindtype eq '3'">checked</if>  value="3"/> 列表-弹窗录入
+				</td>
+				<td>
+					<input type="radio"  name="formshowtype[{$k}]" <if condition="$item.formshowtype eq '0'">checked</if>  value="0"/> 修改
+				   	<input type="radio"  name="formshowtype[{$k}]" <if condition="$item.formshowtype eq '1'">checked</if>  value="1"/> 查看
+				</td>
+				<td>
+					<input type="radio"  name="isdelete[{$k}]" <if condition="$item.isdelete eq '0'">checked</if>  value="0"/> 否
+				   	<input type="radio"  name="isdelete[{$k}]" <if condition="$item.isdelete eq '1'">checked</if>  value="1"/> 是
+				</td>
+				<td>
+				<input type="hidden" name="delinbindname" value="{$item.inbindaname}"/>
+				<a class="nbm_bind_add" href="javascript:void(0);">添加</a>&nbsp;<a class="nbm_bind_del" href="javascript:void(0);">移除</a></td>
+			</tr>
+		</volist>
+		<else/>
+		<tr>
+				<td> 
+				<div class="list_group_lay">
+					<select class="select2 list_select2 nbm_bind_table" onchange="changeFieldBind(this),getroam(this)" name="inbindaname[{$k}]" ><!-- onchange="changeFieldBind(this)" -->
+						<option value="0">--请选择--</option>
+						<volist name="MisDynamicFormManageList" id="MisDynamicFormManageVo"> 
+							<option <if condition="$item.inbindaname eq $key">selected</if>  value="{$key}">{$MisDynamicFormManageVo}</option>
+						</volist>
+					</select>
+					<input type="hidden" name="settableid[{$k}]" value="{$MisAutoBindSettableVo.id}"/>
+				</div>
+				</td>
+				<td>
+				   <div class="list_group_lay">
+						<input type="text" class="list_input" name="inbindtitle[]" />
+					</div>
+				</td>
+				<td>
+				   <div class="list_group_lay">
+						<input type="text" value="1" class="list_input" name="inbindsort[]" />
+					</div>
+				</td>
+				<!-- 数据源 -->
+				<td> 
+				   <div class="list_group_lay">
+					<select class="select2 list_select2 nbm_bind_table"  name="bindval[{$k}]" >
+						<option value="0">--请选择--</option>
+						<volist name="datasoucelist['list']" id="datasouceVo"> 
+							<option <if condition="$item.bindval eq $key">selected</if>  value="{$key}">{$datasouceVo}</option>
+						</volist>
+						 <option value="all" <if condition="$item['bindval'] eq 'all'">selected="selected"</if>>公共类型</option>
+					</select>
+					<input type="hidden" name="bindresult" value="{$datasoucelist.field}"/>
+ 					</div>
+ 				</td>
+ 				<td class="roamid">
+ 				<label>请先选择绑定表单</label>
+ 				</td>
+				<!-- <td> -->
+				<!-- 主表 -->
+				<!--<?php $backval=explode(',',$item['backval']); $inbackval=explode(',',$item['inbackval']);?>
+				<if condition="$backval">
+					<volist name="backval" id="backvalvo" key="bi">
+						<div class="list_group_lay">
+						<select name="backval[{$item.inbindaname}][]" class="select2 list_select2" >
+							<option value="0">--请选择--</option>
+							<volist name="tablelist" id="tablevo">
+							 	<option value="{$tablevo.COLUMN_NAME}" <if condition="$backvalvo eq $tablevo.COLUMN_NAME">selected="selected"</if>>{$tablevo.COLUMN_COMMENT}</option>
+							 </volist>
+						</select>
+						<if condition="$bi eq '1'">
+							<span class="icon-plus nbm_bindcondition"></span>
+						<else/>
+							<span class="icon-remove nbm_remove_bindcondition"></span>
+						</if>
+						</div>
+					</volist>
+				<else/>
+				<div class="list_group_lay">
+				<select name="backval[{$item.inbindaname}][]" class="select2 list_select2" >
+					 <option value="0">--请选择--</option>
+					<volist name="tablelist" id="tablevo">
+					 <option value="{$tablevo.COLUMN_NAME}">{$tablevo.COLUMN_COMMENT}</option>
+					 </volist>
+				</select>
+				<span class="icon-plus nbm_bindcondition"></span>
+				</div>
+				</if>
+				</td> -->
+				<!-- 子表 -->
+				<!-- <td>
+				<if condition="$inbackval">
+					<volist name="inbackval" id="inbackvalvo" key="in">
+						<div class="list_group_lay">
+							<select  name="inbackval[{$item.inbindaname}][]" class="select2 nbm_bind_field list_select2" >
+								 <option value="0">--请选择--</option>
+								<volist name="item['tablelist']" id="tableinvo">
+								 <option value="{$tableinvo.COLUMN_NAME}" <if condition="$inbackvalvo eq $tableinvo.COLUMN_NAME">selected="selected"</if>>{$tableinvo.COLUMN_COMMENT}</option>
+								 </volist>
+							</select>
+							<if condition="$in eq '1'">
+								<span class="icon-plus nbm_bindcondition"></span>
+							<else/>
+								<span class="icon-remove nbm_remove_bindcondition"></span>
+							</if>
+						</div>
+					</volist>
+				<else/>
+					<div class="list_group_lay">
+						<select  name="inbackval[{$item.inbindaname}][]" class="select2  nbm_bind_fieldlist_select2" >
+							 <option value="0">--请选择--</option>
+							<volist name="item['tablelist']" id="tableinvo">
+							 <option value="{$tableinvo.COLUMN_NAME}">{$tableinvo.COLUMN_COMMENT}</option>
+							 </volist>
+						</select>
+						<span class="icon-plus nbm_bindcondition"></span>
+					</div>
+				</if>
+				</td> -->
+				<td>	
+					 <input type="radio"  name="bindtype[0]"  checked  value="0"/> 表单
+					<input type="radio" name="bindtype[0]"  value="1"/> 列表-列表录入
+					  <input type="radio"  name="bindtype[0]"   value="2"/> 列表-表单录入
+					   <input type="radio"  name="bindtype[0]"  value="3"/> 列表-弹窗录入
+				</td>
+				<td>
+					<input type="radio"  name="formshowtype[0]"   checked value="0"/> 修改
+				   	<input type="radio"  name="formshowtype[0]"   value="1"/> 查看
+				</td>
+				<td>
+					<input type="radio"  name="isdelete[0]" value="0" checked="checked" /> 否
+				   	<input type="radio"  name="isdelete[0]" value="1"/> 是
+				</td>
+				<td><a class="nbm_bind_add" href="javascript:void(0);">添加</a>&nbsp;<a class="nbm_bind_del" href="javascript:void(0);">移除</a></td>
+			</tr>
+		</if>
+		</tbody>
+		</table>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li><button type="submit" class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+                <li><button type="button" class="tml_formBar_btn tml_formBar_btn_red" onclick="deleteRecord(this,'{$vo.id}','__MODULE__');">删除</button></li>
+            </ul>
+        </div>
+	</div>
+</div>
+</form>

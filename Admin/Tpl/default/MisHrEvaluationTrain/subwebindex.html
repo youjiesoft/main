@@ -1,0 +1,187 @@
+<style>
+.datalistsection{
+	width:auto;
+	height:auto;
+	background-color:#ffffff;	
+}
+
+.datalistsection .dataitem .knowledge_leftimg {
+    display: inline;
+}
+.datalistsection .dataitem{
+	width:900px;
+	height:auto;
+	padding:10px;
+	
+	border: 2px solid #d5d5d5;
+	background-color:#fcfcfc;
+	margin:10px auto;
+	
+}
+.datalistsection .knowledge_leftimg{
+	border: 1px solid green;
+}
+
+.clearfix:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}
+.clearfix {
+    display: block;
+}
+.clear {
+    clear: both;
+}
+.datalistsection .knowledgeimgarea, .datalistsection .itemcontent{
+	float: left;
+}
+.datalistsection .knowledgeimgarea{
+	width:120px;	
+}
+.datalistsection .knowledgeimgarea span{
+	display: block;
+	margin-top:20px;
+	font-weight:bold;
+	text-align: center;
+}
+.datalistsection .knowledgeborder{
+	border: 1px solid #c0b4b4;
+	text-align:center;
+}
+
+.datalistsection .itemcontent{
+	margin-left:10px;
+	width:750px;
+}
+.datalistsection .itemheader{
+	width:auto;
+	height:18px;
+	border-bottom:1px solid #5c5c5c;
+}
+
+.datalistsection .headerleft{
+	float:left;
+	width:auto;
+	font-size:14px;
+	font-weight: bold;
+}
+.datalistsection .headerleft .titlerow a:link{
+	color:#09775b;
+}
+.datalistsection .headerright{
+	float:right;
+	width:auto;
+}
+.datalistsection .headerright,.labletitle{
+	color:#646464;
+	margin-right:5px;
+	font-size:12px;
+}
+
+.datalistsection .headerright,.labletitle b{
+	color:#036069;
+	padding-right:2px;
+}
+.datalistsection .itemlongtext{
+	padding:2px;
+	height:auto;
+	min-height: 85px;
+	line-height: 20px;
+	color:#277c0f;
+}
+.datalistsection .itemrow{
+	border-top:1px solid #bdbdbd;
+ 	height:15px;
+ 	padding-top:2px;
+
+}
+#left_coures_car{
+	float:left;
+	width:200px;
+	height:auto;
+	
+	position: absolute;
+	left:0;
+	top:20px;
+	float:left; display:block; margin:10px; overflow:auto; width:200px; height:auto; overflow:auto; border:solid 1px #CCC; line-height:21px; background:#FFF;
+}
+</style>
+
+<form id="pagerForm" action="__URL__/index/jump/1/rel/mishrevaluationtrainmodel" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="findKeyValue" value="{$findKeyValue}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />	
+	<input type="hidden" name="adminOrderCourses" value="{$adminOrderCourses}" />	
+</form>
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid;background-color:#f3ffff;" >
+	<div class="panelBar">
+		<form rel="pagerForm" onsubmit="return divSearch(this, 'mishrevaluationtrainmodel')" action="__URL__/index/jump/1" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<include file="Public:quickSearchConditionForAudit" />
+						<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationtrain_exportbysearchhtml">
+						<td><button type="button"  class="xyOutput" onclick="exportBysearch(this.form,'__URL__/index/jump/1','__URL__/exportBysearchHtml');">导出</button></td>
+					    </if>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div class="datalistsection"  layoutH="65">    
+	<!-- 数据区开始  -->     
+	<volist id="vo" name="list" key="key2">
+		<div class="dataitem">
+	        <div class="knowledgeimgarea">
+	            <div  class="knowledgeborder hand">
+	                <img title="云学堂的使用说明" src="__PUBLIC__/Images/course.jpg"  width="95" height="88">
+	            </div>
+	            <span>
+	            	<if condition="$_SERVER['REQUEST_TIME'] gt $vo.traintime">
+	            		<a href="#" >课程已结束</a>
+					<else />
+	            		<a href="#" onclick="addNew('{$vo['id']}','{$vo['name']}')"><img src="__PUBLIC__/Images/btn_yuding.png"></a>
+					</if>
+	            </span>
+	        </div>
+	        <div class="itemcontent">
+	            <div class="itemheader clearfix">
+	                <div class="headerleft">
+	                    <div class="titlerow">
+	                    	<span class="Knowledge_CoursePackage">&nbsp;</span>
+	                    	<a title="{$vo['name']}" >{$vo['name']}</a>
+	                    </div>
+	                </div>
+	                <div class="headerright">
+	                    <span class="labletitle"><img src="__PUBLIC__/Images/point_img.png" /><b>主讲：</b>{$vo['lecturer']}</span>
+	                    <span class="labletitle"><img src="__PUBLIC__/Images/point_img.png" /><b>时间：</b>{$vo['classhour']}小时</span>
+	                    <span class="labletitle"><img src="__PUBLIC__/Images/point_img.png"/><b>课程类型:</b>{$vo['type']}</span>
+	                </div>
+	            </div>
+	            <div class="itemlongtext">{$vo['syllabus']}</div>
+	            <div class="itemrow">
+	                <div class="rowitem">
+	                	<span class="labletitle"><b>发布人：</b>{$vo['createid']|getFieldBy='id','name','MisHrPersonnelPersonInfo'}</span>
+	                	<span class="labletitle"><b>上课时间:</b> {$vo['traintime']|date='Y-m-d H:i',###}</span>
+	                	<span class="labletitle"><b>培训地点:</b>{$vo['site']} </span>
+	                </div>
+	            </div>
+	         </div>
+	         <div class="clear"></div>
+		</div>
+	</volist>
+	<!-- 数据区结束  -->        
+	</div>
+	<div class="panelBar panelPageBar">
+		<div class="pages"><span>共{$totalCount}条</span></div>
+		<div class="pagination" rel="mishrevaluationtrainmodel" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

@@ -1,0 +1,94 @@
+<div class="pageContent">
+    <div class="pageFormContent" layoutH="55">
+        <div class="unit">
+            <label>标题：</label>
+            <input type="text" class="required" readonly style="width:300px;" name="title" value="{$task['title']}" />
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>任务描述：</label>
+            <textarea cols='42' rows='3' readonly name="remark" style="width:300px;">{$vo['remark']}</textarea>
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>跟踪人员：</label>
+            <input type="text" readonly class="" value="{$vo['trackuser']|getFieldBy='id','name','User'}" />
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>负责人员：</label>
+            <input type="text" readonly class="" value="{$vo['executeuser']|getFieldBy='id','name','User'}" />
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>紧急状况：</label>
+            <input type="text" class="" name="urgentstatus" readonly value="{$vo['urgentstatus']|excelTplselected='1:一般处理,2:优先处理,3:急需处理'}" />
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>紧急状况：</label>
+            <input type="text" class="" name="difficulty" readonly value="{$vo['difficulty']|excelTplselected='1:D级,2:C级,3:B级,4:A级'}" />
+        </div>
+         <div class="clear"></div>
+        <div class="unit">
+            <label>执行状态：</label>
+            <input type=""  name="executingstatus" readonly value="{$vo['executingstatus']|excelTplselected='1:未查看,2:已查看,3:进行中,4:关闭,5:暂停,6:完成,7:结束,8:申请暂停,0:未启动'}" />
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>计划开始时间：</label>
+            <span class="xyInputWithUnit">
+                <input type="text" class="" readonly="readonly" name="begindate" value="{$vo['begindate']|date='Y-m-d H:i',###}">
+                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+            </span>
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>计划结束时间：</label>
+            <span class="xyInputWithUnit">
+                <input type="text" class="" readonly="readonly" name="enddate" value='<if condition="$vo[enddate]">{$vo["enddate"]|date="Y-m-d H:i",###}</if>'>
+                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+            </span>
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>查看时间：</label>
+            <span class="xyInputWithUnit">
+                <input type="text" class="" readonly="readonly" name="realityknowdate" value='<if condition="$vo[realityknowdate]">{$vo["realityknowdate"]|date="Y-m-d H:i",###}</if>'>
+                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+            </span>
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>实际开始时间：</label>
+            <span class="xyInputWithUnit">
+                <input type="text" class="" readonly="readonly" name="realitybegindate" value='<if condition="$vo[realitybegindate]">{$vo["realitybegindate"]|date="Y-m-d H:i",###}</if>'>
+                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+            </span>
+        </div>
+        <div class="clear"></div>
+        <div class="unit">
+            <label>实际结束时间：</label>
+            <span class="xyInputWithUnit">
+                <input type="text" class="" readonly="readonly" name="realityenddate" value='<if condition="$vo[realityenddate]">{$vo["realityenddate"]|date="Y-m-d H:i",###}</if>'>
+                <a class="input-addon input-addon-calendar" href="javascript:;">选择</a>
+            </span>
+        </div>
+        <div class="clear"></div>
+        <if condition="$attarry">
+        <div class="unit">
+            <label>上传附件：</label>
+            <dd>
+                <volist name="attarry" id="att">
+                    <p style="padding:0;"><label>附件{$key+1}</label><a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+                </volist>
+            </dd>
+        </div>
+        </if>
+    </div>
+    <div class="formBar">
+        <ul>
+            <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+        </ul>
+    </div>
+</div>

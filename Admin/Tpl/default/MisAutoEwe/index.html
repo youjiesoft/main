@@ -1,0 +1,86 @@
+
+
+		
+ <script>
+$(document).ready(function(){
+	var zNodes = {$returnarr};
+	//console.log(zNodes);
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#MisAutoEweTree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("MisAutoEweTree");
+/*  	var valid = '{$check}';
+    var nodes = treeObj.getNodesByParam("id", valid, null);
+    treeObj.selectNode(nodes[0]);  */
+}); 
+function checkNumber(obj){
+	var box= navTab.getCurrentPanel();
+	var timeval = $(obj).val()*1;
+	var timeunit = $(obj).closest("div").find("select").val();
+	switch(timeunit){
+		case 'm':
+			if(timeval<0 || timeval>59){
+				alert("分钟间隔区间为0-59的整数");
+				$(obj).val('');
+			}
+			break;
+		case 'h':
+			if(timeval<0 || timeval>23){
+				alert("小时间隔区间为0-23的整数");
+				$(obj).val('');
+			}
+			break;
+		case 'd':
+			if(timeval<1 || timeval>31){
+				alert("天间隔区间为1-31的整数");
+				$(obj).val('');
+			}
+			break;
+		case 'mon':
+			if(timeval<1 || timeval>12){
+				alert("周间隔区间为1-12的整数");
+				$(obj).val('');
+			}
+			break;
+		case 'w':
+			if(timeval<0 || timeval>7){
+				alert("月间隔区间为0-7的整数");
+				$(obj).val('');
+			}
+			break;
+		default:
+			break;
+	}
+}
+</script> 
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="MisAutoEweTreeSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('MisAutoEweTree','MisAutoEweTreeSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="MisAutoEweTree" class="ztree" layoutH="148"></ul>
+		</div>
+	</div>
+	<div id="MisAutoEweBox" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

@@ -1,0 +1,31 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<div class="pageFormContent" layoutH="58">
+				<div class="tml-row">
+				<div class="tml-form-col ">
+						<label>{$fields["orderno"]}：</label>
+						<input type="text" class="required" name="orderno">
+					</div>
+					<div class="tml-form-col ">
+						<label>{$fields["name"]}：</label>
+						<input type="text" class="required" name="name">
+					</div>
+					<div class="tml-form-col ">
+						<label>{$fields["sorts"]}：</label>
+						<input type="text" class="required number" name="sorts">
+					</div>
+					<div class="tml-form-col ">
+						<label title="{$fields['show']}">{$fields["show"]}：</label>
+						<SELECT name="show"  class="combox">
+							<option value="1">是</option>
+							<option value="0">否</option>
+						</SELECT>
+					</div>
+				</div>	
+			</div>			
+		{:W('ShowAction')}
+	</form>
+	</div>
+</div>

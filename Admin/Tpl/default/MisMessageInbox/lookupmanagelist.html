@@ -1,0 +1,124 @@
+<script>
+function get_mesmessageinbox_reply_checkbox_userindex(){
+	var  $box = $.pdialog.getCurrent();
+    var id;
+    var name;
+    var emailval;
+    $box.find(".Mismessageinbox_reply_add").find("input[type='checkbox']").each(function(){
+        if($(this).attr("checked")=='checked'){
+            id = $(this).attr("userid");
+            name = $(this).attr("username");
+            emailval = $(this).attr("emailName");
+            get_mesmessageinbox_reply_userindex(id,name,emailval);
+        }
+    });
+}
+function get_mesmessageinbox_reply_userindex(id,name,emailval){
+	$box = $.pdialog.getCurrent();
+	var ulId = $box.find('#ulId').val();
+	if( ulId == 'Mismessageinbox_reply_add' ){
+        var $strHtml = appendUserHtml('Mismessageinbox_reply_add','recipient',id,name, 'recipientname','',emailval,'email');
+        $("#Mismessageinbox_reply_add").children().last().before($strHtml);
+        $("#Mismessageinbox_reply_add").find('input').focus();
+    }else if (ulId="Mismessageinbox_reply_copy") {
+    	var $strHtml = appendUserHtml('Mismessageinbox_reply_copy','copytopeopleid',id,name, 'copytopeoplename','',emailval,'emailCopy');
+        $("#Mismessageinbox_reply_copy").children().last().before($strHtml);
+        $("#Mismessageinbox_reply_copy").find('input').focus();
+    }
+   
+}
+</script>
+<form id="pagerForm" action="__URL__/lookupmanage/ulId/Mismessageinbox_reply_add" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageHeader" style="border: 1px #B8D0D6 solid;">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'positiveBox');" action="__URL__/lookupmanage/ulId/Mismessageinbox_reply_add" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<input type="hidden" id="ulId" name="ulId" value="{$ulId}">
+		<div class="searchBar">
+			<table class="searchContent">
+				<tr>
+					<td>
+						<div class="unit">
+							请输入关键字：
+							<input type="text" name="keyword" value="{$keyword}" />
+						</div>
+					</td>
+					<td>
+						<select class="combox" name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<div class="subBar">
+				<ul>
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">{$Think.lang.subsearch}</button>
+							</div>
+							<div class="buttonContent">
+								<button type="button" multLookup="inboxreplyuser" onclick="get_mesmessageinbox_reply_checkbox_userindex()" warn="请选择收件人">选择带回</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="121">
+		<thead>
+			<tr>
+				<th width="20"><input type="checkbox" class="checkboxCtrl" group="inboxreplyuser" /></th>
+				<th width="20">ID</th>
+				<th>员工编号</th>
+				<th>员工姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+				<th>入职时间</th>
+				<th>转正时间	</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody class="Mismessageinbox_reply_add">
+		<volist id="vo" name="list">
+			<tr>
+				<td><input type="checkbox" name="inboxreplyuser" value="{ mangid:'{$vo.id}', name:'{$vo.name}'}"  userid="{$vo.id}" username="{$vo.name}" emailName="{$vo.email}" /></td>
+				<td>{$vo['id']}</td>
+				<td>{$vo['orderno']}</td>
+				<td>{$vo['name']}</td>
+				<td>{$vo['deptname']}</td>
+				<td>{$vo['dutyname']}</td>
+				<td>{$vo['indate']|transTime}</td>
+				<td>{$vo['transferdate']|transTime}</td>
+				<td>
+					<a class="btnSelect" onclick="get_mesmessageinbox_reply_userindex('{$vo.id}','{$vo.name}','{$vo.email}')"
+						href="javascript:$.bringBack({ mangid:'{$vo.id}', name:'{$vo.name}' ,sex:'{$vo.sex}',sexname:'{$vo.sex|getS}',deptid:'{$vo.deptid}',deptname:'{$vo.deptname}',dutylevelid:'{$vo.dutylevelid}',dutyname:'{$vo.dutyname}',dutylevelname:'{$vo.dutylevelname}',transferdate:'{$vo[transferdate]|transTime}',indate:'{$vo[indate]|transTime}'})"
+						title="查找带回">选择</a>
+				</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="positiveBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

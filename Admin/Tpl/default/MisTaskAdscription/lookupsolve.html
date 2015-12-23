@@ -1,0 +1,80 @@
+<div class="tabsContent" style="padding:0px;">
+    <div class="pageContent">
+        <form method="post" action="__URL__/lookupsolve/navTabId/mistaskadlookupIdea" class="pageForm required-validate" onsubmit="return validateCallback(this, mistaskad_refreshdialog)">
+            <input type="hidden" name="callbackType" value="closeCurrent">
+            <input type="hidden" name="refreshtabs[ntdata]" value="3">
+            <input type="hidden" name="refreshtabs[ids]" value="{$taskinfo['id']}">
+            <input type="hidden" name="refreshtabs[closeall]" value="1">
+            <input type="hidden"  name="rel" value="departmentmodel" />
+            <input type="hidden" name="pid" value="{$feedback['id']}" >
+            <div class="pageFormContent" layoutH="55"><?php print_r($vo);?>
+                <div class="unit">
+                    <label>缺陷信息：</label>
+                    <textarea class="" cols='42' rows='4' readonly name="" style="width:400px;">{$feedback['remark']}</textarea>
+                </div>
+                <div class="clear"></div>
+                <if condition="$feedbackatt">
+                    <div class="unit">
+                        <div>
+                            <dl class="nowrap">
+                                <dt>
+                                    <label>附件：</label>
+                                </dt>
+                            </dl>
+                        </div>
+                        <div style="padding-left: 130px;">
+                            <dd>
+                                <volist name="feedbackatt" id="att">
+                                <p style="padding: 0;">
+                                    <label>附件{$key+1}</label>
+                                    <a class="attlink" rel="{$att['id']}" target="_blank"
+                                        href="__PUBLIC__/{$att['attached']}">
+                                        <span class="info">{$att['upname']}</span>
+                                    </a>
+                                </p>
+                                </volist>
+                            </dd>
+                        </div>
+                    </div>
+                </if>
+                <div class="clear"></div>
+                <div class="unit">
+                    <label>处理结果信息：</label>
+                    <textarea class="required" cols='42' rows='4' name="remark" style="width:400px;"></textarea>
+                </div>
+                <div class="unit">
+                    <label>{$exename}附件:</label>
+                     <input id="swfupload_MisTaskInformation_solve_dispose" type="file" uploader="true" name="swfupload_MisTaskInformation_solve_dispose" formData="{ uploadpath:'MisTaskFeedbackInformation' }" />
+                     <input type="image" onclick="$('#swfupload_MisTaskInformation_solve_dispose').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                     <dl class="nowrap">
+                        <dt><label>&nbsp;</label></dt>
+                        <dd>
+                            <span id="swfupload_MisTaskInformation_solve_dispose-queue" class="info uploadify_queue">
+                                <if condition="$isattarry">
+                                    <volist name="isattarry" id="att">
+                                        <div class="uploadify-queue-item">
+                                            <div class="cancel">
+                                                <a  class="dellink" href="__URL__/lookupdelatt/id/{$att['id']}" rel="{$att['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swfupload_MisTaskInformation_solve_dispose-queue" >X</a>
+                                            </div>
+                                            <span class="fileName"><a href="__PUBLIC__/{$att.attached}" target="_blank">{$att['upname']}</a></span>
+                                            <span class="data"> - 已经传</span>
+                                            <div class="uploadify-progress">
+                                            <div class="uploadify-progress-bar" style="width: 100%;"></div>
+                                            </div>
+                                        </div>
+                                    </volist>
+                                </if>
+                            </span>
+                        </dd>
+                    </dl>  
+                </div>
+            </div>
+            <div class="formBar">
+                <ul>
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+                    <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+                </ul>
+            </div>
+        </form>
+    </div>
+</div>

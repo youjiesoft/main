@@ -1,0 +1,42 @@
+<script>
+$(".enterToSubmitAuditView .doinfo").change(function(){
+	var val = $(this).val();
+	var form = "{$form}";
+	var obj_form = $("#"+form);
+	var input = obj_form.find("input[name='doinfo']");
+	if(input.length){
+		input.val(val);
+	}else{
+		var html = "<input name='doinfo' type='hidden' value='"+val+"' >";
+		obj_form.append(html);
+	}
+});
+
+$(".enterToSubmitAuditView .tml_formBar_btn_blue").click(function(){
+	var form = "{$form}";
+	var val = $.trim($(".enterToSubmitAuditView .doinfo").val());
+	if(val){
+		$(".dialog .close").click();
+		$("#"+form+" a.enterToSubmitAudit").click();
+	}else{
+		alertMsg.error("请填写意见！");
+	}
+});
+</script>
+<div class="page">
+	<div class="pageContent enterToSubmitAuditView">
+		<div class="pageFormContent" style="height:118px;">
+			<div class="tml-row">
+			<div class="tml-form-col">
+				<label>意见：</label>
+				<textarea class="doinfo required enterIndex" name="doinfo" style="width:418px;height:100px;"></textarea>
+			</div>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">启动</button></li>
+			</ul>
+		</div>
+	</div>
+</div>

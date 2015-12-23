@@ -1,0 +1,59 @@
+<div class="page">
+	<div class="pageContent">
+		<div class=" xyMessage">
+			<div class="xyMessageHead">
+				<div class="clearfix xyMessageInfo">
+					<div class="xyMessageTitle">
+						<span class="xyMessageTitleCon">{$default.title}</span>
+					</div>
+					<div class="tml-mb5">
+						<span>发件人：</span>
+						<span style="color: #00aa00;"><b>{$default['createid']|getFieldBy='id','name','User'}</b></span>
+					</div>
+					<div class="tml-mb5">
+						<span>时&nbsp;&nbsp;间：</span>
+						<span>{$default['createtime']|transTime='Y-m-d H:i'}</span>
+					</div>
+					<div class="tml-mb5">
+						<span>收件人：</span>
+						<span style="color: #00aa00;"><b>{$default.recipientname}</b></span>
+					</div>
+                    <if condition="$default.copytopeoplename">
+                        <div class="unit">
+                            <span>抄送人：</span>
+                            <span style="color: #00aa00;"><b>{$default.copytopeoplename}</b></span>
+                        </div>
+                    </if>
+				</div>
+			</div>	
+			<div class="xyMessageContent" <if condition="$default.copytopeoplename">layoutH="218"<else/>layoutH="196"</if>>
+				<div class="xyMessageText">
+					{$default['content']}
+				</div>
+                <div class="clear"></div>
+				<if condition="$attarry">
+				<div class="xyMessageAttach">
+					<div style="padding:6px 10px 6px 8px;">
+						<span>附件：</span>
+					</div>
+					<div class="xyMessageAttachItems">
+						<volist name="attarry" id="att">
+							<div class="xyMessageAttachItem">
+								<span>附件{$key+1}</span>
+								<a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}"><span>{$att['upname']}</span></a>
+								<a href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="tml-icon tml-icon-file"></span><span class="tml-icon-text">归档</span></a>
+							</div>
+						</volist>
+					</div>
+				</div>
+				</if>
+			</div>
+		</div>
+	
+	</div>
+	<div class="formBar">
+			<ul>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+</div>

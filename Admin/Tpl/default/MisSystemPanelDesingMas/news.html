@@ -1,0 +1,192 @@
+ <script>
+/* $(function(){
+		var obj = $("div[issroll='1']");
+		obj.each(function(){
+			var height = $(this).closest('li.panel_group_lay').height()-41;
+			$(this).css({'height':height,'overflow':'hidden'});
+			$(this).kxbdMarquee({direction:"up",scrollDelay:"140"});
+		});
+	
+}); */
+</script> 
+<style>
+.textcontrol ul li a span{
+             text-overflow: ellipsis;
+             overflow: hidden;
+             display: inline-block;
+             white-space: nowrap;
+         }
+</style>
+<div eventtype="click" currentindex="0" class="tabs">
+<if condition="count($sublist) gt 1">
+
+	<div class="tabsHeader">
+		<div class="tabsHeaderContent design_tabs_content">
+			<ul>
+				<volist name="sublist" id="tvo" key = "i">
+				<li <if condition="$i eq 1">class="selected"</if>><a href="javascript:;">{$tvo.name}</a></li>
+				</volist>
+				
+			</ul>
+		</div>
+	</div>
+	<div class="tabsContent ">
+		<volist name="sublist" id="svo" key = "i">
+		<div>
+		
+		<if condition="$svo.type eq '2'">
+			<a target="{$svo.target}" href="{$svo.url}" class="design_more" title="{$svo.name}">更多</a>
+			<iframe frameborder="0" src="{$svo.url}" allowtransparency="true" scrolling="yes" style="width: 100%; height: 500px">
+			</iframe>
+		<else/>
+			<php>
+				if($svo['moresmap']){
+					$remindMap="/remindMap/".$svo['moresmap'];
+				}else{
+					$remindMap = '';
+				}
+			</php>
+			<a target="{$svo.target}" href="__APP__/{$svo.modelname}/index{$remindMap}" class="design_more" title="{$svo.name}"  rel="{$svo.modelname}">更多</a>
+          	<if condition="$svo['isbasepanel'] eq 1">
+          	<div style="background:rgba(0, 0, 0, 0.02);"><span style="margin-left:7px;width:14px; text-overflow: ellipsis; overflow: hidden; display: inline-block; white-space: nowrap;font-size: 14px;">&nbsp;</span>
+				<volist id="dvo" name="svo['detailList']">
+					<span  style="color:#000000; width:{$dvo[widths]}; text-overflow: ellipsis; overflow: hidden; display: inline-block; white-space: nowrap;font-size:14px;" >
+						{$dvo[showname]}
+					</span>
+				</volist>
+			</div>
+			</if>
+            <!--issroll="{$svo.issroll}"-->
+            <div issroll="{$svo.issroll}" class="expert_cell_warp xyz_marqueedata textcontrol" >
+			<ul>
+				<if condition = "$svo['list']">
+				<volist id="vo" name="svo['list']" key="key2">
+					<li>
+					<php>
+							$isaudit = getFieldBy($svo['modelname'],'actionname','isaudit','mis_dynamic_form_manage');
+							if($isaudit){
+								$view = 'auditView';
+							}else{
+								$view = 'view';
+							}
+					</php>
+					<php>
+						$jumpModel = array("MisSystemSysremind");
+					</php>
+					<if condition="in_array($svo['modelname'],$jumpModel)">
+					<a href="__APP__/{$vo.modelname}/{$view}/id/{$vo.pkey}" rel="{$vo.modelname}{$view}" target="{$svo[target]}" title = "{$svo.name}">
+					<else/>
+					<a href="__APP__/{$svo.modelname}/{$view}/id/{$vo.id}" rel="{$svo.modelname}{$view}" target="{$svo[target]}" title = "{$svo.name}">
+					</if>
+					
+					 <i class="icon-double-angle-right left"></i>
+					  <volist id="vo1" name="svo['detailList']">
+						<span style="width:{$vo1[widths]};" >
+							<if condition="count($vo1['func']) gt 0">
+								<volist name="vo1.func" id="nam">
+									<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+									{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+									<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+								</volist>
+							<else />
+							{$vo[$vo1['name']]}
+							</if>
+						&nbsp;&nbsp;</span>
+					  </volist>
+					</a>
+					</li>
+				</volist>
+				<else/>
+				<li>没有数据</li>
+				</if>
+					</ul>
+			</div>
+		</if>
+				
+		</div>
+		</volist>
+	</div>
+	<div class="tabsFooter">
+		<div class="tabsFooterContent"></div>
+	</div>
+<else/>
+	<volist name="sublist" id="svo" key = "i">
+		<div class="">
+		<if condition="$svo.type eq '2'">
+		<ul>
+			<a target="{$svo.target}" href="{$svo.url}" class="design_more" title="{$svo.name}">更多</a>
+			<iframe frameborder="0" src="{$svo.url}" allowtransparency="true" scrolling="yes" style="width: 100%; height: 500px">
+			</iframe>
+			
+		</ul>
+		<else/>
+			<php>
+				if($svo['moresmap']){
+					$remindMap="/remindMap/".$svo['moresmap'];
+				}else{
+					$remindMap = '';
+				}
+			</php>
+			<a target="{$svo.target}" href="__APP__/{$svo.modelname}/index{$remindMap}" class="design_more" title="{$svo.name}" rel="{$svo.modelname}">更多</a>
+			<if condition="$svo['isbasepanel'] eq 1">
+			<div style="background:rgba(0, 0, 0, 0.02);">
+			<span style="margin-left:7px;width:14px; text-overflow: ellipsis; overflow: hidden; display: inline-block; white-space: nowrap;font-size: 14px;">&nbsp;</span>
+				<volist id="dvo" name="svo['detailList']">
+					<span  style="color:#000000; width:{$dvo[widths]}; text-overflow: ellipsis; overflow: hidden; display: inline-block; white-space: nowrap;font-size: 14px;" >
+						{$dvo[showname]}
+					</span>
+				</volist>
+			</div>
+			</if>
+			<div issroll="{$svo.issroll}" class="expert_cell_warp xyz_marqueedata textcontrol" >
+				<ul>
+					
+					<volist id="vo" name="svo['list']" key="key2">
+						<li>
+						<php>
+							$isaudit = getFieldBy($svo['modelname'],'actionname','isaudit','mis_dynamic_form_manage');
+							if($isaudit){
+								$view = 'auditView';
+							}else{
+								$view = 'view';
+							}
+						</php>
+						<php>
+							$jumpModel = array("MisSystemSysremind");
+						</php>
+						<if condition="in_array($svo['modelname'],$jumpModel)">
+						<a href="__APP__/{$vo.modelname}/{$view}/id/{$vo.pkey}" rel="{$vo.modelname}{$view}" target="{$svo[target]}" title = "{$svo.name}">
+						<else/>
+						<a href="__APP__/{$svo.modelname}/{$view}/id/{$vo.id}" rel="{$svo.modelname}{$view}" target="{$svo[target]}" title = "{$svo.name}">
+						</if>
+						<!-- <a href="__APP__/{$svo.modelname}/{$view}/id/{$vo.id}" rel="{$svo.modelname}{$view}" target="{$svo[target]}" title="{$svo.name}"> -->
+	 						<i class="icon-double-angle-right left"></i>
+						  <volist id="vo1" name="svo['detailList']">
+						 
+							<span style="width:{$vo1[widths]};" >
+								<if condition="count($vo1['func']) gt 0">
+									<volist name="vo1.func" id="nam">
+										<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+										{:getConfigFunction($vo[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+										<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}</if>
+									</volist>
+								<else />
+								{$vo[$vo1['name']]}
+								</if>
+							&nbsp;&nbsp;</span>
+						  </volist>
+						  </a>
+						</li>
+					</volist>
+				</ul>
+			</div>
+		</if>
+				
+		</div>
+	</volist>
+</if>	
+</div>
+
+
+
+

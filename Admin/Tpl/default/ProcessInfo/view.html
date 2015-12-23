@@ -1,0 +1,28 @@
+<style>
+.userli{float:left;width:60px;}
+.userul{margin-left: 50px;}
+</style>
+<div class="page">
+	<div class="pageContent">
+        <input type="hidden" class="textInput" name="pid" size="30" value="{$vo.pid}"/>
+        <input type="hidden" class="textInput" name="tid" size="30" value="{$vo.tid}"/>
+        <div class="pageFormContent" layoutH="17">
+            <div class="unit">
+            	<label>节点授权：</label>
+            </div>
+            <div id="processuser" >
+                <div style="clear:both"></div>
+                <div class="testDiv">
+				{$str}
+            </div>
+            <div class="unit">
+            	<label>走向规则：</label>
+            	<input type="text" readonly="readonly" class="textInput" name="rule" size="30" value="{$vo.rule}"/>
+            </div>
+			<div class="unit">
+				<label>备注：</label>
+				<textarea name="remark" readonly="readonly" class="textInput"  rows="2" cols="40">{$vo.remark}</textarea>
+			</div>
+		</div>
+	</div>
+</div>

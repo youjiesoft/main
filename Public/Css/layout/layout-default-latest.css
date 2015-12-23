@@ -1,0 +1,366 @@
+/*
+ * Default Layout Theme
+ *
+ * Created for jquery.layout
+ *
+ * Copyright (c) 2010
+ *   Fabrizio Balliano (http://www.fabrizioballiano.net)
+ *   Kevin Dalman (http://allpro.net)
+ *
+ * Dual licensed under the GPL (http://www.gnu.org/licenses/gpl.html)
+ * and MIT (http://www.opensource.org/licenses/mit-license.php) licenses.
+ *
+ * Last Updated: 2010-02-10
+ * NOTE: For best code readability, view this with a fixed-space font and tabs equal to 4-chars
+ */
+
+/*
+ *	DEFAULT FONT
+ *	Just to make demo-pages look better - not actually relevant to Layout!
+ */
+body {
+	font-family: Geneva, Arial, Helvetica, sans-serif;
+	font-size:   100%;
+	*font-size:  80%;
+}
+
+/*
+ *	PANES & CONTENT-DIVs
+ */
+.ui-layout-pane { /* all 'panes' */
+	border:		1px solid #B8D0D6;
+	overflow:	auto;
+	/* DO NOT add scrolling (or padding) to 'panes' that have a content-div,
+	   otherwise you may get double-scrollbars - on the pane AND on the content-div
+	   - use ui-layout-wrapper class if pane has a content-div
+	   - use ui-layout-container if pane has an inner-layout
+	*/
+	}
+	/* (scrolling) content-div inside pane allows for fixed header(s) and/or footer(s) */
+	.ui-layout-content {
+		padding:	10px;
+		position:	relative; /* contain floated or positioned elements */
+		overflow:	auto; /* add scrolling to content-div */
+	}
+
+/*
+ *	UTILITY CLASSES
+ *	Must come AFTER pane-class above so will override
+ *	These classes are NOT auto-generated and are NOT used by Layout
+ */
+.layout-child-container,
+.layout-content-container {
+	padding:	0;
+	overflow:	hidden;
+}
+.layout-child-container {
+	border:		0; /* remove border because inner-layout-panes probably have borders */
+}
+.layout-scroll {
+	overflow:	auto;
+}
+.layout-hide {
+	display:	none;
+}
+
+/*
+ *	RESIZER-BARS
+ */
+.ui-layout-resizer	{ /* all 'resizer-bars' */
+	background:		#E5EDEF;
+	border:			1px solid #BBB;
+	border-width:	0;
+	}
+	.ui-layout-resizer-drag {		/* REAL resizer while resize in progress */
+	}
+	.ui-layout-resizer-hover	{	/* affects both open and closed states */
+	}
+	/* NOTE: It looks best when 'hover' and 'dragging' are set to the same color,
+		otherwise color shifts while dragging when bar can't keep up with mouse */
+	.ui-layout-resizer-open-hover ,	/* hover-color to 'resize' */
+	.ui-layout-resizer-dragging {	/* resizer beging 'dragging' */
+		background: #C4E1A4;
+	}
+	.ui-layout-resizer-dragging {	/* CLONED resizer being dragged */
+		border: 	 1px solid #BBB;
+	}
+	/* NOTE: Add a 'dragging-limit' color to provide visual feedback when resizer hits min/max size limits */
+	.ui-layout-resizer-dragging-limit {	/* CLONED resizer at min or max size-limit */
+		background: #E1A4A4; /* red */
+	}
+
+	.ui-layout-resizer-closed-hover	{ /* hover-color to 'slide open' */
+		background: #EBD5AA;
+	}
+	.ui-layout-resizer-sliding {	/* resizer when pane is 'slid open' */
+		opacity: .10; /* show only a slight shadow */
+		filter:  alpha(opacity=10);
+		}
+		.ui-layout-resizer-sliding-hover {	/* sliding resizer - hover */
+			opacity: 1.00; /* on-hover, show the resizer-bar normally */
+			filter:  alpha(opacity=100);
+		}
+		/* sliding resizer - add 'outside-border' to resizer on-hover
+		 * this sample illustrates how to target specific panes and states */
+		.ui-layout-resizer-north-sliding-hover	{ border-bottom-width:	1px; }
+		.ui-layout-resizer-south-sliding-hover	{ border-top-width:		1px; }
+		.ui-layout-resizer-west-sliding-hover	{ border-right-width:	1px; }
+		.ui-layout-resizer-east-sliding-hover	{ border-left-width:	1px; }
+
+/*
+ *	TOGGLER-BUTTONS
+ */
+.ui-layout-toggler {
+	border: 1px solid #BBB; /* match pane-border */
+	background-color: #BBB;
+	}
+	.ui-layout-resizer-hover .ui-layout-toggler {
+		opacity: .60;
+		filter:  alpha(opacity=60);
+	}
+	.ui-layout-toggler-hover , /* need when NOT resizable */
+	.ui-layout-resizer-hover .ui-layout-toggler-hover { /* need specificity when IS resizable */
+		background-color: #FC6;
+		opacity: 1.00;
+		filter:  alpha(opacity=100);
+	}
+	.ui-layout-toggler-north ,
+	.ui-layout-toggler-south {
+		border-width: 0 1px; /* left/right borders */
+	}
+	.ui-layout-toggler-west ,
+	.ui-layout-toggler-east {
+		border-width: 1px 0; /* top/bottom borders */
+	}
+	/* hide the toggler-button when the pane is 'slid open' */
+	.ui-layout-resizer-sliding  .ui-layout-toggler {
+		display: none;
+	}
+	/*
+	 *	style the text we put INSIDE the togglers
+	 */
+	.ui-layout-toggler .content {
+		color:			#666;
+		font-size:		12px;
+		font-weight:	bold;
+		width:			100%;
+		padding-bottom:	0.35ex; /* to 'vertically center' text inside text-span */
+	}
+
+/*
+ *	PANE-MASKS
+ *	these styles are hard-coded on mask elems, but are also
+ *	included here as !important to ensure will overrides any generic styles
+ */
+.ui-layout-mask {
+	border:		none !important;
+	padding:	0 !important;
+	margin:		0 !important;
+	overflow:	hidden !important;
+	position:	absolute !important;
+	opacity:	0 !important;
+	filter:		Alpha(Opacity="0") !important;
+}
+.ui-layout-mask-inside-pane { /* masks always inside pane EXCEPT when pane is an iframe */
+	top:		0 !important;
+	left:		0 !important;
+	width:		100% !important;
+	height:		100% !important;
+}
+div.ui-layout-mask {}		/* standard mask for iframes */
+iframe.ui-layout-mask {}	/* extra mask for objects/applets */
+
+{
+    background: none repeat scroll 0 0 #DDDDDD !important;
+    width: 25px;
+}
+.ss_root .rows td div {
+    border-bottom: 1px solid #AAAAAA;
+    border-right: 1px solid #AAAAAA;
+    height: 17px;
+    padding-right: 3px;
+    padding-top: 4px;
+    text-align: right;
+}
+.ss_root .rows td.first div {
+    height: 16px !important;
+}
+.ss_root th {
+    background: none repeat scroll 0 0 #DDDDDD;
+    border-bottom: 1px solid #AAAAAA;
+    border-right: 1px solid #AAAAAA;
+    padding: 3px 0;
+    text-align: center;
+}
+.ss_root td {
+    background: none repeat scroll 0 0 #FEFEFE;
+    border-bottom: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+    vertical-align: top;
+}
+.ss_root table div textarea {
+    border: 1px solid blue;
+    display: block;
+    height: 18px;
+    overflow-x: hidden;
+    position: absolute;
+}
+.ss_root table div.cell {
+    border: 1px solid transparent;
+    cursor: default;
+    height: 20px;
+    overflow: hidden;
+}
+.ss_root #name {
+    border: 0 none;
+    font: 12px "Helvetica Neue",Palatino,sans-serif;
+    text-align: center;
+    width: 80px;
+}
+.ss_root #toolbar {
+    background: none repeat scroll 0 0 #E5EDEF;
+    border-bottom: 1px solid #999999;
+    border-top: 1px solid #DDDDDD;
+    height: 26px;
+    width:100%;
+}
+.ss_root #formula {
+    border: 0 none;
+    font: 12px "Helvetica Neue",Palatino,sans-serif;
+    padding: 3px;
+}
+.ss_root #functions {
+    background: none repeat scroll 0 0 #EEEEEE;
+    border-style: outset;
+    border-width: 0 1px;
+    font: 12px "Helvetica Neue",Palatino,sans-serif;
+    height: 20px;
+    width: 40px;
+}
+.ss_root #marker {
+    background: none repeat scroll 0 0 #000000;
+    display: none;
+    height: 100%;
+    position: absolute;
+    width: 2px;
+}
+.ss_root .datacontainer {
+    overflow-y: scroll;
+}
+.ss_root, .container {
+    overflow: hidden;
+}
+.ss_root #drag {
+    background: none repeat scroll 0 0 blue;
+    cursor: pointer;
+    display: none;
+    height: 6px !important;
+    position: fixed;
+    width: 6px;
+    z-index: 9999;
+}
+.ss_root #toolbar a:hover {
+    background-color: #FFFFFF;
+    border: 1px solid #BBBBBB;
+}
+.ss_root #toolbar a {
+    background-position: center center;
+    background-repeat: no-repeat;
+    border: 1px solid transparent;
+    cursor: pointer;
+    display: block;
+    float: left;
+    height: 16px;
+    margin: 2px;
+    padding: 2px;
+    width: 16px;
+}
+.ss_root #toolbar a.separator {
+    border-left: 1px solid #999999;
+    border-right: 1px solid #FFFFFF;
+    cursor: default;
+    height: 18px;
+    margin: 3px;
+    padding: 0;
+    width: 0 !important;
+}
+.ss_root .rows {
+    height: 100%;
+    width: 25px;
+}
+.ss_root #box {
+    background: none repeat scroll 0 0 #DDDDDD !important;
+    border-bottom: 1px solid #AAAAAA;
+    border-right: 1px solid #AAAAAA;
+    height: 20px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 24px;
+    z-index: 999;
+}
+.ss_root #toolbar .revocation {
+    background: url("./img/revocation.png") no-repeat;
+}
+.ss_root #toolbar .delete {
+    background: url("./img/delete.png") no-repeat;
+}
+.ss_root #toolbar .export {
+    background: url("./img/export.png") no-repeat;
+}
+.ss_root #toolbar .style {
+    background: url("./img/style.png") no-repeat;
+}
+.ss_root #toolbar .graph {
+    background: url("./img/graph.png") no-repeat;
+}
+.ss_root #toolbar .condition {
+    background: url("./img/condition.png") no-repeat;
+}
+.ss_root #toolbar .format {
+    background: url("./img/format.png") no-repeat;
+}
+.ss_root #toolbar .pageset {
+    background: url("./img/pageset.png") no-repeat;
+}
+.ss_root #toolbar .print {
+    background: url("./img/print.png") no-repeat;
+}
+.ss_root #toolbar .printview {
+    background: url("./img/printview.png") no-repeat;
+}
+.ss_root #toolbar .email {
+    background: url("./img/email.png") no-repeat;
+}
+.ss_root .dragleft {
+    border-left: 1px dashed #000000 !important;
+}
+.ss_root .dragright {
+    border-right: 1px dashed #000000 !important;
+}
+.ss_root .dragtop {
+    border-top: 1px dashed #000000 !important;
+}
+.ss_root .dragbottom {
+    border-bottom: 1px dashed #000000 !important;
+}
+.ss_root .current div {
+    opacity: 1 !important;
+}
+.ss_root .selected {
+    background: none repeat scroll 0 0 #D2E9FF;
+    opacity: 0.5;
+}
+.ss_root th.highlight, .ss_root td.highlight {
+    background: none repeat scroll 0 0 #666666 !important;
+}
+.clearfix:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+.clearfix {
+    display: inline-block;
+}

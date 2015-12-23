@@ -1,0 +1,28 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3><a class="more" target="navTab" rel="" title="待办事务" href="__APP__/MisWorkMonitoring/index">更多</a><a class="expand" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <div class="part_content">
+        <div id="schedule">
+	          <if condition="$taskList">
+					<div class="data">
+						<ul>
+							<volist name="taskList" id="task">
+								<li class="clearfix">
+									<a class="clearfix" target="navTab" rel="{$task.tablename}" title="{$task.tablename|getFieldBy='name','title','node'}" href="{$task['url_a']}"><span class="hellip"> 【{$task['orderno']}】{$task.tablename|getFieldBy='name','title','node'}         发起人：{$task.createid|getFieldBy='id','name','user'}</span><em>已停留:{$task['time_last']}</em></a>
+								</li>
+							</volist>
+						</ul>
+					</div>
+				<else/>
+					<div class="noData">
+						没有待办事项
+					</div>
+			</if> 
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

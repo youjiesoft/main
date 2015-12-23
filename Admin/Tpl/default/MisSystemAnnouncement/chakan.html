@@ -1,0 +1,10 @@
+<div class="page">
+		<div class="pageFormContent" layoutH="58">
+			<div style="width:auto;height:auto; text-align:center; font-size: 16px; font-family: 微软雅黑;">{$vo['title']}</div>
+			<div style=" width:auto; height:auto; text-indent: 2em;">
+				<div style="width:auto; height:auto; padding:10px 10px 0px 10px; line-height: 20px;">{$vo['content']}</div>
+			</div>
+			<div><span class="fr">  发布者：{$vo['createid']|getFieldBy='id','name','user'}</span></div>
+			<div><span class="fr">{$vo['createtime']|transTime='Y-m-d H:i:s}</span></div>
+		</div>
+</div>

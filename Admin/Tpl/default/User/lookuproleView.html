@@ -1,0 +1,46 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$userroleaccesstree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+			check: {
+				enable: true,
+				chkboxType: {"Y":"ps","N":"ps"}
+			},
+			callback: {
+				onCheck: zTreeOnCheck
+			}
+		};
+	$.fn.zTree.init($("#lookuproleViewtree"), setting, zNodes);
+});
+function zTreeOnCheck(event, treeId, treeNode) {
+}
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+<div class="treeleft">
+<div class="collapse" layoutH="0">
+	<div class="toggleCollapse"><div></div></div>
+</div>
+<div class="close">
+	<div class="toggleCollapse" ><h2></h2><div></div></div>
+	<div class="clearfix p5">
+		<input class="tree-search-input" type="text" id="userrole_rightSearchNodeKeys" />
+		<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('lookuproleViewtree','userViewroleSearchNodeKeys')" type="button">搜索</button>
+		</div>
+		<ul id="lookuproleViewtree" class="ztree" layoutH="44"></ul>
+	</div>
+</div>
+<div id="lookuproleViewuserroleaccessright" style="overflow:hidden;" class="unitBox treeright">
+	<include file="userroleAccessRight"  />
+</div>
+</div>
+

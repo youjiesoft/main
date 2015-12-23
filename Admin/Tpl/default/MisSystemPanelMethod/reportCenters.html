@@ -1,0 +1,32 @@
+<li class="xypart">
+  <input type="hidden" name="panelsort[]" value="{$sort}">
+	<div class="part_title">
+		<h3>
+			<a class="expand" href="#"></a>
+			<span class="expand">报表中心</span>
+		</h3>
+	</div>
+	<div class="" style="height:202px;" >
+		<div id="schedule">
+			<div class="xypreferences">
+				<!-- <h3>常用</h3> -->
+				<ul class="clearfix xyuseapp">
+					<volist id="vo" name="rightList"> <if
+						condition="$vo['title'] && $vo['icon']">
+					<li>
+						<a href="__APP__/{$vo['name']}/index" target="navTab" rel="{$vo['name']}_index"
+							title="{$vo['title']}">
+							<img alt="{$vo['title']}" height="64"
+								src="__PUBLIC__/Images/xyicon/{$vo['icon']}" width="64" />
+							<span>{$vo['title']}</span>
+						</a>
+					</li>
+					</if> </volist>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="part_foot">
+		<div class="part_footer"></div>
+	</div>
+</li>

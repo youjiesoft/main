@@ -1,0 +1,20 @@
+<div class="pageContent">
+	<table width="100%" class="table" >
+        <thead>
+            <tr>
+                <th class="rw_mc">任务名称</th>
+                <th class="rw_mc">任务数量</th>
+            </tr>
+        </thead>
+        <tbody>
+        <volist id="vo" name="list">
+            <tr>
+                <td class="rw_mc">{$vo['name']}</td>
+                <td class="rw_mc">(<a href="{$vo['url']}" target="navTab" rel="MisSalesProject" title="{$vo['name']}">{$vo['count']}</a>)</td>
+            </tr>
+        </volist>
+        </tbody>
+    </table>
+</div>
+
+

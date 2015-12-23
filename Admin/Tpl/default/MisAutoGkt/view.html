@@ -1,0 +1,114 @@
+		<style>
+		.tml-form-row label.tmp_label{margin-left:0px;width: 120px;float: none;font: 14px/30px "Microsoft Yahei","微软雅黑",sans-serif;}
+		.tml-form-row label.tmp_label:hover{color:#006699;}
+		</style>
+	<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisAutoGkt/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent"/>
+			<div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+				<div class="keepContentCenter form-affix-content">
+					<div class="contentTitle contentTitle_center form-affix-title">流程节点管理{:W('ShowOrderno',array(0,'mis_auto_hcfwc',$vo['orderno']))}
+					</div><style>
+.cell_left{
+    text-align: center;
+}
+.cell_right{
+    color:#0090ff;
+}
+</style>
+
+<table class="data-table" width="100%" cellspacing="0" style="line-height:32px;" >
+	<tbody>
+		<tr>
+			<td class="cell_left" width="12%">名称:</td>
+			<td class="cell_right" width="21%" >{$vo['name']}</td>
+			<td class="cell_left" width="12%">上级工作流类型:</td>
+			<td class="cell_right" width="21%" >{$vo['supcategory']}</td>
+			<td class="cell_left" width="12%">子级工作流类型:</td>
+			<td class="cell_right" width="21%" >{$vo['category']}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">对应模板:</td>
+			<td class="cell_right" width="21%" >{$vo['modelname']}</td>
+			<td class="cell_left" width="12%">父任务id:</td>
+			<td class="cell_right" width="21%" >{$vo['parentid']}</td>
+			<td class="cell_left" width="12%">是否为子任务:</td>
+			<td class="cell_right" width="21%" colspan="5">{$vo['summary']|getSelectlistValue='debit'}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">几个工作日:</td>
+			<td class="cell_right" width="21%" >{$vo['days']}</td>
+			<td class="cell_left" width="12%">计划开始时间:</td>
+			<td class="cell_right" width="21%" >{$vo['begintime']|transtime='Y-m-d'}</td>
+			<td class="cell_left" width="12%">计划结束时间:</td>
+			<td class="cell_right" width="21%" >{$vo['endtime']|transtime='Y-m-d'}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">大纲数字:</td>
+			<td class="cell_right" width="21%" >{$vo['outlinenumber']}</td>
+			<td class="cell_left" width="12%">大纲级别:</td>
+			<td class="cell_right" width="21%" >{$vo['outlinelevel']}</td>
+			<td class="cell_left" width="12%">只读:</td>
+			<td class="cell_right" width="21%" colspan="5">{$vo['readyonly']|getSelectlistValue='debit'}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">完成百分比:</td>
+			<td class="cell_right" width="21%" >{$vo['percentcomplete']}</td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">任务备注:</td>
+			<td class="cell_right" width="21%" colspan="5"><pre>{$vo['notes']}</pre></td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">任务的限制类型:</td>
+			<td class="cell_right" width="21%" >{$vo['constrainttype']|getSelectlistValue='debit'}</td>
+			<td class="cell_left" width="12%">超级链接的文本:</td>
+			<td class="cell_right" width="21%" >{$vo['hyperlink']}</td>
+			<td class="cell_left" width="12%">超级链接的URL:</td>
+			<td class="cell_right" width="21%" >{$vo['hyperlinkurl']}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">任务的显示样式:</td>
+			<td class="cell_right" width="21%" >{$vo['classname']}</td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">是否是关键任务:</td>
+			<td class="cell_right" width="21%" colspan="5">{$vo['critical']|getSelectlistValue='debit'}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">客户主体编码:</td>
+			<td class="cell_right" width="21%" >{$vo['custtypeid']}</td>
+			<td class="cell_left" width="12%">行业编码:</td>
+			<td class="cell_right" width="21%" >{$vo['hyid']}</td>
+			<td class="cell_left" width="12%">产业链编码:</td>
+			<td class="cell_right" width="21%" >{$vo['cylid']}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">任务类型:</td>
+			<td class="cell_right" width="21%" colspan="5">{$vo['formtype']|getSelectlistValue='debit'}</td>
+		</tr>
+		<tr>
+			<td class="cell_left" width="12%">印章编码:</td>
+			<td class="cell_right" width="21%" >{$vo['yzid']}</td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+			<td class="cell_left" width="12%"></td>
+			<td class="cell_right" width="21%" ></td>
+		</tr>
+	</tbody>
+</table>
+		{:W('ShowAction')}
+				</div>
+			</div>
+		</form>
+	</div>
+	</div>

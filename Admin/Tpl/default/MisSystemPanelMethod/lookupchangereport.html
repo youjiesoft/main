@@ -1,0 +1,67 @@
+<script>
+function remindreportcallback(json){
+	DWZ.ajaxDone(json);
+	if (json.statusCode == DWZ.statusCode.ok) {
+		dialogAjaxDone(json);
+		$("#xywrap").loadUrl(TP_APP+"/Index/lookupuserindex/workbench/0",{},function(){
+	    	$("#xywrap").find("[layoutH]").layoutH();});
+	}
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__APP__/Index/lookupremind/step/report" class="pageForm required-validate" onsubmit="return validateCallback(this,remindreportcallback);">
+			<div class="pageFormContent " layoutH="55">
+				<ul>
+				<volist name="remindUserAllList" id="remindUserAll" key="i">
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>{$key}：</b></legend>
+						<div class="clearfix" style="margin:0 0 0 72px;">
+							<volist name="remindUserAllList[$key]" id="remin">	
+								<if condition="$reportmethod ">
+									<li>
+										<label>
+											<input  <if condition="$reportmethod eq $remin['methodname']">checked="checked"  </if> type="radio" value="{$remin['methodname']}" name="reportmethod">{$remin['title']} 
+										</label>
+									</li>
+								<else/>
+									<li>
+										<label>
+											<input  <if condition="$i eq 1">checked="checked"  </if> type="radio" value="{$remin['methodname']}" name="reportmethod">{$remin['title']} 
+										</label>
+									</li>
+								</if>
+							</volist>
+						</div>
+				</fieldset>
+				<!-- <li>
+				<if condition="$reportmethod ">
+				<input  <if condition="$reportmethod eq $remindUserAll['methodname']">checked="checked"  </if> type="radio" value="{$remindUserAll['methodname']}" name="reportmethod">{$remindUserAll['title']} 
+				<else/>
+				<input  <if condition="$i eq 1">checked="checked"  </if> type="radio" value="{$remindUserAll['methodname']}" name="reportmethod">{$remindUserAll['title']} 
+				</if>
+				</li> -->
+				</volist>
+				</ul>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li>
+						<div class="buttonActive">
+							<div class="buttonContent">
+								<button type="submit">保存</button>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

@@ -1,0 +1,28 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="navTab" rel="MisFileManager" title="文档管理" href="__APP__/MisFileManager/index"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand" href="#"></a><span
+class="expand">{$name}</span></h3>
+        <div id="panel_word" class="tml_panel_word">
+            <a class="" href="#" onclick="getDoc(this,1)">最新文档</a>&nbsp;
+            <a class="" href="#" onclick="getDoc(this,2)" title="文档管理">个人文档</a>&nbsp;
+            <a class="" href="__APP__/MisFileManager/index/pid/5/cid/5/share/share" target="navTab" rel="MisFileManager" title="文档管理">共享文档</a>&nbsp;
+            <a class="" href="__APP__/MisFileManager/index/pid/2/cid/2/share/share" target="navTab" rel="MisFileManager" title="文档管理">单位文档</a>
+        </div>
+    </div>
+    <!--<div class="tml_bottom_style"></div>-->
+    <div class="part_content">
+
+        <div>
+        <!--<div class="divider-content"><span></span></div>-->
+		<div class="js-panelmethod" style="height: 140px;overflow:hidden;">
+           <div class="data nbm" id="work">
+           		<include file="MisSystemPanelMethod:workplatformindex" />
+			</div>
+        </div>
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

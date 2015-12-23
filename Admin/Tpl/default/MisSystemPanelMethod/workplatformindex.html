@@ -1,0 +1,46 @@
+<if condition="$snlist">
+	<if condition="$type eq 2">
+		<ul class="company_content_ul1 tml_uli_show4">
+			<volist name="snlist" id="vo">
+				<li>
+						{$vo.name}
+						<span class="right">
+					<if condition="$_SESSION.a eq 1 or in_array($vo['id'],$managerfid) or ($vo['category'] eq 1 && $vo['createid'] eq $_SESSION.authId)">
+						<a height="400" width="660" mask="true" title="" target="dialog" rel="lookupWriteAss" href="__APP__/MisFileManager/lookupWriteAss/id/{$vo['id']}">[属性]</a>
+					</if>
+					<if condition="$vo.type eq 2 &&( $ifread gt 1 or $vo.ifread gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))">
+						&nbsp;{$vo['filepath']}
+					<elseif condition="$vo.type eq 0 && $vo.isplay eq 1 &&( $ifread gt 1 or $vo.ifread gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))" />
+						&nbsp;<a style="cursor:pointer;" rel="__APP__/MisFileManager/playSWF/name/{$vo.codeurl}/filename/{$vo.name}" onclick="openNewWindowsDisplayFile(this)">在线查看</a>
+					</if>
+					<if condition="$vo.type eq 0 &&( $ifexecute gt 1 or $vo.ifexecute gt 0 or $_SESSION.a eq 1 or in_array($vo['id'],$managerfid))">
+						&nbsp;<a title="{$vo.name}" title="" href="__APP__/MisFileManager/misFileManageDownload/path/{$vo.codeurl}/rename/{$vo.name}" target="_blank">下载</a>
+					</if>
+				</span>
+				</li>
+			</volist>
+		</ul>
+	<else/>
+	<!-- 共享文件夹 -->
+		<ul class="company_content_ul tml_uli_show4">
+			<volist name="snlist" id="flist">
+				<li>
+					<span class="right">
+						<if condition="$flist.online"><!-- 规定的文件才能在线查看 -->
+							<a style="cursor:pointer;" rel="__URL__/playSWF/name/{$flist.codeurl}/filename/{$flist.name}" onclick="openNewWindowsDisplayFile(this)">在线查看</a>
+						</if>
+						<if condition="$flist.type eq 0 &&( $ifexecute gt 1 or $flist.ifexecute gt 0 or $_SESSION.a eq 1 or in_array($flist['id'],$managerfid))">
+						    <a title="{$flist.name}" title="" href="__APP__/MisFileManager/misFileManageDownload/path/{$flist.codeurl}/rename/{$flist.name}" target="_blank">下载</a>
+					    </if>
+					</span>
+					{$flist.name}
+				</li>
+			</volist>
+		</ul>
+	</if>
+<else/>
+	<div class="noData">
+		没有共享文件
+	</div>
+</if>
+	

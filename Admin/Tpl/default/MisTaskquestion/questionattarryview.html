@@ -1,0 +1,21 @@
+<div class="page">
+    <div class="pageContent">
+        <div class="pageFormContent" layoutH="95">
+            <dl class="nowrap">
+                <dt><label>&nbsp;</label></dt>
+                <dd>
+                    <if condition="$attarry">
+                        <volist name="attarry" id="att">
+                            <p style="padding:0;"><label>附件{$key+1}</label><a class="attlink" rel="{$att['id']}" target="_blank" href="__PUBLIC__/{$att['attached']}"><span class="info">{$att['upname']}</span></a></p>
+                        </volist>
+                    <else/>
+                        <div class="unit">
+                            <label>&nbsp;&nbsp;</label>
+                            <span>未上传附件</span>
+                        </div>
+                    </if>
+                </dd>
+            </dl>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+<form id="pagerForm" action="__URL__/lookupmanage" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" onsubmit="return divSearch(this, 'positiveBox');" action="__URL__/lookupmanage" method="post">
+		<input type="hidden" name="jump" value="1">
+		<input type="hidden" name="deptid" value="{$deptid}">
+		<input type="hidden" name="parentid" value="{$parentid}">
+		<div class="searchBar" style="margin-top:3px; ">
+			<table class="searchContent">
+				<tr>
+					<td>
+						请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+					</td>
+					<td>
+						<select class="combox" name="searchby">
+							<volist id="vou" name="searchbylist">
+								<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+							</volist>
+						</select>
+					</td>
+					<td>
+						<input name="searchtype" type="hidden" value="2" />			
+						<!-- <select class="combox" name="searchtype">
+							<volist id="voty" name="searchtypelist">
+								<option value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+							</volist>
+						</select> -->
+					</td>
+					<td><button class="xySearch" type="submit">{$Think.lang.subsearch}</button></td>
+				</tr>
+			</table>
+		</div>
+	</form>
+</div>
+<div class="" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+	<table class="table" width="99%" layoutH="104">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>员工编号</th>
+				<th>员工姓名</th>
+				<th>部门</th>
+				<th>职级</th>
+				<th>职务</th>
+				<th>入职时间</th>
+				<th>转正时间	</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr>
+				<td>{$vo['id']}</td>
+				<td>{$vo['orderno']}</td>
+				<td>{$vo['name']}</td>
+				<td>{$vo['deptname']}</td>
+				<td>{$vo['dutyname']}</td>
+				<td>{$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}</td>
+				<td>{$vo['indate']|transTime}</td>
+				<td>{$vo['transferdate']|transTime}</td>
+				<td>
+					<a class="btnSelect"
+						href="javascript:$.bringBack({ mangid:'{$vo.id}',accounttypename:'{:getSelectByname('accounttype',$vo['accounttype'])}',accounttype:'{$vo.accounttype}', name:'{$vo.name}' ,sex:'{$vo.sex|getS}',deptid:'{$vo.deptid}',deptname:'{$vo.deptname}',tel:'{$vo.mobilephone}',chinaid:'{$vo.chinaid}',address:'{$vo.address}',householdregister:'{$vo.householdregister}',dutyid:'{$vo.dutyid}',dutyname:'{$vo.dutyname}',dutylevelname:'{$vo.dutylevelname}',transferdate:'{$vo[transferdate]|transTime}',indate:'{$vo[indate]|transTime}'})"
+						title="查找带回">选择</a>
+				</td>
+			</tr>
+		</volist>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="positiveBox" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

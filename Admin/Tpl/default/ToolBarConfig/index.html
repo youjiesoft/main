@@ -1,0 +1,40 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$returnarr};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#ToolBarConfigtree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("ToolBarConfigtree");
+	var valid='{$check}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+</script>
+
+<div class="pageContent">
+	{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="close">
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="ToolBarConfigSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('ToolBarConfigtree','ToolBarConfigSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="ToolBarConfigtree" class="ztree" layoutH="148"></ul>
+		</div>
+	</div>
+	<div id="ToolBarConfigBox" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Spacetree - Style Animations</title>
+
+<link type="text/css" href="__PUBLIC__/Css/jit_base.css" rel="stylesheet" />
+<link type="text/css" href="__PUBLIC__/Css/jit_Spacetree.css" rel="stylesheet" />
+<link type="text/css" href="__PUBLIC__/Css/jquery.contextMenu.css" rel="stylesheet" />
+
+<!--[if IE]><script language="javascript" type="text/javascript" src="__PUBLIC__/Js/Extras/excanvas.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="__PUBLIC__/Js/jit.js"></script>
+
+<script language="javascript" type="text/javascript" src="__PUBLIC__/Js/jqueryrightclick/jquery-1.7.1.min.js"></script>
+<script language="javascript" type="text/javascript" src="__PUBLIC__/Js/jqueryrightclick/jquery.ui.position.js"></script>
+<script language="javascript" type="text/javascript" src="__PUBLIC__/Js/jqueryrightclick/jquery.contextMenu.js"></script>
+<script language="javascript" type="text/javascript" src="__PUBLIC__/Js/jqueryrightclick/screen.js"></script>
+<script language="javascript" type="text/javascript" src="__PUBLIC__/Js/jqueryrightclick/prettify.js"></script>
+<script language="javascript" type="text/javascript">
+
+    var labelType, useGradients, nativeTextSupport, animate;
+
+(function() {
+  var ua = navigator.userAgent,
+      iStuff = ua.match(/iPhone/i) || ua.match(/iPad/i),
+      typeOfCanvas = typeof HTMLCanvasElement,
+      nativeCanvasSupport = (typeOfCanvas == 'object' || typeOfCanvas == 'function'),
+      textSupport = nativeCanvasSupport
+        && (typeof document.createElement('canvas').getContext('2d').fillText == 'function');
+  labelType = (!nativeCanvasSupport || (textSupport && !iStuff))? 'Native' : 'HTML';
+  nativeTextSupport = labelType == 'Native';
+  useGradients = nativeCanvasSupport;
+  animate = !(iStuff || !nativeCanvasSupport);
+})();
+
+function init(){
+    //init data
+    var json ={$jsontree};
+    $jit.ST.Plot.NodeTypes.implement({
+      'stroke-rect': {
+        'render': function(node, canvas) {
+          var width = node.getData('width'),
+              height = node.getData('height'),
+              pos = this.getAlignedPos(node.pos.getc(true), width, height),
+              posX = pos.x + width/2,
+              posY = pos.y + height/2;
+          this.nodeHelper.rectangle.render('fill', {x: posX, y: posY}, width, height, canvas);
+          this.nodeHelper.rectangle.render('stroke', {x: posX, y: posY}, width, height, canvas);
+        }
+      }
+    });
+    //end
+    //init Spacetree
+    //Create a new ST instance
+    var st = new $jit.ST({
+        //id of viz container element
+        injectInto: 'infovis',
+        //set distance between node and its children
+        levelDistance: 50,
+        orientation: 'right',
+        //set an X offset
+        offsetX: -400,
+        constrained:true,
+        levelsToShow:10,
+        duration: 300,
+        //set node, edge and label styles
+        //set overridable=true for styling individual
+        //nodes or edges
+        Node: {
+            overridable: true,
+            //type: 'stroke-rect',
+            type: 'rectangle',
+            height: 20,
+            width: 100,
+            //canvas specific styles
+            CanvasStyles: {
+              fillStyle: '#daa',
+              strokeStyle: '#ffc',
+              lineWidth: 1
+            }
+        },
+        Edge: {
+            overridable: true,
+            type: 'line',
+            color: '#000',
+            lineWidth: 1
+        },
+        Label: {
+           // type: labelType,
+            style: 'bold',
+            size: 12,
+            color: '#333'
+        },
+        //This method is called on DOM label creation.
+        //Use this method to add event handlers and styles to
+        //your node.
+        onCreateLabel: function(label, node){
+            label.innerHTML = node.name;
+            //set label styles
+            var style = label.style;
+            style.width = 60 + 'px';
+            style.height = 17 + 'px';
+            style.color = '#333';
+            style.fontSize = '12px';
+            style.textAlign= 'center';
+            style.cursor = 'pointer';
+            style.paddingTop = '3px';
+        },
+        onPlaceLabel: function(label, node) {
+          var style = label.style;
+          style.width = node.getData('width') + 'px';
+          style.height = node.getData('height') + 'px';
+          style.color = node.getLabelData('color');
+          style.fontSize = node.getLabelData('size') + 'px';
+          style.textAlign= 'center';
+          style.paddingTop = '3px';
+        }
+    });
+    //load json data
+    st.loadJSON(json);
+    //compute node positions and layout
+    st.compute();
+    //emulate a click on the root node.
+    st.onClick(st.root);
+    //end
+}
+
+
+
+function beginload(){
+    init();
+    $.contextMenu({
+        selector: '.node',
+        callback: function(key, options) {
+        },
+        items: {
+            "add": {
+                name: "添加子级",
+                icon: "add",
+                callback: function(key, options) {
+                    var idss=$(this).attr('id');
+                    parent.openaddpage(idss);
+                },
+            },
+            "edit": {
+                name: "编辑",
+                icon: "edit",
+                callback: function(key, options) {
+                    var idss=$(this).attr('id');
+                    $("ul.context-menu-root").css("diaplay","none");
+                    parent.openeditpage(idss);
+                },
+            },
+            "import": {
+                name: "导入",
+                icon: "import",
+                callback: function(key, options) {
+                    var idss=$(this).attr('id');
+                    parent.openimportpage(idss);
+                },
+            }
+        }
+    });
+}
+</script>
+</head>
+<body onload="beginload();">
+<div id="container">
+<div id="center-container">
+    <div id="infovis"></div>
+</div>
+<div id="log"></div>
+</div>
+<!--右键菜单的源-->
+</body>
+</html>

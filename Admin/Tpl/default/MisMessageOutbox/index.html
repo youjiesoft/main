@@ -1,0 +1,190 @@
+<style>
+
+.Rc{
+	float:right;
+	width:20px;
+	padding-right:10px;
+	background: url("__PUBLIC__/Images/icon/mail_check.png") no-repeat 0 transparent;
+    
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: transparent;
+
+    background-origin: padding-box;
+    background-size: auto auto;
+    
+}
+</style>
+<script>
+function lookupmessageoutboxdetail(id){
+	$("#mismessageoutboxdetail").attr("href","__URL__/lookupreadmessage/id/"+id);
+	$("#mismessageoutboxdetail").click();
+}
+$(document).ready(function() {
+	//阻止冒泡,
+	$("#returnmessageoutbox").click(function(event){
+		event.preventDefault();
+	});
+})
+</script>
+
+
+<div id="messageinboxindexdiv">
+<div class="pageContent" id="mismessageoutbox_index">
+	<form id="pagerForm" action="__URL__/index" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li><a class="tml-btn tml_mp tml_look_btn" title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage" class="delete tbmaildel"><span class="tml_lp icon-trash">&nbsp;{$Think.lang.del}</span></a></li>
+			<li><a class="tml-btn tml_mp tml_look_btn" title="删除了就无法恢复，确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage/deleter/1" class="delete tbmaildel"><span class="tml_lp icon-inbox"> 彻底{$Think.lang.del}</span></a></li>
+            <li style="diapaly:none;" class="tml_none_border">
+				<a id="mismessageoutboxdetail" class="tbmaildel" target="ajax" title="快速模式" rel="jbsxBoxMessage" >
+				</a>
+			</li>
+        </ul>
+        <form rel="pagerForm" onsubmit="return divSearch(this,'jbsxBoxMessage');" action="__URL__/index/frame/1" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="searchby">
+								<volist id="vou" name="searchbylist">
+									<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+								</volist>
+							</select>
+						</td>
+                        <td class="tml_select_option_center">
+                            <div><input type="text" placeholder="请输入关键字" name="keyword" value="{$keyword}" /></div>
+                        </td>
+						<td>
+							<input name="searchtype" type="hidden" value="2" />
+						</td>
+						<td class="tml_select_option_right"><button class="xySearch" type="submit"><i class="icon-search"></i></button></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+	<div class="clearfix">
+		<div class="xyMailTable">
+			<table class="xyTable" width="100%" style="table-layout:fixed;">
+				<thead>
+					<tr>
+						<th style="width:30px;padding-left: 12px;"><input type="checkbox" group="id" class="checkboxCtrl"></th>
+						<th style="width:70px;">编号</th>
+						<th style="width:100px;">收件人</th>
+						<th style="width:580px;">主题</th>
+						<th style="width:150px;">时间</th>
+						<th style="width:150px;">操作</th>
+					</tr>
+				</thead>
+            </table>
+            <div layoutH="146">
+                <table class="tml-table-w">
+    				<tbody id="messageTablelist">
+				    	<volist id="vo" name="list">
+						<tr target="sid_node" rel="{$vo.id}">
+							<td style="width:30px;padding-left: 12px;"><input type="checkbox" value="{$vo.id}" name="id"></td>
+							<td style="width:70px;" onclick="lookupmessageoutboxdetail({$vo.id})">{$vo.id}</td>
+							<td style="width:100px;" onclick="lookupmessageoutboxdetail({$vo.id})"><if condition="$vo.returnmessage eq 0"><span style="color:blue;">【邮件被撤回】&nbsp;</span></if>{$vo.sendid|getFieldBy='id','recipientname','MisMessage'|missubstr=###,80,true}</td>
+							<td style="width:580px;" onclick="lookupmessageoutboxdetail({$vo.id})">{$vo.sendid|getFieldBy='id','title','MisMessage'|missubstr=###,80,true}</td>
+							<td style="width:150px;" onclick="lookupmessageoutboxdetail({$vo.id})">{$vo.createtime|transTime='Y-m-d H:i:s'}</td>
+							<td style="width:150px;" id="messageoutboxaction">
+								<a class="edit tbmailread tml_cza" title="查看收件人查看状态" href="__URL__/showReadedMesaage/idGroup/{$vo.sendid|getFieldBy=\'id\',\'recipient\',\'MisMessage\'}/messageID/{$vo.sendid}" width="620" height="450" target="dialog" mask="true" warn="请选择数据" ><span>查看</span></a>
+								| <a class="tbmailreply tml_cza" rel="" href="__APP__/MisMessageInbox/replyMessage/id/{$vo.id}/transpond/1/outbox/1" mask="true" target="dialog" width="800" height="630"><span>转发</span></a>
+								| <if condition="$vo.returnmessage eq 1"><a class="tml_cza" id="returnmessageoutbox" title="确定是否要撤回邮件?" target="ajaxTodo" href="__URL__/returnmessageoutbox/id/{$vo.id}/rel/jbsxBoxMessage" ><span>撤回</span></a><else/><span>已撤回</span></if>
+							</td>
+						</tr>
+					</volist>
+    				</tbody>
+    			</table>
+            </div>
+          <div class="panelBar panelPageBar">
+				<div class="pages">
+					<span>共{$totalCount}条</span>
+				</div>
+			    <div class="pagination" rel="mismessageoutbox_index" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+
+
+<!-- 
+<div class="pageContent" id="mismessageoutbox_index">
+	<form id="pagerForm" action="__URL__/index" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li><a class="tml-btn tml_mp tml_look_btn" title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage" class="delete tbmaildel"><span class="tml_lp icon-trash">&nbsp;{$Think.lang.del}</span></a></li>
+			<li><a class="tml-btn tml_mp tml_look_btn" title="删除了就无法恢复，确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete/rel/jbsxBoxMessage/deleter/1" class="delete tbmaildel"><span class="tml_lp icon-inbox"> 彻底{$Think.lang.del}</span></a></li>
+            <li style="diapaly:none;" class="tml_none_border">
+				<a id="mismessageoutboxdetail" class="tbmaildel" target="ajax" title="快速模式" rel="jbsxBoxMessage" >
+				</a>
+			</li>
+        </ul>
+        <form rel="pagerForm" onsubmit="return divSearch(this,'jbsxBoxMessage');" action="__URL__/index/frame/1" method="post">
+			<div class="searchBar">
+				<table class="searchContent">
+					<tr>
+						<td class="tml_select_option_left">
+							<select class="combox" name="searchby">
+								<volist id="vou" name="searchbylist">
+									<option value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+								</volist>
+							</select>
+						</td>
+                        <td class="tml_select_option_center">
+                            <div><input type="text" placeholder="请输入关键字" name="keyword" value="{$keyword}" /></div>
+                        </td>
+						<td>
+							<input name="searchtype" type="hidden" value="2" />
+						</td>
+						<td class="tml_select_option_right"><button class="xySearch" type="submit"><i class="icon-search"></i></button></td>
+					</tr>
+				</table>
+			</div>
+		</form>
+	</div>
+<table class="table" width="100%" layoutH="144">
+<thead>
+	<tr>
+		<th style="width:30px;padding-left: 12px;"><input type="checkbox" group="id" class="checkboxCtrl"></th>
+		<th style="width:70px;">编号</th>
+		<th style="width:100px;">收件人</th>
+		<th style="width:580px;">主题</th>
+		<th style="width:150px;">时间</th>
+		<th style="width:150px;">操作</th>
+	</tr>
+</thead>
+<tbody>
+	<volist id="vo" name="list">
+		<tr target="sid_node" rel="{$vo.id}">
+			<td style="width:30px;padding-left: 12px;"><input type="checkbox" value="{$vo.id}" name="id"></td>
+			<td style="width:70px;" onclick="lookupmessageoutboxdetail({$vo.id})">{$vo.id}</td>
+			<td style="width:100px;" onclick="lookupmessageoutboxdetail({$vo.id})"><if condition="$vo.returnmessage eq 0"><span style="color:blue;">【邮件被撤回】&nbsp;</span></if>{$vo.sendid|getFieldBy='id','recipientname','MisMessage'|missubstr=###,80,true}</td>
+			<td style="width:580px;" onclick="lookupmessageoutboxdetail({$vo.id})">{$vo.sendid|getFieldBy='id','title','MisMessage'|missubstr=###,80,true}</td>
+			<td style="width:150px;" onclick="lookupmessageoutboxdetail({$vo.id})">{$vo.createtime|transTime='Y-m-d H:i:s'}</td>
+			<td style="width:150px;" id="messageoutboxaction">
+				<a class="edit tbmailread tml_cza" title="查看收件人查看状态" href="__URL__/showReadedMesaage/idGroup/{$vo.sendid|getFieldBy=\'id\',\'recipient\',\'MisMessage\'}/messageID/{$vo.sendid}" width="620" height="450" target="dialog" mask="true" warn="请选择数据" ><span>查看</span></a>
+				| <a class="tbmailreply tml_cza" rel="" href="__APP__/MisMessageInbox/replyMessage/id/{$vo.id}/transpond/1/outbox/1" mask="true" target="dialog" width="800" height="630"><span>转发</span></a>
+				| <if condition="$vo.returnmessage eq 1"><a class="tml_cza" id="returnmessageoutbox" title="确定是否要撤回邮件?" target="ajaxTodo" href="__URL__/returnmessageoutbox/id/{$vo.id}/rel/jbsxBoxMessage" ><span>撤回</span></a><else/><span>已撤回</span></if>
+			</td>
+		</tr>
+	</volist>
+</tbody>
+</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+	    <div class="pagination" rel="mismessageoutbox_index" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>-->

@@ -1,0 +1,244 @@
+<style>
+/**
+*预定课程管理
+
+**/
+
+.close form{
+	padding:5px;
+}
+.close form li span{
+	color: #3f3f3f;
+	display:inline-block;
+	width:140px;
+	border-bottom: 1px dashed white;
+}
+.close li input{
+	color: #b13333;
+
+}
+
+.close .btn_submit{
+	float:right;
+	margin-top: 5px;
+}
+</style>
+
+<script type="text/javascript">
+
+	$("document").ready(function(){
+		// 全部选择的点击事件
+		$("input[name='chkall']").click(function(){
+			$("input[name='chked']").attr("checked", this.checked);
+		});
+	});
+
+	var row_cur_index = 0;// 插入行的当前索引
+	/**添加新行*/
+	function addNew(course_id,title){
+		var courseid= 0; //状态标记
+		/**查是已经定课**/
+		$("input[name='chked']").each(function(i,val){
+			if(val.value==course_id)
+			{	
+				alertMsg.warn(title+':课程你已经预定了！');
+				courseid = 1;
+				return false
+			}
+		});
+		
+		if(!courseid){
+			//这里要去请求个地址，把课程存入数据库， 这里请求的方法是：  function setPerson()  添加成功，把内容加到左边的订课区
+			$.ajax({
+			type: 'POST', //post方式
+			url:'__URL__/setPerson/jump/1/rel/mishrevaluationtrainmodel', //这里是对应出来的url地址
+			data:{trainid:course_id,courses_type:0},  //传递参数postid
+			dataType:"json",
+			success:function(json){
+				if(json.statusCode==DWZ.statusCode.ok){
+					//这里写插入到左边的代码
+					var tr_course_id = "tr" + row_cur_index; // 所插入行的id
+					var row_obj = "<li id='"+tr_course_id+"' ><input type='checkbox' class='ck_class' name='chked' value='"+course_id+"' /> <span> "+title+"</span><input type='button' onclick=delRow(\'#"+tr_course_id+"\') value='退订'></li>";
+					$("#leftCouresCar").append(row_obj); // 插入行
+					row_cur_index = row_cur_index + 1;
+				}
+			},
+			error:DWZ.ajaxError});
+		}	
+	}
+
+	/**将文本框值赋给同一行对应的复选框*/
+	function setValue(row_index, value){
+		var course_id = "#tr" + row_index;
+		$(course_id).find(":checked").val(value);
+	}
+	
+	/**删除行对象*/
+	function delRow(course_id,orderid){
+		alertMsg.confirm("是否将此订程删除?",{
+			okCall:function(){
+				//标记定的课程为-1取消定课
+				$.ajax({
+				type: 'POST', //post方式
+				url:'__URL__/lookupcancelPerson', //这里是对应出来的url地址
+				data:{couresid:orderid},  //传递参数postid
+				dataType:"json",
+				success:function(json){
+					DWZ.ajaxDone(json);
+					if(json.statusCode==DWZ.statusCode.ok){
+						//这里写插入到左边的代码
+						$(course_id).remove(); // 删除匹配course_id的元素
+					}
+				},
+				error:DWZ.ajaxError});
+			}
+		});
+	}
+
+	function doSubmit(frm){
+		/**判断复选框是否有选*/
+		if($("input[name='chked']:checked").size() == 0){
+			alert("选择不能少于一项");
+			return false;
+		}
+		try {
+			$("tr[id^='tr']").each(function(){
+				var tmp_row_index = this.id.substring(2); // 当前行索引
+				if($("#tr"+tmp_row_index).find(":checkbox").attr("checked")){
+					var patrn = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+					var input_value = $("input[name='newRow"+tmp_row_index+"']").val(); // 文本框值 
+					setValue(tmp_row_index, this.value);		
+					if(input_value == "") throw "Err1";
+					if (!patrn.test(input_value)) throw "Err2";
+				}
+			});
+		} catch (e) {
+			 if(e == "Err1") 
+				alert("添加的地址不能为空！");
+			if(e == "Err2") 
+				alert("请输入正确的邮件地址！");			 
+			 return false;
+		}
+		return true;
+	}
+	
+	//分类树结构
+	$(document).ready(function(){
+		var zNodes = {$typetree}; //控制器中，分配数据
+		var setting = {
+				view: {
+	               selectedMulti: false,
+	               fontCss: getFontCss
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#mis_hr_evaluation_train"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("mis_hr_evaluation_train");
+		var valid = '员工列表';
+	    var nodes = zTree.getNodesByParam("name", valid, null);
+	    zTree.selectNode(nodes[0]);
+	});
+	
+</script>
+<style>
+.leftFunctionArea {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 0;
+    margin-bottom: 1em;
+    color: #ffffff;
+}
+
+.leftFunctionArea ul {
+    list-style: disc;
+    margin: 0 auto;
+    margin-top:10px;
+    padding: 0;
+    width:180px;
+
+}
+
+.leftFunctionArea ul li {
+    margin: 5;
+    width:auto;
+}
+
+.leftFunctionArea ul li span{
+    display: block;
+    width:5px; 
+    height: 25px;
+    float:left;
+    border-left:5px solid #1c884d;
+    
+}
+
+.leftFunctionArea ul li a {
+    display: block;
+    padding: 2px 2px 2px 0.5em;
+    color: #636363;
+    text-decoration: none;
+    border-left:5px solid #477a86;
+    width: 100%;
+    margin:2px;
+    border-bottom: 1px dashed #7a7a7a;
+}
+
+html>body .leftFunctionArea ul li a {
+    width: auto;
+}
+
+.leftFunctionArea ul li a:hover {
+    border-left: 5px solid #0e63b8;
+    border-right: 1px solid #3466a3;
+    border-bottom: 1px solid #4175a7;
+    background-color: #33a553;
+    color: #fff;
+} 
+</style>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse" >
+				<h2></h2>
+				<div></div>
+			</div>
+			<h3 class="tml-h3">课程类型</h3>
+			<div style="height:120px;overflow:auto;position:relative;">
+				<ul id="mis_hr_evaluation_train" class="ztree"></ul>
+			</div>
+			<h3 class="tml-h3">导航区</h3>
+			<div style="height:100px;overflow:auto;position:relative;" class="leftFunctionArea">
+				<ul>
+                	<li><span></span><a target="ajax" href="__URL__/myCoursesList/jump/1/" rel="mishrevaluationtrainmodel" >我的历史课程</a></li>
+                </ul>
+			</div>
+			<h3 class="tml-h3">待上课程</h3>
+			<div layoutH="320">
+            	<form method="post" action="" onsubmit="return doSubmit(this)">
+          			<ul id="leftCouresCar">
+           			<volist id="vo" name="coursesList" key="keynumber">
+           				<li id='tr{$vo['trainid']}tr' >
+          					<input type='checkbox' class='ck_class' name='chked' value='{$vo['trainid']}' /> 
+          					<span> {$vo['trainid']|getFieldBy='id','name','MisHrEvaluationTrain'}</span>
+        					<if condition="$vo['courses_type'] neq 1">
+           						<input type='button' onclick=delRow('#tr{$vo[\'trainid\']}tr','{$vo[\'id\']}') value='退订'>
+           					</if>
+           				</li>
+           			</volist>
+          			</ul>
+          		</form>
+            </div>
+		</div>
+	</div>
+	<div id="mishrevaluationtrainmodel" class="unitBox treeright">
+		<include file="subwebindex"  />
+	</div>
+</div>

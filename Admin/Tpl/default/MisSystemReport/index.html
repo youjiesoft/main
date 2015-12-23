@@ -1,0 +1,20 @@
+<div class="pageContent">
+	<div class="tabs" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+						<li><a href="__URL__/index/type/1" rel="missystemreport_index" class="j-ajax"><span>报表管理</span></a></li>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.missystemreportrole_index">
+						<li><a href="__APP__/MisSystemReportRole/index" rel="missystemreport_index" class="j-ajax"><span>报表授权</span></a></li>
+					</if>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent tml-p0">
+				<div id="missystemreport_index"></div>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.missystemreportrole_index">
+				<div id="missystemreportrole_index"></div>
+			</if>
+		</div>
+	</div>
+</div>

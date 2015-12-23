@@ -1,0 +1,25 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return iframeCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<div class="pageFormContent" layoutH="48">
+				<div class="tml-row">
+					<div class="tml-form-col">
+						<label>{$fields["orderno"]}:</label>
+						<input  type="text" name="orderno" readonly="readonly" class="" value="{$vo.orderno}">
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["name"]}:</label> 
+						<input type="text" name="name" readonly="readonly" class="required" value="{$vo['name']}">
+					</div>
+				</div>
+				<div class="tml-form-row">
+					<label>{$fields["remark"]}:</label>
+					<textarea cols="80" rows="2" readonly="readonly" name="remark">{$vo['remark']}</textarea>
+				</div>
+			</div>
+			{:W('ShowAction',array('data'=>$vo))}
+		</form>
+	</div>
+</div>

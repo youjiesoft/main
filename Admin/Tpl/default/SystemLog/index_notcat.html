@@ -1,0 +1,56 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+    <input type="hidden" name="pageNum" value="{$pageNum}"/>
+    <input type="hidden" name="dwzpageNum" value="1"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+    <div class="panelBar">
+        <ul class="toolBar">
+            <if condition="$_SESSION.a eq 1 or $_SESSION.systemlog_edit">
+            <li><a class="icon tml-btn tml_look_btn tml_mp" href="__URL__/edit/id/{sid_node}" rel="SystemLog" height="450" width="1024" target="dialog" mask="false" warn="请选择节点" title="日志查看"><span><span class="icon icon-eye-open icon_lrp"></span>查看</span></a></li></if>
+            <volist name="toolbarextension" id="toolb">
+                <if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
+                    <li>{$toolb['html']}</li>
+                </if>
+            </volist>
+        </ul>
+        <form  rel="pagerForm" onsubmit="return divSearch(this,'jbsxBoxLog');"  action="__URL__/index" method="post">
+    <input type="hidden" name="name" value="{$name}">
+    <input type="hidden" name="frame" value="1">
+    <input type="hidden" name="type" value="1">
+    <div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <include file="Public:quickSearchCondition" />
+                </tr>
+            </table>
+        </div>
+    </form>
+    </div>
+    <table class="table" width="100%" layoutH="146" ajaxurl="__URL__/index" rel="jbsxBoxLog" dwztotalPages="{$dwztotalpage}" >
+        <thead ename="{$ename}">
+        <tr>
+            <volist id="vo" name="detailList">
+                <if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="jbsxBoxLog" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if> <!--类型-->
+            </volist>
+        </tr>
+        </thead>
+       <tbody>
+            <include file="dwzloadindex" />
+        </tbody> 
+    </table>
+   <div class="panelBar panelPageBar">
+        <div class="pages">
+            <span>显示</span>
+            <select class="combox" name="numPerPage" onchange="navTabPageBreak({numPerPage:this.value},'jbsxBoxLog')">
+                <option value="20" <if condition="$numPerPage eq 20"> selected </if> >20</option>
+                <option value="50" <if condition="$numPerPage eq 50 "> selected </if> >50</option>
+                <option value="100" <if condition="$numPerPage eq 100"> selected </if>>100</option>
+                <option value="250" <if condition="$numPerPage eq 250"> selected </if>>250</option>
+            </select>
+            <span>共{$totalCount}条</span>
+        </div>
+        <div class="pagination" rel="jbsxBoxLog"  totalCount="{$totalCount}" numPerPage="{$dwznumPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+    </div>
+</div>

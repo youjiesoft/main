@@ -1,0 +1,43 @@
+<script src="__TMPL__MisSystemUnitExchange/add.js" type="text/javascript"></script>
+	<div class="pageContent">
+		<form method="post" action="__APP__/MisSystemUnitExchange/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="bindid" value="{$_GET['bindid']}" />
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			{:W('HiddenInput')}
+			<div class="pageFormContent new_version_page_content" layoutH="58">
+				{:W('ShowOrderno',array(4,'mis_system_unit_exchange',$vo['orderno'],array('contentcls'=>'col_1_3 form_group_lay field_orderno', 'inputcls'=>'class="input_new " ','title'=>$fields["orderno"])))}
+				<!-- text组件 start -->
+				<div class="col_1_3 form_group_lay field_zhuanhuanmingchen" >
+					<label class="label_new">{$fields["zhuanhuanmingchen"]}:</label>
+					<input   type="text"  name="zhuanhuanmingchen" class="required input_new  input_new  " value="">
+				</div>
+				<!-- text组件 end -->
+				<!-- select组件 start -->
+				<div class="col_1_7 form_group_lay field_zhuanhuangongsi">
+					<label>转换公式</label>
+					<div class="tml-input-group">
+						<select  readonly="readonly"  name="baseunitid"  class="combox">{:getControllbyHtml('table',array('type'=>'select','table'=>'mis_system_unit','id'=>'id','name'=>'danweimingchen','conditions'=>'','selected'=>$vo['baseunitid']))}
+						</select>
+						<span class="tml-form-text">(主单位)</span>
+						<span class="tml-form-text">X</span>
+						<span class="tml-form-text">(乘以)</span>
+						<input   type="text"  name="exchange" class=" " value="">
+						<span class="tml-form-text">(转换系数)</span>
+						<span class="tml-form-text">=</span>
+						<select  readonly="readonly"  name="subunitid"  class="combox">{:getControllbyHtml('table',array('type'=>'select','table'=>'mis_system_unit','id'=>'id','name'=>'danweimingchen','conditions'=>'','selected'=>$vo['subunitid']))}
+						</select>
+						<span class="tml-form-text">(转换单位)</span>
+					</div>
+				</div>
+				<!-- select组件 end -->
+				<!-- textarea组件 start -->
+				<div class="col_1_7 form_group_lay field_beizhu" >
+					<label class="label_new">{$fields["beizhu"]}:</label>
+					<textarea  cols="100" rows="4" class="  text_area" name="beizhu"></textarea>
+				</div>
+							<!-- text组件 end -->
+		<div class="clear"></div>
+			</div>
+		{:W('ShowAction')}
+		</form>
+	</div>

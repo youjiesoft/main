@@ -1,0 +1,459 @@
+<script type="text/javascript">
+$(function(){
+	var obj = $('div.nbm_work_container');
+	var width = obj.outerWidth(true);
+	$('div.index_work_lay' , obj).css({'width':width});
+});
+;(function($, xy){
+	$(document).ready(function(){
+		$('.xymainapp').each(function(){
+			var $wrap = $(this);
+			var $trigger = $wrap.find('li');
+			var $overlay = $('#xyModalOverlay1').hide();
+			var $modal = $('#xyModal1');
+			var $overlay2 = $('#xyModalOverlay2');
+			var $modal2 = $('#xyModal2');
+			var $arrow = $('#xymodalArrow1');
+			var $arrow2 = $('#xymodalArrow2');
+			var timer = null;
+			$trigger.bind('click', function(e){
+				e.preventDefault();
+				clearTimeout(timer);
+				var $this = $(this);
+				var popup = $this.children('ul');
+				var pxy = $this.offset();
+				if(popup.length > 0){
+					timer = setTimeout(function(){
+						if($overlay.is(':hidden')){
+							$modal.append(popup.clone(true))
+							xy.appPosition($modal, pxy);
+							$arrow.css({"display": "block", "left": pxy.left + 44, "top": pxy.top + 70});
+							$modal.slideDown(200);
+							$overlay.fadeTo(200, 0.4);
+						} else {
+							$modal2.append(popup.clone(true))
+							xy.appPosition($modal2, pxy);
+							$arrow2.css({"display": "block", "left": pxy.left + 44, "top": pxy.top + 70});
+							$modal2.slideDown(200);
+							$overlay.hide();
+							$overlay2.show(); 
+						}
+					}, 200);
+				} else {
+					$modal2.empty().hide();
+					$overlay2.hide();
+					$arrow2.hide();
+					$modal.empty().hide();
+					$overlay.hide();
+					$arrow.hide();
+				}
+			}).bind('mouseenter', function(){
+				var $this = $(this);
+				var popup = $this.children('ul');
+				if(popup.length > 0){
+					$this.addClass('active');
+				} else {
+					$this.addClass('hov');
+				}
+			}).bind('mouseleave', function(){
+				var $this = $(this);
+				clearTimeout(timer);
+				if($this.hasClass('active')){
+					$this.removeClass('active');
+				} else if($this.hasClass('hov')){
+					$this.removeClass('hov');
+				}
+			}).bind('dblclick', function(){
+				clearTimeout(timer);
+				$obj = $(this).children('a');
+				if($obj.attr('url')){
+					var url = $obj.attr('url');
+					var tabid = $obj.attr('rel');
+					var title = $obj.attr('title');
+					navTab.openTab(tabid,url, { title:title,fresh:false, data:{} });
+				};
+			});
+			$overlay.bind('click', function(){
+				clearTimeout(timer);
+				$modal.empty().hide(0, function(){
+					$overlay.hide();
+					$arrow.hide();
+				});
+			});
+			$overlay2.bind('click', function(){
+				clearTimeout(timer);
+				$modal2.empty().hide(0, function(){
+					$overlay.show();
+					$arrow.show();
+					$overlay2.hide();
+					$arrow2.hide();
+				});
+			});
+		});
+	});
+})(jQuery, xy);
+</script>
+<script>
+function changeapp($page){
+	 changehref="__APP__/MisSystemRemind/lookupmyRemindDis/maxlimit/{$maxcount}/minlimit/{$mincount}/page/"+$page;
+	 $("#remind_div").loadUrl(changehref,{},function(){
+         $("#remind_div").find("[layoutH]").layoutH();},false);
+ }
+function getMyWorkflow($this,type){
+	$($this).addClass('active');
+	$($this).siblings('.active').removeClass('active');
+	$("#lookupmyWorkflow").loadUrl(TP_APP+"/MisSystemPanel/lookupmyWorkflow/type/"+type,{},function(){
+		$("#lookupmyWorkflow").find("[layoutH]").layoutH();});
+}
+function getOfficialDocument($this,type){
+	$($this).addClass('active');
+	$($this).siblings('.active').removeClass('active');
+    $("#officialDocument").loadUrl(TP_APP+"/MisSystemPanel/officialDocument/type/"+type,{},function(){
+	$("#officialDocument").find("[layoutH]").layoutH();});
+}
+//指定15分钟刷新一次
+/* var sysTimeout = setTimeout(function(){
+	var $this=$("#xywrap");
+	$.ajax({
+		type:'POST',
+		url:'__APP__/index/lookupuserindex/workbench/1',
+		async:true,
+		global:false,
+		success:function(response){
+			var json=DWZ.jsonEval(response);
+			if(json.statusCode==DWZ.statusCode.timeout) {
+				alertMsg.error(json.message||DWZ.msg("sessionTimout"),{okCall:function(){
+				if($.pdialog)$.pdialog.checkTimeout();
+				if(navTab)navTab.checkTimeout();
+				DWZ.loadLogin();}});
+			}
+			if(json.statusCode==DWZ.statusCode.error){
+				if(json.message)alertMsg.error(json.message);
+			}else{
+				if(json.statusCode==DWZ.statusCode.timeout){
+					$this.html(json.message+'<div style="display:none;">'+response+'</div>').initUI();
+				} else {
+					$this.html(response).initUI();
+				}
+		}},
+		error:DWZ.ajaxError
+	});
+	//$("#xywrap").loadUrl("__URL__/lookupuserindex/workbench/1");
+},900000); */
+/*添加模块可拖动*/
+$("#partList").dragsort({ dragSelector: "li .part_title", dragBetween: true, dragEnd: saveOrder, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+function saveOrder(){
+	var panelindex = "0";
+	$("#partList").find("input[name='panelsort[]']").each(function(){
+		panelindex += ","+$(this).val();
+	});
+	if (panelindex == "0") {
+		return false;
+	}
+	$.ajax({
+		type:"POST",
+		url: TP_APP+"/MisSystemPanel/savepanelsort",
+		data:{panelindex:panelindex},
+		async:true,
+		global:false
+	});
+	return false;
+}
+//日程
+$(document).ready(function () {
+	option = new Array(true,false,false,true);//[0]:是否显示节日;[1]:是否显示天干地支;[2]:是否显示农历;[3]:是否显示法定节日;
+	var json_val = '{$myEvents}';
+	//传入日程json
+	var calendar = PL_rili("#calendarIndexWork",option,json_val);
+	// 构造滚动
+	//$("#privatetask").kxbdMarquee({direction:"up",scrollDelay:"70"});
+});
+function openRemind(obj){
+	$this = $(obj);
+	//获取需要的参数信息
+	//1、获取模型名称
+	var relmodule =$this.attr("relmodel");
+	var relherf =$this.attr("relherf");
+	//获取标题
+	var titles =$this.attr("reltitle");
+	//获取默认值
+	var remindMap = $this.attr("relmap");
+	var tabids =relmodule;
+	var url = TP_APP+"/"+relherf;
+	var postdata ={remindMap:remindMap};
+	navTab.openTab(tabids, url, {title : titles,fresh : true,data:postdata});
+}
+</script>
+<div class="xypanel xysystem clearfix" id="waitingfor">
+<div class="tml-row">
+		<div style="float:left;margin-right:1%;width:72%;">
+			<div class="tml-row">
+			   <div style="float:left;width:40%;">
+            <div class="entry-box entry-box-large">
+                <div class="entry-box-header">
+                    <div class="tml_box_title">待办工作统计</div>
+                </div>
+                <div class="entry-box-body nbm_work_container">
+                    <div class="entry-box-data" >
+                        <if condition="!$userOaitemlist['count'] && !$userAuditlist['count'] && !$userWorkExecutList['count'] && !$userZhuilist['count']">
+                            <a target="navTab" href="__APP__/MisWorkExecuting/index/jump/7" rel="MisWorkExecutingbox" title="工作中心">
+                                <div class="index_work_lay">
+                                    <div><img src="__PUBLIC__/Css/tmlstyle/images/icon_start_work.png" alt=""/></div>
+                                    <div>
+                                        <p style="color: #34495e; font-size: 14px;line-height: 30px;">点击进入工作中心</p>
+                                        <button class="start_work_btn">发起工作</button>
+                                    </div>
+                                </div>
+                            </a>
+                        </if>
+                        <div class="tml_box_content">
+                            <ul class="tml_box_content_ul">
+                                <li class="tml_box_content_li">
+                                    <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/5/md/MisOaItems/type/3/wjump/1/rel/MisWorkExecutingbox" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作协同</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userOaitemlist['count']}</span>
+                                    </a>
+                                </li>
+                                <li class="tml_box_content_li">
+                                <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/3/md/MisWorkMonitoring/worktype/1/rel/MisWorkExecutingbox" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作审批</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userAuditlist['count']}</span>
+                                    </a>
+                                </li>
+                                <li class="tml_box_content_li">
+                                 <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/4/md/MisWorkExecuting" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作执行</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userWorkExecutList['count']}</span>
+                                    </a>
+                                </li>
+                                <li class="tml_box_content_li">
+                                   <a rel="MisWorkExecuting" href="__APP__/MisWorkExecuting/index/jump/6/md/MisWorkExecuting/istepperson/1" title="工作中心" target="navTab">
+                                        <span class="tml_box_content_title">工作知会</span></br>
+                                        <span class="tml_box_content_count tml_box_content_number">{$userZhuilist['count']}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- end entry-box -->
+        </div>
+				<div id="remind_div">
+				<div style="float:right;width:58.2%;">
+					     <div class="entry-box  entry-box-large">
+                <div class="entry-box-header">
+                    <div class="tml_box_title">
+                        <span>提醒中心</span>
+                        <span class="tml_remind_btn">
+                            <span class="remind_btn tml_remind_left icon-angle-left <if condition="$prevlist">remind_btn_active</if>" <if condition="$prevlist"> onclick="changeapp('prevpage')" </if> ></span>
+                            <a class="remind_btn tml_remind_center" target="dialog" width="508" height="344" mask="true" rel="missystempanelmethod_lookupchangeremind" title="更改提醒模块" href="__APP__/MisSystemRemind/lookupchangeremind">设置<span class="tml-badge tml-bg-orange">{$remindnum}</span></a>
+                            <span class="remind_btn tml_remind_right icon-angle-right <if condition="$nextlist">remind_btn_active</if>" <if condition="$nextlist"> onclick="changeapp('nextpage')" </if> ></span>
+                        </span>
+                    </div>
+                </div>
+                <if condition="$remindAllList">
+                    <div class="entry-box-body">
+                        <div class="entry-box-data">
+                            <ul class="tml_wake">
+                                <volist  name="remindAllList"  id="remindAll" key="h">
+                                    <if condition="$h elt 6 ">
+                                        <li>
+                                            <span class="tml-label tml-bg-info tml-ml3"><span class='icon  {$remindAll.span} tml-mr3"' ></span>&nbsp;{$remindAll.title}：</span>
+                                            <volist name="remindAll['list']" id="rtvo">
+                                                {$rtvo.rtitle}(<a href="javascript:;" relmodel="{$remindAll.name}_index"  relherf="{$rtvo.relhref}" reltitle="{$remindAll.name|getFieldBy='name','title','node'}"  onclick="openRemind(this)" relMap="{$rtvo.remindMap}"   rel="{$remindAll.name}_index"><span class="tml_tip_color">{$rtvo['count']}</span></a>)；&nbsp;
+                                            </volist>
+                                        </li>
+                                    </if>
+                                </volist>
+                            </ul>
+                        </div>
+                    </div>
+                    <else/>
+                    <div class="entry-box-body" >
+                        <div class="noData">
+                           	 没有提醒事项
+                        </div>
+                    </div>
+                </if>
+            </div>
+					</div><!-- end entry-box -->
+				</div>
+			</div>
+			   <div class="tml-row">
+        <div class="entry-box  entry-box-small">
+            <div class="entry-box-body">
+                <div class="xystartmenu_con clearfix">
+                    <div class="xypreferences clearfix tml-pos-rel" id="userConstantly_div">
+						<!-- 
+						<div class="tml-text-r tml-pos-abs" style="right: 10px;top: 10px;z-index: 2;">
+                            <a class="tml-btn tml-btn-default tml_add_btn"   href="__URL__/lookupuserindex/type/2" target="dialog" rel="__MODULE__add" width="770" height="530"><span class="icon icon-plus">常用</span>  </a>
+                        </div>
+                         -->
+                        <!-- <h3>常用</h3> -->
+                        <ul class="clearfix xyuseapp tml-mt5">
+                            <volist id="workvo" name="workoftenList">
+                                <if condition="$workvo['rel'] && $workvo['title'] && $workvo['url'] && $workvo['icon']">
+                                    <li>
+                                        <a href="__APP__/{$workvo['url']}" target="navTab" rel="{$workvo['rel']}" >
+                                            <img alt="{$workvo['title']}" width="50" height="50px" src="__PUBLIC__/Images/xyicon/{$workvo['icon']}" />
+                                            <span>{$workvo['title']}</span>
+                                        </a>
+                                        <if condition="!$workvo.isdefault"><a id="{$workvo['id']}" class="delapp" href="#" onclick="delOften(this);"></a></if>
+                                    </li>
+                                </if>
+                            </volist>
+                            <li>
+                                <a href="__APP__/UserOftenMenu/oftenadd" target="dialog" rel="__MODULE__add" width="770" height="530">
+                                    <img width="50" height="50px" src="__PUBLIC__/Images/xyicon/set_icon.png" alt=""/>
+                                    <span>常用设置</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+		</div>
+		<!-- 日历 -->
+		<div class="calendar-box" style="position:relative;line-height: 14px;">
+			<div id='calendarIndexWork' ></div>
+			<div class="calendar-tips hide" id="calendar-tips">
+				<div class="">
+					<ul class="calendar-tips-list" id="calendar-tips-list">
+						<!-- start calendar-tips-alt -->
+						 
+						<!-- end calendar-tips-alt -->
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- 日历 结束 -->
+	</div>
+	<!-- 固定面板 -->
+	<div class="clear"></div>
+    <div class="tml-row" style="margin-bottom: 55px;">
+	<ul ul class="tml_new_live">
+		<volist id="pnnelhtmllistvo" name="pnnelhtmllist">
+             {$pnnelhtmllistvo}
+        </volist>
+        <volist id="runpannellistvo" name="runpannellist">
+             {$runpannellistvo}
+        </volist>
+        <li>
+            <div class="tml_new_lay links_cell"></div>
+            <p style="line-height: 270px;font-size: 18px;color: #808080;text-align: center;">正在神秘搭建ing…</p>
+        </li>
+	</ul>	
+</div>
+</div>
+
+<script type="text/javascript">
+;(function(){
+	$('.xypart_workflow').bind('click', function(e){
+		var $target = $(e.target);
+		if($target.hasClass('expanddl')){
+			$target.parent('dt').siblings('dd').slideDown(200);
+			$target.siblings('.expanddl').removeClass('expanddl').addClass('collapsedl');
+			e.target.className = 'collapsedl';
+		} else if($target.hasClass('collapsedl')){
+			$target.parent('dt').siblings('dd').slideUp(200);
+			$target.siblings('.collapsedl').removeClass('collapsedl').addClass('expanddl');
+			e.target.className = 'expanddl';
+		}
+	});
+})();
+ $(function(){
+        $('ul.tml_new_live li').mouseleave(function(){
+            $('div.tml_new_lay',$(this)).stop().animate({width:$('ul.tml_new_live li').outerWidth(true)-2});
+        });
+        $('ul.tml_new_live li').mouseenter(function(){
+            $('div.tml_new_lay',$(this)).stop().animate({width:""},800);
+        });
+        $(window).resize(function(){
+            $('div.tml_new_lay').width('100%');
+        });
+    });
+    function getquestions($this,type){
+        $($this).addClass('active');
+        $($this).siblings('.active').removeClass('active');
+        $(".expert_cell_warp").loadUrl(TP_APP+"/MisSystemPanel/expertQuestions/type/"+type,{},function(){
+            $("#lookupMyQuestion").find("[layoutH]").layoutH();},false);
+    }
+        $(function(){
+        	/*$('div.data').myScroll({
+        		speed:40,
+        		rowHeight:32
+        	});*/
+        	
+        	$("div.data").kxbdMarquee({direction:"up",scrollDelay:"70"});
+       	});
+/* 
+ *常用功能删除按钮显示
+ */
+
+/*  function addHover(){
+		$(".xyuseapp li").hoverClass("hover");
+	} */
+$(document).ready(function(){
+	$(".xyuseapp li").hoverClass("hover");
+});
+function delOften($this){
+	$obj = $($this);
+	$id = $obj.attr('id');
+	$.ajax({
+		url : "__URL__/lookupuserindex/type/3",// 通过Ajax取数据的目标页面
+		type : 'post',// 方法，还可以是"post"
+		data:{id:$id},
+		success : function(res){
+			// 成功后执行的语句，这里是一个函数，“locals”是返回的数据
+			if(res){
+				//$obj.parent().remove();
+				$("#userConstantly_div").loadUrl("__URL__/lookupuserindex/type/1");
+			}
+		}
+	});
+}
+
+;(function(){
+	$('.xypart_workflow').bind('click', function(e){
+		var $target = $(e.target);
+		if($target.hasClass('expanddl')){
+			$target.parent('dt').siblings('dd').slideDown(200);
+			$target.siblings('.expanddl').removeClass('expanddl').addClass('collapsedl');
+			e.target.className = 'collapsedl';
+		} else if($target.hasClass('collapsedl')){
+			$target.parent('dt').siblings('dd').slideUp(200);
+			$target.siblings('.collapsedl').removeClass('collapsedl').addClass('expanddl');
+			e.target.className = 'expanddl';
+		}
+	});
+})();
+
+/* 
+ *常用功能删除按钮显示
+ */
+
+/*  function addHover(){
+		$(".xyuseapp li").hoverClass("hover");
+	} */
+$(document).ready(function(){
+	$(".xyuseapp li").hoverClass("hover");
+});
+function delOften($this){
+	$obj = $($this);
+	$id = $obj.attr('id');
+	$.ajax({
+		url : "__APP__/UserOftenMenu/delOften",// 通过Ajax取数据的目标页面
+		type : 'post',// 方法，还可以是"post"
+		data:{id:$id},
+		success : function(res){
+			// 成功后执行的语句，这里是一个函数，“locals”是返回的数据
+			if(res){
+				//$obj.parent().remove();
+				$("#userConstantly_div").loadUrl("__APP__/UserOftenMenu/oftenindex");
+			}
+		}
+	});
+}
+</script>

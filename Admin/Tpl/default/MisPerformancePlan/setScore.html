@@ -1,0 +1,100 @@
+<script>
+$(function(){
+	var $box= $.pdialog.getCurrent();
+	$box.find("#planSetScore").find(".spinner" ).spinner({min:1,max:100});
+});
+//保存
+function updateSetScore(){
+	var $box= $.pdialog.getCurrent();
+	var html='';
+	var isInuserqz=false;
+	var sumqz=0;
+	//循环选中评分人类型
+	$box.find("#planSetScore").find('input:checkbox:checked').each(function(){
+		var $id=$(this).val();
+		//找到评分人类型权重
+	    var $setqz=$(this).parent().next().next().find("input[name='inusersqz"+$id+"']").val();
+	    sumqz+=Number($setqz);
+		if(!$setqz){
+		   isInuserqz=true;
+	   }
+		//构造html
+		html+="<input type='hidden'  name='setscoretype[]' value='"+$id+"'/>";
+		html+="<input type='hidden'  name='inusersqz"+$id+"'  value='"+$setqz+"'/>";
+	});
+	if(isInuserqz){
+		alertMsg.error('请填写评分人类型所对应的权重！');
+		return false;
+	}
+	if(sumqz < 100 || sumqz > 100){
+		alertMsg.error('权重之和必须等于100,请重新分配权重！');
+		return false;
+	}
+	var $step=$box.find("input[name='step']").val();
+	if($step){ //修改
+		$("#MisPerformancePlan_edit").find("#planeditsetscore").html(html);
+	}else{ //增加
+		$("#MisPerformancePlan_add").find("#plansetscore").html(html);
+	}
+	$.pdialog.closeCurrent(); 
+}
+$(function(){
+	var $box= $.pdialog.getCurrent();
+	var step=$box.find("input[name='step']").val();
+	if(step){  //修改页面
+		$box=$("#planeditsetscore");
+	}else{
+		$box=$("#MisPerformancePlan_add");
+	}   //添加页面
+	$box.find("input[name='setscoretype[]']").each(function(){
+			//找到设置考核人分类ID
+			var val= $(this).val();
+			var qz= $(this).parent().find("input[name='inusersqz"+val+"']").val();
+			//循环当前页面
+			$("#planSetScore").find('tr').each(function(){
+				//获取到行上的rel
+				var typeid=$(this).attr('rel');
+				//如果当前指标分类ID 等于选中指标分类ID给当前指标分类 权重 赋值 并禁用
+				if(typeid==val){
+					 $(this).find("input:checkbox").attr("checked","checked");
+					 $(this).find(".spinner").attr("value",qz);
+					 $(this).find("input[name='kpitypeqz']").attr("readonly","readonly");
+				 }
+			 });
+		});
+});
+</script>
+<div>
+	<div class=" xyEmployee" >
+	<div class="xyEmployeeBasicInfo">
+		<div class="clear"></div>
+		<input type="hidden" name='step' value="{$id}">
+		<table class="list" width="100%"  >
+			<thead>
+				<tr>
+					<th style="width: 30px;"></th>
+					<th style="width: 100px;">评分人类别</th>
+					<th>权重(%)</th>
+				</tr>
+			</thead>
+			</table>
+			<table class="list" width="100%" layoutH="66" >
+			<tbody  id="planSetScore"> 
+				<volist name="misPerformanceTypeList" id="klist">
+					 <tr rel="{$key}">
+						<td style="width: 30px;"><input class="inusers" type="checkbox"  name="inusers[]" value="{$key}"></td>
+						<td style="width: 100px;"><span id="planusername">{$klist}</span></td>
+						<td><input class="spinner "   name="inusersqz{$key}" /></td>
+					</tr>
+				 </volist>
+			</tbody>
+		</table>
+		</div>
+	</div>
+	<div class="formBar">
+			<ul>
+				<li><button class="tml-btn tml-btn-primary" onclick="updateSetScore()" type="button">{$Think.lang.save}</button></li>
+				<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+</div>

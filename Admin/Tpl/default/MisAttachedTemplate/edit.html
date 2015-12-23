@@ -1,0 +1,153 @@
+<style>
+.gmlkeepContentCenter {
+    background: none repeat scroll 0 0 #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.3);
+    margin: 15px auto 5px;
+    padding: 0 0 5px;
+    width: 90%;
+}
+.keepContentCenter div.gmlcontentTitle{
+	width: auto;
+}
+</style>
+<script>
+function onUplodeOk(file, data, response) {
+	var fileid = file.id;
+	var $box = $("#"+file.id).parents("tr");
+	var $val = $box.find("input[name='ndnumber']").val();
+	$val = $val-1;
+	var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+	var html='<input name="swf_upload_save_name['+$val+'][]" value="'+s[1]+'" type="hidden" /><input name="swf_upload_source_name['+$val+'][]" value="'+file.name+'" type="hidden" />';
+	$('#' + file.id).find('.swf_upload_save_name').append(html);
+};
+function onEditUplodeOk(file, data, response) {
+	var fileid = file.id;
+	var $box = $("#"+file.id).parents("tr");
+	var $val = $box.find("input[name='ndnumber']").val();
+	var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+	var html='<input name="swf_upload_save_name['+$val+'][]" value="'+s[1]+'" type="hidden" /><input name="swf_upload_source_name['+$val+'][]" value="'+file.name+'" type="hidden" />';
+	$('#' + file.id).find('.swf_upload_save_name').append(html);
+};
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<input type="hidden" name="id" value="{$mas_vo['id']}" /> 
+			<input type="hidden" name="suvidArr" value="{$suvidArr}" /> 
+			<div class="pageFormContent" layoutH="40">
+				<div class="keepContentCenter gmlkeepContentCenter">
+					<div class="contentTitle gmlcontentTitle">附件模板设计</div>
+					<fieldset class="side-catalog-anchor">
+						<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+							<b>附件标题</b>
+	                        <div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+						</legend>
+						<div class="tml-row">
+							<!-- text组件 start -->
+							<div class="tml-form-col ">
+				              <label>{$fields["orderno"]}:</label>
+				              <input type="text" name="orderno" class="required" maxlength="40" value="{$mas_vo['orderno']}" />
+				            </div>
+							<div class="tml-form-col ">
+								<label>{$fields["name"]}:</label> <input type="text" name="name" class="required" value="{$mas_vo['name']}">
+							</div>
+						</div>
+						<div class="tml-row">
+							<div class="tml-form-row ">
+								<label>{$fields["remark"]}:</label>
+								<textarea cols="100" rows="2" class="" type="text" name="remark">{$mas_vo['remark']}</textarea>
+							</div>
+						</div>
+					</fieldset>
+					<fieldset class="side-catalog-anchor">
+						<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor"><b>列表设计</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+						<table class="into_table_new nbm_data_table"  table_data='{"searching":false,"paging":false}' table_type="edit">
+						<thead>
+							<tr>
+								<th style='width:40px;' template_key="serial" template_name="ndnumber">序号</th>
+								<th template_key="select" template_name="subdatum[#index#]" template_html='{:getDataBaseLevelByHtml("mis_auto_fkhvh")}'>资料分类</th>
+								<!-- <th template_key="select" template_class="required" template_html='{:getDataBaseLevelByHtml("mis_auto_wqzrv")}' template_name="subjuese[#index#]">所属角色</th> -->
+								<th template_key="input" template_class="required" template_name="subname[#index#]">资料名称</th>
+								<!-- <th template_key="select" template_name="subtype[#index#]" template_data='{$allexts1}'>类型限制</th> -->
+								<th template_key="input" template_name="subremark[#index#]">描述</th>
+								<th template_key="uploadfile" template_data='{"uploadpath":"__MODULE__","callback":"onEditUplodeOk"}'>资料参照</th>
+								<th template_key="action" >操作</th>
+							</tr>					
+						</thead>
+						<tbody id="Addprivy_divA_edit" class="clearfix">
+							<volist name="sublist" id="subvo" key="key2">
+								<tr >
+									<td>
+										<span class="serial_number ">{$key2}</span>
+										<input type="hidden" value="{$key2-1}" name="ndnumber">
+									</td>
+									<!-- <td>
+										<div class="list_group_lay">
+											<select class="list_select2" name="subjuese[{$key2}]" >
+											{:getDataBaseLevelByHtml("mis_auto_wqzrv",array('selected'=>$subvo['suoshujuese']))}
+											</select>
+										</div>
+									</td> -->
+									<td>
+										<div class="list_group_lay">
+											<select class="list_select2" name="subdatum[{$key2}]" >
+											{:getDataBaseLevelByHtml("mis_auto_fkhvh",array('selected'=>$subvo['datum']))}
+											</select>
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay">
+											<input class="list_input required textInput enterIndex" name="subname[{$key2}]" value="{$subvo.name}" type="text">
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay">
+											<input class="list_input" type="text" name="subremark[{$key2}]" value="{$subvo.remark}" />
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay">
+											<div class="">
+												<input id="swf_up_gml{$key2}" type="file" multi="false" onUploadSuccess="onUplodeOk" queueSizeLimit="1" auto="true" formData="{ uploadpath:'__MODULE__'}"/>
+												<span id="swf_up_gml{$key2}-queue" class="info uploadify-queue">
+													<if condition="$subvo['record']">
+														<volist name="subvo['record']" id="recvo" key="key3">
+															<div class="uploadify-queue-item">
+																<div class="cancel">
+																	<a class="dellink" href="__URL__/lookupdelatt/id/{$recvo['id']}" rel="{$recvo['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swf_up_gml{$key2}-queue">X</a>
+																</div>
+																<span class="fileName">
+																	<a href="__URL__/misFileManageDownload/path/{$recvo['name']}/rename/{$recvo['lookname']}" target="_blank">{$recvo['filename']}</a>
+																</span>
+																<span class="data"> - 已经传</span>
+																<if condition="$recvo['online']">
+													 				<a class="tml-btn tml-btn-small tml-btn-green tml-ml5" style="cursor:pointer;" rel="__URL__/playSWF/name/{$recvo['name']}/filename/{$recvo['filename']}" onclick="openNewWindowsDisplayFile(this)"><span class="icon icon-file"></span> 在线查看</a>
+													 			</if>
+																<div class="uploadify-progress">
+																	<div class="uploadify-progress-bar" style="width: 100%;"></div>
+																</div>
+															</div>
+														</volist>
+													</if>
+												</span>
+											</div>
+										</div>
+									</td>
+									<td>
+										<input type="hidden" name="subid[{$key2-1}]" value="{$subvo.id}">
+										<button type="button" del_url="undefined" del_table="undefined" del_id="0" class="into_table_new_trash_tr  enterIndex">删除</button>
+									</td>
+								</tr>
+							</volist>
+						</tbody>
+					</table>
+				</fieldset>
+				<!-- 组件遍历完成 -->
+				{:W('ShowAction',array('data'=>$vo))}
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

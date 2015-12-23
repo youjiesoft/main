@@ -1,0 +1,42 @@
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid" >
+	<form id="pagerForm" action="__URL__" method="post">
+		<input type="hidden" name="pageNum" value="1"/>
+		<input type="hidden" name="orderField" value="{$order}" />
+		<input type="hidden" name="orderDirection" value="{$sort}" />
+	</form>
+	
+	<div class="panelBar">
+		<ul class="toolBar">
+			<li><a title="确实要删除这些记录吗?" target="selectedTodo" rel="id" postType="string" href="__URL__/delete" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>{$Think.lang.del}</span></a></li>
+			<li><a class="edit tml-btn tml_look_btn tml_mp" href="__URL__/view/id/{sid_node}" target="dialog" mask="true" warn="请选择数据"><span><span class="icon icon-eye-open icon_lrp"></span>查看</span></a></li>
+		</ul>
+	</div>
+<table class="table" width="100%" layoutH="140">
+<thead>
+	<tr>
+		<th><input type="checkbox" group="id" class="checkboxCtrl"></th>
+		<th>编号</th>
+		<th>收件人</th>
+		<th>主题</th>
+		<th>时间</th>
+	</tr>
+</thead> 
+<tbody>
+	<volist id="vo" name="list">
+		<tr target="sid_node" rel="{$vo.id}" onclick="onTrClickCheckbox(this,'id')">
+			<td><input type="checkbox" value="{$vo.id}" name="id"></td>
+			<td>{$vo.id}</td>
+			<td>{$vo.recipientname}</td>
+			<td>{$vo.title}</td>
+			<td>{$vo.createtime|transTime='Y-m-d H:i:s'}</td>
+		</tr>
+	</volist>
+</tbody>
+</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+	    <div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

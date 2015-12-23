@@ -1,0 +1,45 @@
+<script>
+$(document).ready(function(){
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: { 
+				simpleData: { 
+					enable: true
+				}
+			}
+		};
+	var zNodes = {$json_arr};
+	$.fn.zTree.init($("#MisSystemProjectTempleteTree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("MisSystemProjectTempleteTree");
+	var selectid = '{$pid}';
+    var nodes = zTree.getNodesByParam("id", selectid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="MisSystemProjectTempleteTreeSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('MisSystemProjectTempleteTree','MisSystemProjectTempleteTreeSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="MisSystemProjectTempleteTree" class="ztree" layoutH="146"></ul>
+		</div>
+	</div>
+	<div id="MisSystemProjectTemplete_left" class="unitBox treeright">
+		<include file="indexview" />
+	</div>
+</div>

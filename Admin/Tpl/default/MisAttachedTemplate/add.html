@@ -1,0 +1,78 @@
+<style>
+.gmlkeepContentCenter {
+    background: none repeat scroll 0 0 #fff;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.3);
+    margin: 15px auto 5px;
+    padding: 0 0 5px;
+    width: 90%;
+}
+.keepContentCenter div.gmlcontentTitle{
+	width: auto;
+}
+</style>
+<script>
+function onAddUplodeOk(file, data, response) {
+	var fileid = file.id;
+	var $box = $("#"+file.id).parents("tr");
+	var $val = $box.find("input[name='ndnumber']").val();
+	var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+	var html='<input name="swf_upload_save_name['+$val+'][]" value="'+s[1]+'" type="hidden" /><input name="swf_upload_source_name['+$val+'][]" value="'+file.name+'" type="hidden" />';
+	$('#' + file.id).find('.swf_upload_save_name').append(html);
+};
+</script>
+<div class="page">
+  <div class="pageContent">
+    <form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+      <input type="hidden" name="callbackType" value="closeCurrent" />
+      <div class="pageFormContent applecloth" layoutH="40">
+			<div class="keepContentCenter gmlkeepContentCenter">
+				<div class="contentTitle contentTitle_center gmlcontentTitle">附件模板设计</div>
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+						<b>附件标题</b>
+                        <div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+					</legend>
+					<div class="tml-row">
+						<!-- text组件 start -->
+						<div class="tml-form-col ">
+							<label>{$fields["orderno"]}:</label> 
+							<input type="text" name="orderno" class="required alphanumeric" maxlength="40" value="" />
+						</div>
+						<div class="tml-form-col ">
+							<label>{$fields["name"]}:</label>
+							<input type="text" name="name" class="required textInput enterIndex" value="">
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-row ">
+							<label>{$fields["remark"]}:</label>
+							<textarea cols="100" rows="2" class="" type="text" name="remark"></textarea>
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="side-catalog-anchor">
+					<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor"><b>列表设计</b><div class="tml_style_line tml_sl4 tml_slb_blue"></div></legend>
+					<table class="into_table_new nbm_data_table"  table_data='{"searching":false,"paging":false}' table_type="add">
+						<thead>
+							<tr class='js_privyIndex'>
+								<th style='width:40px;' template_key="serial" template_name="ndnumber">序号</th>
+								<th template_key="select" template_name="subdatum[#index#]" template_html='{:getDataBaseLevelByHtml("mis_auto_fkhvh")}'>资料分类</th>
+								<!-- <th template_key="select" template_class="required" template_html='{:getDataBaseLevelByHtml("mis_auto_wqzrv")}' template_name="subjuese[#index#]">所属角色</th> -->
+								<th template_key="input" template_class="required" template_name="subname[#index#]">资料名称</th>
+								<!-- <th template_key="select" template_name="subtype[#index#]" template_data='{$allexts}'>类型限制</th> -->
+								<th template_key="input" template_name="subremark[#index#]">描述</th>
+								<th template_key="uploadfile" template_data='{"uploadpath":"__MODULE__","callback":"onAddUplodeOk"}'>资料参照</th>
+								<th template_key="action" >操作</th>
+							</tr>					
+						</thead>
+						<tbody id="Addprivy_divA" class="clearfix"></tbody>
+					</table>
+				</fieldset>
+				<!-- text组件 end -->
+				{:W('ShowAction')}
+			</div>
+		</div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+<style>
+.dialog .tml-form-col .tml-input-append2 .textInput{
+width: 130px;
+}
+</style>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate"onsubmit="return iframeCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="callbackType" value="closeCurrent" />
+			<div class="pageFormContent" layoutH="48">
+				<div class="tml-row">
+					{:W('ShowOrderno',array('1','mis_system_flow_dynamic_form'))}
+					<div class="tml-form-col">
+						<label>{$fields["custtypeid"]}:</label>
+						<div class="tml-input-append2">
+							<input type="text" class="ORG1.name required  " autocomplete="off" readonly="readonly" value="" />
+							<input type="hidden" class="ORG1.id" name="custtypeid" value=""  />
+							<a class="input-addon input-addon-addon input-addon-add" param="field=id,name&model=MisSaleClientType&conditions=status,1" href="__URL__/lookupGeneral" lookupGroup="ORG1" >{$fields["custtypeid"]}</a>
+							<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearOrg('ORG1');"></a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["hyid"]}:</label>
+						<div class="tml-input-append2">
+							<input type="text" class="ORG2.name required  " autocomplete="off" readonly="readonly" value="" />
+							<input type="hidden" class="ORG2.id" name="hyid" value=""  />
+							<a class="input-addon input-addon-addon input-addon-add" param="field=id,name&model=MisSaleProfession&conditions=status,1" href="__URL__/lookupGeneral" lookupGroup="ORG2" >{$fields["hyid"]}</a>
+							<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearOrg('ORG2');"></a>
+						</div>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["cylid"]}:</label>
+						<div class="tml-input-append2">
+							<input type="text" class="ORG3.name required  " autocomplete="off" readonly="readonly" value="" />
+							<input type="hidden" class="ORG3.id" name="cylid" value=""  />
+							<a class="input-addon input-addon-addon input-addon-add" param="field=id,name&model=MisSaleIndustry&conditions=status,1" href="__URL__/lookupGeneral" lookupGroup="ORG3" >{$fields["cylid"]}</a>
+							<a title="清空信息" class="input-addon input-addon-recycle"  href="javascript:void(0);" onclick="clearOrg('ORG3');"></a>
+						</div>
+					</div>
+					<div class="tml-form-col " >
+						<label>{$fields["formtype"]}:</label>
+						<select  name="formtype" class="combox  required  ">
+						{:getControllbyHtml('table',array('type'=>'select','table'=>'mis_system_flow_inventory_type','id'=>'id','name'=>'name','selected'=>$vo['formtype']))}
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>{$fields["companyid"]}:</label>
+						<select name="companyid" class="combox">
+							{:getControllbyHtml('table',array('type'=>'select','table'=>'mis_system_company','id'=>'id','name'=>'name','selected'=>$vo['companyid']))}
+						</select>
+					</div>
+					<div class="tml-form-col ">
+						<label>{$fields["formobj"]}:</label>
+						<input type="text" name="formobj" class="required" value="">
+					</div>
+				</div>
+				
+			</div>
+			{:W('ShowAction')}
+		</form>
+	</div>
+</div>

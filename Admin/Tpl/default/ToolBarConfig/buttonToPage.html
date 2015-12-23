@@ -1,0 +1,37 @@
+
+	<div class="pageContent">
+	<form method="post" action="__URL__/buttonToPageupdate/rel/ToolBarConfigBox" class="pageForm required-validate"  onsubmit="return validateCallback(this,dialogAjaxDone);"  >
+		<input type='hidden' name='jump' value='jump'>
+		<div class="pageFormContent" layoutH="58">
+		<input type="hidden" name="modelname" value="{$modelname}">
+		<input type="hidden" name="key" value="js-{$vo.css}">
+		<input type="hidden" name="button" value="">
+			<table class="table" width="100%" layoutH="146">
+				<thead ename="{$ename}">
+					<tr>
+							<th>按钮</th>
+						<volist name="page" id="vp">
+							<th>{$vp}页面</th>
+						</volist>
+					</tr>
+				</thead>
+				<tbody>
+					<volist name="info" id="vin">
+					<php>$k = $key </php>
+					<tr>
+						<td>{$vin.name}</td>
+						<volist name="page" id="vp">
+							<td><input type="checkbox" name="rightnotshow[{$k}][]" value="{$key}" <if condition="!in_array($key,$notshow[$k])">checked</if>></td>
+						</volist>
+					</tr>
+					</volist>
+				</tbody>
+			</table>
+			
+			<div class="formBar">
+				<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+			</div>
+		</div>
+		
+	</form>
+	</div>

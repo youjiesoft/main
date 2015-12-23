@@ -1,0 +1,65 @@
+<div class="pageContent">
+	<div class="tabs" currentIndex="{$zhi}" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+					<li><a href="javascript:;"><span>已授权组</span></a></li>
+					<li><a href="javascript:;"><span>未授权组</span></a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent" style="background:#FFFFFF;padding:0px;">
+			<div class="panned1">
+				<div>
+					<form method="post" action="__URL__/setRole" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+						<input type="hidden" name="uid" value="{$uid}" />
+						<input type="hidden" name="t" value="all" />
+						<div class="pageFormContent" layoutH="88">
+							<div class="unit">
+								<ul>
+								<volist name="list" id="myrole">
+									<if condition="in_array($key,$mylist)">
+									<li style="width: 120px;float: left;"><input type="checkbox" value="{$key}" name="mylist[]" checked="">{$myrole}</li>
+									</if>
+								</volist>
+								</ul>
+							</div>
+						</div>
+						<div class="formBar">
+							<ul>
+								<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+								<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+							</ul>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="panned2">
+				<div>
+					<form method="post" action="__URL__/setRole/ntdata/1" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);">
+						<input type="hidden" name="uid" value="{$uid}" />
+						<input type="hidden" name="t" value="insert" />
+						<div class="pageFormContent" layoutH="88">
+							<div class="unit">
+								<ul>
+								<volist name="list" id="myrole">
+									<if condition="!in_array($key,$mylist)">
+									<li style="width: 120px;float: left;"><input type="checkbox" value="{$key}" name="mylist[]">{$myrole}</li>
+									</if>
+								</volist>
+								</ul>
+							</div>
+						</div>
+						<div class="formBar">
+							<ul>
+								<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+								<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+							</ul>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>

@@ -1,0 +1,49 @@
+<script>
+var $divtree = '{$rel}';
+var $md='{$md}';
+$(document).ready(function(){
+	var zNodes = {$tree}; //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#"+$divtree), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj($divtree);
+	var valid = '{$indexid}';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+//提交按钮 点击事件 1完成 2接收
+function mislogisticsfixhandlesave(form,stepobj,ob){
+	if(ob==1){
+		var $box= $.pdialog.getCurrent();
+	}else if(ob==2){
+		var $box=navTab.getCurrentPanel();//找到当前窗体
+	}
+	var a=$box.find("input:first").siblings().append('<input type="hidden" name="dotype" value="'+stepobj+'"/><input type="hidden" name="md" value="'+$md+'"/>');
+	var b=$(form).attr("action","__URL__/update/rel/"+$divtree+"box");
+	//提交此表单
+	$(form).submit();
+}
+</script>
+<div class="pageContent">
+    <div class="treeleft">
+        <div class="collapse" layoutH="0">
+            <div class="toggleCollapse"><div></div></div>
+        </div>
+        <div class="close">
+            <div class="toggleCollapse" ><h2></h2><div></div></div>
+            <ul id="{$rel}" class="ztree" layoutH="10"></ul>
+        </div>
+    </div>
+    <div id="{$rel}box" class="unitBox treeright">
+        <include file="lookupExecutingList"  />
+    </div>
+</div>

@@ -1,0 +1,58 @@
+<script type="text/javascript">
+<!--
+function chooiseWorkType(obj,$selectid) {
+	var deptid = $(obj).val();
+	var $ref = $("#"+$selectid);
+	$.ajax({
+		type : 'POST',
+		dataType : "json",
+		url : "__URL__/comboxrefreshIntomas",
+		cache : false,
+		global:false,
+		data : {
+			deptid : deptid
+		},
+		success : function(json) {
+			var html = '';
+			html += '<option value="" selected>请选择岗位</option>'; 
+			$.each(json, function(i) {
+				if (json[i] && json[i].length > 1) {
+					html += '<option value="'+json[i][0]+'">&nbsp;&nbsp;' + json[i][1]+ '</option>';
+				}
+			});
+			var $refCombox = $ref.parents("div.combox:first");
+			$ref.html(html).insertAfter($refCombox);
+			$refCombox.remove();
+			$ref.combox();
+		},
+		error : DWZ.ajaxError
+	})
+};
+//-->
+</script>
+<div class="pageContent">
+	<div class="tabs" eventType="click">
+		<div class="tabsHeader">
+			<div class="tabsHeaderContent">
+				<ul>
+						<li><a href="__URL__/index/type/1" rel="mishrbasicemployee_index" class="j-ajax"><span>正式员工</span></a></li>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_index">
+						<li><a href="__APP__/MisHrBasicEmployee/index" rel="mishrbasicemployee_index" class="j-ajax"><span>试用员工</span></a></li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleave_index">
+						<li><a href="__APP__/MisHrPersonnelLeave/index" rel="mishrpersonnelleave_index" class="j-ajax"><span>离职记录</span></a></li>
+					</if>
+				</ul>
+			</div>
+		</div>
+		<div class="tabsContent tml-p0">
+				<div id="mishrbasicemployee_index"></div>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_index">
+				<div id="mishrprobationemployee_index"></div>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelleave_index">
+				<div id="mishrpersonnelleave_index"></div>
+			</if>
+		</div>
+	</div>
+</div>

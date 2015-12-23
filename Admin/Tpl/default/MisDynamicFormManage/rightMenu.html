@@ -1,0 +1,122 @@
+<div class="rightToggleCollapse" id="rightToolbar">
+<h2>主菜单</h2>
+</div>
+<div class="accordion" style="width: 300px;" id="rightToolbar_c">
+<div class="accordionHeader">
+<h2>字段属性</h2>
+</div>
+<div class="accordionContent"><input type="hidden" id="hidObj" />
+<table>
+	<tr>
+		<td>组件标识</td>
+		<td><input type=text id=fields /></td>
+	</tr>
+	<tr>
+		<td>组件标题</td>
+		<td><input type=text id=title /></td>
+	</tr>
+	<tr>
+		<td>检查类型</td>
+		<td><select id=checkfunc>
+			<option value="">无需验证</option>
+			<option value="required">必填</option>
+			<option value="eamil">邮箱</option>
+			<option value="url">网址</option>
+			<option value="number">整数</option>
+			<option value="double">浮点数</option>
+			<option value="english">字母</option>
+			<select /></td>
+	</tr>
+	<tr>
+		<td>是否添加到搜索</td>
+		<td><input type=checkbox value="1" id=searchlist /></td>
+	</tr>
+	<tr>
+		<td>字段是否唯一</td>
+		<td><input type=checkbox value="1" id=columnscheckexist /></td>
+	</tr>
+	<tr>
+		<td>字段数据类型</td>
+		<td><select id=tabletype>
+			<option value="VARCHAR">VARCHAR</option>
+			<option value="INT">INT</option>
+			<option value="TEXT">TEXT</option>
+			<option value="FLOAT">FLOAT</option>
+			<option value="DECIMAL">DECIMAL</option>
+			<option value="SMALLINT">SMALLINT</option>
+			<option value="TINYINT">TINYINT</option>
+			<select /></td>
+	</tr>
+	<tr>
+		<td>默认值</td>
+		<td><input type=text id=defaultval />
+		</td>
+	</tr>
+	<tr>
+		<td>字段长度</td>
+		<td><input type=text id=length /></td>
+	</tr>
+	<tr>
+	<td class="title">数据源</td>
+	<td class="item">&nbsp;&nbsp;绑定表
+	    <select id="subimporttableobj" style="width: 120px;">
+			<option value="">请选择映射表</option>
+		</select>
+	</td>
+	 </tr>
+	<tr>
+		<td class="title"></td>
+		<td class="item">绑定字段
+			<select id="subimporttablefieldobj" style="width: 120px;">
+			<option value="">请选择映射字段</option>
+			</select>
+		</td>
+	</tr>
+	 <tr>
+	    <td class="title"></td>
+	    <td class="item">显示字段
+	        <select id="subimporttablefield2obj" style="width: 120px;">
+	            <option value="">请选择映射字段</option>
+	        </select>
+	    </td>
+	</tr>
+	 <tr>
+        <td class="title"> 默认选项数据:</td>
+        <td class="item"><input type="text" id="showoption" /></td>
+    </tr>
+</table>
+</div>
+<div class="accordionHeader">
+<h2>表单属性</h2>
+</div>
+<div class="accordionContent">
+<!-- ****** begin ****** --> 
+<select class="combox modeltype" name="modeltype">
+	<option value="add">创建新节点</option>
+	<option value="update">更新以有节点</option>
+</select>
+
+<div class="adddiv">
+<select name="parentnodename" class="combox">
+    <volist name="nodelist" id="n">
+        <option value="{$n['id']}" <if condition="getNodeParent($vo.nodeid) eq $n['id']">selected</if>>{$n['title']}</option>
+        <if condition="isset($n['children'])">
+            <volist name="n.children" id="n2">
+                <option value="{$key}" <if condition="getNodeParent($vo.nodeid) eq $key">selected</if>>&nbsp;&nbsp;&nbsp;&nbsp;{$n2}</option>
+            </volist>
+        </if>
+    </volist>
+</select>
+<br />
+写入节点: <input class="enterIndex" type="checkbox" value="1"	name="insertnode">
+ <br />
+节点名称: <input name="nodename" class="required textInput lettersonly" value="{$vo.actionname}" <if condition="$vo.actionname">readonly="readonly"</if> /> 只能输入英文 <br />
+显示名称 : <input id="formName" name="nodetitle" class="required textInput" value="{$vo.actiontitle}" /> <br />
+是否创建数据库表: <input type="checkbox" name="inserttable" value="1" /> <br />
+是否有审批流: <input type="checkbox" name="isaudit" value="1" />
+</div>
+<div class="editdiv" style="display: none;"><select
+	name="parentnodename2" class="combox">
+</select></div>
+<!-- ****** end ******** --></div>
+</div>

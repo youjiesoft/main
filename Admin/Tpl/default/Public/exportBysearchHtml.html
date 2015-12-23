@@ -1,0 +1,30 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" >
+		<div class="pageFormContent" layoutH="58">
+			<div class="all_select_lay">
+				<span class="asl_btn"><input type="checkbox" class="checkboxCtrl" group="export_out_field[]" /> 全选</span>
+			</div>
+			<ul style="padding-left:35px;">
+			<volist name="fieldarr" id="vo">
+				<li class="left w120">
+					<div class="tml-checkbox">
+						<label>
+							<input type="checkbox" name="export_out_field[]" value="{$vo['name']}" />
+							<span>{$vo['showname']}</span>
+						</label>
+					</div>
+				</li>
+			</volist>
+			</ul>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li>
+					<button type="button" class="tml_select_btn tml_formBar_btn_blue" onclick="exportBysearchOut(this.form,'{$formid}');">导出</button>
+				</li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

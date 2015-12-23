@@ -1,0 +1,183 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<div class="pageFormContent" layoutH="56">
+				<input type="hidden" name="id" value="{$vo['id']}">
+				<fieldset>
+					<legend class="fieldset_legend_toggle">
+						<b>基本信息</b>
+					</legend>
+					<p>
+						<label>{$fields["name"]}：</label>
+						<input type="text" class="required" name="name" value="{$vo['name']}" />
+					</p>
+					<p>
+						<label>{$fields["sorts"]}：</label>
+						<input type="text" class="required number" name="sorts" value="{$vo['sorts']}" />
+					</p>
+					<p>
+						<label>{$fields["show"]}：</label>
+						<SELECT name="show"  class="combox">
+							<option value="1"  <eq name="vo.show" value="1" >selected</eq> >是</option>
+							<option value="0"  <eq name="vo.show" value="0" >selected</eq> >否</option>
+						</SELECT>
+					</p>
+					<p>
+						<label>{$fields["indexlink"]}：</label>
+						<SELECT name="indexlink"  class="combox">
+							<option value="1"  <eq name="vo.indexlink" value="1" >selected</eq> >是</option>
+							<option value="0"  <eq name="vo.indexlink" value="0" >selected</eq> >否</option>
+						</SELECT>
+					</p>
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle">
+						<b>导航首页相关</b>
+					</legend>
+					{:W('ShowUpload',$attarry)}
+				</fieldset>
+				<fieldset>
+					<legend class="fieldset_legend_toggle">
+						<b>图片热区链接设置</b>
+					</legend>
+					<table cellspacing="0" id="picarea_setting"  width="100%" border="1"  bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">				
+						<thead>
+							<tr>
+								<th><strong class="auto_w_h_text">链接标题</strong></th>
+								<th><strong class="auto_w_h_text">链接地址</strong></th>
+								<th><strong class="auto_w_h_text">新窗口标识</strong></th>
+								<th><strong class="auto_w_h_text">图片热区</strong></th>
+								<th width="28"><a href="javascript:;" class="btnAdd" title="添加热区链接"><strong>添加</strong></a></th>
+							</tr>
+
+						</thead>
+						<tbody>
+							<tr class="defaulttr" style="display:none;">
+								<td class="auto_w_h"><input type="text" name="title"/></td>
+								<td class="auto_w_h"><input type="text" name="modules"/></td>
+								<td class="auto_w_h"><input type="text" name="windowsrel"/></td>
+								<td class="auto_w_h"><input type="text" name="imgarea"/></td>
+								<td><a href="javascript:;" class="btnDel"><strong>移除</strong></a></td>
+							</tr>
+							 
+							<volist id="parr" name="picareaarr">
+								<tr>
+									<td class="auto_w_h"><input type="text" value="{$parr['title']}" name="titlearr[{$key}]" class="required" /></td>
+									<td class="auto_w_h"><input type="text" value="{$parr['links']}" name="modulesarr[{$key}]" class="required" /></td>
+									<td class="auto_w_h"><input type="text" value="{$parr['windowsrel']}" name="windowsrelarr[{$key}]" class="required" /></td>
+									<td class="auto_w_h"><input type="text" value="{$parr['imgarea']}" name="imgareaarr[{$key}]" class="required" /></td>
+									<td><a href="javascript:;" class="btnDel"><strong>移除</strong></a></td>
+								</tr>
+							</volist>
+						</tbody>
+					</table>
+					<script>
+						var $box= navTab.getCurrentPanel();
+						var $firsttr=$box.find("#picarea_setting tr.defaulttr:first");
+						var counttr=$box.find("#picarea_setting tbody tr td a.btnDel").length-1;
+						$box.find("#picarea_setting a.btnDel").bind('click',function(){
+							$(this).parents("tr").remove();
+							return false;
+						});
+						$box.find("#picarea_setting a.btnAdd").bind('click',function(){
+							var b=$box.find("#picarea_setting tbody tr:last");
+							var a=$firsttr.clone(true);
+							a.find(":input").each(function(index){
+								var n=$(this).attr("name");
+								n=n+"arr["+counttr+"]";
+								$(this).addClass("required").attr("name",n);
+							});
+							counttr++;
+							a.insertAfter(b);
+							$box.find("#picarea_setting tr.defaulttr").css("display","");
+							$box.find("#picarea_setting tr.defaulttr:first").css("display","none");
+						});
+						
+					</script>
+				</fieldset>
+				
+				
+				<fieldset>
+					<legend class="fieldset_legend_toggle">
+						<b>快捷导航</b>
+					</legend>
+					 <table cellspacing="0" id="group_bar_list"  width="100%" border="1"  bordercolor="#B8D0D6" style="border-collapse:collapse;margin:0 auto; text-align: center">
+						<thead>
+							<tr>
+								<th><strong class="auto_w_h_text">导航模块分类</strong></th>
+								<th><strong class="auto_w_h_text">链接地址</strong></th>
+								<th><strong class="auto_w_h_text">新窗口标识</strong></th>
+								<th><strong class="auto_w_h_text">显示名称</strong></th>
+								<th width="28"><a href="javascript:;" class="btnAdd" title="添加导航模块信息"><strong>添加导航模块信息</strong></a></th>
+							</tr>
+
+						</thead>
+						<tbody>
+							<tr class="defaulttr" style="display:none;">
+								<td class="auto_w_h">
+									<select name="bartype">
+										<volist id="ty" name="typelist">
+											<option value="{$ty['id']}">{$ty['name']}</option>
+										</volist>
+									</select>
+								</td>
+								<td class="auto_w_h"><input type="text" name="barlink"/></td>
+								<td class="auto_w_h"><input type="text" name="barwindowsrel"/></td>
+								<td class="auto_w_h"><input type="text" name="bartitle"/></td>
+								<td><a href="javascript:;" class="btnDel"><strong>移除</strong></a></td>
+							</tr>
+							 
+							<volist id="barlistarr" name="bararr" key="key1">
+								<tr>
+									<td class="auto_w_h">
+										<select name="bartypearr[{$key1-1}]">
+											<volist id="ty" name="typelist">
+												<option value="{$ty['id']}" <eq name="barlistarr.typeid" value="$ty.id">selected</eq>>{$ty['name']}</option>
+											</volist>
+										</select>
+									</td>
+									<td class="auto_w_h"><input type="text" value="{$barlistarr['links']}" name="barlinkarr[{$key1-1}]" class="required" /></td>
+									<td class="auto_w_h"><input type="text" value="{$barlistarr['windowsrel']}" name="barwindowsrelarr[{$key1-1}]" class="required" /></td>
+									<td class="auto_w_h"><input type="text" value="{$barlistarr['title']}" name="bartitlearr[{$key1-1}]" class="required" /></td>
+									<td><a href="javascript:;" class="btnDel"><strong>移除</strong></a></td>
+								</tr>
+							</volist>
+						</tbody>
+					</table>
+					 <script>
+						var $box= navTab.getCurrentPanel();
+						var $barfirsttr=$box.find("#group_bar_list tr.defaulttr:first");
+						var countbartr=$box.find("#group_bar_list tbody tr td a.btnDel").length-1;
+						$box.find("#group_bar_list a.btnDel").bind('click',function(){
+							$(this).parents("tr").remove();
+							return false;
+						});
+						$box.find("#group_bar_list a.btnAdd").bind('click',function(){
+							var b=$box.find("#group_bar_list tbody tr:last");
+							var a=$barfirsttr.clone(true);
+							a.find(":input").each(function(index){
+								var n=$(this).attr("name");
+								n=n+"arr["+countbartr+"]";
+								$(this).addClass("required").attr("name",n);
+								
+							});
+							countbartr++;
+							a.insertAfter(b);
+							$box.find("#group_bar_list tr.defaulttr").css("display","");
+							$box.find("#group_bar_list tr.defaulttr:first").css("display","none");
+						});
+					</script>
+				</fieldset> 
+				
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.group_update">
+					<li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+				</if>
+					<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

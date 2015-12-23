@@ -1,0 +1,172 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>{:C("COPYRIGHT")}</title>
+    <link rel="stylesheet" href="__PUBLIC__/Css/tmlstyle/tml.css"/>
+    <!--<link rel="stylesheet" href="__PUBLIC__/Css/tmlstyle/login_style.css"/>-->
+    <script src="__PUBLIC__/Js/jquery-1.7.1.js" type="text/javascript"></script>
+    <script type="text/javascript" src="__PUBLIC__/Js/jquery.cookie.js"></script>
+     <!-- conditionizr core -->
+    <script src="__PUBLIC__/Js/conditionizr-4.4.0/conditionizr.min.js"></script>
+    <!-- conditionizr detects -->
+    <script src="__PUBLIC__/Js/conditionizr-4.4.0/conditionizr_browser.js"></script>
+    
+    
+    <script language="JavaScript">
+        $(function(){
+            $.cookie('test', null,{expires: 7, path: '/'});
+            $(".login_btn").attr("disabled",false);
+            $(".login_btn").die("click");
+            $(".login_btn").live("click",function(){
+            	$(".login_btn").attr("disabled",true);
+            	$(".login_btn").addClass("disabled");
+            	$(".login_btn").html("登录中...");
+            	$(".return_info_lay").html("");
+            	if($("#username").val()=="" || $("#password").val()==""){
+            		var error = '用户名或者密码不能为空！';
+            		if($.trim($("#password").val())==""){
+            			error = '密码不能为空！';
+            			$("#password").focus();
+            		}
+            		if($.trim($("#username").val())==""){
+            			error = '用户名不能为空！';
+            			$("#username").focus();
+            		}
+            		$(".return_info_lay").html('<span class="return_info"><span class="icon-comments mr5"></span>'+error+'</span>');
+            		$(".login_btn").removeClass("disabled");
+            		$(".login_btn").attr("disabled",false);
+            		$(".login_btn").html("安全登录");
+            		return false;
+            	}
+            	$(".login_form").submit();
+            	return true;
+            });
+            
+            $("input#username,input#password").live("keypress",function (e) { //添加回车监控
+                var key = e.which; 
+                if (key == 13) {
+                    $("button.login_btn").click();
+                }
+            });
+            
+            
+            
+            conditionizr.on('ie6', function () {
+            	recomendBrower('IE 6');
+              });
+              conditionizr.on('ie7', function () {
+            	  recomendBrower('IE 7');
+              });
+              conditionizr.on('ie8', function () {
+            	  recomendBrower('IE 8');
+              });
+              
+        })
+
+        
+        function recomendBrower(browsername){
+        	var html = '';
+        	html +='<div style="background-color:yellow;">你当前的浏览器为'+browsername+'，建议使用 <a href="http://www.firefox.com.cn/">FF</a> 、<a href="http://www.google.cn/intl/zh-CN/chrome">Chorm</a>、IE9及以上版本</div>';
+        	$('body').before(html);
+        }
+        <!--
+                function fleshVerify(type){
+                    //重载验证码
+                    var timenow = new Date().getTime();
+                    if (type){
+                        $('#verifyImg').attr("src", '__URL__/verify/adv/1/'+timenow);
+                    }else{
+                        $('#verifyImg').attr("src", '__URL__/verify/'+timenow);
+                    }
+                }
+        //-->
+    </script>
+    <!--[if IE 6]>
+    <script type="text/javascript" src="__PUBLIC__/Js/DD_belatedPNG_0.0.8a-min.js" ></script>
+    <script type="text/javascript">
+        window.onload = function(){
+            DD_belatedPNG.fix('.ad_log_box,#ad_log_container');
+        }
+    </script>
+    <![endif]-->
+</head>
+<body id="pagebody" <if condition="(Cookie::get('remember') eq 1)"> onLoad="document.login.verify.focus();" <else />onLoad="document.login.account.focus()"</if> >
+<div class="login_header_lay">
+    <div class="login_header">
+        <a class="login_logo left" href="/">
+            <!--<img src="__PUBLIC__/Uploads/{$logoPic}" alt=""/>-->
+            <img src="__PUBLIC__/Css/tmlstyle/img/logo.png" alt=""/>
+            <span class="login_company_name">{:C("COPYRIGHT")}</span>
+        </a>
+        <ul class="right login_header_right">
+            <li class="left"><a href="#">系统介绍</a></li>
+            <li class="left">|</li>
+            <li class="left"><a href="#">在线升级</a></li>
+            <li class="left">|</li>
+            <li class="left"><a href="#">关于我们</a></li>
+            <li class="left">|</li>
+            <li class="left"><a href="#">7x24客服</a></li>
+        </ul>
+    </div>
+</div>
+<div class="login_main_lay">
+    <div class="login_main_content">
+        <div class="login_box right">
+            <div class="login_title">登录系统</div>
+            <form class="login_form" action="__URL__/signin/" method="post" name="login">
+                <div class="login_group">
+                    <input type="text" id="username" autocomplete="off" maxlength="40" name="account" placeholder="请输入您的用户名"/>
+                    <label for="username" class="login_icon icon-user"></label>
+                </div>
+                <div class="login_group">
+                    <input id="password" type="password" autocomplete="off" name="password" placeholder="请输入您的登录密码" <if condition="(Cookie::get('remember') eq 1)"> value="{$Think.cookie.userinfo.pwd}"</if>/>
+                    <label for="password" class="login_icon icon-unlock-alt"></label>
+                </div>
+                <div class="login_fun">
+                        <span class="left" id="ssl">
+                            <span class="u-ico u-ico-tick u-ico-ticked" id="icossl" style="display: none;"></span>
+                            <input id="remember_password" name="remember" value="1" class="remember_password left" type="checkbox" <if condition="(Cookie::get('remember') eq 1)"> checked="checked" </if>/>
+                            <label for="remember_password">下次自动登录</label>
+                        </span>
+                    <a class="right forget_password" href="#">忘记密码？</a>
+                    <div class="clear"></div>
+                </div>
+                <div class="login_group">
+                    <button type="button" class="login_btn">安全登录</button>
+                </div>
+                <div class="return_info_lay"><if condition="$info"><span class="return_info"><span class="icon-comments mr5"></span>{$info}</span></if></div>
+                <div class="use_browser">
+                    <dl class="use_browser_dl">
+                        <dt>框架支持(Css3+Html5)如：</dt>
+                        <dd class="left">
+                            <a href="http://www.firefox.com.cn/" name="FireFox" target="_blank">FireFox框架</a>
+                        </dd>
+                        <dd class="left">
+                            <a href="http://www.opera.com/zh-cn" name="Opera" target="_blank">Opera框架</a>
+                        </dd>
+                        <dd class="left">
+                            <a href="http://www.google.cn/intl/zh-CN/chrome" name="Chome" target="_blank">Chome框架</a>
+                        </dd>
+                    </dl>
+                </div>
+                <div class="clear"></div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="login_footer_lay">
+    <ul class="login_nav_ul">
+        <li class="left"><a href="#">联系我们</a></li>
+        <li class="left">|</li>
+        <li class="left"><a href="#">新手指导</a></li>
+        <li class="left">|</li>
+        <li class="left"><a href="#">加入我们</a></li>
+        <li class="left">|</li>
+        <li class="left"><a href="#">帮助中心</a></li>
+        <li class="left">|</li>
+        <li class="left"><a href="#">隐私政策</a></li>
+    </ul>
+    <p>&copy;2015 {:C('COPYRIGHT')} All rights reserved ~ 渝ICP证201544944号</p>
+</div>
+</body>

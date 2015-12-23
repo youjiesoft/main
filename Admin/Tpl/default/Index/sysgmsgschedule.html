@@ -1,0 +1,24 @@
+<div class="xypart xypart6">
+    <div class="part_content">
+        <ul>
+            <volist name="msgscheduleList" id="v">
+                <li><a rel="{$v['model']}" target="navTab" title="{$v['name']}" href="{$v['href']}">{$v['name']} &nbsp;&nbsp; 共 {$v['count']} 条</a></li>
+            </volist>
+        </ul>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</div>
+<form  method="post" action="__APP__/Index/lookupSetTime">
+<div class="xypart xypart6">
+        <select name="nexttime" id="nexttime">
+        	<option  value="5">5分钟后提醒</option>
+        	<option  value="10">10分钟后提醒</option>
+        	<option  value="30">30分钟后提醒</option>
+        	<option  value="60">1个小时后提醒</option>
+        	<option  value="180">3个小时后提醒</option>
+        	<option  value="43200">不再提醒</option>
+        </select>
+</div> 
+</form>

@@ -1,0 +1,19 @@
+<div class="nbm_design_toolbar_warp design_toolbar_warp" >
+	<!-- <a href="#" class="nbm_delete_plain_ctl">删除</a> -->
+	<!--  layouth="134" -->
+    <ul id="design_toolbar" class="design_toolbar_container" style="height: 40px;">
+        <span class="design_toolbar_title left">面板组件栏：</span>
+        <volist name="controlListData" id="item">
+		<li class="design_toolbar_item" title="{$item.title}" data-config='{$item.config|json_encode}'>
+		</li>
+		</volist>
+		
+		<span><a href="__URL__/desing/id/{$id}" rel="DesingFormedit" target="navTab" >所有面板</a></span>
+		<if condition="$data[$_GET['nav']]['title']">
+		<span>{$data[$_GET['nav']]['title']}</span>
+		</if>
+		
+    </ul>
+</div>
+
+

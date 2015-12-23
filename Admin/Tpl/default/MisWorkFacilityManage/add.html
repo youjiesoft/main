@@ -1,0 +1,111 @@
+<script>
+function changeky(obj){
+	var $box=navTab.getCurrentPanel();
+	$qty=$(obj).val();
+	$box.find("input[name='kyqty']").val($qty);
+}
+//计算物品总金额
+function changeamount(){
+	var $box=navTab.getCurrentPanel();
+	//获取数量
+	var qty=$box.find("input[name='qty']").val();
+	//获取单价
+	var unitprice=$box.find("input[name='unitprice']").val();
+	if(qty&&unitprice){
+		unitprice =Number(unitprice.replace(/,/g,""));
+		qty =Number(qty.replace(/,/g,""));
+		//计算总金额
+		amount=comboxMathematicalOperation(unitprice*qty);
+		$box.find("input[name='amount']").val(FormatN(amount));
+	}
+}
+</script>
+<div class="page">
+ <div class="pageContent">
+    <form method="post" action="__URL__/insert/rel/misworkfacilitymanage" class="pageForm required-validate" onsubmit="return iframeCallback(this,navTabAjaxDone);" >
+    <input type="hidden" name="callbackType" value="closeCurrent"/>
+	<input type="hidden" name="refreshtabs[data]" value="1" />
+        <div class="pageFormContent applecloth" layoutH="40">
+            <div class="keepContentCenter form-affix-content">
+              <div class="contentTitle contentTitle_center form-affix-title">设备新增
+                   
+              </div>
+                <fieldset class="side-catalog-anchor">
+                    <legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
+                        <b>基本信息</b>
+                         <div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                    </legend>
+                    <div class="tml-row">
+                    {:W('ShowOrderno',array(1,'mis_work_facility_manage'))}
+	                    <if condition='$fields["equipmenttype"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["equipmenttype"]}：</label>
+	                        <select name="equipmenttype" class="combox">
+	                        	 {:getDataBaseByHtml('mis_work_facility_type',array('conditions'=>'pid !=0'))}  
+	                        </select>
+	                    </div>
+	                    </if> 
+	                    <div class="tml-form-col">
+	                        <label>设备名称：</label>
+	                        <input type="text" name="equipmentname" class="required textInput" />
+	                    </div>
+	                    <if condition='$fields["version"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["version"]}：</label>
+	                        <input type="text" name="version" class="textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["unit"]'>
+	                    <div class="tml-form-col">
+	                        <label title="单位">{$fields["unit"]}：</label>
+	                        <select name="unit" class="combox">
+	                            {:getDataBaseByHtml('mis_product_unit',array('conditions'=>'typeid=1'))}
+	                        </select>
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["qty"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["qty"]}：</label>
+	                        <input type="text" name="qty" onblur="FormatNumber(this),changeky(this),changeamount()"  class="number required textInput" />
+	                    </div>
+	                    </if>
+	                     <if condition='$fields["kyqty"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["kyqty"]}：</label>
+	                        <input type="text" name="kyqty"  readonly="readonly"  class="textInput" />
+	                    </div>
+	                    </if>
+	                     <if condition='$fields["unitprice"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["unitprice"]}：</label>
+	                        <input type="text" name="unitprice" onblur="FormatNumber(this),changeamount()"  class="number textInput" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["amount"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["amount"]}：</label>
+	                        <input type="text" name="amount" onblur="FormatNumber(this)"  readonly="readonly" class="number textInput" />
+	                    </div>
+	                    </if>
+	            	</div>
+                </fieldset>
+                <fieldset class="side-catalog-anchor">
+                    <legend class=zlqk_2>
+                        <b>备注信息</b>
+                    </legend>
+                    <if condition='$fields["remark"]'>
+                    <div class="tml-form-row">
+                          <label>{$fields["remark"]}：</label>
+                          <textarea style="height:50px" name="remark" minlength="0" maxlength="100" class="textInput  "> </textarea>
+                    </div>
+                    </if>
+                </fieldset>
+
+                 {:W('ShowUpload')}<!-- 上传附件 -->
+ 
+                 {:W('ShowAction')}
+            </div>            
+        </div>       
+    </form>
+ </div>
+</div>

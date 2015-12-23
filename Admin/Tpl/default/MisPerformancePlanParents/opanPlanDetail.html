@@ -1,0 +1,140 @@
+<script>
+// 初始化
+$(document).ready(function(){
+	// 合并行
+	var kpitype = "";
+	var kpitypetd = null;
+	var rowspan = 1;
+	var $box=$.pdialog.getCurrent();
+	$box.find(".plankpitype").each(function(){
+		var val = $(this).text();
+		if(val != kpitype){
+			kpitype = val;
+			kpitypetd = $(this);
+			rowspan = 1;
+			$(this).attr("rowspan",rowspan);
+		} else {
+			rowspan = rowspan+1;
+			kpitypetd.attr("rowspan",rowspan);
+			$(this).remove();
+		}
+	});
+});
+</script>
+<div class="pageContent" style="border-bottom-width:1px;">
+	<!--  上   -->
+	<div class="xyEditForm">
+		<div class="xyEditFormCon clearfix" style="border-width:1px 0;">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+				<input type="text" readonly="readonly" value="{$mhbeList.name}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+				<input type="text" readonly="readonly" value="{$mhbeList.deptid|getFieldBy='id','name','MisSystemDepartment'}" />
+			</div>
+			<div class="tml-form-col">
+				<label>职&nbsp;&nbsp;&nbsp;&nbsp;级：</label>
+				<input type="text" readonly="readonly" value="{$mhbeList.dutylevelid|getFieldBy='id','name','Duty'}" />
+			</div>
+			<div class="tml-form-col">
+				<label>计算总分：</label>
+				<input type="text" readonly="readonly" value="{$paVo.totalscore}" />
+			</div>
+			<div class="tml-form-col">
+				<label>满&nbsp;&nbsp;&nbsp;&nbsp;分：</label>
+				<input type="text" readonly="readonly" value="{$mppList.mostscore}" />
+			</div>
+			<div class="tml-form-col">
+				<label>等&nbsp;&nbsp;&nbsp;&nbsp;级：</label>
+				<input type="text" readonly="readonly" value="{$level}" />
+			</div>
+		</div>
+			<div class="tml-form-row">
+				<label>计划名称：</label>
+				<input type="text" readonly="readonly" value="{$mppList.name}" style="width:357px"/>
+			</div>
+		</div>
+	</div>
+	<!--  中   -->
+	<table class="tml-table tml-table-w" layoutH="250">
+		<thead>
+			<tr>
+				<th rowspan="2">考核分类名称</th>
+				<th rowspan="2">考核项目名称</th>
+				<th rowspan="2">分数</th>
+				<volist id="stype" name="mppList.setscoretype">
+					<th colspan="{:count($mppList['inuserstype'][$stype])}" style="text-align: center;">
+						{$stype|getFieldBy=###,'id','name','mis_performance_type'}({$mppList['inusersqz'][$stype]}%)
+					</th>
+				</volist>
+				<th rowspan="2">指标加权得分</th>
+			</tr>
+			<tr>
+				<volist id="stype" name="mppList.setscoretype">
+					<volist id="inuser" name="mppList['inuserstype'][$stype]">
+						<th>{$inuser|getFieldBy=###,'id','name','User'}</th>
+					</volist>
+				</volist>
+			</tr>
+		</thead>
+		<?php $countScore = 0;  $qzcountScore=0;?>
+		<tbody>
+			<volist id="plan" name="ppdlist" key="key1"><!-- 指标 -->
+				<tr>
+					<td class="plankpitype">{$plan['kpitypename']}({$plan['kpitypeqz']}%)</td>
+					<td>{$plan['kpiname']}</td>
+					<td>{$plan['kpiscore']}<?php $countScore += $plan['kpiscore'];$qzscore = 0;?>
+						<input type="hidden" value="{$plan['kpiscore']}">
+					</td>
+					<?php $typetotalscore=0;?>
+					<volist id="stype" name="mppList.setscoretype"> <!-- 评分人类型 -->
+						<?php $qzScore = 0;?>
+						<volist id="inuser" name="mppList['inuserstype'][$stype]">  <!-- 类型对应的人 -->
+							<td  >
+								<if condition="in_array($plan['id'], $prlist[$inuser]['inuserskpi'])">
+									<?php  $qzScore +=$prlist[$inuser]['inuserscore'][$plan['id']]; ?>
+									{:sprintf("%.2f",$prlist[$inuser]['inuserscore'][$plan['id']])} 
+								</if>
+							</td>
+						</volist>
+						<?php  $typetotalscore+=$qzScore*$mppList['inusersqz'][$stype]/count($mppList['inuserstype'][$stype]); ?>
+					</volist>
+					<td>{:sprintf("%.2f", $typetotalscore/100)}<?php $qzcountScore += $typetotalscore/100;?></td>
+				</tr>
+			</volist>
+			<tr> 
+				<td></td>
+				<td>计算总分</td>
+				<td>{:sprintf("%.2f", $countScore)}</td>
+				<volist id="prvo" name="prlist" key="key2">
+					<td>
+						{:sprintf("%.2f", $prvo['total'])}
+					</td>
+				</volist>
+				<td>{:sprintf("%.2f", $qzcountScore)}</td>
+			</tr>
+		</tbody>
+	</table>
+	<!--  下   -->
+	<div class="tml-p5" style="background:#E4EBF6;border-top:1px solid #99b8ee;">
+		<div class="tabs" currentIndex="{$zhi}" eventType="click">
+			<div class="tabsHeader">
+				<div class="tabsHeaderContent">
+					<ul>
+						<li><a href="javascript:;"><span>评语</span></a></li>
+						<li><a href="javascript:;"><span>总结</span></a></li>
+					</ul>
+				</div>
+			</div>
+			<div class="tabsContent">
+				<div class="tml-h100">{$paVo.comments}</div>
+				<div class="tml-h100">{$paVo.conclusions}</div>
+			</div>
+			<div class="tabsFooter">
+				<div class="tabsFooterContent"></div>
+			</div>
+		</div>
+	</div>
+</div>

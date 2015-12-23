@@ -1,0 +1,33 @@
+<div id="myactionfourSelectBox">
+<div class="unit">
+	<label>模块：</label>
+	<select name="moduleId" onchange="selectMianban_module('#setMyactionAction')">
+		<option value="">{$Think.lang.select}</option>
+		<volist id="item" name="moduleList">
+		<option value="{$key}" <?php echo in_array($key, $selectModuleId) ? "selected" : "" ?>>{$item}</option>
+		</volist>
+	</select>
+</div>
+</div>
+<div id="myactionthreeSelectBox">
+<div class="unit">
+    <ul>
+        <volist id="item" name="actionList">
+        <li style="width: 120px;float: left;">
+        <input <?php echo in_array($key, $groupActionList) ? "checked" : "" ?> type="checkbox" name="groupActionId[]" value="{$key}"/>{$item}
+        </li>
+        </volist>
+    </ul>
+</div>
+<if condition="!empty($actionList2)"><div class="unit"><span class="info">继承以下公共操作</span></div></if>
+<div class="unit">
+    <ul>
+        <volist id="item2" name="actionList2">
+        <li style="width: 120px;float: left;">
+        <input  type="checkbox" name="publicgroupActionId[]" value="{$key}"/>{$item2}
+        </li>
+        </volist>
+    </ul>
+</div>
+
+</div>

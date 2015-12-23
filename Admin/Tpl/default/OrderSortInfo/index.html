@@ -1,0 +1,134 @@
+<script>
+$("#listorder1, #listorder2").dragsort({ dragSelector: "div", dragBetween: true, dragEnd: dragTemplate, placeHolderTemplate: "<li class='placeHolder'><div></div></li>" });
+function tips_over(obj){
+    $(obj).children("span").css("display","block");
+    $("#listorder1 .delete").css("display","none");//屏蔽
+    $("#listorder2 .delete").css("display","none");
+}
+function tips_out(obj){
+    $(obj).children("span").css("display","none");
+}
+function dragTemplate(){
+   var itemLength = $('#listorder1 .itemlist').length;//有效节点数
+   var virifyItem = $("#authorcount").val();//验证成功节点数
+   var virifyItem = $('#listorder1 .itemlist font').length;//有效节点数
+   //"流程结束、结束"位置不变
+   var theFirstHtml = '<b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b><div style="cursor: move;" class="b d1 k"><input value="0" name="tid[]" type="hidden">开始</div><div style="cursor: move;" class="process_ico"></div><b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>';
+   var theLastHtml = '<b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b><div style="cursor: move;" class="b d1 k"><input value="0" name="tid[]" type="hidden">结束</div><b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>';
+   var itemRight = itemLength+1;//右移一位
+   if($("#listorder1 li:last-child").html() != theLastHtml){
+   		$("#listorder1 .start:nth-child("+itemRight+")").insertAfter("#listorder1 li:last-child");
+    }
+   if($("#listorder1 li:first-child").html() != theFirstHtml){
+        $("#listorder1 .start:nth-child(2)").insertBefore("#listorder1 li:first-child");
+    }
+}
+function ordersortselected(id){
+    var form = $("#ordersortfrom");
+    var url = form.attr('action');
+    form.attr('action',url+'id/'+id);
+    form.submit();
+}
+</script>
+<style type="text/css">
+    #listorder1 .process_ico{ display:block;}
+    #listorder2 .process_ico{ display:none;}
+    #listorder1, #listorder2 { width:auto; list-style-type:none; margin:0px;margin-left:auto;margin-right:auto;}/*height:160px;*/
+    #listorder1 li, #listorder2 li { float:left; padding:5px; width:100px; height:30px; text-align: center; margin:7px 0;}
+    #listorder1 li{ margin-right:55px;}
+    .itemlist{float:left; padding:5px; width:100px; height:30px; text-align: center; margin:7px 0; margin-right:55px;}
+    .itemresult{float:left; padding:5px; width:100px; height:30px; text-align: center;}
+    .start{float:left; padding:5px; width:100px; height:30px; text-align: center; margin:7px 0; margin-right:55px; cursor: default;}
+    .process li span{ display: none;}
+    #listorder1 div, #listorder2 div {height:30px;  text-align:center;}
+    .process_ico{background-image: url(__PUBLIC__/Images/process_ico.png);background-repeat:no-repeat;background-position:center;width:30px; height:30px; float:left;margin-right:-48px; margin-top:-33px; float:right;}
+    .placeHolder div { background-color:white !important; border:dashed 1px gray !important; }
+    .b1,.b2,.b3,.b4,.b1b,.b2b,.b3b,.b4b,.b{display:block;overflow:hidden;}
+    .b1,.b2,.b3,.b1b,.b2b,.b3b{height:1px;}
+    .b2,.b3,.b4,.b2b,.b3b,.b4b,.b{border-left:1px solid #999;border-right:1px solid #999;}
+    .b1,.b1b{margin:0 5px;background:#999;}
+    .b2,.b2b{margin:0 3px;border-width:2px;}
+    .b3,.b3b{margin:0 2px;}
+    .b4,.b4b{height:2px;margin:0 1px;}
+    .d1{background:#F7F8F9;}
+    .k {height:300px;}
+    .k_new{height:30px;}
+    #start{ float:left;}
+</style>
+<form id="pagerForm" action="__URL__/index" method="post">
+    <input type="hidden" name="pageNum" value="1"/>
+</form>
+<div class="pageHeader">
+    <form rel="pagerForm" id="ordersortfrom" onsubmit="return navTabSearch(this);" action="__URL__/index/" method="post">
+        <div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <td>
+                        请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+                    </td>
+                    <td>
+                        <select class="combox"  name="searchby">
+                            <volist id="vou" name="searchbylist">
+                                <option  value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+                            </volist>
+                        </select>
+                    </td>
+                    <td>
+                        <select class="combox" name="searchtype">
+                            <volist id="voty" name="searchtypelist">
+                                <option  value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+                            </volist>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <div class="subBar">
+                <ul>
+                    <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.subsearch}</button></div></div></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="pageContent">
+    <form method="post" action="__URL__/update/rel/viewnursery" class="pageForm required-validate" onsubmit="return iframeCallback(this, navTabAjaxDone);" enctype="multipart/form-data">
+        <div class="pageFormContent" layoutH="115">
+            <div class="process" style="padding-bottom:20px;">
+                <h1>搜索结果(点击显示)：</h1>
+                <ul>
+                    <volist id="vo" name="resultlist">
+                        <li class="itemresult" onclick="">
+                            <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                            <div class="b d1 k" style="cursor: move;height: 25px; text-align: center;" onclick="ordersortselected({$vo['id']});">
+                              {$vo['title']}
+                            </div>
+                            <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                        </li>
+                    </volist>
+                </ul>
+            </div>
+            <div class="clear"></div>
+            <div class="process" style="padding-bottom:20px;padding-top: 20px;">
+                <h1>节点排序(拖动排序)：</h1>
+                <ul id="listorder2">
+                    <volist id="list" name="volist">
+                        <li class="itemlist" onmouseover="tips_over(this);" onmouseout="tips_out(this);">
+                            <b class="b1"></b><b class="b2 d1"></b><b class="b3 d1"></b><b class="b4 d1"></b>
+                            <div class="b d1 k" style="cursor: move;height: 25px;">
+                                <input type="hidden" name="order[]" value="{$list['id']}"/>
+                                {$list['title']}
+                            </div>
+                            <b class="b4b d1"></b><b class="b3b d1"></b><b class="b2b d1"></b><b class="b1b"></b>
+                        </li>
+                    </volist>
+                </ul>
+            </div>
+        </div>
+        <div class="formBar">
+            <ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+                <li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+            </ul>
+        </div>
+    </from>
+</div>

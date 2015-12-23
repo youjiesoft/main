@@ -1,0 +1,212 @@
+<style>
+/* div.addzu{
+    width:350px;
+    height:100px;
+    position:absolute;
+    font-size:100%;
+    z-index:110;
+    top:80px;
+    left:5px;
+    background: #fafafa;
+    padding: 5px 0 8px 10px;
+    border: 1px solid #d8d8d8;
+    display:none;
+} */
+.zuheight{
+	color:#999999;
+	background:#FFFF99;
+}
+.choisezu{
+	color:#FFFFFF;
+	background:#3399FF;
+}
+</style>
+
+<div class="pageContent">
+	<form method="post" action="__URL__/allotgroupinsert/rel/MisSystemDataAccessBOX" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+	<input type="hidden" name="aname" value="{$maslist.actionname}">
+	<input type="hidden" name="formid" value="{$maslist.formid}">
+	<input type="hidden" name="jump" value="jump">
+	<input type="hidden" name="masid" value="{$maslist.id}">
+	<input type="hidden" name="membersource" value="{$list['listsource']}">
+	<div class="treeleft">
+        <div class="close" layoutH="40">
+            <div class="work_statement">分组</div>
+            <div class="edit_work_lay">
+                <a href="#" class="edit_work_btn addzu">添加组 <span class="icon-pencil"></span></a>
+            </div>
+            <!--<div class="tml_divider"></div>-->
+            <!--<div class="member_searcher">-->
+                <!--<input class="add_key left searchzu" placeholder="请输入查找词">-->
+                <!--<button class="btn_member icon-search right searchzu" type="button"></button>-->
+            <!--</div>-->
+            <div class="tml_divider"></div>
+            <div class="tml_bar_nav" id="zu">
+           		<!--<input class="searchzu" type="text" >-->
+				<!--<button class="searchzu" type="button">搜索组</button>-->
+                <div class="member_searcher">
+                    <input class="add_key left searchzu" type="text" placeholder="请输入查找词">
+                    <button class="btn_member icon-search right searchzu" type="button"></button>
+                </div>
+                <ul class="bar_nav">
+            		<volist name="grouplist" id="liv">
+						<li class="zuli <if condition="$subid eq $liv['id']">active</if>" listid="{$liv.id}"  ><a href="__URL__/allotgroup/masid/{$liv.masid}/subid/{$liv.id}" id="allotgroup_{$liv.id}" rel="allotgroupnewbox" target="ajax">{$liv.name}</a></li>
+					</volist>
+                </ul>
+            </div>
+			<!--<ul id="MisSalesProjectid" class="ztree" ></ul>-->
+    </div>
+    </div>
+    <div class="unitBox treeright">
+        <div class="work_shortcut_top lookup_top_header">分组设置</div>
+        <div class="set_configure pl5" layoutH="75">
+            <div id="allotgroupnewbox" layoutH="180">
+                <if condition="$list['treetype']">
+                    <include file="allotgrouptree"/>
+                <else/>
+                    <include file="allotgrouplist"/>
+                </if>
+            </div>
+            <php>
+	 		$info = '';
+	 		if($subhaving){
+	 			$info="onclick=\"return confirm('该字段已做过组的权限分配，如果修改将删除分配过的权限，是否继续?')\"";
+	 		}
+	 	
+	 		</php>
+            <div class="formBar">
+                <ul>
+                    <li>
+                        <button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit"  >保存</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+	</div>
+	</form>
+		
+</div>
+<script>
+
+$(function(){
+	var box = navTab.getCurrentPanel();
+	var zuindex = 1;
+	var currentindex = 1;
+	$("#zu input.searchzu",box).change(function(){
+		zuindex = 0;
+		currentindex = 0;
+		var text = $.trim($(this).closest("div").find("input.searchzu").val());
+		
+		$("#zu li.zuli").each(function(){
+			
+			if(($(this).find("a").text()).indexOf(text)>-1){
+				zuindex += 1;
+				$(this).addClass("zuheight");
+				$(this).attr("zuindex",zuindex);
+			}
+		});
+		console.log($("#zu input.searchzu",box),zuindex);
+	});
+	$("#zu button.searchzu").click(function(){
+		if(currentindex < zuindex){
+			currentindex += 1;
+		}else{
+			currentindex = 1;
+		}
+		$("#zu li.zuli.choisezu",box).attr("class","zuli zuheight");
+		$("#zu li.zuli.zuheight[zuindex='"+currentindex+"']",box).attr("zuli choisezu");
+		$("#zu li.zuli[zuindex='"+currentindex+"']",box).addClass("choisezu");
+		console.log($("#zu li.zuli[zuindex='"+currentindex+"']",box),currentindex);
+		
+	});
+		
+	
+	//var = $(".search".box).val();
+	$("a.addzu",box).click(function(){
+		addItem();
+		/* var left = $(this).parent().offset().left;
+		var top = $(this).parent().offset().top;
+		$("div.addzu").css({left:left,top:top-44});
+		$("div.addzu").toggle();
+		$("div.addzu").find("input[name='ordernozu']").val(''); */
+	});
+	/*//添加分组
+	$("button.submitzu",box).click(function(){		
+		var masid = $("input[name='masid']",box).val();
+		var orderno	= $.trim($("input.addorderno",box).val());
+		var name = $.trim($("input.addname",box).val());
+		var url = "__URL__/addzu";
+		if(name){
+			$.ajax({
+				type:"POST",
+				url:url,
+				data:{name:name,masid:masid,orderno:orderno},
+				dataType:'JSON',
+	            cache:false,
+				async:false,  
+	            success:function(msg){
+	            	if(msg.msg){
+	            		if(msg.data){
+	            			var lihtml = '';
+	            			$.each(msg.data,function(i,v){
+	            				console.log(v);
+	            				var reloadurl = '__URL__/allotgroup/masid/'+v.masid+'/subid/'+v.id;
+	            				lihtml += '<li class="zuli" listid="'+v.id+'"><a href="'+reloadurl+'" rel="allotgroupnewbox" target="ajax">'+v.name+'</a></li>';
+	            			});
+	            			var liht = $(lihtml).initUI();
+	            			$("#zu ul",box).html(liht);
+	            		}
+	            	}else{
+	            		alert("没有添加成功");
+	            	}
+	            }
+			});
+		}else{
+			alert("请输入组的名称");
+		}
+	});
+	
+	
+	$("li.zuli",box).on("click",function(){	
+		var url = '__URL__/allotgrouplist';
+		var id=$(this).attr("listid");
+		var masid = $("input[name='masid']",box).val();
+		$("#allotgroupnewbox",box).ajaxUrl({
+			type:"POST",url:url,data:{masid:masid,id:id},callback:function(){
+			$box.find("[layoutH]").layoutH();}});
+
+	}); */
+	
+	function addItem(){
+		var masid = "{$maslist.id}";
+		var title ="添加分组" ;
+		var height = 200 ;
+		var width = 400 ;
+		var dlgId = "MisSystemDataAccessAddItem";
+		var url = "__URL__/addItem";
+		//navTab.openTab(dlgId, url, { title:title, fresh:true, width: width, height: height,mask:true, });
+		$.pdialog.open(url, dlgId, title, {width: width, height: height,mask:true,param:{masid:masid},});
+	}
+});
+
+
+</script>
+<script type="text/javascript">
+$(function(){
+	var box = navTab.getCurrentPanel();
+	//	$("div.treeleft ul.bar_nav li:first",box).addClass('active');;
+	    $('ul.bar_nav li' , box).click(function(){
+	        $('ul.bar_nav li' , box).removeClass('active');
+	        $(this).addClass('active');
+	    });
+	// var intv = setInterval(function(){
+		//$('ul.bar_nav li a:first', box).trigger('click');
+	//	initClick();
+	//} , 500);
+	//function initClick(){
+	//	$('ul.bar_nav li a:first', box).trigger('click');
+	//	clearInterval(intv);
+	//} 
+    //为左侧栏目导航点击后修改选中状态@nbmxkj 20141009 1629
+});
+</script>

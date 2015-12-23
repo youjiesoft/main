@@ -1,0 +1,30 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>{$fields["name"]}：</label>
+				<input type="text" class="required" maxlength="32" name="name" value="{$vo.name}" />
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["sort"]}：</label>
+				<input type="text" name="sort" value="{$vo.sort}" />
+			</div>
+			<div class="tml-form-col">
+				<label>状态：</label>
+				<select name="status" class="combox">
+					<option <eq name="vo.status" value="1" >selected</eq> value="1">启用</option>
+					<option <eq name="vo.status" value="0" >selected</eq> value="0">禁用</option>
+				</select>
+			</div>
+		</div>
+		<div class="tml-form-row">
+			<label>{$fields["remark"]}：</label>
+			<textarea name="remark" rows="3" maxlength="100" style="width:380px;" cols="40">{$vo.remark}</textarea>
+		</div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>
+

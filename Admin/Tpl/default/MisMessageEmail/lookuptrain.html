@@ -1,0 +1,90 @@
+<form id="pagerForm" action="__URL__/lookuptrain">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form onsubmit="return dialogSearch(this);" rel="pagerForm" action="__URL__/lookuptrain" method="post">
+
+<div class="pageHeader">
+	<div class="searchBar">
+		<table class="searchContent">
+			<tr>
+				<td>
+					请输入关键字：<input type="text" name="keyword" value="{$keyword}" />
+				</td>
+				<td>
+					<select class="combox"  name="searchby">
+						<volist id="vou" name="searchbylist">
+							<option  value="{$vou['id']}" <eq name="vou.id" value="$searchby">selected</eq> >{$vou['val']}</option>
+						</volist>
+					</select>
+				</td>
+				<td>
+					<select class="combox" name="searchtype">
+						<volist id="voty" name="searchtypelist">
+							<option  value="{$voty['id']}" <eq name="voty.id" value="$searchtype">selected</eq> >{$voty['val']}</option>
+						</volist>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<div class="subBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.subsearch}</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+</div>
+</form>
+<div class="pageContent">
+	<table class="table" layoutH="112" targetType="dialog" width="102%">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>课程编号</th>
+				<th>课程名称</th>
+				<th>课程类型</th>
+				<th>课程来源</th>
+				<th>培训讲师</th>
+				<th>讲师等级</th>
+				<th>培训时间</th>
+				<th>培训地点</th>
+				<th>课时</th>
+				<th>培训形式</th>
+				<th>考核方式</th>
+				<th>培训费用</th>
+				<th>课程分值</th>
+				<th>查找带回</th>
+			</tr>
+		</thead>
+		<tbody>
+           <volist id="vo" name="list">
+            <tr>
+				<td>{$vo['id']}</td>
+				<td>{$vo['orderno']}</td>
+				<td>{$vo['name']}</td>
+				<td>{$vo['type']}</td>
+                <td>{$vo['classsource']}</td>
+                <td>{$vo['lecturer']}</td>
+                <td>{$vo['level']}</td>
+                <td>{$vo['traintime']}</td>
+                <td>{$vo['site']}</td>
+                <td>{$vo['classhour']}</td>
+                <td>{$vo['trainform']}</td>
+                <td>{$vo['assessment']}</td>
+                <td>{$vo['traincost']}</td>
+                <td>{$vo['curriculumvalue']}</td>
+                <td>
+					<a class="btnSelect" href="javascript:$.bringBack({ id:'{$vo.id}',trainid:'{$vo.id}',ordernos:'{$vo.orderno}', names:'{$vo.name}' ,types:'{$vo.type}',classsource:'{$vo.classsource}',lecturer:'{$vo.lecturer}',level:'{$vo.level}',site:'{$vo.site}',classhour:'{$vo.classhour}',trainform:'{$vo.trainform}',assessment:'{$vo.assessment}',traincost:'{$vo.traincost}',curriculumvalue:'{$vo.curriculumvalue}',traintime:'{$vo[traintime]|transTime}'})" title="查找带回">选择</a>
+				</td>
+			</tr>
+           </volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

@@ -1,0 +1,74 @@
+<if condition="$showtpl eq 1"><br/>
+
+		<link href="__PUBLIC__/Images/404/style.css" rel="stylesheet" />
+
+		<link href="__PUBLIC__/dwz2/themes/default/style.css" rel="stylesheet" type="text/css" media="screen"/>
+
+		<link href="__PUBLIC__/dwz2/themes/css/core.css" rel="stylesheet" type="text/css" media="screen"/>
+
+		<link href="__PUBLIC__/dwz2/themes/css/print.css" rel="stylesheet" type="text/css" media="print"/>
+
+		<link href="__PUBLIC__/dwz2/uploadify/css/uploadify.css" rel="stylesheet" type="text/css" media="screen"/>
+
+		<link href="__PUBLIC__/Css/colorbox/colorbox.css" rel="stylesheet" />
+
+		<link href="__PUBLIC__/Css/styles.css" rel="stylesheet" type="text/css" />
+
+		<!--[if IE]>
+		<link href="__PUBLIC__/dwz2/themes/css/ieHack.css" rel="stylesheet" type="text/css" media="screen"/>
+
+		<![endif]-->
+		<style type="text/css">
+
+			#header{height:77px}
+
+			#leftside, #container, #splitBar, #splitBarProxy{top:76px}
+
+			div.formBar{display:none;}
+
+			body,#splitBar{background-color:#FFF;}
+		</style>
+
+		</if><include file="Public:pagerForm" />
+	<div class="page">
+		<div class="pageContent">
+			<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+				<input type="hidden" name="id" value="{$vo['id']}" />
+<input type="hidden" name="callbackType" value="closeCurrent">
+<div class="pageFormContent" layoutH="45">
+				<table width="100%" border="0" cellspacing="0"><tr>
+						<td>
+							<div class="unit">
+							<label>编号：</label><input style="width:px;height:px;" type="text" name="code" class="required" value="{$vo['code']}"></div>
+						</td>
+						<td><div class="unit">
+							<label>评估指标：</label><select name="targetid"  class="combox ">
+<volist name="targetidlist" id="votargetid">
+<option value="{$votargetid['id']}" <if condition="$vo['targetid'] eq $votargetid['id']">selected</if> >{$votargetid['name']}</option>
+</volist>
+</select></div></td>
+					</tr>
+<tr>
+						<td>
+							<div class="unit">
+							<label>评估内容：</label><select name="contentid"  class="combox ">
+<volist name="contentidlist" id="vocontentid">
+<option value="{$vocontentid['id']}" <if condition="$vo['contentid'] eq $vocontentid['id']">selected</if> >{$vocontentid['name']}</option>
+</volist>
+</select></div>
+						</td>
+						<td></td>
+					</tr>
+</table>
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishrevaluationcentre_update">
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				</if>
+					<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

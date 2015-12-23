@@ -1,0 +1,106 @@
+<script>
+basicleave();
+function basicleave(step){
+	 var $box=navTab.getCurrentPanel();
+	 $box=$box.find("#regularwaitingfor");
+	 var sinode=$box.find("input[name='id']:checked").length;
+	 if(sinode==0){
+		 var ll=$box.find("#sid_node").length;
+		 if(ll){
+			 $box.find("#sid_node").val('-1');
+		 }else{
+			 $box.find("div.grid").prepend('<input id="sid_node" type="hidden" value="-1" />');
+		 }
+		 if(step){
+			 $(".mishrbasicemployee_depindex").find("input[type='checkbox']").each(function(){
+					 $(this).attr("checked","checked") 
+					 
+				});
+		 }
+	 }
+}
+function Becomeclick(href,cname){
+	$box = navTab.getCurrentPanel();
+	$box=$box.find("#regularwaitingfor");
+	var sid=-1;
+	$box.find("input[name='id']:checked").each(function(){
+		sid=sid+","+$(this).val();
+	});
+	$box.find("."+cname).attr("href",href+sid);
+}
+function MisHrBasicEmployee_subsearchlist(){
+	setTimeout(function(){
+	var val = "0";
+	$(".mishrbasicemployee_depindex").find("input[type='checkbox']").each(function(){
+		if($(this).attr("checked")=='checked'){
+			val += '_' +$(this).val();
+		}
+	});
+	//alert(val);
+	//var oldval = $("input[name='hrsearchlist']").val();
+	$("input[name='hrsearchlist']").val(val);
+	//alert($("input[name='hrsearchlist']").val());
+	 },150);
+}
+</script>
+<form id="pagerForm" action="__URL__/index">
+	<input type="hidden" name="pageNum" value="{$pageNum}"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="numPerPage" value="{$numPerPage}" />
+	 <input type="hidden" name="deptid" value="{$deptid}" />
+	<input type="hidden" name="parentid" value="{$parentid}" />
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+	    <ul class="toolBar">
+ 		<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_addbecome ">
+				<li>
+					<a class="edit addBecome tbuserarrow" href="__URL__/addBecome/id/{sid_node}"  onclick="Becomeclick('__URL__/addBecome/id/','addBecome')" rel="__MODULE__addBecome" mask="true" warn="请选择节点" title="代办转正"    target="dialog"  height="550" width="681">
+						<span>转正</span>
+					</a>
+				</li>
+			</if>
+			<li>
+					<a class="  tbclock tbuserarrow" href="__URL__/setprobation/rel/mishrbasicemployee/id/{sid_node}" onclick="basicleave()" rel="__MODULE__setprobation" mask="true" warn="请选择节点" title="延长试用期"     target="dialog"   width="500" height="150" >
+						<span>延长试用期</span>
+					</a>
+				</li>
+	    </ul>
+	    <form rel="pagerForm" onsubmit="return divSearch(this,'regularwaitingfor');" action="__URL__/index" method="post">
+			<input type=hidden name="hrsearchlist" value="{$hrsearchlist}">
+			<input type="hidden" name="jump" value="1">
+            <input type="hidden" name="deptid" value="{$deptid}" />
+			<input type="hidden" name="parentid" value="{$parentid}" />
+			<div class="searchBar">
+				<table class="searchContent"> 
+					<tr>
+						<include file="Public:quickSearchCondition" />
+						<if condition="$_SESSION.a eq 1 or $_SESSION.mishrbasicemployee_exportbysearchhtml ">
+							<td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index','__URL__/exportBysearchHtml');">导出</button></td>
+						</if>
+					</tr>
+				</table>
+			</div>
+		</form>	    
+    </div>
+	<table class="table" width="100%" layoutH="146">
+	    <thead ename="{$ename}">
+	    <tr>
+		    <th width="15" ><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+		    <volist id="vo" name="detailList">
+		    	<if condition="$vo[shows]"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="departmentmodel" orderField="{$vo[sortname]}" class="{$sort}"</if>><span style="color:blue">{$vo[showname]}</span> </th></if>	<!--类型-->
+		    </volist>
+	    </tr>
+	    </thead>
+	    <tbody class="mishrbasicemployee_depindex">
+	    	<include file="dwzloadindex" />
+	    </tbody>
+    </table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="regularwaitingfor"  targetType="navTab"  totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

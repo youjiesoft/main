@@ -1,0 +1,78 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent">
+	    <div class="panelBar">
+			<ul class="toolBar">
+			    <li><a class="add tml-btn tml_look_btn tml_mp" rel="missystemextendfieldBox" href="__APP__/MisSystemExtendField/add/model/{$model}" target="ajax" title="新增扩展属性"><span><span class="icon icon-plus icon_lrp"></span>新增扩展属性</span></a></li></if>
+			    <li><a class="edit tml-btn tml_look_btn tml_mp" rel="missystemextendfieldBox" href="__APP__/MisSystemExtendField/edit/id/{sid}" target="ajax" title="编辑扩展属性"  warn="请选择属性"><span><span class="icon icon-edit icon_lrp"></span>编辑扩展属性</span></a></li></if>		    
+			    <a title="确实要删除这些记录吗?" posttype="string" target="selectedTodo" callback="button_refresh" callbackdata="{ type:'dialog',tabid:'MisProductType',data:'{ id:{$vo.id} }',title:'系统扩展属性',url:'__URL__/index' }" rel="id" href="__APP__/MisTypeformField/delete" class="delete tml-btn tml_look_btn tml_mp"><span><span class="icon icon-trash icon_lrp"></span>批量删除</span></a>
+			    </li>
+			</ul>
+			<form rel="pagerForm" onsubmit="return divSearch(this,'missystemextendfieldBox');" action="__URL__/index" method="post">
+				<input type="hidden" name="departmentID" value="{$departmentID}">
+				<input type="hidden" name="parentid" value="{$parentid}">
+				<input type="hidden" name="jump" value="1">
+					<div class="searchBar">
+						<table class="searchContent">
+							<tr>
+								<include file="Public:quickSearchCondition" />
+							</tr>
+						</table>
+					</div>
+			</form>
+	    </div>
+	     <table class="table" width="100%"  layoutH=148>
+		<thead>
+			<tr>
+				<th width="25"><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+				<th>排序</th>
+				<th>字段名</th>
+				<th>类型</th>
+				<th>是否必须</th>
+				<th>备注</th>
+				<th>状态</th>
+				<th width="150">{$Think.lang.action}</th>
+			</tr>
+		</thead>
+		<tbody>
+		 <volist id="vos" name="list">
+		   <!--  <volist id="vos" name="fieldlist"> -->
+			<tr target="sid" rel="{$vos['id']}" onclick="onTrClickCheckbox(this,'id'),updateid(this)">
+				<td><input type="checkbox" name="id" value="{$vos['id']}" /></td>
+				<td>{$vos['pos']}</td>
+				<td>{$vos['name']}</td>
+				<td>{$vos['fieldtypeid']|getFieldBy='id','name','mis_typeform_field_type'}</td>
+				<td>{$vos['ismust']|isDefault}</td>
+				<td>{$vos['remark']}</td>
+				<td>{$vos['status']|getStatus}</td>
+				<td>{$vos['status']|showRelStatus=$vos['id'],'misproductypeBox'}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="missystemextendfieldBox"  totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+function updateid(obj){
+	var box = navTab.getCurrentPanel();
+	var item = box.find('.toolBar .edit');
+	var value = item.attr('href');
+	var v = $(obj).attr('rel');
+	var v1=value.replace('{sid}',v);
+	item.attr('href',v1);
+	
+}
+
+
+</script>
+
+

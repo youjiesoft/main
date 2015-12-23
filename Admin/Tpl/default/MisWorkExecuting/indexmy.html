@@ -1,0 +1,58 @@
+<script type="text/javascript">
+		/* 常用功能删除按钮显示
+		*/
+$(document).ready(function(){
+	$(".xyuseapp li").hoverClass("hover");
+});
+function delOftenexecuting($this){
+	$obj = $($this);
+	$id = $obj.attr('id');
+	$.ajax({
+		url : "__APP__/UserOftenMenu/delOften",// 通过Ajax取数据的目标页面
+		type : 'post',// 方法，还可以是"post"
+		data:{id:$id},
+		success : function(res)// 成功后执行的语句，这里是一个函数，“locals”是返回的数据
+		{
+			if(res){
+				$("#oftenindexexecuting").loadUrl("__URL__/index/jump/2");
+			}
+		}
+	});
+}
+//我的常用
+function openWorkUserOftenMenu(rel,url,target,title){
+	var titles = title;
+	if(target == 'navTab'){
+		navTab.openTab(rel, url, {title : titles});
+	}else{
+		window.open(url);
+	}
+	$.pdialog.closeCurrent();
+}
+</script>
+<div class="pageContent">
+	<div class="pageFormContent applecloth" layoutH="56">
+		<div id="oftenindexexecuting" class="xypanel xypreferences">
+			<ul class="clearfix xyuseapp">
+				<volist id="vo" name="oftenList">
+					<if condition="$vo['rel'] && $vo['title'] && $vo['url'] && $vo['icon']">
+					<li class="left" style=" cursor:pointer; ">
+						<a <if condition="substr($vo['url'],0,4) eq 'http'">onclick="openWorkUserOftenMenu('{$vo['rel']}','{$vo['url']}','{$vo['target']}','{$vo['title']}');"<else/>onclick="openWorkUserOftenMenu('{$vo['rel']}','__APP__/{$vo['url']}','navTab','{$vo['title']}');"</if> >
+						<if condition="substr($vo['icon'],0,22) eq 'MisSystemFunctionalBox'">
+							<img alt="{$vo['title']}" height="64" src="__PUBLIC__/Uploads/{$vo['icon']}" width="64" />
+						<else/>
+							<img alt="{$vo['title']}" height="64" src="__PUBLIC__/Images/xyicon/{$vo['icon']}" width="64" />
+						</if>
+							<span>{$vo['title']}</span>
+						</a>
+						<a id="{$vo['id']}" class="delapp" href="#" onclick="delOftenexecuting(this);" title="删除该功能"></a>
+					</li>
+					</if>
+				</volist>
+				<li class="addapp">
+				  <a href="__APP__/UserOftenMenu/oftenadd/mdname/MisWorkExecuting"  mask="true" target="dialog" rel="__MODULE__oftenadd" width="770" height="530" title="常用功能添加"></a> 
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

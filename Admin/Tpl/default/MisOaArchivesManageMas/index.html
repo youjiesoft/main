@@ -1,0 +1,39 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misoaarchivesmanagetree"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="xysearcher">
+					<input type="text" id="MisOaArchivesManageSearchNodeKeys" />
+					<button class="searchBtn" onclick="SearchZTreeNode('misoaarchivesmanagetree','MisOaArchivesManageSearchNodeKeys')">搜索</button>
+				</div>
+			</div>
+			<ul id="misoaarchivesmanagetree" class="ztree" layoutH="43"></ul>
+		</div>
+	</div>
+	<div id="misoaarchivesmanagesub" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

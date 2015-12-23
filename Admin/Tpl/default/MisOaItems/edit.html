@@ -1,0 +1,65 @@
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/rel/MisWorkExecutingbox" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="iseditor" value="1">
+			<input type="hidden" name="refreshtabs[data]" value="1">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent applecloth" layoutH="56">
+				<div class="keepContentCenter form-affix-content">
+					<h2 class="contentTitle contentTitle_center form-affix-title">协同事项</h2>
+					<fieldset>
+					<div class="tml-form-row">
+						<label>{$fields["title"]}:</label>
+						<input  type="text" name="title" class="required" value="{$vo['title']}">
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col">
+							<label>{$fields["secretlevel"]}:</label>
+							<select name="secretlevel" class="combox">
+								{:getSelectByHtml('secretlevel','select',$vo['secretlevel'])}
+							</select>
+						</div>
+						<div class="tml-form-col">
+							<label>{$fields["urgentlevel"]}:</label>
+							<select name="urgentlevel" class="combox">
+								{:getSelectByHtml('urgentlevel','select',$vo['urgentlevel'])}
+							</select>
+						</div>
+					</div>
+					<div class="tml-row">
+						<div class="tml-form-col" style="width: auto;">
+							<label>{$fields["flowid"]}:</label>
+							<select name="flowid" class="combox">
+								<option value="0">--请选择流程--</option>
+								{:getDataBaseByHtml('mis_oa_flows',array('name'=>'title','selected'=>$vo['flowid'],'conditions'=>'(createid = '.$_SESSION[C("USER_AUTH_KEY")].' or isshare = 1)'))}
+							</select>
+							<button type="button" class="tml-btn tml-btn-small tml-btn-primary tml-mt5 tml-mr3" onclick="addFlows(this,'__MODULE__');"><span class="icon icon-file"></span> 新建</button>
+							<button type="button" class="tml-btn tml-btn-small tml-btn-green tml-mt5" onclick="showFlows(this,'__MODULE__');"><span class="icon icon-eye-open"></span> 查看</button>
+						</div>
+					</div>
+					<!-- 附件信息 -->
+					{:W('ShowUpload',$attarry)}
+					<div class="tml-form-row">
+						<label>{$fields["content"]}:</label>
+						<textarea class="ueditor" style="height: 280px;width: 627px;" name="content">{$vo['content']}</textarea>
+					</div>
+					<div class="tml-form-row">
+						<label>{$fields["description"]}:</label>
+						<textarea name="description">{$vo['description']}</textarea>
+					</div>
+					</fieldset>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li><button type="submit" class="tml-btn tml-btn-blue">{$Think.lang.save}</button></li>
+					<if condition="$vo['dealstatus'] eq 1">
+					<li><button type="button" class="tml-btn tml-btn-primary" onclick="commitFlows(this,'__MODULE__','/rel/MisWorkExecutingbox');">启动流程</button></li>
+					</if>
+					<li><button type="button" class="close tml-btn">{$Think.lang.close}</button></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

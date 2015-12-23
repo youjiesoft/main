@@ -1,0 +1,45 @@
+<li class="xypart">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="more" target="_blank" rel="MisKnowledgelist" title="{$name}" href="__APP__/MisSystemNoticeMethod/knowledge"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+        <div class="xytag">
+            <a class="active" href="__APP__/MisSystemNoticeMethod/knowledgepublish" target="_blank">发表文章</a>
+        </div>
+    </div>
+    <!--<div class="tml_bottom_style"></div>-->
+   <div class="part_content">
+        <!-- 包含开始 -->
+        <if condition="$lastFiveArct">
+            <div class="data">
+                <ul class="tml_uli_show4">
+                    <volist name="lastFiveArct" id="FiveArc" >
+                        <li>
+                        	<a class="clearfix" rel="MisKnowledgelist" target="_blank" title="知识库文章查看" href="__APP__/MisSystemNoticeMethod/knowledgedetail/categoryid/{$FiveArc['categoryid']}/id/{$FiveArc['id']}">
+                        		<span class="hellip" style="width:70%">
+                        			<strong style="color:#363636;">【{$FiveArc['categoryid']|getFieldBy="id","name","mis_knowledge_type"}】</strong>
+                        			{$FiveArc['title']|missubstr=###,60,true}&nbsp;
+                        		</span>
+                        			<em style="width:22%;padding-right:5px;">
+                        			<if condition="$FiveArc['isrelation'] eq 1">
+                        				<strong class="i-new"></strong>
+                        			<else/>
+                        				<strong>&nbsp;&nbsp;</strong>
+                        			</if>
+                        				&nbsp;{$FiveArc['createtime']|transTime='Y-m-d'}
+                        			</em>
+                        	</a>
+                       </li>
+                    </volist>
+                </ul>
+            </div>
+        <else/>
+        	<div class="noData">
+           	 没有知识文章
+        	</div>
+        </if>
+    </div>
+  <!-- 包含结束 -->      
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

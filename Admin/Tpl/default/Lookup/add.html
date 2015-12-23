@@ -1,0 +1,92 @@
+<script>
+function addmfem_append_Selectlist() {
+	var $box = $.pdialog.getCurrent();
+	var html = '<tr>';
+	html += '<td><input type="text" class="gangwei_d xytdinput"  name="arr_key[]" value="" /></td>';		
+    html += '    <td><input type="text" class="gangwei_d xytdinput" name="arr_val[]" value="" /> </td> ';                               
+    html += '    <td><a href="javascript:;" onclick="addmfem_delete_Selectlist(this);"><strong style="color:red">移除</strong></a></td>';
+	html += '</tr>';
+	var $ht = $(html).initUI();
+	$("#Selectlist_ex_add").append($ht);
+}
+function addmfem_delete_Selectlist(obj) {
+	var $box = $.pdialog.getCurrent();
+	$(obj).parent().parent().remove();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<div class="pageFormContent" layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>标题：</label>
+					<input type="text" class="required" name="title" />
+				</div>
+					
+				<div class="tml-form-col">
+					<label>模型名称：</label>
+					<input type="text" class="required" name="mode" />
+				</div>
+				<div class="tml-form-col">
+					<label>请求地址：</label>
+					<input type="text" class="required" name="url" value="lookupGeneral"/>
+				</div>
+				
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select name="status" class="combox">
+						<option value="1">开启</option>
+						<option value="0">禁用</option>
+					</select>
+				</div>
+			</div>	
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>带回字段：</label>
+					<input type="text" class="required" name="fields" />
+				</div>	
+				<div class="tml-form-row">
+							<div class="tml-help-show"><font color="red">*&nbsp;多个字段用英文逗号隔开.</font></div>
+				</div>
+				
+			</div>	
+			
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>显示字段：</label>
+					<input type="text" class="required" name="filed" />
+				</div>
+			
+				<div class="tml-form-row">
+							<div class="tml-help-show"><font color="red">*&nbsp;多个字段用英文逗号隔开.</font></div>
+				</div>
+			</div>	
+			<div class="tml-row">	
+				<div class="tml-form-col">
+					<label>org值字段：</label>
+					<input type="text" class="required" name="val" />
+				</div>
+				<div class="tml-form-row">
+							<div class="tml-help-show"><font color="red">*&nbsp;带回字段的id.</font></div>
+				</div>
+				
+			</div>
+			
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>过滤条件：</label>
+					<input type="text" name="condition" />
+				</div>
+			</div>	
+				<div class="tml-form-row">
+							<div class="tml-help-show"><font color="red">*&nbsp;多个相等：字段1,值1;字段2,值2...多个其他：_string,字段1 gt 值1;_string,字段2 lt 值2...</font></div>
+				</div>
+			</div>			
+		</div>
+		{:W('ShowAction')}
+	</form>
+
+	</div>
+</div>
+

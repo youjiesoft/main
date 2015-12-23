@@ -1,0 +1,75 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$tree};
+		var setting = {
+				view: {
+	               selectedMulti: false,
+	               fontCss: getFontCss
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#misperformplan"), setting, zNodes);
+	});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="close">
+			<div class="clearfix p5">
+				<input class="tree-search-input" type="text" id="MisPerformancePlanSearchNodeKeys" />
+				<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('misperformplan','MisPerformancePlanSearchNodeKeys')" type="button">搜索</button>
+			</div>
+			<ul id="misperformplan" class="ztree" layoutH="44"></ul>
+		</div>
+	</div>
+	<div id="lookupplanBox" class="lookupplanBox treeright">
+		<include file="lookupmanageplanlist" />
+	</div>
+	<div class="treeright">
+		<form method="post" action="__URL__/lookupsetInusers/rel/misperformanceplanput_dept/navTabId/__MODULE__edit" class="pageForm required-validate"  onsubmit="return validateCallback(this,dialogAjaxDone);"  >
+		<div class="pageFormContent" id="SeusersazCycle">
+		<input type="hidden" id="planid" name="planid" value="{$planid}">
+		<input type="hidden"  name="setscoretype" value="{$setscoretype}">
+		<input type="hidden" name="refreshtabs[byid]" value="1">
+		<input type="hidden"  name="sin" value="{$sin}">
+			<fieldset>
+				<table class="list " width="100%">
+					<thead>
+						<tr>
+							<th width="70">编号</th>
+							<th width="90">姓名</th>
+							<th width="110">部门</th>
+							<th width="90">职级</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+				</table>
+				<table class="list" width="100%" layoutH="365">
+					<tbody id="pppinuserss">
+						<volist id="Inuser" name="inuserslist">
+						<tr>
+							<td style="width: 70px;">
+								<input type="hidden" name="inusers[]" value="{$Inuser['id']}" />
+								<input type="hidden" name="inuserskpi[]"  value="{$inuserskpi[$Inuser['id']]}"/>
+								<input type="hidden" name="seuserskpi"  value="{$vos.seuserskpi}"/>
+								{$Inuser['orderno']}
+							</td>
+							<td style="width: 90px;">{$Inuser['name']}</td>
+							<td style="width: 110px;">{$Inuser['deptname']}</td>
+							<td style="width: 90px;">{$Inuser['dutyname']}</td>
+							<td ><a href="javascript:;" onclick="dellookputusers(this,{$Inuser['id']},'lookinuserss');" title="删除" class="btnDel">x</a></td>
+						</tr>
+						</volist>
+					</tbody>
+				</table>
+				<div class="formBar tml-text-r">
+					<button class="tml-btn tml-btn-primary" type="submit">保存</button>
+				</div>
+			</fieldset>
+		</div>
+		</form>
+	</div>
+</div>

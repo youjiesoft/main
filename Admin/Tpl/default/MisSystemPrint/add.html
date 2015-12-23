@@ -1,0 +1,29 @@
+<include file="Public:pagerForm" />
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent" layoutH="56">
+				<p>
+					<label>{$fields["name"]}:</label><input  type="text" name="name" class="required" value="{$vo['name']}">
+				</p>
+				<p>
+					<label>{$fields["modulename"]}:</label>
+					<span class="xyInputWithUnit">
+						<input type="text" class="checkByInput required" checkfor="select_modele" insert="name" show="title" value="" />
+						<input type="hidden" name="modulename" value="" />
+						<span class="xyInputWithUnitButton inputCheckForButton"></span>
+					</span>
+				</p>
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.missystemprint_insert">
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				</if>
+					<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+				</ul>
+			</div>
+	</form>
+	</div>
+</div>

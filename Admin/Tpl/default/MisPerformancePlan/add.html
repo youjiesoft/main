@@ -1,0 +1,173 @@
+<script>
+//关联模板
+function MisPerformancePlanmptList(){
+	var $box=$.pdialog.getCurrent();
+	var tempid =  $("#MisPerformancePlan_tempid").val();
+	$.ajax({
+		type: 'POST',
+		url: "__URL__/lookupselecttempmaxscore",
+		data: {tempid:tempid},
+		success: function(message){
+			 $("input[name='mostscore']").val(message);
+		}
+	}); 
+	//加载下拉框选择模板信息页面detail
+	$("#MisPerformancePlan_detail").loadUrl("__URL__/detail/id/"+tempid+"",{},function(){
+	$("#MisPerformancePlan_detail").find("[layoutH]").layoutH();});
+}
+//点击提交方法  验证数据是否合格
+function misperformanceplan_submit($this){
+	var planqzsum=0;
+	var iskpiresult=true;
+	//模板总分
+	var maxplansum=Number($("#sumscore").text());
+	//模板最高分
+	var planchangemost=$("input[name='mostscore']").val();
+	if($("#MisPerformancePlan_tbody").find("input[name='plan_kpitypeid[]']").length>0){
+		 $("#MisPerformancePlan_tbody").find('td.MisPerformancePlan_tbody_each').each(function(){
+			//获取分类下 是否有指标
+			 var  iskpi=$(this).next().find("input[name^=plan_kpi]").val();
+			 if(iskpi === undefined){
+				 iskpiresult=false;
+			 } 
+			 planqzsum+=Number($(this).find("input[name^='plan_kpitypeqz']").val());
+		 });
+		 if(iskpiresult==false){ 
+			 alertMsg.error('分类下必须选择指标！');
+				return false;
+			}
+		 //模板最高分小于当前总分
+		 if(planchangemost<maxplansum){
+			 alertMsg.error(' 分值已超过最高分，请重新分配分值！！');
+				return false;
+			}
+		 //分类权重必须等于100
+		 if(planqzsum>100||planqzsum<100){
+			 alertMsg.error('权重之和必须等于100，请重新分配权重！');
+				return false;
+		 }
+		var $setscoretype=$("#MisPerformancePlan_add").find("input[name='setscoretype[]']").val();
+		if(!$setscoretype){
+			alertMsg.error('请设置评分人类型后,再提交！');
+			return false;
+		}
+	}else{
+		alertMsg.error('考核明细必填！');
+		return false;
+	}
+	return validateCallback($this, dialogAjaxDone);
+}
+</script>
+<form method="post" action="__URL__/insert/navTabId/__MODULE__" onsubmit="return misperformanceplan_submit(this)" class="pageForm required-validate">
+<div class="pageContent">
+	<div class="xyEditForm">
+		<div class="panelBar">
+			<ul class="toolBar">
+				<if condition="$_SESSION.a eq 1 or $_SESSION.misperformanceplan_setscore "><li><a class="add tml-btn tml_look_btn tml_mp" href="__URL__/setScore" target="dialog"  rel="__MODULE__setScore" mask="true" width=440 height="290" title="设置评分人类别及权重"><span><span class="icon icon-compass icon_lrp"></span>评分人类别</span></a></li></if>
+						<li>{$toolb['html']}</li>
+			</ul>
+		</div>
+		<div class="pageFormContent clearfix" id="MisPerformancePlan_add">
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>{$fields["orderno"]}：</label>
+				<input type="text" name="orderno" readonly="readonly" value="{$orderno}" />
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["name"]}：</label>
+				<input type="text" name="name" class="required" />
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["cycle"]}：</label>
+				<div class="tml-input-append">
+					<input type="text" name="cycle" value="" readonly="readonly" id="plan_cycle_add" class="required"/>
+					<a class="input-addon input-addon-add" href="__URL__/lookup/type/add" lookupgroup="org1" width="430" height="280">设置考核周期</a>
+				</div>
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["course"]}：</label>
+				<input type="text" name="course" value="{$course}" readonly="readonly" id="plan_course_add"/>
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["tempid"]}：</label>
+				<select id="MisPerformancePlan_tempid" onchange="MisPerformancePlanmptList()" name="tempid" class="combox">
+					<option value=''>请选择考核模板</option>
+					<volist name="tempList" id="vot">
+						<option value={$key}> {$vot}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["salarydate"]}：</label>
+				<div class="tml-input-append">
+					<input  type="text" name="salarydate" onfocus="WdatePicker({dateFmt:'yyyy-MM'})" class="Wdate" value="{$salarydate|transTime=###,'Y-m'}"/>
+					<span class="input-addon input-addon-calendar"></span>
+				</div>
+			</div>
+			<div class="tml-form-col">
+				<label>{$fields["userid"]}：</label>
+				<div class="tml-input-append">
+					<input type="text" class="org.name" value="{$employeid|getFieldBy='id','name','mis_hr_personnel_person_info'}" readonly="readonly" />
+					<input type="hidden" name="userid" class="org.mangid" value="{$employeid}" />
+					<a class="input-addon input-addon-userplus" href="__URL__/lookupmanage" value="{$MisHrPersonnelPersonInfoList.id}" lookupGroup="org">查找带回</a>
+				</div>
+			</div>		
+			<div class="tml-form-col">
+				<label>{$fields["setdate"]}：</label>
+				<div class="tml-input-append">
+					<input name="setdate" type="text" onfocus="WdatePicker()" class="Wdate" value="{$setdate|transTime}" />
+					<span class="input-addon input-addon-calendar"></span>
+				</div>
+			</div>		
+			<div class="tml-form-col">
+				<label>{$fields["mostscore"]}：</label>
+				<input  type="text" name="mostscore" class=""/>
+			</div>		
+			<div class="tml-form-col">
+				<label>{$fields["levelid"]}：</label>
+				<select name="levelid" class="combox">
+					<volist name="mplList" id="vol">
+						<option value={$key}> {$vol}</option>
+					</volist>
+				</select>
+			</div>	
+			<div id="plansetscore">
+			</div>	
+			<!-- <div class="tml-form-col">
+				<label>{$fields["ostatus"]}：</label>
+				<if condition='$vo.ostatus eq 0'><input type="text" name="ostatus" value="起草" readonly="readonly"/></if>
+				<if condition='$vo.ostatus eq 1'><input type="text" name="ostatus" value="发布" readonly="readonly"/></if>
+				<if condition='$vo.ostatus eq 2'><input type="text" name="ostatus" value="执行" readonly="readonly"/></if>
+				<if condition='$vo.ostatus eq 3'><input type="text" name="ostatus" value="暂停" readonly="readonly"/></if>
+				<if condition='$vo.ostatus eq 4'><input type="text" name="ostatus" value="结束" readonly="readonly"/></if>
+			</div>	 -->	
+			<!-- <div class="tml-form-col">
+				<label>{$fields["byusers"]}：</label>
+				<input  type="text"  check_key="accountname"  class="readonly" value="{$vo['accountid']|getFieldBy='id','name','MisFinanceAmountTitle'}" />
+			</div>		
+			<div class="tml-form-col">
+				<label>{$fields["inusers"]}：</label>
+				<input  type="text"  check_key="accountname"  class="readonly" value="{$vo['accountid']|getFieldBy='id','name','MisFinanceAmountTitle'}" />
+			</div>		
+			<div class="tml-form-col">
+				<label>{$fields["inusersqz"]}：</label>
+				<input  type="text"  check_key="accountname"  class="readonly" value="{$vo['accountid']|getFieldBy='id','name','MisFinanceAmountTitle'}" />
+			</div>		 -->
+		</div>
+		</div>
+	</div>
+ 	<div id="MisPerformancePlan_detail">
+		 <include file="detail"  />
+	</div>
+	<div class="formBar">
+		<ul>
+			<li>
+				<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+			</li>
+			<li>
+				<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+			</li>
+		</ul>
+	</div>
+</div>
+</form>	

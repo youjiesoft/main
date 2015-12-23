@@ -1,0 +1,65 @@
+<script>
+$(document).ready(function(){
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: { 
+				simpleData: { 
+					enable: true
+				}
+			}
+		};
+	var zNodes = {$json_arr};
+	$.fn.zTree.init($("#missystemflowworkTree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("missystemflowworkTree");
+	var selectid = '{$ztreeid}';
+    var nodes = zTree.getNodesByParam("id", selectid, null);
+    zTree.selectNode(nodes[0]);
+});
+function GetVal(type,$this){
+	 var $this = $($this);
+	 var $obj=navTab.getCurrentPanel();
+	 var supcategory=$obj.find("select[name='supcategory']").val();
+	 var title=$this.attr("title") || "任务选择";
+	 var rel="lookupGeneral";
+	 var options={};
+	 options.width=750;
+	 options.height=440;
+	 options.mask=eval("true");
+	 var conditions ="supcategory,"+supcategory+";outlinelevel,4";
+	 if(type == 4){
+		 //数据源选择,必须满足相同类型任务，客户，行业，产业链相同等条件，才能作为当前任务的数据源对象
+		 var custtypeid=$obj.find("input[name='custtypeid']").val();
+		 var hyid=$obj.find("input[name='hyid']").val();
+		 var cylid=$obj.find("input[name='cylid']").val();
+	 }
+	 options.param={conditions:conditions};
+	 var href = "__URL__/lookupGeneralA/"+"type/"+type;
+	 var url=unescape(href);
+	 $.pdialog.open(url,rel,title,options);
+}
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="missystemflowworkTreeSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('missystemflowworkTree','missystemflowworkTreeSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="missystemflowworkTree" class="ztree" layoutH="146"></ul>
+		</div>
+	</div>
+	<div id="MisSystemFlowWork_left" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

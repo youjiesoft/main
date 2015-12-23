@@ -1,0 +1,21 @@
+
+<div class="pageContent">
+	<form method="post" action="__URL__/update_company/rel/mishrpersonneladdressbookmodel/jump/1" class="pageForm required-validate" onsubmit="return validateCallback(this,dialogAjaxDone);">
+		<input type="hidden" name="ajax" value="1">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<input type="hidden" name="id" value="{$vo['id']}" />
+		<div class="pageFormContent applecloth " layoutH="58">
+			<div class="tml-row">
+				<div class="tml-form-col">
+					<label>{$fields["code"]}：</label>
+					<input type="text" class="required alphanumeric" maxlength="10" name="code" value="{$vo.code}" />
+				</div>
+				<div class="tml-form-col">
+					<label>{$fields["name"]}：</label>
+					<input type="text" name="name" value="{$vo.name}" class="required" maxlength="25" />
+				</div>
+			</div>
+		</div>
+		 {:W('ShowAction',array('data'=>$vo))}
+	</form>
+</div>

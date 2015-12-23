@@ -1,0 +1,27 @@
+<div class="pageContent" style="background: #fff;">
+	<div class="pageContent applecloth">
+        <div class="work_shortcut_top lookup_top_header">项目执行、分配与表决</div>
+        <div class="set_configure" layoutH="28">
+		<ul class="clearfix">
+			<volist name="arrlist['list']" id="vo">
+				<li class="left">
+					<div class="work_box">
+						<div class="work_box_title">{$vo['title']}</div>
+                        <div class="pro_style_line"></div>
+                        <div class="work_box_number">共有：(&nbsp;<if condition="$vo['count']">{$vo['count']}<else/>0</if>&nbsp;)条…</div>
+						<div class="">
+                            <a class="execute_takes_btn" target="navTab" href="__APP__/{$vo['tablename']}/index" rel="{$vo['tablename']}" title="{$vo['title']}">
+                                <span class="icon icon-play-circle"></span> 处理
+                            </a>
+                            <div class="clear"></div>
+						</div>
+					</div>
+				</li>
+			</volist>
+		</ul>
+        </div>
+	</div>
+	<div class="panelBar panelPageBar">
+		<div class="pagination"  rel="MisMessageDotypebox" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

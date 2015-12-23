@@ -1,0 +1,52 @@
+<?php
+return array(
+		'MisHrPersonnelLeaveInfo'=>array(
+				'tablename'=>'MisHrPersonnelLeaveInfo',
+				'width'=>'700',
+				'height'=>'550',
+		),
+		'MisFinanceMarkLog'=>array(
+				'tablename'=>'MisFinanceMarkLog',
+				'width'=>'700',
+				'height'=>'550',
+		),
+		'MisRequestCar'=>array(
+				'tablename'=>'MisRequestCar',
+				'width'=>'700',
+				'height'=>'550',
+		),
+		'MisHrEmployeeLeaveManagement'=>array(
+				'tablename'=>'MisHrEmployeeLeaveManagement',
+				'width'=>'755',
+				'height'=>'630',
+		),
+		'MisHrLeaveEmployee'=>array(
+				'tablename'=>'MisHrLeaveEmployee',
+				'width'=>'700',
+				'height'=>'550',
+		),
+		'MisHrPersonnelTrainInfo'=>array(
+				'tablename'=>'MisHrPersonnelTrainInfo',
+				'width'=>'700',
+				'height'=>'550',
+		),
+		'MisHrBecomeEmployee'=>array(
+				'tablename'=>'MisHrBecomeEmployee',
+				'width'=>'700',
+				'height'=>'550',
+		),
+		'MisFinanceExpensesMas'=>array(
+				'tablename'=>'MisFinanceExpensesMas',
+				'width'=>'720',
+				'height'=>'580',
+		),
+		'MisPurchaseApplymas'=>array(
+				'tablename'=>'MisPurchaseApplymas',
+				'width'=>'720',
+				'height'=>'500',
+		)
+		
+		
+);
+
+?>

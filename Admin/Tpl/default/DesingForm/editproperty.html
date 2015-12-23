@@ -1,0 +1,38 @@
+<script>
+function navTabAjaxDoneOnePiceData(json){
+	DWZ.ajaxDone(json);
+	if (json.statusCode == DWZ.statusCode.ok) {
+		var data = json.data;
+		if(data){
+			if(data['data']['category']=='navigation'){
+				var obj = navContainerObj.find('li['+tagIndentity+'="'+data['data'][tagIndentity]+'"]');
+				var html = data['data']['html'];
+				html = $(html).initUI();
+				obj.after(html);
+				obj.remove();
+			}else{
+				var obj = containerObj.find('li['+tagIndentity+'="'+data['data'][tagIndentity]+'"]');
+				var html = data['data']['html'];
+				html = $(html).initUI();
+				obj.after(html);
+				obj.remove();
+			}
+		}
+		$.pdialog.closeCurrent();
+	}
+}
+</script>
+
+<div class="pageContent">
+    <form action="__URL__/ajaxaddporperty"  method="post" onsubmit="return validateCallback(this, navTabAjaxDoneOnePiceData) ">
+        <div class="pageFormContent new_version_page_content design_page_content" layouth="58" >
+            {$vo}
+        </div>
+        <div class="formBar">
+            <ul>
+                <li><button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">修改</button></li>
+            </ul>
+        </div>
+    </form>
+</div>
+

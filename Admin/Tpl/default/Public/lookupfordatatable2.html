@@ -1,0 +1,260 @@
+ <script>
+var box = $.pdialog.getCurrent();
+var $box = $(".sourcetableforlookup",box);
+
+var samefield='{$samefield}';
+//var samefield='xingming,dizhi';
+
+//点击主数据复选框 根据条件判断 成立则调入子数据
+function bringson(obj){
+	var $this = $(obj);
+	var checkval = $this.val();
+	var lookupjson = $this.next("input").val();
+	//查询所有选中的checkbox
+	var checkedobj = $box.find("input[type='checkbox']:checked");
+	//除开本身外的checkedobj
+	var oldobj = checkedobj.not(obj).last();
+	//是否传有合并条件，如果没有只能选一个
+	if(samefield){
+		//判断选中个数 超过1个 根据条件检查
+		if($(obj).attr("checked")){
+			if(checkedobj.size()>1){
+				//拆分条件   判断是否该按钮可改变
+				var sames = samefield.split(',');
+				var a = true;
+				$.each(sames,function(i,v){
+					if($this.closest('tr').find("input[name='"+v+"']").val()!=oldobj.closest('tr').find("input[name='"+v+"']").val()){
+						a = false;
+					}
+				})				
+				//如果可以改变，判断是否选中，选中状态下加载html 否则清空#lookupfordatatable2_sons的内容
+				if(a){
+					var newval = '';
+					$.each(checkedobj,function(){
+						
+						newval += newval?','+$(this).val():$(this).val();
+					});
+					var html='';
+					html += '<input type="hidden" name="masid" value="'+newval+'">';
+					html += '<input type="hidden" name="model" value="{$model}">';
+					html += '<input type="hidden" name="dt" value=\'{$dt}\'>';
+					html += "<input type='hidden' name='lookupJson' value='"+lookupjson+"'>";
+					$("#sourceform").html(html);
+					$("#sourceform").submit();
+				}else{
+					//$("#lookupfordatatable2_sons").html('');
+					$this.attr('checked',false);
+				}			
+			}else{
+				var html='';
+				html += '<input type="hidden" name="masid" value="'+checkval+'">';
+				html += '<input type="hidden" name="model" value="{$model}">';
+				html += '<input type="hidden" name="dt" value=\'{$dt}\'>';
+				html += "<input type='hidden' name='lookupJson' value='"+lookupjson+"'>";
+				$("#sourceform").html(html);
+				$("#sourceform").submit();
+			}
+		}else{
+			//如果是取消选中，html为空 并将有空能已经插入数据库的数据删除
+			
+			var url = "__URL__/lookupmaindel";
+			$.ajax({
+				type:"POST",
+				url:url,
+				data:{
+					masid:checkval,
+				},
+			})
+			if(checkedobj.size()>=1){
+				var newval = '';
+				$.each(checkedobj,function(){
+					newval += newval?','+$(this).val():$(this).val();
+				});
+				var html='';
+				html += '<input type="hidden" name="masid" value="'+newval+'">';
+				html += '<input type="hidden" name="model" value="{$model}">';
+				html += '<input type="hidden" name="dt" value=\'{$dt}\'>';
+				html += "<input type='hidden' name='lookupJson' value='"+lookupjson+"'>";
+				$("#sourceform").html(html);
+				$("#sourceform").submit();
+			}else{
+				$("#lookupfordatatable2_sons").html('');
+			}
+			
+		}
+	}else{
+
+		if($(obj).attr("checked")){
+			if($("input[type='checkbox']:checked",$box).size()>1){
+				$("#lookupfordatatable2_sons").html('');
+				$this.attr('checked',false);
+			}else{
+				var html='';
+				html += '<input type="hidden" name="masid" value="'+checkval+'">';
+				html += '<input type="hidden" name="model" value="{$model}">';
+				html += '<input type="hidden" name="dt" value=\'{$dt}\'>';
+				html += "<input type='hidden' name='lookupJson' value='"+lookupjson+"'>";
+				$("#sourceform").html(html);
+				$("#sourceform").submit();
+			}
+		}else{
+			$("#lookupfordatatable2_sons").html('');
+			$this.attr('checked',false);
+			var url = "__URL__/lookupmaindel";
+			$.ajax({
+				type:"POST",
+				url:url,
+				data:{
+					masid:checkval,
+				},
+			}) 
+		}
+		
+	}
+	
+	
+}
+//点击主数据tr 如果其复选框是选中状态，调入子数据
+function reshowchoice(obj){
+	if($(obj).find("input[type='checkbox']")){		
+		var $this = $(obj).find("input[type='checkbox']");
+		var checkval = $this.val();
+		var lookupjson = $this.next("input").val();
+		var seclist = '{$seclist}';
+		if(seclist){
+			JSON.parse(seclist)
+			var bb = '';
+			$.each(seclist,function(v){
+				if(v.mainid==checkval) bb=1;
+			})
+		}			
+		if(bb||$this.attr('checked')){
+			var html='';
+			html += '<input type="hidden" name="masid" value="'+checkval+'">';
+			html += '<input type="hidden" name="model" value="{$model}">';
+			html += '<input type="hidden" name="dt" value=\'{$dt}\'>';
+			html += "<input type='hidden' name='lookupJson' value='"+lookupjson+"'>";
+			$("#sourceform").html(html);
+			$("#sourceform").submit();
+		}
+		
+	}
+}
+</script>
+
+<div id="lookupfordatatable2">
+	<div class="pageContent">
+		<div class="pageFormContent applecloth anchorsToolBarParen">
+			<form id="pagerForm" action="__URL__/lookupGenerals" method="post">
+				
+				<input type="hidden" name="lookuptodatatable" value="2" />
+				<input type="hidden" name="pageNum" value="1"/>
+				<input type="hidden" name="orderField" value="{$order}" />
+				<input type="hidden" name="orderDirection" value="{$sort}" />
+				<input type="hidden" name="field" value="{$field}" />
+				<input type="hidden" name="deptid" value="{$deptid}" />
+				<input type="hidden" name="model" value="{$model}" />
+				<input type="hidden" name="conditions" value="{$conditions}" />
+				<input type="hidden" name="filterfield" value="{$filterfield}" />
+				<input type="hidden" name="newconditions" value="{$newconditions}"/>
+				<input type="hidden" name="lookupchoice" value="{$lookupchoice}"/>
+		
+		
+			</form>
+			<div class="panelBar" style="box-shadow: 0px 2px 3px 0px rgba(0,0,0,0);margin-bottom: 5px;">
+                <form id="sourceform" onsubmit="return divSearch(this,'lookupfordatatable2_sons');" rel="lookupfordatatable2_sons" action="__URL__/lookupson" method="post"></form>
+				<form id="lookupGeneralForm" onsubmit="return dialogSearch(this);" rel="lookupfordatatable2" action="__URL__/lookupGenerals" method="post">
+					<input type="hidden" name="lookuptodatatable" value="2" />
+				<input type="hidden" name="pageNum" value="1"/>
+				<input type="hidden" name="orderField" value="{$order}" />
+				<input type="hidden" name="orderDirection" value="{$sort}" />
+				<input type="hidden" name="field" value="{$field}" />
+				<input type="hidden" name="deptid" value="{$deptid}" />
+				<input type="hidden" name="model" value="{$model}" />
+				<input type="hidden" name="conditions" value="{$conditions}" />
+				<input type="hidden" name="filterfield" value="{$filterfield}" />
+				<input type="hidden" name="newconditions" value="{$newconditions}"/>
+				<input type="hidden" name="lookupchoice" value="{$lookupchoice}"/>
+					
+					<div class="searchBar">
+                        <table class="searchContent">
+                            <tr>
+                                <td class="tml_select_option_left"> 
+                                    <select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+                                        <volist id="qsl" name="quickSearchList">
+                                            <option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+                                        </volist>
+                                    </select>
+                                    <input type="hidden" name="time" value="{$time}" />
+                                </td>
+                                <td class="tml_select_option_center">
+                                    <volist id="qsl" name="quickSearchList">
+                                        <if condition="$qsl['quickname'] eq $quicksearchby">
+                                            <div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+                                                {$qsl['html']}
+                                            </div>
+                                        <else/>
+                                            <div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+                                                {$qsl['html']}
+                                            </div>
+                                        </if>
+                                    </volist>
+                                </td>
+                                <td class="tml_select_option_right">
+                                    <button class="xySearch" type="submit"><span class="icon-search"></span></button>
+                                </td>
+                                <td>
+                                    <a class="xyAdvancedSearch" href="__APP__/Search/advancedsearch/model/{$model}" rel="__MODULE__advancedsubsearch" width="700" height="500" target="dialog" mask="true">高级检索</a>
+                                </td>
+                            </tr>
+                        </table>
+		              </div>
+		        </form>
+			</div>
+			<table class="sourcetableforlookup tml_set_table" layoutH="346" targetType="dialog" style="width: 99%;">
+				<thead>
+					<tr>
+                        <th>选择</th>
+						<volist id="vos" name="detailList">
+					    	<if condition="$vos[shows] eq 1"><th <if condition="$vos[widths]">width="{$vos[widths]}"</if><if condition="$vos[sorts]">orderField="{$vos[sortname]}" class="{$sort}"</if>>{$vos[showname]}</th></if>	<!--类型-->
+					    </volist>
+					</tr>
+				</thead>
+				<tbody>
+					<volist id="vo2" name="list" key="key2">
+						<tr onclick="reshowchoice(this);">
+							<td><input type="checkbox" onclick="bringson(this);" name="id" value="{$vo2.id}"><input type="hidden" value='{$vo2.lookupJson}'></td>
+							<volist id="vo1" name="detailList">
+								<if condition="$vo1[shows] eq 1">
+									<td width="{$vo1[widths]}">
+										<if condition="count($vo1['func']) gt 0">
+											<volist name="vo1.func" id="nam">
+												<if condition="!empty($vo1['extention_html_start'][$key])">{$vo1['extention_html_start'][$key]}</if>
+												{:getConfigFunction($vo2[$vo1['name']],$nam,$vo1['funcdata'][$key],$list[$key2-1])}
+												<input type="hidden" name="{$vo1.name}" value="{$vo2[$vo1['name']]}">
+												<if condition="!empty($vo1['extention_html_end'][$key])">{$vo1['extention_html_end'][$key]}
+												<input type="hidden" name="{$vo1.name}" value="{$vo2[$vo1['name']]}">
+												</if>
+											</volist>
+										<else />
+										{$vo2[$vo1['name']]}
+										<input type="hidden" name="{$vo1.name}" value="{$vo2[$vo1['name']]}">
+										</if>
+									</td>
+								</if>
+							</volist>
+						</tr>
+				    </volist>
+				</tbody>
+			</table>
+			<div class="panelBar panelPageBar" style="border: none;border-bottom: 1px solid #d8d8d8;padding: 8px 0px;">
+				<div class="pages">
+					<span>共{$totalCount}条</span>
+				</div>
+				<div class="pagination" rel="lookupfordatatable2" targetType="dialog" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="lookupfordatatable2_sons"></div>

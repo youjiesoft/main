@@ -1,0 +1,40 @@
+<script>
+var $dialog = $.pdialog.getCurrent();
+$dialog.find("textarea").focus();
+var thismodel = "{$_REQUEST['model']}";
+function onsubmitBackDialog() {
+	var textarea = $dialog.find("textarea").val()
+	if (textarea.length <= 0) {
+		alertMsg.error('请填写审核信息！');
+		return false;
+	}
+	$.pdialog.closeCurrent();
+	var $navTab = navTab.getCurrentPanel();
+	$navTab.find("input[name='doinfo']").val(textarea);
+	var form = $navTab.find("form");
+	BackProcess(form[0],thismodel);
+}
+</script>
+<div class="pageContent">
+	<div class="pageFormContent" layoutH="56">
+		<fieldset>
+			<legend class="fieldset_legend_toggle">
+				<b>打回意见</b>
+			</legend>
+			<div>
+				<textarea style="width: 360px; height: 100px" name="doinfo" class="required"></textarea>
+			</div>
+		</fieldset>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li>
+				<div class="buttonActive">
+					<div class="buttonContent">
+						<button type="button" onclick="onsubmitBackDialog();">确定</button>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

@@ -1,0 +1,152 @@
+<script>
+function MessageCurrentReadprev(obj,c){
+	var $this=$("#MessageCurrentReadprev");
+	var selected = $("#messageTable").find("tr.cu");
+	if(c === 'prev'){
+		var then = selected.prev();
+	} else if(c === 'next'){
+		var then = selected.next();
+	}
+    var $rel = then.attr("rel");
+    if($rel){
+    	$.ajax({
+            type:'POST',
+            url:"__URL__/lookupreadmessage/id/"+$rel,
+            async:true,
+            global:false,
+            success:function(response){
+                var json=DWZ.jsonEval(response);
+                if(json.statusCode==DWZ.statusCode.timeout) {
+                    alertMsg.error(json.message||DWZ.msg("sessionTimout"),{okCall:function(){
+                    if($.pdialog)$.pdialog.checkTimeout();
+                    if(navTab)navTab.checkTimeout();
+                    DWZ.loadLogin();}});
+                }
+                if(json.statusCode==DWZ.statusCode.error){
+                    if(json.message)alertMsg.error(json.message);
+                }else{
+                    if(json.statusCode==DWZ.statusCode.timeout){
+                        $this.html(json.message+'<div style="display:none;">'+response+'</div>').initUI();
+                    } else {
+                        $this.html(response).initUI();
+                    }
+                    $("#MessageCurrentRead").find("[layoutH]").layoutH();
+                    $("#messageTable").find("tr").removeClass('cu');
+                    $("#messageTable").find("tr").each(function(){
+                    	var id = $(this).attr("rel");
+                    	if($rel == id){
+                    		$readedStatus = $(this).find("a.readedStatus").attr("readedStatus");
+                            if ($readedStatus == 0) {
+                            	$(this).find(".readedStatus").parent().removeClass("Ru");
+                            	$(this).find(".readedStatus").parent().addClass("Kw");
+                            	$(this).find(".readedStatus").attr("readedStatus","1");
+                            }
+                    		$(this).addClass("cu");
+                    		refreshEmailCount();
+                    	}
+                    });
+              }
+            },
+            error:DWZ.ajaxError
+        });
+    }else{
+    	return false;
+    }
+}
+function addmessageinboxreply(obj){
+	var umeditorid = "ueditor"+Math.round(Math.random()*10000000);//随机ID
+	$(obj).attr("id",umeditorid);//设置ID值
+	$(obj).removeClass("textInput");
+	$(obj).css({float:"none"});
+	var ue = UE.getEditor(umeditorid);//构造百度编辑器
+}
+
+</script>
+<div class="xyMailReadInner" id="MessageCurrentReadprev">
+    <ul class="xyMailReadTools clearfix">
+        <if condition="$msgtype">
+        <li class="xyMailReadTool"><a class="tml-btn tml_look_btn" rel="replyMessage" href="__URL__/replyMessage/id/{$a_id}/isreply/1/transpond/0/outbox/2" mask="true" target="dialog" width="800" height="630"><span class="icon icon-comment-alt"></span> 回复</a></li>
+        </if>
+        <li class="xyMailReadTool"><a class="tml-btn tml_look_btn" rel="replyMessage" href="__URL__/replyMessage/id/{$a_id}/transpond/1/outbox/2" mask="true" target="dialog" width="800" height="630"><span class="icon icon-location-arrow"></span> 转发</a></li>
+        <if condition="$updataid"><li class="xyMailReadTool"><else/><li class="xyMailReadTool disabled"></if><a class="tml-btn tml_look_btn" href="#" rel="{$downdataid}" onclick="MessageCurrentReadprev(this, 'prev');"><span class="icon icon-double-angle-left"></span> 上一封</a></li>
+        <if condition="$downdataid"><li class="xyMailReadTool"><else/><li class="xyMailReadTool disabled"></if><a class="tml-btn tml_look_btn" href="#" rel="{$updataid}" onclick="MessageCurrentReadprev(this, 'next');">下一封 <span class="icon icon-double-angle-right"></span> </a></li>
+    </ul>
+    <form method="post" action="__URL__/insert/rel/messageinboxindexdiv" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+    <input type="hidden" name="commit" value="1"/>
+    <input type="hidden" name="iseditor" value="1">
+    <input type="hidden" name="recipient[]" value="{$default['createid']}"/>
+    <input type="hidden" name="recipientname[]" value="{$default['createid']|getFieldBy='id','name','User'}"/>
+    <input type="hidden" name="isreply" value="1"><!-- 有值表示回复 -->
+    <input type="hidden" name="replyid" value="{$default.id}">
+    <input type="hidden" name="title" value="{$default.title}"/>
+    <input type="hidden" name="quickreply" value="1"/>
+    <div class="xyMailReadContent">
+        <div class="xyMessage">
+            <div class="xyMessageHead">
+                <div class="clearfix xyMessageInfo tml_info_size">
+                    <div class="xyMessageTitle">
+                        <span class="xyMessageTitleCon"><if condition="$default.istranspond eq '1'"><em style="color:#999;">【转】</em></if>主题：{$default.title}</span>
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span class="tml-mr5">发件人：</span>
+                        <span><b><if condition="$default['createid']">{$default['createid']|getFieldBy='id','name','User'}<else/>系统</if></b></span>
+                    </div>
+                     <div class="xyMessageInfoList">
+                     	<span class="tml-mr5">发件时间：</span>
+                        <span><b>{$default['createtime']|transTime='Y-m-d H:i'}</b></span>
+                    </div>
+                    <div class="xyMessageInfoList">
+                        <span class="tml-mr5">收件人：</span>
+                        <span><b>{$default.recipientname}</b></span>
+                    </div>
+                    <if condition="$default.copytopeoplename">
+                        <div class="xyMessageInfoList">
+                            <span class="tml-mr5">抄送人：</span>
+                            <span><b>{$default.copytopeoplename}</b></span>
+                        </div>
+                    </if>
+                </div>
+            </div>
+            <div class="xyMessageContent" <if condition="$default.copytopeoplename"> layoutH="280" <else/> layoutH="270" </if> >
+                <div class="xyMessageText">
+                    {$default['content']}
+                </div>
+                <if condition="$attarry">
+                <div class="xyMessageAttach">
+                    <div style="padding:6px 10px 6px 8px;">
+                        <div class="attach left"></div><strong>附件：</strong>
+                    </div>
+                    <div class="xyMessageAttachItems">
+                        <volist name="attarry" id="att">
+                            <div class="xyMessageAttachItem">
+                                <span class="tml-label tml-bg-orange tml-mr5">附件{$key+1}</span>
+                                <a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}"><span>{$att['upname']}</span></a>
+								<if condition="$att.isplay eq 1">
+									&nbsp;&nbsp;&nbsp;&nbsp;<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);"><span class="icon icon-eye-open"></span> 在线查看</a>
+								</if>
+								<a class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" target="dialog"><span class="icon icon-file"></span> 归档</a>
+							</div>
+                        </volist>
+                    </div>
+                </div>
+                </if>
+                <textarea name="originalcontent" style="display:none"><br/><div style='background:#ffc;'>
+                	<p>--------------原始邮件----------------</p>
+                	<p><b>主题</b>：{$default['title']}</p>
+                	<p><b>发件人</b>：{$default['createid']|getFieldBy='id','name','User'}</p>
+                	<p><b>发件时间</b>：{$default['createtime']|transTime='Y-m-d H:i'}</p>
+                	<p><b>收件人</b>：{$default['recipientname']}</p>
+                </div><br/>{$default['content']}</textarea>
+                <div>
+                <div>
+            	<textarea name="content" style="width:98%;" onclick="addmessageinboxreply(this);"></textarea>
+            	</div>
+				<ul class="right" style="margin-right:10px;margin-top:10px;">
+					<li><button class="tml_only_btn" type="submit">快速回复</button></li>
+				</ul>
+            </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>

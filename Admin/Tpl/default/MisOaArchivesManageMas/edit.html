@@ -1,0 +1,251 @@
+<script>
+function subdeleteMisOaArchivesManageSub($this){
+    alertMsg.confirm("您确定要删除该条记录吗？", {
+        okCall: function(){
+            $this = $($this);
+            var id = $this.attr("rel");
+            $.ajax({
+                type: 'POST',
+                url : "__URL__/subdelete",
+                data: {id:id},
+                success:function(res){
+                    if(res) {
+                        $this.parents("tr:first").remove();
+                    }
+                }
+            });
+        }
+    });
+}
+function addMisOaArchivesManageMas(file, data, response) {
+    var $box=navTab.getCurrentPanel();
+    var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+    $box.find("input[name='swf_upload_source_name']").val(file.name);
+    $box.find("input[name='swf_upload_save_name']").val(s[1]);
+}
+$('#begindateMisOaArchivesManageMasEdit').focus(function (){
+    WdatePicker({maxDate:"#F{$dp.$D('enddateMisOaArchivesManageMasEdit')}"});
+});
+$('#enddateMisOaArchivesManageMasEdit').focus(function () {
+    WdatePicker({minDate:"#F{$dp.$D('begindateMisOaArchivesManageMasEdit')}"});
+}); 
+</script>
+<div class="pageContent">
+    <form method="post" action="__URL__/update/rel/misoaarchivesmanagesub" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+        <input type="hidden" name="callbackType" value="closeCurrent">
+        <input type="hidden" name="contracttype" value="{$table}">
+        <input type="hidden" name="id" value="{$vo.id}">
+        <input type="hidden" name="refreshtabs[data]" value="1">
+        <div class="pageFormContent applecloth" layoutH="56">
+            <div class="keepContentCenter form-affix-content">
+                <div class="contentTitle contentTitle_center form-affix-title">档案修改
+                    
+                </div>
+                <div>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle"> <b>基本信息</b> </legend>
+                    <div class="tml-row">
+                    {:W('ShowOrderno',array(1,'mis_oa_archives_manage_mas',$vo['orderno']))}
+	                    <if condition='$fields["fondsnum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["fondsnum"]}：</label>
+	                        <input type="text" name="fondsnum" class="required textInput" value="{$vo.fondsnum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["typenum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["typenum"]}：</label>
+	                        <input type="text" name="typenum" class="required textInput" value="{$vo.typenum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["catnum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["catnum"]}：</label>
+	                        <input type="text" name="catnum" class="required textInput" value="{$vo.catnum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["year"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["year"]}：</label>
+	                        <input type="text" name="year" class="required textInput" value="{$vo.year}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["casenum"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["casenum"]}：</label>
+	                        <input type="text" name="casenum" class="required textInput" value="{$vo.casenum}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["retentionperiod"]'>
+	                    <div class="tml-form-col">
+	                        <label>{$fields["retentionperiod"]}：</label>
+	                        <input type="text" name="retentionperiod" class="required textInput" value="{$vo.retentionperiod}" />
+	                    </div>
+	                    </if>
+	                    <if condition='$fields["begindate"]'>
+	                    <div class="tml-form-col">
+	                        <label title="案件起始日期">案件起始日期：</label>
+	                        <div class="tml-input-append">
+    	                        <input type="text" id="begindateMisOaArchivesManageMasEdit" name="begindate" class="Wdate" value="{$vo.begindate|transTime}"/>
+    	                		<span class="input-addon input-addon-calendar"></span>
+	                        </div>
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="案件截止日期">案件截止日期：</label>
+	                        <div class="tml-input-append">
+    	                        <input type="text" id="enddateMisOaArchivesManageMasEdit" name="enddate" class="Wdate" value="{$vo.enddate|transTime}"/>
+    	                		<span class="input-addon input-addon-calendar"></span>
+	                        </div>
+	                    </div>
+	                    </if>
+	            	</div>
+                </fieldset>
+                </div>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle"> <b>导入目录</b> </legend>
+	                    <div class="tml-form-row">
+	                    	<label title="样本下载">样本下载：</label>
+	                    	<p style="padding:0;"><a class="attlink" rel="" target="_blank" href="__PUBLIC__/{$url}"><span class="info">{$filename}</span></a></p>
+	                    </div>
+	                    <div >
+                        <div class="tml-form-row">
+                            <label title="导入新文件">导入新文件：</label>
+                            <input id="swfupload_misoaarchivesmanagemas_add" onUploadSuccess="addMisOaArchivesManageMas" auto="true" multi="false" type="file" uploader="true" fileTypeExts="*.xls;" fileTypeDesc="*.xls;" name="misoaarchivesmanagemas_add_file" formData="{ uploadpath:'MisOaArchivesManageMas' }" />
+                        </div>
+                        <div class="tml-form-row">
+                            <label title="导入新文件">导入文件名：</label>
+                            <input type="text" name="swf_upload_source_name" readonly value="未选择文件！" style="margin:2px 5px 0 0; width:200px;">
+                            <input type="hidden" name="swf_upload_save_name" value="">
+                            <a class="tml-btn tml-btn-default" onclick="clearInput('swf_upload_source_name,swf_upload_save_name');"><span class="buttonContent"><em class="tml-icon tml-icon-cross tml-mr3"></em><strong class="tml-icon-text">清空文本框</strong></span></a>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                <legend class="fieldset_legend_toggle"><b>卷内文书目录</b></legend>
+                <div class="xytable grid">
+                <table class="list nowrap itemDetail" addbutton="添加目录" style="clear: both;width:100%">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th type="text" width="90" name="adddeptid[]" >责任者</th>
+                            <th type="text" width="150" name="addreferencenum[]">文号</th>
+                            <th type="text" name="addtitle[]">标题</th>
+                            <th type="date" width="90" name="adddatetime[]" >日期</th>
+                            <th type="text" width="30" name="addpage[]">页码</th>
+                            <th type="text" name="addremark[]">备注</th>
+                            <th type="del" width="30">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="sublist" id="tlist">
+                            <tr class="unitBox" >
+                                <td style="width:90px;">
+                                    <input type="text" style="width:84px;" name="editdeptid[{$tlist['id']}]" value="{$tlist.deptid}"/>
+                                </td>
+                                <td style="width:150px;">
+                                    <input type="text" name="editreferencenum[{$tlist['id']}]" value="{$tlist.referencenum}"/>
+                                </td>
+                                <td>
+                                    <input type="text" name="edittitle[{$tlist['id']}]" value="{$tlist.title}"/>
+                                </td>
+                                <td style="width:90px;">
+                                    <span class="tml-input-append">
+                                    	<input type="text" name="editdatetime[{$tlist['id']}]" onfocus="WdatePicker()" class="Wdate" value="{$tlist.datetime|transTime}"/>
+                						<span class="tml-icon tml-icon-calendar"></span>
+                                    </span>
+                                </td>
+                                <td style="width:30px;">
+                                    <input type="text" style="width:24px;" name="editpage[{$tlist['id']}]" value="{$tlist.page}"/>
+                                </td>
+                                <td>
+                                    <input type="text" name="editremark[{$tlist['id']}]" value="{$tlist.remark}"/>
+                                </td>
+                                <td style="width:30px;">       
+                                  <if condition="$_SESSION.a eq 1 or $_SESSION.misoaarchivesmanagemas_subdelete">
+                                    <a class="btnDel" href="javascript:void(0)"  rel="{$tlist['id']}" onclick="subdeleteMisOaArchivesManageSub(this);">删除</a>
+                                </if>
+                                </td>
+                            </tr>
+                        </volist>
+                    </tbody>
+                </table>
+                </div>
+            </fieldset>
+                
+                
+                <!-- <div>
+                <fieldset class="zlqk_1">
+                    <legend class="fieldset_legend_toggle">
+                        <b>上传附件</b>
+                    </legend>
+                    <div class="unit">
+                        <label>上传附件：</label>
+                        <input id="swfupload_misoaarchivesmanagemas_edit" type="file" uploader="true" name="misoaarchivesmanagemas_edit_file" formData="{ uploadpath:'MisOaArchivesManage' }" />
+                        <input type="image" onclick="$('#swfupload_misoaarchivesmanagemas_edit').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                    </div>
+                    <dl class="nowrap">
+                            此处为上传列表
+                            <dt>
+                                <label>&nbsp;</label>
+                            </dt>
+                            <dd>
+                                <span id="swfupload_misoaarchivesmanagemas_edit-queue" class="info uploadify_queue">
+                                    <if condition="$attarry"> <volist name="attarry" id="att">
+                                    <div class="uploadify-queue-item">
+                                        <div class="cancel">
+                                            <a class="dellink" href="__URL__/lookupdelatt/id/{$att['id']}" rel="{$att['id']}" target="ajaxTodo" callback="mis_swf_upload_del" callbackdata="swfupload_misoaarchivesmanagemas_edit-queue">X</a>
+                                        </div>
+                                        <span class="fileName">
+                                            <a href="__PUBLIC__/{$att.attached}" target="_blank">{$att['upname']}</a>
+                                        </span>
+                                        <span class="data"> - 已经传</span>
+                                        <div class="uploadify-progress">
+                                            <div class="uploadify-progress-bar" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    </volist> </if>
+                                </span>
+                            </dd>
+                        </dl>
+                </fieldset>
+                </div> -->
+                <div>
+                <fieldset>
+                    <legend class="fieldset_legend_toggle">
+                        <b>页脚</b>
+                    </legend>
+                    <div class="tml-row">
+	                    <div class="tml-form-col">
+	                        <label title="制单人">制单人：</label>
+	                        <input type="text" readonly="readonly" class="textInput" value="{$vo.createid|getFieldBy='id','name','user'}" />
+	                    </div>
+	                    <div class="tml-form-col">
+	                        <label title="制单时间">制单时间：</label>
+	                        <input class="textInput" readonly="readonly" value="{$vo.createtime|transTime}" />
+	                    </div>
+                    </div>
+                </fieldset>
+                </div>
+            </div>
+        </div>
+        {:W('ShowAction',array('data'=>$vo))}
+    </form>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('.xytable').bind('click mouseover', function(e){
+        var $this = $(this);
+        var $trs = $(this).find('tr');
+        var $target = $(e.target);
+        var $tr = $target.parents('tr');
+        if($tr.length > 0){
+            if(e.type == 'click'){
+                $trs.removeClass('selected');
+                $target.parents('tr').addClass('selected');
+            } else if(e.type == 'mouseover'){
+                $trs.removeClass('hover');
+                $target.parents('tr').addClass('hover');
+            }
+        }
+    });
+});
+</script>

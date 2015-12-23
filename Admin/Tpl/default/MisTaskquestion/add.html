@@ -1,0 +1,96 @@
+<script>
+function mistaskquestionaddchangeexpertype(){
+    var expertype = $("#mistaskquestionadd_change_expertype option:selected").val();
+    if (expertype == '0') {
+        $("#mistaskquestionadd_change_expert").show();
+    } else {
+        $("#mistaskquestionadd_change_expert").hide();
+    }
+}
+</script>
+<div class="page">
+    <div class="pageContent">
+        <form method="post" action="__URL__/insert/navTabId/mistaskadscriptionrelevques" class="pageForm required-validate" onsubmit="return iframeCallback(this,mistaskad_refreshdialog);">
+            <input type="hidden" name="callbackType" value="closeCurrent">
+            <input type="hidden" name="refreshtabs[ntdata]" value="4">
+            <input type="hidden" name="refreshtabs[ids]" value="{$taskinfoid}">
+            <input type="hidden" name="refreshtabs[closeall]" value="1">
+            <input type="hidden" name="iseditor" value="1">
+            <input type="hidden" name="type" value="{$type}">
+            <input type="hidden" name="parentid" value="{$parentid}">
+            <input type="hidden" name="views" value="1">
+            <input type="hidden" name="sourcetype" value="{$sourcetype}">
+            <input type="hidden" name="sourceid" value="{$sourceid}">
+            <div class="pageFormContent" layoutH="56">
+                <p>
+                    <label>标题：</label>
+                    <input type="text" size="30" name="title" style="width:245px;" class="required" value="{$vo['title']}">
+                </p>
+                <p>
+                    <label>分类：</label>
+                    <select name="categoryid" class="combox required">
+                        <option value="">请选择类型</option>
+                        <volist name="typeidlist" id="vozw">
+                        <option value="{$vozw['id']}" >{$vozw['name']}</option>
+                        </volist>
+                    </select>
+                </p>
+                <p>
+                    <label>提问对象：</label>
+                    <select id="mistaskquestionadd_change_expertype" onchange="mistaskquestionaddchangeexpertype();" name="expertype" class="combox required">
+                        <option value="1" >发布人</option>
+                        <option value="2" >跟踪人</option>
+                        <option value="0" >专家</option>
+                    </select>
+                </p>
+                <p id="mistaskquestionadd_change_expert" style="display:none;">
+                    <label>对专家提问：</label>
+                    <input type="text" size="28" class="readonly org.name" readonly="readonly" value="{$vo['title']}">
+                    <a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookup" lookupgroup="org">查找带回</a>
+                    <input type="hidden" name="expertid" class="readonly  org.userid" value="">
+                </p>
+                <div class="clear"></div>
+                <dl class="nowrap">
+                    <dt>详细：</dt>
+                    <dd><textarea  class="editor" name="content" rows="15" cols="45"  tools="simple"></textarea></dd>
+                </dl>
+                <div class="unit">
+                    <label>加关注：</label>
+                    <input type="radio" name="isattention" value="1">是
+                    <input type="radio" name="isattention" checked value="0">否
+                </div>
+                <div class="unit">
+                    <label>上传附件：</label>
+                    <input id="swfupload_mistaskquestion_add" type="file" uploader="true" name="mistaskquestion_add_file" formData="{ uploadpath:'Mistaskquestion' }" />
+                    <input type="image" onclick="$('#swfupload_mistaskquestion_add').uploadify('upload','*');return false;" src="__PUBLIC__/uploadify/upload2.png">
+                </div>
+                <dl class="nowrap"><!--此处为上传列表-->
+                    <dt><label>&nbsp;</label></dt>
+                    <dd>
+                        <span id="swfupload_mistaskquestion_add-queue" class="info uploadify-queue"></span>
+                    </dd>
+                </dl>
+            </div>
+			<div class="formBar">
+				<ul>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskquestion_insert">
+						<li>
+							<div class="buttonActive">
+								<div class="buttonContent">
+									<button type="submit">{$Think.lang.save}</button>
+								</div>
+							</div>
+						</li>
+					</if>
+					<li>
+						<div class="button">
+							<div class="buttonContent">
+								<button type="button" class="close">{$Think.lang.close}</button>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

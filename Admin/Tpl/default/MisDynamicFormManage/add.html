@@ -1,0 +1,1362 @@
+<div class="tablesouce" style="display:none">
+<div class="list_header">
+	<span>表名：</span> <input style="font-family: 'microsoft yahei'"
+		type="text" name="tablename[1]" placeholder="请输入表名"
+		class="required " /> <span class="right"
+		style="padding-right: 20px;"> 
+		<input
+		class="mr10 nbm_primary_table" value="1" type="checkbox"
+		checked="checked" name="tableprimary[1]"  disabled="disabled"/> <span>是否设置为主表</span>
+	</span>
+</div>
+<table class="new_table" index="1">
+	<colgroup>
+		<col width="10%"></col>
+		<col width="10%"></col>
+		<col width="10%"></col>
+		<col width="10%"></col>
+		<col width="10%"></col>
+		<col width="10%"></col>
+		<col width="10%"></col>
+		<col width="10%"></col>
+	</colgroup>
+	<thead>
+		<tr>
+			<th>字段名称(英文)</th>
+			<th>字段标题(中文)</th>
+			<th>备注</th>
+			<th>字段类型</th>
+			<th>字段长度</th>
+			<th>组件类型</th>
+			<th>权重</th>
+			<th><a href="javascript:void(0);"
+				class="nbm_check_all_item">是否唯一</a></th>
+			<th><a href="javascript:void(0);"
+				class="nbm_check_all_item">是否显示</a></th>
+			<th>操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				<input name="fieldname[1][1]" placeholder="请输入英文名称" autocomplete="off"
+				type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+				/>
+			</td>
+			<td>
+				<input name="fieldtitle[1][1]" placeholder="请输入中文标题" autocomplete="off"
+				id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+			</td>
+			<td>
+				<input name="fielddesc[1][1]" autocomplete="off" placeholder="请输入备注" type="text"
+				class="" />
+			</td>
+			<td>
+				<select name="fieldtype[1][1]" class="select2 opcategory">
+					<volist name="fieldtypeList" id="fieldtypeVo">
+						<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+							{$fieldtypeVo.val}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldlength[1][1]" placeholder="请输入字段长度" autocomplete="off"
+				type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+				/>
+			</td>
+			<td>
+				<select name="fieldcategory[1][1]" class="select2 opweight ">
+					<volist name="comboxOptionList" id="comboxOptionVo">
+						<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+							{$comboxOptionVo.title}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldweight[1][1]" placeholder="请输入权重" autocomplete="off"
+				value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+				/>
+			</td>
+			<td>
+				<input name="fieldunique[1][1]" value="1" type="checkbox" />
+			</td>
+			<td>
+				<input name="fieldshow[1][1]" value="1" type="checkbox" checked />
+			</td>
+			<td>
+				<a class="nbm_del_col" href="javascript:void(0);">
+					移除行
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input name="fieldname[1][2]" placeholder="请输入英文名称" autocomplete="off"
+				type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+				/>
+			</td>
+			<td>
+				<input name="fieldtitle[1][2]" placeholder="请输入中文标题" autocomplete="off"
+				id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+			</td>
+			<td>
+				<input name="fielddesc[1][2]" autocomplete="off" placeholder="请输入备注" type="text"
+				class="" />
+			</td>
+			<td>
+				<select name="fieldtype[1][2]" class="select2 opcategory">
+					<volist name="fieldtypeList" id="fieldtypeVo">
+						<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+							{$fieldtypeVo.val}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldlength[1][2]" placeholder="请输入字段长度" autocomplete="off"
+				type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+				/>
+			</td>
+			<td>
+				<select name="fieldcategory[1][2]" class="select2 opweight ">
+					<volist name="comboxOptionList" id="comboxOptionVo">
+						<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+							{$comboxOptionVo.title}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldweight[1][2]" placeholder="请输入权重" autocomplete="off"
+				value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+				/>
+			</td>
+			<td>
+				<input name="fieldunique[1][2]" value="1" type="checkbox" />
+			</td>
+			<td>
+				<input name="fieldshow[1][2]" value="1" type="checkbox" checked />
+			</td>
+			<td>
+				<a class="nbm_del_col" href="javascript:void(0);">
+					移除行
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input name="fieldname[1][3]" placeholder="请输入英文名称" autocomplete="off"
+				type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+				/>
+			</td>
+			<td>
+				<input name="fieldtitle[1][3]" placeholder="请输入中文标题" autocomplete="off"
+				id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+			</td>
+			<td>
+				<input name="fielddesc[1][3]" autocomplete="off" placeholder="请输入备注" type="text"
+				class="" />
+			</td>
+			<td>
+				<select name="fieldtype[1][3]" class="select2 opcategory">
+					<volist name="fieldtypeList" id="fieldtypeVo">
+						<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+							{$fieldtypeVo.val}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldlength[1][3]" placeholder="请输入字段长度" autocomplete="off"
+				type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+				/>
+			</td>
+			<td>
+				<select name="fieldcategory[1][3]" class="select2 opweight ">
+					<volist name="comboxOptionList" id="comboxOptionVo">
+						<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+							{$comboxOptionVo.title}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldweight[1][3]" placeholder="请输入权重" autocomplete="off"
+				value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+				/>
+			</td>
+			<td>
+				<input name="fieldunique[1][3]" value="1" type="checkbox" />
+			</td>
+			<td>
+				<input name="fieldshow[1][3]" value="1" type="checkbox" checked />
+			</td>
+			<td>
+				<a class="nbm_del_col" href="javascript:void(0);">
+					移除行
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input name="fieldname[1][4]" placeholder="请输入英文名称" autocomplete="off"
+				type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+				/>
+			</td>
+			<td>
+				<input name="fieldtitle[1][4]" placeholder="请输入中文标题" autocomplete="off"
+				id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+			</td>
+			<td>
+				<input name="fielddesc[1][4]" autocomplete="off" placeholder="请输入备注" type="text"
+				class="" />
+			</td>
+			<td>
+				<select name="fieldtype[1][4]" class="select2 opcategory">
+					<volist name="fieldtypeList" id="fieldtypeVo">
+						<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+							{$fieldtypeVo.val}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldlength[1][4]" placeholder="请输入字段长度" autocomplete="off"
+				type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+				/>
+			</td>
+			<td>
+				<select name="fieldcategory[1][4]" class="select2 opweight ">
+					<volist name="comboxOptionList" id="comboxOptionVo">
+						<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+							{$comboxOptionVo.title}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldweight[1][4]" placeholder="请输入权重" autocomplete="off"
+				value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+				/>
+			</td>
+			<td>
+				<input name="fieldunique[1][4]" value="1" type="checkbox" />
+			</td>
+			<td>
+				<input name="fieldshow[1][4]" value="1" type="checkbox" checked />
+			</td>
+			<td>
+				<a class="nbm_del_col" href="javascript:void(0);">
+					移除行
+				</a>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<input name="fieldname[1][5]" placeholder="请输入英文名称" autocomplete="off"
+				type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+				/>
+			</td>
+			<td>
+				<input name="fieldtitle[1][5]" placeholder="请输入中文标题" autocomplete="off"
+				id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+			</td>
+			<td>
+				<input name="fielddesc[1][5]" autocomplete="off" placeholder="请输入备注" type="text"
+				class="" />
+			</td>
+			<td>
+				<select name="fieldtype[1][5]" class="select2 opcategory">
+					<volist name="fieldtypeList" id="fieldtypeVo">
+						<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+							{$fieldtypeVo.val}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldlength[1][5]" placeholder="请输入字段长度" autocomplete="off"
+				type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+				/>
+			</td>
+			<td>
+				<select name="fieldcategory[1][5]" class="select2 opweight ">
+					<volist name="comboxOptionList" id="comboxOptionVo">
+						<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+							{$comboxOptionVo.title}
+						</option>
+					</volist>
+				</select>
+			</td>
+			<td>
+				<input name="fieldweight[1][5]" placeholder="请输入权重" autocomplete="off"
+				value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+				/>
+			</td>
+			<td>
+				<input name="fieldunique[1][5]" value="1" type="checkbox" />
+			</td>
+			<td>
+				<input name="fieldshow[1][5]" value="1" type="checkbox" checked />
+			</td>
+			<td>
+				<a class="nbm_del_col" href="javascript:void(0);">
+					移除行
+				</a>
+			</td>
+		</tr>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="10" style="text-align: right;">
+					<button type="button" class="new_col_btn nbm_system_field">
+						查看系统默认生成字段</button>
+
+					<button type="button" class="new_col_btn nbm_add_col">
+						新建一行</button>
+					<button type="button"
+						class="new_col_btn color_red nbm_remove_table">移除表</button>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
+
+<!-- 导入汉字转拼音库 -->
+<script type="text/javascript"
+	src="__PUBLIC__/Js/plugs/jQuery.Hz2Py-min.js"></script>
+<script>
+var maxPYLength = 20;
+var asciiCode = 96;
+var asciiCodeArr=Array();
+	var reserved='{$reserved}';
+	var dbsystemfield='{$dbsystemfield}';
+	
+	function DynamicnavTabDone(json) {
+		DWZ.ajaxDone(json);
+		if (json.statusCode == DWZ.statusCode.ok) {
+			var type = json.data.type;
+			var tpltype = json.data.tpltype;
+			var nodename = json.data.nodename;
+			var tablename = json.data.tablename;
+			var params = [{
+				name : 'nodename',
+				value : nodename
+			},{
+				name : 'tablename',
+				value : tablename
+			},{
+				name : 'tpltype',
+				value : tpltype
+			}];
+			// 打开index 页面编辑页 
+			navTab.closeCurrentTab();
+			var tabids = "__MODULE__setindextpl";
+			var urls = "__URL__/setindextpl/tpltype/"+tpltype+"/nodename/"+nodename+"/tablename/"+tablename;
+			var titles = "首页模板设置";
+			var postdata =params;
+			navTab.openTab(tabids, urls, {title : titles,fresh : true,data:postdata});
+			
+			/*
+			navTab.closeCurrentTab();
+			var tabids = "__MODULE__add";
+			var urls = "__URL__/quickedit";
+			var titles = "拖动布局";
+			var postdata =params;
+			navTab.openTab(tabids, urls, {title : titles,fresh : true,data:postdata});
+			*/
+			
+			return false;
+		}
+	}
+function createNewCharacter(obj , original){
+	var splider = '';
+	//var defaultCahr = 'a';
+	// 生成唯一的字符 
+	// 得到最后的字符 
+	var curChar = $(obj).val();
+	// 取出自动追加的字段
+	/*if(curCharArr.length==0){
+		var end = curCharArr[curCharArr.length-1];
+		var curCharASCII =  end.charCodeAt();
+		if(curCharASCII<122){
+			curCharASCII +=1;
+		}
+		end = String.fromCharCode(curCharASCII);
+	}else{
+		end = defaultCahr;
+	}*/
+	if(asciiCode<122){
+		asciiCode +=1;
+	}else{
+		asciiCode = 97;
+		asciiCodeArr.push(asciiCode); 
+	}
+	var str = '';
+	for(var i in asciiCodeArr){
+		str += String.fromCharCode(i);
+	}
+	end = String.fromCharCode(asciiCode);
+		
+	
+	return original+splider+end;
+}
+var filedOprate = {
+		run : function() {
+			this.setPrimary();
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			this.insertCol();
+			// 删除当前选中行
+			this.deleteCol();
+			// 删除当前表
+			this.deleteTable();
+			// 字段名称唯一检查
+			this.checkFieldOnly();
+			// 下拉框改变 赋权重
+			this.selecchange();
+			// 新加表
+			this.addtable();
+			// 全勾取
+			this.checkall();
+			// 显示系统字段
+			this.showsystemfield();
+			// 设置英文名没有填写的自动拼音填充
+			this.setpy();
+		},
+		get : function() {
+			return navTab.getCurrentPanel();
+			//return $(document);
+		},
+		addtable : function() {
+			/* 添加表 */
+			var box = this.get();
+			var _this = this;
+			$('button.nbm_add_new_table', box).unbind('click');
+			$('button.nbm_add_new_table', box).on('click', function() {
+				var table = $('div.tableItem:last', box);
+				var index = table.find('table').attr('index');
+				try {
+					index = parseInt(index, 10);
+				} catch(e) {
+					index = 0;
+				}
+				if(table.attr('ischoise') == 1){
+					console.log('我要从数据源中取值');
+					var tempBox = navTab.getCurrentPanel();
+					var soucetable = $('div.tablesouce' , tempBox);
+					var cloneTab = soucetable.clone(true);
+					cloneTab.removeClass('tablesouce');
+					cloneTab.addClass('tableItem');
+					cloneTab.show();
+				}else{
+					var cloneTab = table.clone(true);
+				}
+				
+				// 得到当前克隆对象下的TR个数。大于5的 就只留下5个。小于5的不管
+				var ctrObj = cloneTab.find('tbody:first').children('tr');
+				if (ctrObj.length > 5) {
+					var lastTr = ctrObj.eq(ctrObj.length - 1);
+					ctrObj.eq(4).nextAll().remove();
+					ctrObj.find('tbody').append(ctrObj);
+					ctrObj.find('tbody').append(lastTr);
+				}
+				cloneTab.find('tfoot').find('button.nbm_remove_table').removeAttr('remove');
+				// 移除hidden 
+				cloneTab.find('input[type="hidden"]').remove();
+				cloneTab.find('tr').removeAttr('title style');
+				cloneTab.find('a').show();
+				// 将克隆表中的name值更改为当前序号，方便提交页面数据获取。
+				
+				// 给表头部分的name属性重命名
+				cloneTab.find('div.list_header').find(':input').each(function() {
+					$(this).attr('readonly', false);
+					$(this).removeClass('readonly');
+					if ($(this).attr('type') != "checkbox") {
+						$(this).val('');
+					} else {
+						$(this).show();
+						if ($(this).hasClass('nbm_primary_table')) {
+							$(this).attr('checked', false);
+						} else {
+							$(this).attr('checked', true);
+						}
+					}
+					var name = $(this).attr('name');
+					var _this = this;
+					// 当前组件的name值
+					if ( typeof (name) == 'string' && $(_this)[0].tagName == "INPUT") {
+						var tablename = name.replace(/((tablename\[)|(tableprimary\[))+\d+(\])/g, function(va) {
+							
+							var ret = va.split('[');
+							var tabIds = ret[0]+'[' + (index + 1) + ']';
+							return tabIds;
+						});
+						$(_this).attr('name', tablename);
+						
+						/*
+						var tableprimary = name.replace(/(tableprimary\[)+\d+(\])/g, function(va) {
+							var tabIds = 'tableprimary[' + (index + 1) + ']';
+							return tabIds;
+						});
+						$(_this).attr('name', tableprimary);
+						*/
+					}
+				});
+				// 给table中的name重命名
+				cloneTab.find('table.new_table').find(':input').each(function() {
+					$(this).attr('readonly', false);
+					$(this).removeClass('readonly');
+					if ($(this).attr('type') != "checkbox") {
+						$(this).val('');
+					} else {
+						$(this).show();
+						if ($(this).hasClass('nbm_primary_table')) {
+							$(this).attr('checked', false);
+						} else {
+							var _name = $(this).attr('name');
+							if(_name.indexOf('fieldunique[') == -1){
+								$(this).attr('checked', true);
+							}else{
+								$(this).attr('checked', false);
+							}
+						}
+					}
+					var name = $(this).attr('name');
+					// 当前组件的name值
+					if ( typeof (name) == "string") {
+						// 将写入数据的标签name值改为跟当前表相同的序号
+						var curitemname = name.replace(/(\[)+\d+(\]\[)/g, function(va){
+							var curIndex = va.match(/\d+/g);
+							var i = parseInt(curIndex , 10);
+							var tabIds = "[" + (i+1)+'][';
+							return tabIds;
+						});
+						$(this).attr('name', curitemname);
+					}
+					if ($(this)[0].tagName == "SELECT") {
+						var curTag = $(this);
+						curTag.removeAttr("style");
+						//curTag.addClass('select2');
+						// 加样式
+						var td = curTag.closest('td');
+						// 获取td
+						td.html('');
+						//移除现有td内容
+						td.append(curTag);
+						curTag.select2();
+						//追加当前select
+					}
+				});
+				table.after(cloneTab);
+				// 绑定当前克隆表的实际序号,序号规则：上一个表的序号+1。
+				cloneTab.find('table').attr('index', index + 1);
+				// 处理dwz 组件的初始化问题
+				//$('div.tableItem>table', box).initUI();
+				_this.run();
+				cloneTab.find('select').change();
+			});
+		},
+		showsystemfield : function(){
+			var box = this.get();
+			var _this = this;
+			// 显示系统字段列表
+			var obj = $('button.nbm_system_field' , box);
+			obj.unbind('click');
+			obj.on('click' , function(){
+				// 检查当前区域中是否有系统字段列表 
+				var systemfieldlist = $('div.nbm_system_field_list' , box);
+				if(systemfieldlist.length>0){
+					systemfieldlist.toggle();
+				}else{
+					var orignal = $('div.nbm_system_field_list');
+					//var cloneObj = orignal.clone();
+					orignal.show();
+					//$(this).closest('table').after(cloneObj);
+				}
+				_this.run();
+			});
+			
+		},
+		checkall : function() {
+			var box = this.get();
+			var _this = this;
+			// 添加一行	
+			var obj = $('a.nbm_check_all_item', box);
+			
+			obj.unbind('click');
+			obj.on('click', function() {
+				var eventObj = $(this);
+				var curIndex = $(this).parent().index();
+				var p = $(this).closest('table');
+				var ckStatus = true;
+				console.log(eventObj.attr('cka'));
+				if(eventObj.attr('cka') == 'true'){
+					ckStatus = false;
+				}
+				p.find('input:checkbox').each(function(){
+					if($(this).closest('td').index()==curIndex){
+						$(this).attr('checked',ckStatus);
+						eventObj.attr('cka',ckStatus);
+					}
+				});
+				//_this.run();
+			});
+			
+		},
+		insertCol : function() {
+			var box = this.get();
+			var _this = this;
+			// 每个表单中的添加一行，数据来源于当前对象所在tr的上一个tr。
+			var obj = $('button.nbm_add_col', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				//var tr = $(this).closest('tr').prev('tr');
+				var tr = $(this).closest('table').find('tbody:first>tr:last');
+				var index = tr.closest('table').attr('index');
+				try {
+					index = parseInt(index, 10);
+				} catch(e) {
+					index = 0;
+				}
+				
+				var cloneTr = tr.clone();
+				cloneTr.find('input[type="hidden"]').remove();
+				cloneTr.find(':input').each(function() {
+					var ids = $(this).attr('name');
+					// 当前组件的name值
+					if ( typeof (ids) == "string") {
+						var curNames = ids.replace(/(\]\[)+(\d)+/g,  function(va) {
+								var curIndex = va.match(/\d+/g);
+								var i = parseInt(curIndex , 10);
+								var tabIds = '][' + (i + 1);
+								return tabIds;
+							});
+						$(this).attr('name',curNames);
+					}
+					
+					if ($(this).attr('type') != "checkbox") {
+						$(this).val('');
+					}
+					if ($(this)[0].tagName == "SELECT") {
+						var curTag = $(this);
+						curTag.removeAttr("style");
+						//curTag.addClass('select2');
+						// 加样式
+						var td = curTag.closest('td');
+						// 获取td
+						td.html('');
+						//移除现有td内容
+						td.append(curTag);
+						curTag.select2();
+						//追加当前select
+					}
+				});
+				tr.after(cloneTr);
+				//$('div.tableItem>table', this.get).initUI();
+				_this.run();
+				cloneTr.find('select').change();
+			});
+		},
+		setPrimary : function() {
+			var box = this.get();
+			/* 主表设置	*/
+			$('input[type="checkbox"].nbm_primary_table', box).change(function() {
+				var isret = $(this).is(':checked');
+				if (isret) {
+					$('input[type="checkbox"].nbm_primary_table', box).attr('checked', false).attr('disabled', true);
+				} else {
+					$('input[type="checkbox"].nbm_primary_table', box).attr('disabled', false);
+				}
+				$(this).attr('checked', isret).attr('disabled', false);
+			});
+		},
+
+		deleteCol : function() {
+			var box = this.get();
+			// 删除当前选中行
+			var obj = $('a.nbm_del_col', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				var tbObj = $(this).closest('table');
+				if (tbObj.find('tbody:first>tr').length > 1) {
+					$(this).closest('tr').remove();
+				}
+			});
+		},
+
+		deleteTable : function() {
+			// 删除当前表
+			var box = this.get();
+			var obj = $('button.nbm_remove_table', box);
+			obj.unbind('click');
+			obj.on('click', function() {
+				var tableObj = $(this).closest('div.tableItem');
+				var totalTable = $('div.tableItem', box);
+				if (totalTable.length > 1) {
+					var isret = confirm('你是否确定需要删除当前表?');
+					if (true == isret) {
+						tableObj.remove();
+					}
+				} else {
+					alert('当前表不允许删除');
+				}
+			});
+		},
+		checkFieldOnly : function() {
+			var box = this.get();
+			var _this = this;
+			// 字段名称唯一检查
+			$('input.nbm_fieldnameonly', box).unbind('keyup change blur');
+			$('input.nbm_fieldnameonly', box).on('keyup change blur', function(event) {
+				/* 检查字段值，空值不检查 */
+				// 取得当前输入值
+				var curVal = $(this).val().toLowerCase();
+				curVal = $.trimAll(curVal);
+				$(this).val(curVal);
+				curVal = $(this).toPinyin();
+				$(this).val(curVal);
+				// 系统保留字段
+				if ($.inArray(curVal, reserved) > -1) {
+					alert('当前字段不能使用系统使用字段，请更换！ ');
+					$(this).val('');
+					$(this).attr('isautocreate','');
+					return
+				}
+				// 数据库保留字段
+				if ($.inArray(curVal, dbsystemfield) > -1) {
+					alert('当前字段为数据库保留字段，请更换！ ');
+					$(this).val('');
+					$(this).attr('isautocreate','');
+					return
+				}
+				
+				
+				// 取得所有字段名称的值
+				var allVal = Array();
+				var _this = this;
+				$('input.nbm_fieldnameonly', box).not(this).each(function() {
+					if (isNullorEmpty($(this).val())) {
+						allVal.push($(this).val().toLowerCase());
+					}
+				});
+				if ($.inArray(curVal, allVal) > -1) {
+					alert('已存存字段名 ' + curVal + ' 请更换');
+					$(this).val('');
+					$(this).attr('isautocreate','');
+				}
+			});
+			$('input.nbm_fieldnameonly', box).unbind('createonlycharacter');
+			$('input.nbm_fieldnameonly', box).bind('createonlycharacter', function() {
+				var isCreateNewCharacter= false;
+				// 取得当前输入值
+				var curVal = $(this).val().toLowerCase();
+				curVal = $.trimAll(curVal);
+				$(this).val(curVal);
+				
+				
+				// 取得所有字段名称的值
+				var allVal = Array();
+				var _this = this;
+				$('input.nbm_fieldnameonly', box).not(this).each(function() {
+					if (isNullorEmpty($(this).val())) {
+						allVal.push($(this).val().toLowerCase());
+					}
+				});
+				// 如果为系统字段 
+				if ($.inArray(curVal, reserved) > -1) {
+					isCreateNewCharacter = true;
+				}
+				// 数据库保留字段
+				if ($.inArray(curVal, dbsystemfield) > -1) {
+					isCreateNewCharacter = true;
+				}
+				// 已用字段 
+				if ($.inArray(curVal, allVal) > -1) {
+					isCreateNewCharacter = true;
+				}
+				if(isCreateNewCharacter == true){
+					var newChar = createNewCharacter(this , curVal);
+					$(this).val(newChar);
+					isCreateNewCharacter = false;
+					$(_this).trigger('createonlycharacter');
+				}
+			});
+		},
+		selecchange : function() {
+			/* 下拉框值改变事件，给文本写值。 */
+			var box = this.get();
+			$('select.opweight', box).change(function() {
+				//获取当前select选中的值
+				var val = $(this).val();
+				if (val) {
+					var weight = $(this).find("option:selected").attr('weight');
+					$(this).closest('td').next('td').find('input').val(weight);
+				} else {
+					$(this).closest('td').next('td').find('input').val('');
+				}
+			});
+			$('select.opcategory' , box).change(function(){
+				//获取当前select选中的值
+				var val = $(this).val();
+				if (val) {
+					var weight = $(this).find("option:selected").attr('len');
+					$(this).closest('td').next('td').find('input').val(weight);
+					
+					var p = $(this).closest('tr').find('select.opweight');
+					var cate = $(this).find("option:selected").attr('cate');
+					//p.val(cate).change();
+					var oreritem = p.find('option[value="'+cate+'"]');
+					oreritem.attr('selected',true);
+					p.change();
+					p.prev('a').text(oreritem.text());
+					/*if(cate && p){
+						p.changeitem(cate);
+					}*/
+				} else {
+					$(this).closest('td').next('td').find('input').val('');
+				}
+			});
+		},
+		setpy : function(){
+			var box = this.get();
+			var _this = this;
+			//  keydown change blur
+			$('input[name^="fieldtitle"]').off("keyup");
+			$('input[name^="fieldtitle"]').on("keyup",function (){
+				var ipt = $(this).closest('tr').find('td:first').find('input[type="text"]');
+				var curVal = $(this).val().toLowerCase();
+				curVal = $.trimAll(curVal);//去除空格
+				$(this).val(curVal);
+				if(!isNullorEmpty(ipt.val())){
+					ipt.attr('isautocreate',true);
+					//ipt.val($(this).toPinyin());
+					//ipt.change();
+					//ipt.trigger('createonlycharacter');
+				}
+				if(ipt.attr('isautocreate') == 'true'){
+					var curPYStr = $(this).toPinyin();
+					if(curPYStr.length>maxPYLength){
+						curPYStr = curPYStr.substr(0,maxPYLength);
+					}
+					ipt.val(curPYStr);
+					//ipt.change();
+					ipt.trigger('createonlycharacter');
+				}
+			});
+		}
+	};
+	$(function() {
+		filedOprate.run();
+		reserved=$.parseJSON(reserved);
+		dbsystemfield = $.parseJSON(dbsystemfield);
+		 
+		var box = navTab.getCurrentPanel();
+		//$('div.tableItem' , box).find('select').change();
+	});
+	 function showtablelist(obj){
+		var table=$(obj).val();
+		var $box=navTab.getCurrentPanel();
+		var $type=$(obj).val();
+		$box.find("#MisDynamicFormManagelookuptable").loadUrl("__URL__/lookuptable/tableename/"+table,{},function(){
+			$box.find("[layoutH]").layoutH();});
+	}
+	function toggleinput(){
+		//$('#filed_add_table1_fieldname_index5').val('我在绑定点击事件');
+		//$('#filed_add_table1_fieldname_index5').keyup();
+		$('div.tableItem input').each(function(){
+			$(this).focus();
+		});
+		$('.error:first').focus();
+		//var box = navTab.getCurrentPanel();
+		//box.click();
+	}
+	
+	function changecombox(obj){
+		var $box=navTab.getCurrentPanel();
+		var comboxval=$(obj).val();
+		$.ajax({
+			type : "POST",
+			dataType:'json',
+			url : "__URL__/lookupcdw",
+			data : {
+				'group_id' : comboxval,
+			},
+			global : false,
+			success : function(response) {
+				var nullhtml="<option value=\"\">请选择 </option>";
+				if(response != null){
+					$.each(response,function(i,v){ 
+						var dis = '';
+						if(v.nextEnd == 0){
+							dis="disabled=\"disabled\"";
+						}
+						var level = '';
+						if(v.level){
+							level="class=\"level"+v.level+"\"";
+						}
+						nullhtml+="<option  value=\""+v.id+"\">"+v.title+" </option>";
+					})
+				}
+				// 先找到组件html结构的顶层
+				$box.find("select[name='parentnodename']").html(nullhtml);
+				$box.find("select[name='parentnodename']").change();
+			}
+		});
+	}
+	function isexittitle(obj){
+		var $box=navTab.getCurrentPanel();
+		var $title=$(obj).val();
+		if($title){
+			//ajax请求验证名称是否重复
+			$.ajax({
+			type : "POST",
+			dataType:'json',
+			url : "__URL__/lookupexittitle",
+			data : {
+				'title' : $title,
+			},
+			global : false,
+			success : function(response) {
+				if(response){
+					$box.find("input[name='acitontitle']").addClass("error");
+					$box.find("span.istitle").attr("class","icon istitle  icon-remove tml-c-red");
+				}else{
+					 $box.find("span.istitle").attr("class","icon istitle icon-ok tml-c-green");
+					 $box.find("input[name='acitontitle']").removeClass("error");
+				}
+			}
+			});
+		}
+	}
+</script>
+<link href="__PUBLIC__/Css/tmlstyle/model.css" rel="stylesheet"	type="text/css" media="screen" />
+<div class="page">
+	<div class="pageContent" layoutH="40">
+		<div class="tml_nqq_page">
+			<form method="post" action="__URL__/add/type/1" class="pageForm"
+				method="post"
+				onsubmit="return iframeCallback(this,DynamicnavTabDone);">
+				<div class="new_list_title">
+					<span style="display: inline-block; width: 310px;"> <input
+						type="text" name="acitontitle" onblur="isexittitle(this)"
+						class="depict_use_name required textInput"
+						placeholder="请输入表单名称，例：采购申请单"> <span class="istitle"
+						class="tml-form-text"></span>
+					</span>
+				</div>
+				<!-- div.tableItem 这个是每个表的容器，必须存在 -->
+				<div class="tml-row depict_warp">
+					<div class="tml-form-col">
+						<label>所属组：</label> 
+						<select name="group_name" onchange="changecombox(this);" class="select2 required original_width_select2">
+							<option value="">请选择</option> {:getDataBaseByHtml('group')}
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label>所属面板：</label> 
+						<select name="parentnodename" class="select2 required original_width_select2">
+						</select>
+					</div>
+					<div class="tml-form-col">
+						<label for="isOrNot">是否显示：</label> <input
+							style="margin-top: 10px;" id="isOrNot" type="checkbox"
+							name="showmenu" value="1" checked="checked">
+					</div>
+					
+					
+					<div class="tml-form-col">
+						<label for="isrecord">仅记录：</label> <input
+							style="margin-top: 10px;" id="isrecord" type="checkbox"
+							name="isrecord" value="1">
+					</div>
+					<div class="tml-form-col">
+						<label for="isreminds">单据提示：</label> <input
+							style="margin-top: 10px;" id="isreminds" type="checkbox"
+							name="isreminds" value="1">
+					</div>
+					
+					
+					<div class="form_trr_element" style="display: none;">
+						<select name="modeltype">
+							<option value="add">创建新节点</option>
+							<option value="update">更新以有节点</option>
+						</select> 写入节点：<input class="enterIndex" checked="checked" type="checkbox"
+							value="1" name="insertnode"> <select
+							name="parentnodename2" class="select2"></select>
+					</div>
+				</div>
+				<div class="tml-row depict_warp">
+					<include file="MisDynamicFormManage:templatetypeselect" />
+				</div>
+				<div class="tml-row depict_warp">
+					<div class="tml-form-col">
+						<label> 选择主表：</label> 
+						<select name="primarytable" onchange="showtablelist(this)" class="select2 original_width_select2">
+							<option value="">--请选择--</option>
+							<volist name="MisDynamicDatabaseMasList" id="MisDynamicDatabaseMasVo">
+							<option value="{$key}">{$MisDynamicDatabaseMasVo}</option>
+							</volist>
+						</select>
+					</div>
+				</div>
+				<div id="MisDynamicFormManagelookuptable">
+					<include file="lookuptable" />
+				</div>
+				<!-- 系统字段 -->
+				<include file="systemfieldlist" />
+				<div class="tableItem">
+					<div class="list_header">
+						<span>表名：</span> <input style="font-family: 'microsoft yahei'"
+							type="text" name="tablename[1]" placeholder="请输入表名"
+							class="required " /> <span class="right"
+							style="padding-right: 20px;"> 
+							<input
+							class="mr10 nbm_primary_table" value="1" type="checkbox"
+							checked="checked" name="tableprimary[1]" /> <span>是否设置为主表</span>
+						</span>
+					</div>
+					<table class="new_table" index="1">
+						<colgroup>
+							<col width="10%"></col>
+							<col width="10%"></col>
+							<col width="10%"></col>
+							<col width="10%"></col>
+							<col width="10%"></col>
+							<col width="10%"></col>
+							<col width="10%"></col>
+							<col width="10%"></col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th>字段名称(英文)</th>
+								<th>字段标题(中文)</th>
+								<th>备注</th>
+								<th>字段类型</th>
+								<th>字段长度</th>
+								<th>组件类型</th>
+								<th>权重</th>
+								<th><a href="javascript:void(0);"
+									class="nbm_check_all_item">是否唯一</a></th>
+								<th><a href="javascript:void(0);"
+									class="nbm_check_all_item">是否显示</a></th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<input name="fieldname[1][1]" placeholder="请输入英文名称" autocomplete="off"
+									type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+									/>
+								</td>
+								<td>
+									<input name="fieldtitle[1][1]" placeholder="请输入中文标题" autocomplete="off"
+									id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+								</td>
+								<td>
+									<input name="fielddesc[1][1]" autocomplete="off" placeholder="请输入备注" type="text"
+									class="" />
+								</td>
+								<td>
+									<select name="fieldtype[1][1]" class="select2 opcategory">
+										<volist name="fieldtypeList" id="fieldtypeVo">
+											<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+												{$fieldtypeVo.val}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldlength[1][1]" placeholder="请输入字段长度" autocomplete="off"
+									type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+									/>
+								</td>
+								<td>
+									<select name="fieldcategory[1][1]" class="select2 opweight ">
+										<volist name="comboxOptionList" id="comboxOptionVo">
+											<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+												{$comboxOptionVo.title}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldweight[1][1]" placeholder="请输入权重" autocomplete="off"
+									value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+									/>
+								</td>
+								<td>
+									<input name="fieldunique[1][1]" value="1" type="checkbox" />
+								</td>
+								<td>
+									<input name="fieldshow[1][1]" value="1" type="checkbox" checked />
+								</td>
+								<td>
+									<a class="nbm_del_col" href="javascript:void(0);">
+										移除行
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input name="fieldname[1][2]" placeholder="请输入英文名称" autocomplete="off"
+									type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+									/>
+								</td>
+								<td>
+									<input name="fieldtitle[1][2]" placeholder="请输入中文标题" autocomplete="off"
+									id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+								</td>
+								<td>
+									<input name="fielddesc[1][2]" autocomplete="off" placeholder="请输入备注" type="text"
+									class="" />
+								</td>
+								<td>
+									<select name="fieldtype[1][2]" class="select2 opcategory">
+										<volist name="fieldtypeList" id="fieldtypeVo">
+											<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+												{$fieldtypeVo.val}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldlength[1][2]" placeholder="请输入字段长度" autocomplete="off"
+									type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+									/>
+								</td>
+								<td>
+									<select name="fieldcategory[1][2]" class="select2 opweight ">
+										<volist name="comboxOptionList" id="comboxOptionVo">
+											<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+												{$comboxOptionVo.title}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldweight[1][2]" placeholder="请输入权重" autocomplete="off"
+									value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+									/>
+								</td>
+								<td>
+									<input name="fieldunique[1][2]" value="1" type="checkbox" />
+								</td>
+								<td>
+									<input name="fieldshow[1][2]" value="1" type="checkbox" checked />
+								</td>
+								<td>
+									<a class="nbm_del_col" href="javascript:void(0);">
+										移除行
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input name="fieldname[1][3]" placeholder="请输入英文名称" autocomplete="off"
+									type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+									/>
+								</td>
+								<td>
+									<input name="fieldtitle[1][3]" placeholder="请输入中文标题" autocomplete="off"
+									id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+								</td>
+								<td>
+									<input name="fielddesc[1][3]" autocomplete="off" placeholder="请输入备注" type="text"
+									class="" />
+								</td>
+								<td>
+									<select name="fieldtype[1][3]" class="select2 opcategory">
+										<volist name="fieldtypeList" id="fieldtypeVo">
+											<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+												{$fieldtypeVo.val}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldlength[1][3]" placeholder="请输入字段长度" autocomplete="off"
+									type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+									/>
+								</td>
+								<td>
+									<select name="fieldcategory[1][3]" class="select2 opweight ">
+										<volist name="comboxOptionList" id="comboxOptionVo">
+											<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+												{$comboxOptionVo.title}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldweight[1][3]" placeholder="请输入权重" autocomplete="off"
+									value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+									/>
+								</td>
+								<td>
+									<input name="fieldunique[1][3]" value="1" type="checkbox" />
+								</td>
+								<td>
+									<input name="fieldshow[1][3]" value="1" type="checkbox" checked />
+								</td>
+								<td>
+									<a class="nbm_del_col" href="javascript:void(0);">
+										移除行
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input name="fieldname[1][4]" placeholder="请输入英文名称" autocomplete="off"
+									type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+									/>
+								</td>
+								<td>
+									<input name="fieldtitle[1][4]" placeholder="请输入中文标题" autocomplete="off"
+									id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+								</td>
+								<td>
+									<input name="fielddesc[1][4]" autocomplete="off" placeholder="请输入备注" type="text"
+									class="" />
+								</td>
+								<td>
+									<select name="fieldtype[1][4]" class="select2 opcategory">
+										<volist name="fieldtypeList" id="fieldtypeVo">
+											<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+												{$fieldtypeVo.val}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldlength[1][4]" placeholder="请输入字段长度" autocomplete="off"
+									type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+									/>
+								</td>
+								<td>
+									<select name="fieldcategory[1][4]" class="select2 opweight ">
+										<volist name="comboxOptionList" id="comboxOptionVo">
+											<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+												{$comboxOptionVo.title}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldweight[1][4]" placeholder="请输入权重" autocomplete="off"
+									value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+									/>
+								</td>
+								<td>
+									<input name="fieldunique[1][4]" value="1" type="checkbox" />
+								</td>
+								<td>
+									<input name="fieldshow[1][4]" value="1" type="checkbox" checked />
+								</td>
+								<td>
+									<a class="nbm_del_col" href="javascript:void(0);">
+										移除行
+									</a>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<input name="fieldname[1][5]" placeholder="请输入英文名称" autocomplete="off"
+									type="text" id="filed_add_table1_fieldname_index1" class="lettersonly required  nbm_fieldnameonly"
+									/>
+								</td>
+								<td>
+									<input name="fieldtitle[1][5]" placeholder="请输入中文标题" autocomplete="off"
+									id="filed_add_table1_fieldtitle_index1" type="text" class="required" />
+								</td>
+								<td>
+									<input name="fielddesc[1][5]" autocomplete="off" placeholder="请输入备注" type="text"
+									class="" />
+								</td>
+								<td>
+									<select name="fieldtype[1][5]" class="select2 opcategory">
+										<volist name="fieldtypeList" id="fieldtypeVo">
+											<option value="{$fieldtypeVo.key}" len="{$fieldtypeVo.len}" cate="{$fieldtypeVo.cate}">
+												{$fieldtypeVo.val}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldlength[1][5]" placeholder="请输入字段长度" autocomplete="off"
+									type="text" id="filed_add_table1_fieldlength_index1" value="10" class="required "
+									/>
+								</td>
+								<td>
+									<select name="fieldcategory[1][5]" class="select2 opweight ">
+										<volist name="comboxOptionList" id="comboxOptionVo">
+											<option weight="{$comboxOptionVo.weight}" value="{$comboxOptionVo.name}">
+												{$comboxOptionVo.title}
+											</option>
+										</volist>
+									</select>
+								</td>
+								<td>
+									<input name="fieldweight[1][5]" placeholder="请输入权重" autocomplete="off"
+									value="1" type="text" id="filed_add_table1_fieldweight_index1" class="number required "
+									/>
+								</td>
+								<td>
+									<input name="fieldunique[1][5]" value="1" type="checkbox" />
+								</td>
+								<td>
+									<input name="fieldshow[1][5]" value="1" type="checkbox" checked />
+								</td>
+								<td>
+									<a class="nbm_del_col" href="javascript:void(0);">
+										移除行
+									</a>
+								</td>
+							</tr>
+						</tbody>
+						<tfoot>
+							<tr>
+								<td colspan="10" style="text-align: right;">
+									<button type="button" class="new_col_btn nbm_system_field">
+										查看系统默认生成字段</button>
+
+									<button type="button" class="new_col_btn nbm_add_col">
+										新建一行</button>
+									<button type="button"
+										class="new_col_btn color_red nbm_remove_table">移除表</button>
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+
+				<div class="btn_group">
+					<button type="button"
+						class="tml_formBar_btn tml_formBar_btn_blue nbm_add_new_table">
+						新建表</button>
+				</div>
+				<div class="formBar"
+					style="border-top: 1px solid #d8d8d8; padding-top: 15px">
+					<ul>
+						<!-- 
+                        <li>
+                            <input type="checkbox" name="isaudit" value="1"   id="nbm_isaudit" />
+                            <label for="nbm_isaudit">是否审批</label>
+                        </li>
+                         -->
+						<li>
+							<button onclick="toggleinput()" type="submit"
+								class="tml_formBar_btn tml_formBar_btn_blue">保存所有表</button>
+						</li>
+						<!--<if condition="$_SESSION.a eq 1 or $_SESSION.misdynamicformmanage_insert">-->
+						<!--<li><button class="tml-btn tml-btn-primary" type="submit"><if condition="$step eq 1">{$Think.lang.nextstep}<else />{$Think.lang.save}</if></button></li>-->
+						<!--</if>-->
+						<!--<li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>-->
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,31 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$tree};
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#dynamicconfrowaccess1"), setting, zNodes);
+});
+</script>
+<div class="pageContent">
+	<div class="treeleft">
+		<div class="close">
+			<div class="clearfix p5">
+				<input class="tree-search-input" type="text" id="misrowaccessrightSearchNodeKeys" />
+				<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('dynamicconfrowaccess','misrowaccessrightSearchNodeKeys')" type="button">搜索</button>
+			</div>
+			<ul id="dynamicconfrowaccess1" class="ztree" layoutH="44" ></ul>
+		</div>
+	</div>
+	<div id="misrowaccessright1" class="positiveBox treeright">
+		<include file="lookupBackendUserList" />
+	</div>
+</div>

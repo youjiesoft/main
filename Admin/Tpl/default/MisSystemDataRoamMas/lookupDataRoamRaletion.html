@@ -1,0 +1,149 @@
+
+<style>
+.tml-form-row label.tmp_label {
+	margin-left:0px;
+	width: 120px;
+	float: none;
+	font: 14px/30px "Microsoft Yahei", "微软雅黑", sans-serif;
+}
+.tml-form-row label.tmp_label:hover {
+	color:#006699;
+}
+.intoss_table{
+    width: 95%;
+    height: auto;
+    margin: 0 auto;
+    line-height: 30px;
+    font-size: 15px;
+}
+.intoss_table th,
+.intoss_table td{
+    border: 1px solid #d8d8d8;
+    text-align: center;
+}
+.intoss_table th{
+    background: #fafafa;
+    box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.1);
+    line-height: 40px;
+}
+.intoss_table tfoot tr{
+    line-height: 40px;
+}
+.intoss_table td{
+    padding-left: 3px;
+}
+.intoss_table tr td span{
+    margin: 0 auto;
+    display: inline-block;
+}
+.intoss_table tr td input{
+    border: 1px solid #e8e8e8;
+    font-family: "Microsoft Yahei";
+    border-radius: 4px;
+    font-size: 15px;
+    padding-left: 3px;
+}
+.intoss_table_trash_tr,.add_col_btn{
+    padding: 3px 8px;
+    background: #e1455e;
+    color: #fff;
+    border-radius: 4px;
+    margin-top: -1px;
+    font-size: 12px;
+}
+.add_col_btn{
+    background: #0099e6;
+    margin-right: 20px;
+}
+.add_col_btn:hover,.intoss_table_trash_tr:hover{
+    background: #446DB2;
+    transition: background 0.8s;
+    color: #fff;
+}
+.add_col_input,.add_col_input.focus{
+    width: 30px;
+    height: 18px;
+    border: 1px solid #d8d8d8;
+    border-radius: 4px;
+    /*border-right: none;*/
+    margin: 8px 5px 0px 0px;
+    padding-left: 5px;
+}
+</style>
+ <script>
+function callbackRealtion(json){
+	var $box=navTab.getCurrentPanel();
+	$box.find("input[name='relation']").val(json.data.vo);
+	$box.find("span.js-relation-class").html('');
+	$box.find(".js-relation-class").text(json.data.show);
+	//$box.find("input[name='showrelation']").val(json.data.show);
+	if(json.data.vo==''||json.data.vo=='null'){
+		$box.find("button.relation").hide();
+	}else{
+		$box.find("button.relation").show();
+	}
+	$.pdialog.closeCurrent();
+}
+</script>
+<form method="post" action="__URL__/lookupInsertDataRoamReltion/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, callbackRealtion)">
+	<div layoutH="50">
+	<input type="hidden" name="sourcemodel" value="{$sourcemodel}"/>
+	<input type="hidden" name="mymodel" value="{$mymodel}"/>
+	<!-- 组件遍历完成 -->
+	<volist name="tableMatchup" id="tablev">
+	<php>$k = $key;</php>
+	<input type="hidden" name="tableMatchup[{$key}]" value="{$tablev}"/>
+	<span>{$target[$key]['target_tag']}：{$target[$key]['target_title']}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span>来源表：{$source[$tablev]}</span>
+	<table class="into_table_new nbm_data_table" table_data='{"scrollY":"200px","searching":false}' table_type="edit">
+		<thead>
+			<tr>
+				<th template_key="serial" template_name="data[nd][{$key}][]">序号</th>
+				<th template_key="select" template_name="data[sourcemodel][{$key}][]"
+					template_data='{$fields_data[$tablev]|json_encode}'
+					template_class="required" style="min-width:170px;width:170px;">来源model字段</th>
+				<th template_key="select" template_name="data[mymodel][{$key}][]"
+					template_data='{$fields_data[$key]|json_encode}'
+					template_class="required" style="min-width:170px;width:170px;">目标model字段</th>
+				<th template_key="action" template_name="data[id][{$key}][]">操作</th>
+			</tr>
+		</thead>
+		<tbody id="my_guanlianguanxi_edit" class="clearfix">
+							<volist name="relation[$key]" id="rv" key="key2">
+								<tr >
+									<td>
+										<span class="serial_number ">{$key2}</span>										
+									</td>									
+									<td>
+										<div class="list_group_lay">
+											
+												<select class="list_select2" name="data[sourcemodel][{$k}][]" >
+													<volist name="fieldsAll[$tablev]" id="sour" key="key">
+														<option <if condition="$rv.sfield eq $sour.name">selected</if> value="{$sour.name}">{$sour.name}【{$sour.showname}】</option>
+													</volist>
+												</select>
+										
+										</div>
+									</td>
+									<td>
+										<div class="list_group_lay">
+												<select name="data[mymodel][{$k}][]" class="list_select2 ">
+													<volist name="fieldsAll[$k]" id="mym" key="key">
+														<option <if condition="$rv.tfield eq $mym.name">selected</if> value="{$mym.name}">{$mym.name}【{$mym.showname}】</option>
+													</volist>
+												</select>
+											
+										</div>
+									</td>
+									<td><button class="into_table_new_trash_tr " del_id="0" del_table="undefined" del_url="undefined" type="button">删除</button><input type="hidden" value="0" name="datatable[1][undefined][id]"><button post_id="undefined" post_table="undefined" post_url="undefined" rel_type="save" class="save_row_btn" type="button" style="display:none;">保存</button></td>								
+								</tr>
+							</volist>
+						</tbody>
+	</table>
+	</volist>
+	</div>
+	<div class="formBar">
+		<ul>
+			<li id="salesprojectsave"><button type="submit"  class="tml_formBar_btn tml_formBar_btn_blue">{$Think.lang.save}</button></li>
+		</ul>
+	</div>
+</form>

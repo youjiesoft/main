@@ -1,0 +1,162 @@
+<div class="page">
+	<div class="pageContent">
+<div   class="pageFormContent"  layoutH="65" id="appUserConstantly_div">
+ <div class="p5">
+	<volist  name="apptypelist" id="apptype" key="appi">
+	<!-- 显示五个类型 -->
+	 <a class="app_tab_nav app_set_tab_nav"  href="#" <if condition="$appi eq $typeid">style="color:#fff;background:#3abec0;padding-top:12px;cursor: default;"</if> onclick="changeuserapp('{$appi}')"> {$apptype} </a>
+	</volist>
+	<if condition="$newappList"><div class="tml-text-r"> <if condition="$typeid eq  6"><a  class="tml-btn tml-btn-primary set_app_btn" id="saveaddapp" onclick="addApp()"> 添加</a></if>
+	<if condition="$typeid  lt 6"><a  class="tml-btn tml-btn-primary set_app_btn" id="saveapp" onclick="delApp()"> 设置</a><a  class="tml-btn tml-btn-red set_app_btn tml-m5"   onclick="restApp()">还原</a></if>
+ 	<if condition="$typeid eq '7'"><a  class="tml-btn tml-btn-primary set_app_btn" id="updateapp"  onclick="updateApp(1)"> 修改</a>
+ 	<a  class="tml-btn tml-btn-red set_app_btn tml-m5"  id="deleteapp" onclick="updateApp()"> 删除</a>
+ 	</if>
+ 	</div>
+ 	</if>
+ </div>
+ <div class="set_page_lay" <if condition="$typeid neq '7' && !$newappList && $_SESSION['a']!=1">style="margin-top:120px;"</if>>
+		<ul id="app_shortcut_list" class="xypreferences app_right_list xyuseapp clearfix ">
+		<if condition="$newappList">
+		<volist name="newappList" id="newappVo">
+			<volist  name="newappVo['list']"  id="newapp" >
+				<li data-app-height="{$newapp['height']}" data-app-width="{$newapp['width']}" data-app-icon="{$newapp['imgsrc']}" data-app-name="{$newapp['title']}" data-app-url="{$newapp['title']}" data-app-id="1" data-node-type="appItem">
+					<img class="app-shortcut-icon" width="64px" height="64px" alt="{$newapp['title']}" <if condition="$newapp.imgsrc">src="{$newapp['imgsrc']}"<else/> src="__PUBLIC__/Images/xyicon/xyicon_36.png" </if> >
+						<span class="app-shortcut-name">{$newapp['title']}</span>
+					<a href="javascript:;" class="app-shortcut-del tml-icon tml-icon-cross" style="display: none"  <if condition="$typeid eq '7'">onclick="delApp(this,'','','{$newapp.sqlid}')"   <else/>onclick="delApp(this,'{$newapp['sortnum']}')" </if> title="移除应用快捷方式"  ></a>
+					 <span   class="app-shortcut-del tml-icon tml-icon-add" style="display: none" onclick="addApp(this,'{$newapp['sortnum']}','','{$newapp['oldtype']}','{$newapp['src']}','{$newapp['imgsrc']}')"  title="添加应用快捷方式"  ></span>
+					<a href="__APP__/MisSystemFunctionalBox/edit/id/{$newapp.sqlid}" class="app-shortcut-del tml-icon tml-icon-pencil"   style="display: none" target="dialog" rel="__MODULE__add" mask="true"  width="707" height="311"  title="修改应用快捷方式"  ></a>
+				</li>
+			</volist>
+		</volist>
+		</if>
+		<if condition="$typeid eq 7">
+		<li class="addapp"><a   href="__APP__/MisSystemFunctionalBox/add" title="个人应用添加"   target="dialog" rel="__MODULE__add" mask="true"  width="707" height="311" ></a></li>
+		</if>
+		<if condition="$_SESSION['a']==1 && $typeid eq 6"> 
+		<li class="addapp"><a   href="__URL__/addapp/" title="个人应用添加"   target="dialog" rel="__MODULE__add" mask="true"  width="707" height="311" ></a></li>
+		</if>
+	</ul>
+	<if condition="$typeid neq '7' && !$newappList && $_SESSION['a']!=1"><center> <img src="__PUBLIC__/Images/box.png"><span style="font-size:16px;"> 管理员暂无添加应用信息</span></center></if>
+	</div>
+</div>
+</div>
+</div>
+<script>
+function updateApp($id,$type){
+	var $box= $.pdialog.getCurrent();
+	if($id){
+		 $box.find(".tml-icon-pencil").show();
+	}else if($type){
+		$box.find("#deleteapp").removeAttr("onclick");
+		 $box.find("#deleteapp").attr("onclick","updateApp()");
+		 $box.find("#deleteapp").text("删除");
+		 $box.find(".tml-icon-cross").hide();
+	}else{
+		 $box.find("#deleteapp").removeAttr("onclick");
+		 $box.find("#deleteapp").attr("onclick","updateApp('',2)");
+		 $box.find("#deleteapp").text("确定");
+		 $box.find(".tml-icon-pencil").hide();
+		 $box.find(".tml-icon-cross").show();
+	}
+}
+function restApp(){
+	var $box= $.pdialog.getCurrent();
+	var	changehref="__URL__/lookupuserSetApp/typeid/{$typeid}";
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookupsaveUserApp",
+			global: false,
+			data : {
+				'typeid' : '{$typeid}',
+				'reset':1,
+			},
+			success : function(re) {
+				 $box.find("#appUserConstantly_div").loadUrl(changehref);
+			}
+		});
+}
+function changeuserapp(obj){
+	var $box= $.pdialog.getCurrent();
+	var	changehref="__URL__/lookupuserSetApp/typeid/"+obj;
+	 $box.find("#appUserConstantly_div").loadUrl(changehref,{},function(){
+		 $box.find("#appUserConstantly_div").find("[layoutH]").layoutH();});
+	 return false;
+}
+function addApp(obj,rem,$issave,$oldtype,$src,$imgsrc){
+	var $box= $.pdialog.getCurrent()
+	if(rem){
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookupsaveUserApp",
+			global: false,
+			data : {
+				'newapp':	1,
+				'oldtype':$oldtype,
+				'typeid' : '{$typeid}',
+				'key':rem,
+				'src':$src,
+				'imgsrc':$imgsrc,
+			},
+			success : function(re) {
+			//清除数据
+			$box.find(obj).parent().remove();
+			}
+		});
+	}else if($issave){
+		//获取当前类型
+		//ajax 重新组装数据
+				 $box.find("#saveaddapp").removeAttr("onclick");
+				 $box.find("#saveaddapp").attr("onclick","addApp()");
+				 $box.find("#saveaddapp").text("添加");
+				 $box.find(".tml-icon-add").hide();
+	}else{
+		 $box.find("#saveaddapp").removeAttr("onclick");
+		 $box.find("#saveaddapp").attr("onclick","addApp('','',2)");
+		 $box.find("#saveaddapp").text("确定");
+		 $box.find(".tml-icon-add").show();
+	}
+}
+function delApp(obj,rem,$issave,$myapp){
+	var $box= $.pdialog.getCurrent()
+	if(rem){
+		$.ajax({
+			type : "POST",
+			url : "__URL__/lookupsaveUserApp",
+			global: false,
+			data : {
+				'typeid' : '{$typeid}',
+				'key':rem,
+			},
+			success : function(re) {
+			//清除数据
+			$box.find(obj).parent().remove();
+			}
+		});
+	}else if($issave){
+		//获取当前类型
+		//ajax 重新组装数据
+				 $box.find("#saveapp").removeAttr("onclick");
+				 $box.find("#saveapp").attr("onclick","delApp()");
+				 $box.find("#saveapp").text("设置");
+				 $box.find(".tml-icon-cross").hide();
+	}else if($myapp){
+		$.ajax({
+			type : "POST",
+			url : "__URL__/saveMyApp",
+			global: false,
+			data : {
+				'key':$myapp,
+			},
+			success : function(re) {
+			//清除数据
+			$box.find(obj).parent().remove();
+			}
+		});
+	}else{
+		 $box.find("#saveapp").removeAttr("onclick");
+		 $box.find("#saveapp").attr("onclick","delApp('','',2)");
+		 $box.find("#saveapp").text("保存");
+		 $box.find(".tml-icon-cross").show();
+	}
+}
+</script>

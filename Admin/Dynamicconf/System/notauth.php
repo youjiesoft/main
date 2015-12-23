@@ -1,0 +1,55 @@
+<?php
+$notauth= array(
+	'NOT_AUTH_MODULE'=>'TimedTask,MisSystemDataRemindMas,Public,MisOaItems,MisFileManager,MisOaItemsWaitFor,MisSaleWaybillDetails,MisWorkStatement,MisSystemAnnouncement,UserInfo,UserOftenMenu,ReportCharts,CheckFor,Search,MisChat,SendMsg,MisMessage,MisMessageInbox,MisMessageOutbox,MisMessageDrafts,MisMessageRecycle,ReportExcel,OAHelper,MisMessagePhone,MisHrRemindBecomeEmployee,MisHrRemindEmployeeContract,MisUserEvents,MisSystemFunctionalBox,WXHelper,MisSystemApp,DesingForm,MisSaleProjectProgress',		// 默认无需认证模块
+	'NOT_AUTH_ACTION'=>'ganyuEdit,showContent,getDBData,auditStartDiv,enterToSubmitAudit,nvigateTO,additemview,acquire,mybusiness,wordPlaySwf,getFormFlow,showMessage,myCoursesList,roleGroupAuthorizeC,baseInfo,detail,clear_cache,workplatform,audit,insert,update,updateControll,view,waitAudit,alreadyAudit,auditProcess,backprocess,auditEdit,startprocess,auditView,seeProcessDetail,seeAuditUser,playSWF,sureProcess,getAllScheduleList,setDbhaSmsgType,organization,misimportexceladd,misimportexcelinsert,tmlbbs,misFileManageDownload,autoPanelShow,businessCaseAnalysis,getAutoFormTabs',	// 默认无需认证操作
+	//既定方法
+		'DEFAULT_AUTHORIZE'=>array(
+		'index'=>array(
+			'name'=>'index',
+			'title'=>'首页',
+			'category'=>1
+		),
+		'add'=>array(
+			'name'=>'add',
+			'title'=>'新增',
+			'category'=>2
+		),
+		'edit'=>array(
+			'name'=>'edit',
+			'title'=>'修改',
+			'category'=>2
+		),
+		'delete'=>array(
+			'name'=>'delete',
+			'title'=>'删除',
+			'category'=>2
+		),
+		'changeEdit'=>array(
+			'name'=>'changeEdit',
+			'title'=>'变更',
+			'category'=>2
+		),
+		'printout'=>array(
+			'name'=>'printout',
+			'title'=>'打印',
+			'category'=>3
+		),
+		'exportBysearchHtml'=>array(
+			'name'=>'exportBysearchHtml',
+			'title'=>'导出列表',
+			'category'=>3
+		),
+		'export_word_one'=>array(
+			'name'=>'export_word_one',
+			'title'=>'导出WORD',
+			'category'=>3
+		),
+		'export_pdf_one'=>array(
+			'name'=>'export_pdf_one',
+			'title'=>'导出PDF',
+			'category'=>3
+		),
+		
+	),
+);
+?>

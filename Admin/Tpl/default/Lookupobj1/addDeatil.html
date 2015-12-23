@@ -1,0 +1,56 @@
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/rel/LookupobjBox" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+		<input type="hidden" name="callbackType" value="closeCurrent" />
+		<input type="hidden" name="refreshtabs[data]" value="1" />
+		<input type="hidden" name="model" value="{$modelname}">
+		<input type="hidden" name="id" value="{$vo.id}" />
+		<div class="pageFormContent" layoutH="112">
+		<br/>
+		<div class="tml-row">
+			<div class="tml-form-col">
+				<label>标题：</label>
+				<input type="text" class="required" name="title"  value="{$vo.title}" />
+			</div>
+			<div class="tml-form-col">
+				<label>请求地址：</label>
+				<input type="text" value="lookupGeneral"  name="url" value="{$vo.url}" />
+			</div>
+			<div class="tml-form-col">
+				<label>checkfor模型：</label>
+				<input type="text"  name="checkformodel" value="{$vo.checkformodel}"  />
+			</div>
+		</div>
+			<div class="tml-form-row">
+				<label>过滤条件：</label>
+				{:W('ShowAddResult', array('model'=>$modelname,'data'=>$vo))}
+			</div>
+		<table class="table" width="100%" layoutH="72">
+			<thead>
+			<tr>
+				<th style="font-weight: 700;">英文字段</th>
+				<th style="font-weight: 700;">中文名称</th>
+				<th style="font-weight: 700;">带回字段</th>
+				<th style="font-weight: 700;">lookup显示字段</th>
+				<th style="font-weight: 700;">checkfor显示字段</th>
+			</tr>
+			</thead>
+			<tbody>
+			<volist id="vl" name="detailList" key="key2">
+			<tr>
+				<td>{$vl.name}</td>
+				<td>{$vl.showname}</td>
+				
+				<td><input type="checkbox" name="fields[]" <if condition="in_array($vl.name,$vo.fields)">checked="checked"</if> value="{$vl.name}" ></td>
+				<td><input type="radio" name="filed"  <if condition="$vl.name eq $vo.filed">checked="checked"</if>  value="{$vl.name}"></td>
+				<td><input type="radio" name="filed1"  <if condition="$vl.name eq $vo.filed1">checked="checked"</if> value="{$vl.name}"></td>
+			</tr>
+			</volist>
+			</tbody>
+		</table>
+		</div>
+		 {:W('ShowAction')}
+		 </form>
+		</div>
+		</div>

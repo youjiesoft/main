@@ -1,0 +1,18 @@
+<li class="xypart xypart_worknote">
+    <input type="hidden" name="panelsort[]" value="{$sort}">
+    <div class="part_title">
+        <h3 class="{$color}"><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+    </div>
+    <!--<div class="tml_bottom_style"></div>-->
+    <div class="part_content clearfix">
+        <div class="data">
+            <textarea class="worknote" onblur="saveNotes(this)">
+                {$note}
+            </textarea>
+            <input type="hidden" value="{$note}">
+        </div>
+    </div>
+    <div class="part_foot">
+        <div class="part_footer"></div>
+    </div>
+</li>

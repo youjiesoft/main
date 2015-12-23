@@ -1,0 +1,20 @@
+
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="jump" value="jump">
+		<input type="hidden" name="id" value="{$id}">
+		<div class="pageFormContent" layoutH="48">
+			<div class="tml-row">
+                <div class="tml-form-col">
+                    <label>面板中文名：</label>
+                    <input type="text" class="required" maxlength="25"  name="name" value="">
+                </div>
+			</div>
+			
+		</div>
+			{:W('ShowAction')}
+	</form>
+	</div>
+</div>
+

@@ -1,0 +1,166 @@
+<script>
+	function refreshtwopageedit(json){
+		navTabAjaxDone(json);
+		navTab.reloadFlag("MisImportExcel");
+	}
+	function addlinktable(){
+		var num = Number($("#linktablenum").val())+1;
+		var $ref=$("#linktablesite");
+		var id = {$vo['id']};
+		$.ajax({
+	        url:"__URL__/comboxLinktableHtml/",
+	        type:'post',//方法，还可以是"post"
+	        data:{num:num,id:id},
+	        success:function(locals)//成功后执行的语句，这里是一个函数，“locals”是返回的数据
+	        {
+	        	//$ref.append(locals);
+				$("#linktablesite").append(locals).initUI();
+	        	$("#linktablenum").val(num);
+	        	$ref.find("select[num="+num+"]").trigger("change").combox();
+	        }
+	    });
+	}
+	function dellinktable($this){
+		var $obj=$($this).parents("div:first");
+		$obj.remove();
+	}
+	function misimportexceledit_addassociationtable(data,obj){
+		var input = $(obj).parent().parent().find("input[name='misimportexceledit_addassociationfield[]']");
+		input.val('');
+		input.attr("checkfor",'Exnt_Table_column');
+		input.attr("map","array('table_name'=>"+data.insert+");");
+	}
+	
+</script>
+<form id="pagerForm" action="__URL__/edit/id/{$vo['id']}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="pageContent" layoutH="27">
+	<form method="post" action="__URL__/update/navTabId/MisImportExcelImportImage" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtwopageedit);">
+	<div class="pageHeader">
+		<div class="panel collapse" >
+		<h1>编辑</h1>
+		<div>
+			<div class="pageFormContent">
+				<input type="hidden" name="id" value="{$vo['id']}" />
+				<div class="unit">
+					<label>名称：</label>
+					<input type="text" class="required" name="name" value="{$vo.name}" />
+				</div>
+				<div class="unit"><label>插入数据对象：</label>
+					<input type="text" class="required combox checkByInput" autocomplete="off" checkfor="Exnt_Tables" insert="TABLE_NAME" show="TABLE_NAME"   <if condition="$vo['tableobj']">value="{$tables[$vo['tableobj']]}"<else/>value="请选择表对象"</if> />
+					<input type="hidden" class="required" name="tableobj" value="{$vo['tableobj']}">
+				</div>
+				<div class="unit"><label>插入数据文件类型：</label>
+			   		<select class="required combox" name="importcatalog">
+						<option value="">请选择类型</option>
+						<option value="1" <if condition="$vo['importcatalog'] eq 1">selected</if>>后缀为xls或xlsx格式</option>
+						<option value="2" <if condition="$vo['importcatalog'] eq 2">selected</if>>后缀为csv格式</option>
+					</select>
+			    </div>
+			    <div class="unit"><label>关联更新：</label>
+			    	<span style="cursor:pointer;" class="info" onclick="addlinktable();">&nbsp;&nbsp;点击增加</span>
+			    	<span style="color: red;" class="info">(1：和本表关联的表；2：和本表ID关联表的字段；3：本表与关联表相关字段)</span>
+			    	<input type="hidden" id="linktablenum" value="{$num}">
+			    </div>
+				<div class="unit"><label>&nbsp;&nbsp;</label>
+			    	<table>
+					 	<tbody id="linktablesite" border="1">
+							<volist id="vos1" name="vo['linktables']" key="key2">
+								<tr>
+									<td>
+										<input type="text" placeholder="关联表" callback="misimportexceledit_addassociationtable" class="required checkByInput textInput" autocomplete="off" checkfor="Exnt_Tables"
+											insert="TABLE_NAME" show="TABLE_COMMENT" value="{$tables[$vos1['linktable']]}" />
+										<input type="hidden" name="linktable[]" value="{$vos1['linktable']}">
+									</td>
+									<td>
+										<input type="text" name="misimportexceledit_addassociationfield[]" placeholder="本表关联字段"
+											map="array('table_name'=>{$vos1['linktable']});"
+											class="required checkByInput textInput" autocomplete="off" checkfor="Exnt_Table_column"
+											insert="COLUMN_NAME" show="COLUMN_COMMENT" <if condition="$vos1['linkfields'][$vos1['linkfield']]">value="{$vos1['linkfields'][$vos1['linkfield']]}" <else/>value="{$vos1['linkfield']}"</if> />
+										<input type="hidden"  name="linkfield[]" value="{$vos1['linkfield']}">
+									</td>
+									<td>
+										<select class="combox" name="thefield[]">
+											<option value="">请选择本表关联字段</option>
+											<volist id="vos" name="sublist">
+												<option value="{$vos['fieldname']}" <if condition="($vos['fieldname'] eq $vos1['thefield'])">selected</if>>{$vos['name']}</option>
+											</volist>
+										</select>
+									</td>
+									<td>
+										<span style="cursor:pointer;" class="info" onclick="dellinktable(this);">&nbsp;&nbsp;点击删除</span>
+									</td>
+								</tr>
+							</volist>
+					 	</tbody>
+					</table>
+			    </div>
+				<div class="unit">
+					<label>备注：</label>
+					<textarea cols='40' rows='2' name="remark" maxlength="200">{$vo.remark}</textarea>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_update">
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				</if>
+					<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+				</ul>
+			</div>
+        </div>
+		</div>
+	</div>
+	</form>
+	<!-- sub页面处理模板 -->
+	<div class="pageContent">
+		<div class="panelBar">
+			<ul class="toolBar">
+				<if condition="$vo.auditState elt 0">
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcelsub_add ">
+						<li><a class="add tml-btn tml_look_btn tml_mp" href="__APP__/MisImportExcelSub/add/eid/{$vo.id}" target="dialog" title="新增导入列" mask="true" ><span><span class="icon icon-plus icon_lrp"></span>{$Think.lang.add}</span></a></li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcelsub_edit ">
+						<!--li><a class="edit tml-btn tml_look_btn tml_mp"  href="__APP__/MisImportExcelSub/edit/eid/{$vo.id}" mask="true" target="dialog" title="编辑导入列" warn="请先选择要修改的记录"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.edit}</span></a></li-->
+						<li><a warn="请先选择要修改的记录" title="编辑" mask="true" target="dialogIds" rel="id" postType="string" href="__APP__/MisImportExcelSub/edit" width="840" height="400" class="edit tml-btn tml_look_btn tml_mp"><span><span class="icon icon-edit icon_lrp"></span>{$Think.lang.edit}</span></a></li>
+					</if>
+					
+					<if condition="$_SESSION.a eq 1 or $_SESSION.ordersortinfo_selectToOrderSort ">
+						<li><a title="排序" mask="true" target="dialog" href="__APP__/OrderSortInfo/selectToOrderSort/tablename/MisImportExcelSub/where/{$url}/refresh/navTabId-MisImportExceledit" width="800" height="400" class="edit tml-btn tml_look_btn tml_mp"><span><span class="icon icon-sort-by-attributes icon_lrp"></span>排序</span></a></li>
+					</if>
+				</if>
+			</ul>
+		</div>
+		<table class="table" width="100%">
+			<thead>
+				<tr>
+					<th><input type="checkbox" class="checkboxCtrl" group="id" /></th>
+					<th>字段名称</th>
+					<th>字段解释</th>
+					<th>是否验证唯一</th>
+					<th>状态</th>
+					<th>操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			<volist id="vos" name="sublist">
+				<tr target="sid_node" rel="{$vos['id']}" onclick="onTrClickCheckbox(this,'id')" style="color:#{$vos['updatetime']|getTimeColor};" >
+					<td><input type="checkbox" name="id" value="{$vos['id']}" /></td>
+					<td>{$vos['fieldname']}</td>
+					<td>{$vos['name']}</td>
+					<td>{$vos['ifcheckexist']|isDefault}</td>
+					<td>{$vos['status']|getStatus}</td>
+					<td>{$vos['status']|showStatus=$vos['id'],'','MisImportExcelSub','__MODULE__edit'}</td></td>
+				</tr>
+			 </volist>
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="panelBar panelPageBar">
+	<div class="pages"><span>共{$totalCount}条</span></div>
+	<div class="pagination" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+</div>

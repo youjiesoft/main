@@ -1,0 +1,113 @@
+<script>
+$(function(){
+	var $refBox=$("#mistaskinformationindexview_treegrid_height").parents("div.layoutBox:first");
+	var iRefH=$refBox.height();
+	var iLayoutH=parseInt($("#mistaskinformationindexview_treegrid_height").attr("layoutH"));
+	var height=iRefH-iLayoutH>50?iRefH-iLayoutH:50;
+	height = height-26;
+	var topicjson={$tasklist};
+	grid = jQuery("#mistaskinformationindexview_treegrid2");
+	grid.jqGrid({
+	   datastr: topicjson,
+	   datatype: "jsonstring",
+	   height: height,
+	   autowidth: true,
+	   colNames: ["id","level","标题","描述","parent","负责人","执行状态","预计开始时间","预计结束时间","紧急状态","困难度","进度"],
+	   colModel: [
+	       {name: "id",key:true,align:'center',width:80,hidden:false},
+           { name: 'level', index: 'level', width: 60, align: 'center',hidden:true,resizable:false,
+                cellattr: function(rowId, tv, rawObject, cm, rdata) {
+                    return 'id=\'level' + rowId + "\'";
+                }
+            },
+	       {name: "title", editable:true ,align:'center',width:250, resizable: false},
+	       {name: "remark", editable:true ,width:350,resizable: false},
+	       {name: "parent", editable:true, hidden:true, align:'center', resizable: false},
+           {name: "executeuser", editable:true,align:'center',width:80, resizable: false},
+           {name: "executingstatus", editable:true,align:'center',width:80, resizable: false},
+           {name: "begindate", editable:true,align:'center', resizable: false},
+           {name: "enddate", editable:true,align:'center', resizable: false},
+           {name: "urgentstatus", editable:true,align:'center',width:80, resizable: false},
+           {name: "difficulty", editable:true,align:'center',width:80, resizable: false},
+           {name: "chedule", editable:true,align:'center', resizable: false},
+	   ],
+	   treeGrid: true,
+	   treeGridModel: "adjacency",
+	   ExpandColumn: "title",
+	   treeIcons: {leaf:'ui-icon-document-b'},
+	   rowNum: 30,
+	   jsonReader: {
+	       repeatitems: false,
+	       root: "response"
+	   },
+	   onSelectRow: function(id){
+            var $box=navTab.getCurrentPanel();
+		   $box.find("a[class='addChild mistaskinformation']").attr('href','__URL__/add/pid/'+id);
+           $box.find("a[class='add mistaskinformation']").attr('href','__URL__/add');
+		   $box.find("a[class='edit mistaskinformation']").attr('href','__URL__/edit/id/'+id);
+		   $box.find("a[class='trace mistaskinformation']").attr('href','__URL__/trace/identifying/2/id/'+id);
+		},
+        gridComplete: function() {
+            var gridName = "mistaskinformationindexview_treegrid2";
+            cellColor(gridName, 'level', 'task');    
+        }
+	});
+});
+</script>
+<div id="__MODULE__indexview">
+<form id="pagerForm" action="__URL__/indexview" method="post">
+    <input type="hidden" name="pageNum" value="{$pageNum}"/>
+    <input type="hidden" name="orderField" value="{$order}" />
+    <input type="hidden" name="dwzpageNum" value="1"/>
+    <input type="hidden" name="orderDirection" value="{$sort}"/>
+    <input type="hidden" name="numPerPage" value="{$numPerPage}" />
+</form>
+<div class="panelBar">
+	<ul class="toolBar">
+	<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_add ">
+		<li>
+			<a class="add mistaskinformation" href="__URL__/add/" target="navTab" rel="__MODULE__add" title="新增任务">
+				<span>{$Think.lang.add}</span>
+			</a>
+		</li>
+        <li>
+			<a class="addChild mistaskinformation" href="__URL__/add/pid/{sid}" target="navTab" rel="__MODULE__add" warn="请选择父任务" mask="true" title="新增子任务">
+				<span>新增子任务</span>
+			</a>
+		</li>
+	</if>
+	<if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_edit ">
+		<li>
+		<a class="edit mistaskinformation" href="__URL__/edit/id/{sid}" rel="__MODULE__edit" title="编辑/查看任务" target="navTab" mask="true" warn="请选择记录">
+			<span>{$Think.lang.change}</span>
+		</a>
+		</li>
+	</if>
+    <if condition="$_SESSION.a eq 1 or $_SESSION.mistaskinformation_lookuptraceview ">
+        <li>
+            <a class="trace mistaskinformation" href="__URL__/trace/identifying/2/id/{sid}" rel="__MODULE__ltrace" title="查看任务" target="dialog" height="530" width="744" mask="true" warn="请选择记录">
+                <span>任务查看</span>
+            </a>
+        </li>
+    </if>
+	</ul>
+    <form id="pagerForm" onsubmit="return divSearch(this, '__MODULE__indexview');" action="__URL__/indexview/type/search" method="post">
+        <div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <include file="Public:quickSearchCondition" />
+                </tr>
+            </table>
+        </div>
+    </form>
+</div>
+<div class="pageContent" id="mistaskinformationindexview_treegrid_height" layoutH="60">
+	<table id="mistaskinformationindexview_treegrid2"></table>
+</div>
+<div class="panelBar panelPageBar">
+    <div class="pages">
+        <span>共{$totalCount}条</span>
+    </div>
+    <div class="pagination" targetType="navTab" rel="__MODULE__indexview" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10"currentPage="{$currentPage}"></div>
+</div>
+</div>

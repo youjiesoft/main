@@ -1,0 +1,62 @@
+<script>
+	treeid='{$treeid}';
+	$this=$("#"+treeid).prev().prev();
+	$treenodeinput=$("#"+treeid).prev().val();
+	var ulztree = $('#' + treeid);
+	var cloneTree = ulztree.clone();
+	// 显示值存放对象
+	cloneTree.data('fromObj', $this).removeClass('hide');
+	// 真实值存放对象
+	var valName = $($this).data('names');
+	cloneTree.data('in', $('input[name="' + valName + '"]'));
+	cloneTree.attr('id', cloneTree.attr('id') + '_box');
+	var searchObj = '' , searchBtnObj='';
+	if($(this).data('search')==true){
+		var divs = $('<div class="member_searcher tree_search"></div>');
+		searchObj = $('<input type="text" class="add_key left" id="'+treeid+'_search"/>');
+		divs.append(searchObj);
+		searchBtnObj = $('<button type="button" id="'+treeid+'_search_btn" class="btn_member icon-search right enterIndex"></button>');
+		divs.append(searchBtnObj);
+		$box.append(divs);
+		
+	}
+	$box=$("#treedialog");
+	if($($this).data('search')==true){
+		var divs = $('<div class="member_searcher tree_search"></div>');
+		searchObj = $('<input type="text" class="add_key left" id="'+treeid+'_search"/>');
+		divs.append(searchObj);
+		searchBtnObj = $('<button type="button" id="'+treeid+'_search_btn" class="btn_member icon-search right enterIndex"></button>');
+		divs.append(searchBtnObj);
+		$box.append(divs);
+		
+	}
+	$box.append(cloneTree);
+	$('#' + treeid + "_box").comboxtreeinit();
+	var treeObj = $.fn.zTree.getZTreeObj(treeid + "_box");
+	if($treenodeinput){
+		$checkArr=$treenodeinput.split(",");
+		for(var i in $checkArr){
+			var node = treeObj.getNodeByParam("id", $checkArr[i], null);
+			treeObj.selectNode(node);
+			treeObj.checkNode(node, true, true);	
+		}
+	}
+	if(searchObj && searchBtnObj){
+		searchBtnObj.on("propertychange", function(e){
+			searchNode(e, treeid + "_box",searchObj);
+		}).on('click',function(e){
+			searchNode(e, treeid + "_box",searchObj);
+		});
+		
+		searchObj.on("focus", function(e){
+			focusKey(e,searchObj);
+		})
+		.on("blur", function(e){
+			blurKey(e,searchObj);
+		});
+	}
+	
+</script>
+<div id="treedialog" layoutH="40">
+
+</div>

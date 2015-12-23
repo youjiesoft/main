@@ -1,0 +1,37 @@
+<script>
+//lookup升级版width自适应
+$(function() {
+	var lookupTotalWidth = $("div.select_top_lay").width(); //获取弹框的总宽度
+	var leftTreeWidth = $("div.stl_left").width(); //获取左边树的宽度
+	$("div.stl_right").css("width",lookupTotalWidth-leftTreeWidth-2); //计算出右边列表的宽度
+})
+</script> 
+<div id="checkUserObj" class="pageContent">
+	<div id="lookupBackendUserCenterRight" class="positiveBox treeright select_top_lay"> 
+		<include file="Public:lookupBackendUserCenterRight" />
+	</div>
+	<!-- 选中列表 -->
+	<div class="select_center_lay">
+		<ul class="user_selected_ul selected_member">
+			<volist id="vo" name="check_list_arr">
+				<li data-item='{$vo|json_encode}' class="selected_box nbm_lookup_checked nbm_lookup_checked_{$vo[$fieldname]}"><span class="member_name left">{$vo[$fieldval]}</span><span class="selected_tool user_remove nbmui_checkbox_removelceil right">×</span></li>
+		    </volist>
+		</ul>
+    </div>
+	<!-- 选中列表 end -->
+	<div class="select_bottom_lay">
+		<div class="formBar">
+			<ul>
+				<li>
+					<button class="tml_select_btn tml_formBar_btn_blue nbm_btn_lookup_save xyAdvancedSearch" >确定</button>
+				</li>
+				<li>
+					<button class="tml_select_btn tml_formBar_btn_blue nbm_btn_lookup_clear" >清除</button>
+				</li>
+				<li>
+					<button class="tml_select_btn tml_formBar_btn_red nbm_btn_lookup_cancel" >取消</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,86 @@
+<script>
+	$(document).ready(function(){
+		var setting = {view: { selectedMulti: false,fontCss: setFontCss},data: {simpleData: {enable: true}}};
+		var zNodes = {$documentTree};
+		//将节点内容帮顶到html上面 
+		$.fn.zTree.init($("#file_move_tree"), setting, zNodes);
+		var zTree = $.fn.zTree.getZTreeObj("file_move_tree");
+		//根据name来获得默认选中的节点 
+		var valid = '我的文档'; 
+	    var nodes = zTree.getNodesByParam("name", valid, null);
+	    zTree.selectNode(nodes[0]);
+	});
+	function setFontCss(treeId, treeNode) {
+	    var val=false;
+	    var admin='{$admin}';
+	    if(admin=='0'){
+		var arr ={$managerid};
+		 for(var key in arr){
+		    if(arr[key]==treeNode.realid ){
+			val=true;
+		    }
+		}
+	    }else{
+		val=true;
+	    }
+	    if(val){
+		return {};
+	    }else{
+		return {color:"#999", background:"#F8F8F8"};
+	    }
+	}
+	function documentcollatesubmit(obj){
+		var zTree = $.fn.zTree.getZTreeObj("file_move_tree"),nodes = zTree.getSelectedNodes(),treeNode = nodes[0];
+		var id=treeNode.realid;
+		if(id==0){
+		    alertMsg.error("不能移动到跟目录");
+		    return false;
+		}
+		var val=false;
+		var admin='{$admin}';
+		if(admin=='0'){
+		    var arr ={$managerid};
+		     for(var key in arr){
+			if(arr[key]==id ){
+			    val=true;
+			}
+		    }
+		}else{
+		    val=true;
+		}
+		if(!val){
+		    alertMsg.error("您没有对 "+treeNode.name+" 文件夹的移动权限!");
+		    return false;
+		}
+		$(obj).find("input[name='parentid']").val(id);
+		$(obj).submit();
+	}
+</script>
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/move/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+			<input type="hidden" name="id" value="{$id}">
+			<input type="hidden" name="step" value="2">
+			<input type="hidden" name="parentid" value="1">
+			<div class="pageFormContent" layoutH="58">
+			    <div class="unit">
+                    <span class="file_manager_tips"><i class="icon-comments"></i> 温馨提示：对灰色背景文件夹无移入权限</span>
+			    </div>
+			    <div class="unit">
+				<ul id="file_move_tree" class="ztree" ></ul>
+			    </div>
+			</div>
+			<div class="formBar">
+				<ul>
+					<li>
+						<button type="button" class="tml_select_btn tml_formBar_btn_blue" onclick="documentcollatesubmit(this.form);">{$Think.lang.save}</button>
+					</li>
+
+					<!--<li>-->
+						<!--<button type="button" class="close tml-btn">{$Think.lang.close}</button>-->
+					<!--</li>-->
+				</ul>
+			</div>
+		</form>
+	</div>
+</div>

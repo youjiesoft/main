@@ -1,0 +1,41 @@
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__APP__/MisRoleGroup/update" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="id" value="{$vo.id}" >
+		<input type="hidden" name="rolegroup_id" value="{$vo.rolegroup_id}" >
+		<div class="pageFormContent" layoutH="58">
+		<div class="tml-row">
+			<div class="tml-form-col">
+					<label>公&nbsp;&nbsp;&nbsp;&nbsp;司：</label>
+					<input type="text" readonly="readonly"  value="{$vo.companyid|getFieldBy='id','name','mis_system_company'}" />
+ 				</div>
+				<div class="tml-form-col">
+					<label>部&nbsp;&nbsp;&nbsp;&nbsp;门：</label>
+					<input type="text" readonly="readonly"  value="{$vo.departmentid|getFieldBy='id','name','mis_system_department'}" />
+				</div>
+			<div class="tml-form-col">
+				<label>岗位名称：</label>
+				<input type="text" class="required" name="name" maxlength="25" value="{$vo.name}" />
+			</div>
+			<div class="tml-form-col">
+				<label>排序：</label>
+				<input type="text" name="sort" maxlength="4" value="{$vo.sort}" />
+			</div>
+			<div class="tml-form-col">
+                <label>状态：</label>
+                <select name="status" class="combox">
+                    <option value="1" <if condition="$vo['status'] eq 1">selected</if> >启用</option>
+                    <option value="0" <if condition="$vo['status'] eq 0">selected</if> >禁用</option>
+                </select>
+            </div>
+		</div>			
+			<div class="tml-form-row">
+                <label>备注：</label>
+                <textarea name="remark" class="textInput" maxlength="100" rows="4" cols="40">{$vo.remark}</textarea>
+            </div>
+		</div>
+		{:W('ShowAction',array('data'=>$vo))}
+	</form>
+	</div>
+</div>
+

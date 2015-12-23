@@ -1,0 +1,33 @@
+<div class="page">
+    <div class="pageContent">
+        <div class="pageFormContent applecloth anchorsToolBarParent" layoutH="40">
+            <div class="new_version_page">
+                <div class="new_version_page_header pageFormContent">管理员设置</div>
+                <div class="new_version_page_content" style="height: 100%;"> <!--layoutH="135"-->
+                    <dl class="admin_set_dl">
+                        <volist name="MisSystemIntercalateMasList" id="MisSystemIntercalateMasVo">
+                                <dt>
+                                    <span class="admin_set_title">{$MisSystemIntercalateMasVo['name']}</span>
+                                    <div class="tml_style_line tml_sl4 tml_slb_blue"></div>
+                                </dt>
+                                <volist name="MisSystemIntercalateSubList" id="MisSystemIntercalateSubVo"  key="i">
+                                    <if condition="$MisSystemIntercalateMasVo['id'] eq $MisSystemIntercalateSubVo['masid']">
+                                        <if condition="$MisSystemIntercalateSubVo['type'] eq '1'">
+                                            <dd>
+                                                <a href="{$MisSystemIntercalateSubVo['url']}" target="navTab" rel="MisSystemIntercalateMas{$i}_index"  >  {$MisSystemIntercalateSubVo['name']}</a>
+                                            </dd>
+                                            <else/>
+                                            <dd>
+                                                <a title="你确定要执行吗？" target="ajaxTodo" <if condition="$MisSystemIntercalateSubVo['exemethod']">href="__URL__/{$MisSystemIntercalateSubVo['exemethod']}" <else/>href="#"</if> target="navTab" rel="MisSystemIntercalateMas{$i}_index"  >  {$MisSystemIntercalateSubVo['name']}</a>
+                                            </dd>
+                                        </if>
+                                    </if>
+                                </volist>
+                        </volist>
+                    </dl>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+    </div>
+</div>

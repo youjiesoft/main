@@ -1,0 +1,50 @@
+		 <div class="pageContent">
+		  	<form id="pagerForm" action="__URL__/index/type/1" method="post">
+		 		<input type="hidden" name="pageNum" value="1"/>
+		 		<input type="hidden" name="orderField" value="{$order}" />
+		 		<input type="hidden" name="orderDirection" value="{$sort}"/>
+			</form>
+		 		<div class="panelBar">
+		 			<ul class="toolBar">
+						 <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/add/modelname/{$modelname}/modelid/{$modelid}" rel="MisSystemTempleteManageadd" target="navTab" ><span><span class="icon icon-plus icon_lrp"></span>新增</span></a></li>
+					   	<li><a class="js-edit edit tml-btn tml_look_btn tml_mp"  href="__URL__/edit/id/{sid_node}/modelname/{$modelname}/modelid/{$modelid}" rel="MisSystemTempleteManageedit" target="navTab" title="模板管理_修改"><span><span class="icon icon-edit icon_lrp"></span>修改</span></a></li>
+					    <li><a class="js-delete delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_node}" rel="MisSystemTempleteManageindexview" target="ajaxTodo" title="你确定要删除吗？" warn="请选择一条组记录"><span><span class="icon icon-trash icon_lrp"></span>删除</span></a></li>
+						<li><a class="js-view icon tml-btn tml_look_btn tml_mp" href="__URL__/view/id/{sid_node}/eid/{sid_node}" target="navTab" rel="MisSystemTempleteManageindexview"  title="查看"><span><span class="icon icon-eye-open icon_lrp"></span>查看</span></a></li>
+						 <li><a class="js-label tml-btn tml_look_btn tml_mp" href="__URL__/label/modelname/{$modelname}/modelid/{$modelid}" target="navTab"  rel="MisSystemTempleteManagelabel"><span><span class="icon icon-tags icon_lrp"></span>标签管理</span></a></li>
+					 </ul>
+					<form rel="pagerForm" onsubmit="return   divSearch(this, '__MODULE__indexview')" action="__URL__/index/type/1" method="post">
+						
+								<input type="hidden" name="fieldtype"  value="{$fieldtype}"/>
+								<input type="hidden" name="{$fieldtype}"  value="{$fieldtypeval}"/>
+								<input type="hidden" name="jump"  value="jump"/>
+								<input type="hidden" name="modelname" value="{$modelname}" />
+								<input type="hidden" name="modelid" value="{$modelid}" />
+					<div class="searchBar">
+						<table class="searchContent">
+							<tr>
+							<include file="Public:quickSearchConditionForAudit" />
+							</tr>
+						</table>
+					</div>
+					</form>
+			</div>
+			<table class="table" width="100%" layoutH="146">
+				<thead ename="{$ename}">
+					<tr>
+						<th width="26">序号</th>
+						<volist id="vo" name="detailList">
+							<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]"> rel="__MODULE__indexview" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+						</volist>
+					</tr>
+				</thead>
+				<tbody>
+					<include file="dwzloadindex" />
+				</tbody>
+			</table>
+			<div class="panelBar panelPageBar">
+				<div class="pages">
+					<span>共{$totalCount}条</span>
+				</div>
+				<div class="pagination" rel="__MODULE__indexview" targetType="navTab" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+			</div>
+		</div>

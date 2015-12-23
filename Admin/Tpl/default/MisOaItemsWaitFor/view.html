@@ -1,0 +1,110 @@
+<script type="text/javascript">
+function replyItems(id){
+	var dialog = $("body").data("MisOaItemsWaitForedit");
+	$.pdialog.close(dialog);
+	navTab.openTab("MisOaItemsreplyItems", "__URL__/replyItems/id/"+id, { title:"协同回复", fresh:false, data:{} });
+}
+function forwardingItems(id){
+	var dialog = $("body").data("MisOaItemsWaitForedit");
+	$.pdialog.close(dialog);
+	navTab.openTab("MisOaItemsforwardingItems", "__URL__/forwardingItems/id/"+id, { title:"协同转发", fresh:false, data:{} });
+}
+</script>
+<div class="pageContent">
+	<div class="tml-bg-white" style="overflow: auto; height: 574px;">
+		<div class="clearfix p5" style="background: #f1f1f1;">
+			<div class="left grid-60">
+				<div>
+					<span class="left tml-text-r tml-w60">标题：</span>
+					<span style="font-size: 14px;">{$vo['title']}</span>
+				</div>
+				<div>
+					<div class="left">
+						<span class="left tml-text-r tml-w60">发起人：</span>
+						<span class="tml-c-blue">{$vo['createid']|getFieldBy='id','name','User'}</span>({$vo['createtime']|transTime='Y-m-d H:i:s'})
+					</div>
+				</div>
+			</div>
+			<div class="right">
+				<a class="tml-btn tml-btn-small tml-mr5" href="javascript:;" onclick="replyItems({$vo['id']});">
+					回复
+				</a>
+				<a class="tml-btn tml-btn-small tml-mr5" href="javascript:;" onclick="forwardingItems({$vo['id']});">
+					转发
+				</a>
+				<a class="tml-btn tml-btn-small tml-mr5" href="__URL__/lookupFlowsView/id/{$vo['id']}/model/MisOaItems" title="流程查看" width="930" height="540" rel="flowsView" mask="true" target="dialog">
+					流程
+				</a>
+			</div>
+		</div>
+		<div class="p5" style="overflow: auto; max-height: 160px;">{$vo['content']}</div>
+		<div class="xyMessageAttach">
+			<div style="padding: 6px 10px 6px 8px;">
+				<div class="attach left"></div>
+				<strong>附件：</strong>
+			</div>
+			<div class="xyMessageAttachItems">
+				<volist name="attarry" id="att">
+				<div class="xyMessageAttachItem">
+					<span class="tml-label tml-bg-orange tml-mr5">附件{$key+1}</span>
+					<a class="attlink" rel="{$att['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att['attached']|base64_encode}/rename/{$att['upname']}">
+						<span>{$att['upname']}</span>
+					</a>
+					<if condition="$att.isplay eq 1"> &nbsp;&nbsp;&nbsp;&nbsp;
+						<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att['name']}/filename/{$att['filename']}" onclick="openNewWindowsDisplayFile(this);">
+						<span class="icon icon-eye-open"></span>在线查看</a>
+					</if>
+					<a class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att['id']}" title="文件归档" rel="documentCollateAtta" mask="true" target="dialog">
+						<span class="icon icon-file"></span>
+						归档
+					</a>
+				</div>
+				</volist>
+			</div>
+		</div>
+		<div class="xyMessageAttach">
+			<div>
+				<h3 class="tml-h3">{$vo['description']}</h3>
+			</div>
+			<div class="xyMessageAttachItems">测试附言</div>
+		</div>
+		<div class="xyMessageAttach">
+			<div>
+				<h3 class="tml-h3">处理结果</h3>
+			</div>
+			<div class="xyMessageAttachItems">
+				<ul class="pt5">
+					<volist id="instance" name="instancelist">
+					<li class="tml-mb5" style="border: 1px solid #764E6E;">
+						<div>
+							<span class="tml-c-blue">{$instance['flowsusername']}</span>
+							（{$instance['flowsuser']|getDeptName}）&nbsp;&nbsp;{:getSelectByName('instancedostatus',$instance['dostatus'])}&nbsp;&nbsp;{$instance['updatetime']|transTime='Y-m-d H:i:s'}
+						</div>
+						<div>
+							{$instance['doinfo']}
+						</div>
+						<div class="xyMessageAttachItems">
+							<volist name="instance['attached']" id="att2">
+							<div class="xyMessageAttachItem">
+								<span class="tml-label tml-bg-orange tml-mr5">附件{$key+1}</span>
+								<a class="attlink" rel="{$att2['id']}" target="_blank" href="__URL__/misFileManageDownload/path/{$att2['attached']|base64_encode}/rename/{$att2['upname']}">
+									<span>{$att2['upname']}</span>
+								</a>
+								<if condition="$att2.isplay eq 1"> &nbsp;&nbsp;&nbsp;&nbsp;
+									<a class="tml-btn tml-btn-small tml-btn-primary tml-mr5" rel="__URL__/playSWF/name/{$att2['name']}/filename/{$att2['filename']}" onclick="openNewWindowsDisplayFile(this);">
+									<span class="icon icon-eye-open"></span>在线查看</a>
+								</if>
+								<a class="tml-btn tml-btn-small tml-btn-green" href="__URL__/lookupDocumentCollateAtta/t/0/id/{$att2['id']}" title="文件归档" rel="documentCollateAtta" mask="true" target="dialog">
+									<span class="icon icon-file"></span>
+									归档
+								</a>
+							</div>
+							</volist>
+						</div>
+					</li>
+					</volist>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>

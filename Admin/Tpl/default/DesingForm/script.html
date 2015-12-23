@@ -1,0 +1,308 @@
+<!--
+    功能JS代码实现
+-->
+<script>
+var navid = "{$_GET['nav']}";
+console.log(navid);
+// 画布ID
+var d_container = 'design_content';
+// 数据列表ID
+var l_container = 'design_toolbar';
+// 当前标记的对象个数
+var _curindex = {$count};
+//	当前内容容器对象
+var containerObj = $('#'+d_container);
+
+var tagIndentity = '{$tagIndentity}';
+var ajaxName = '__MODULE__ajaxadd';
+
+// 导航画布ID
+var n_container = 'design_nav';
+
+//导航画布容器对象
+var navContainerObj = $('#'+n_container);
+
+// 属性存储标签类型
+var propertyTagType='{$propertyTagType}';
+// 属性配置文件
+var config = <if condition="$config">{$config|json_encode}<else/>''</if>;
+var control = <if condition="$control">{$control|json_encode}<else/>''</if>;
+  $(function() {
+	  
+	  
+	  $('.nbm_design_toolbar_warp').hover(function(){
+          var aobj = $(this).find('a.nbm_delete_plain_ctl');
+          aobj.addClass('icon-remove');
+          aobj.show();
+      },function(){
+          var aobj = $(this).find('a.nbm_delete_plain_ctl');
+          aobj.hide();
+      });
+	  
+	  
+	  console.log(config);
+	  if(typeof(config) == 'object'){
+		  
+		  $('.design_nav_add').on('click' , function(){
+			  console.info(control);
+			  var category = 'navigation';
+			  var second = (new Date()).getTime();
+			  var tpl = control[category]['html'];
+			  console.info(tpl);
+			  var temp = $(tpl);
+			  temp.attr(tagIndentity,second);
+			 $("#"+n_container).append(temp);
+			  createHidden(temp ,category );
+			  _curindex ++;
+			  var tempHtml = temp.html();
+				tempHtml = tempHtml.replace(/\[\#primary\#\]/ig,'');
+				tempHtml +='<input type="'+propertyTagType+'" name="masid" value="{$id}" />';
+				tempHtml +='<input type="'+propertyTagType+'" name="'+tagIndentity+'" value="'+temp.attr(tagIndentity)+'" />';
+				$('#'+ajaxName).html(tempHtml);
+				var formData = $('#'+ajaxName).formSerialize();
+				if(formData){
+					 $('#'+ajaxName).ajaxSubmit(function(data){
+						//navTab.reloadFlag("designFormedit");   
+						 if(data){
+							 try{
+							 	data = $.parseJSON(data);
+							 }catch(e){
+								 alert(e.message);
+							 }
+							 if(data.statusCode==0){
+								 alert(data.message);
+								saveobj.remove();
+							 }else{
+					         	// 将新加数据的ID值反写回页面中 
+					         	// 找到指定区域
+					         	if(data['data']['data'][tagIndentity] && data['data']['data']['html']){
+					         		var obj = navContainerObj.find('li['+tagIndentity+'="'+data['data']['data'][tagIndentity]+'"]');
+					         		console.warn(obj);
+	 					   			var html = data['data']['data']['html'];
+	 					   			html = $(html).initUI();
+	 					   			obj.after(html);
+	 					   			obj.remove();
+					         	}
+							 }
+						 }
+			         });
+				}
+				$('#'+ajaxName).html('');
+				
+				
+		  });
+		  $( "#"+n_container ).sortable({
+			  revert:false,
+		        opacity: 0.6 ,
+		        helper:'clone',
+		        placeholder:'nbm_highlight',
+		        start:function(e,u){
+		            // 检查当前对象是否是从列表中拖取过来的未加工对象
+		             if(u.item.hasClass('design_toolbar_item')){
+		                 var config = u.item.data('config');
+		                 u.item.removeClass();
+		                 u.item.removeAttr('title');
+		                 u.item.removeAttr('data-config');
+		                 u.item.addClass(config.cls);
+		                 u.item.find('div.title').html(createaTitle(config.title));
+		                 createHidden(u.item ,config.category);
+		                 var second = (new Date()).getTime();
+		                 u.item.attr(tagIndentity,second);
+		                 _curindex ++;
+		             }
+		            var hightcls = u.item.attr('class');
+		             $(u.placeholder).addClass(hightcls);
+		             return u;
+		        },
+		        deactivate:function(e,u){
+		        	console.log($(this).find('li').not('.defaultItem').length);
+		             // 去除引导项 
+		        	 if($(this).find('li').not('.defaultItem').length){
+		             	$('#'+d_container).find('li.defaultItem').remove();
+		             }
+		 			// 重新生成序号
+		             if(_curindex >1 && $('#'+d_container).find('li.defaultItem').length ==0 ){
+		            	 var allItem = $(this).find('li');
+		            	 var sortArr = tempsort=new Array();
+		                 allItem.each(function(k,v){
+		                	 var id = $(v).find('input[type="'+propertyTagType+'"][name^="primary"]').val();
+		                	 if(id){
+		                		 tempsort.push('('+id+' , '+k+')');
+		                	 }
+		                	 
+		                	 $(v).find('input[type="'+propertyTagType+'"][name^="sort"]').val(k);
+		                 });
+		                 $.post('__URL__/changesort' , {'data':tempsort.join(',')} , function(data){
+		                	 console.log(data);
+		                 } , 'JSON');
+		             }
+		        }
+		    }).disableSelection();
+		  
+		  $( "#"+d_container ).sortable({
+		        revert:false,
+		        opacity: 0.6 ,
+		        helper:'clone',
+		        placeholder:'nbm_highlight',
+		        start:function(e,u){
+		            // 检查当前对象是否是从列表中拖取过来的未加工对象
+		             if(u.item.hasClass('design_toolbar_item')){
+		                 var config = u.item.data('config');
+		                 u.item.removeClass();
+		                 u.item.removeAttr('title');
+		                 u.item.removeAttr('data-config');
+		                 u.item.addClass(config.cls);
+		                 u.item.find('div.title').html(createaTitle(config.title));
+		                 createHidden(u.item ,config.category);
+		                 var second = (new Date()).getTime();
+		                 u.item.attr(tagIndentity,second);
+		                 _curindex ++;
+		             }
+		            var hightcls = u.item.attr('class');
+		             $(u.placeholder).addClass(hightcls);
+		             return u;
+		        },
+		        deactivate:function(e,u){
+		        	console.log($(this).find('li').not('.defaultItem').length);
+		             // 去除引导项 
+		        	 if($(this).find('li').not('.defaultItem').length){
+		             	$('#'+d_container).find('li.defaultItem').remove();
+		             }
+		            
+		        	// 获取到当前新拖入没有保存的内容 
+		 			var saveobj = $('input[type="'+propertyTagType+'"][name^="primary["][value=""]' , containerObj).closest('li');
+		        	console.info('需要保存的对象 '+saveobj.length);
+		 			if(saveobj.length>0){
+		 				var tempHtml = saveobj.html();
+		 				tempHtml = tempHtml.replace(/\[\#primary\#\]/ig,'');
+		 				tempHtml +='<input type="'+propertyTagType+'" name="masid" value="{$id}" />';
+		 				tempHtml +='<input type="'+propertyTagType+'" name="'+tagIndentity+'" value="'+saveobj.attr(tagIndentity)+'" />';
+						if(navid){
+							tempHtml +='<input type="'+propertyTagType+'" name="nav" value="'+navid+'" />';
+						}
+		 				$('#'+ajaxName).html(tempHtml);
+		 				var formData = $('#'+ajaxName).formSerialize();
+		 				if(formData){
+		 					 $('#'+ajaxName).ajaxSubmit(function(data){
+		 						//navTab.reloadFlag("designFormedit");   
+		 						 if(data){
+		 							 try{
+		 							 	data = $.parseJSON(data);
+		 							 }catch(e){
+		 								 alert(e.message);
+		 							 }
+		 							 if(data.statusCode==0){
+		 								 alert(data.message);
+		 								saveobj.remove();
+		 							 }else{
+		 					         	// 将新加数据的ID值反写回页面中 
+		 					         	// 找到指定区域
+		 					         	if(data['data']['data'][tagIndentity] && data['data']['data']['html']){
+		 					         		var obj = containerObj.find('li['+tagIndentity+'="'+data['data']['data'][tagIndentity]+'"]');
+			 					   			var html = data['data']['data']['html'];
+			 					   			html = $(html).initUI();
+			 					   			obj.after(html);
+			 					   			obj.remove();
+		 					         	}
+		 							 }
+		 						 }
+		 			         });
+		 				}
+		 				$('#'+ajaxName).html('');
+		 			}else{
+			 			// 重新生成序号
+			             if(_curindex >1 && $('#'+d_container).find('li.defaultItem').length ==0 ){
+			            	 var allItem = containerObj.find('li');
+			            	 var sortArr = tempsort=new Array();
+			                 allItem.each(function(k,v){
+			                	 var id = $(v).find('input[type="'+propertyTagType+'"][name^="primary"]').val();
+			                	 if(id){
+			                		 tempsort.push('('+id+' , '+k+')');
+			                	 }
+			                	 
+			                	 $(v).find('input[type="'+propertyTagType+'"][name^="sort"]').val(k);
+			                 });
+			                 $.post('__URL__/changesort' , {'data':tempsort.join(',')} , function(data){
+			                	 console.log(data);
+			                 } , 'JSON');
+			             }
+			        }
+		        }
+		    }).disableSelection();
+	  }
+    
+    // 组件从列表追加到画布效果
+    $('#'+l_container+' .design_toolbar_item').draggable({
+        helper:'clone',
+        addClasses:false,
+        connectToSortable:'#design_content'
+    });
+});
+  
+  
+  
+  /**
+   *内容替换， 将#index# 替换为指定内容
+   */
+  function createaTitle(content){
+      if(isNullorEmpty(content)){
+          title = content.replace(/#index#/ig,_curindex.toString().toLetter26());
+          return title;
+      }else{
+          return '默认标题'+_curindex.toString().toLetter26();
+      }
+  }
+  
+  /**
+   * 生成成组件隐藏域 
+   * @parame order 生成标签存放对象
+   * @parame category 组件类型标识 
+   */
+  function createHidden(order , category){
+	  if(isNullorEmpty(category)){
+		  var hiddenHtml = '';
+		  $.each(config[category] , function(i , v){
+			  var defaultValue = v['value'];
+			  var names = v['name'];
+			  var from = v['from'];
+			  console.warn(from);
+			  if(isNullorEmpty(from)){
+				  var fromVal = config[category][from]['value'];
+				  defaultValue =  defaultValue.replace(eval('/#'+from+'#/') , fromVal);
+			  }
+			  if(defaultValue.indexOf('#index#')>-1){
+				  defaultValue =  createaTitle(defaultValue);
+			  }
+			  names = names.replace(/(\~)+(\w)+(\~)/g,  function(va) {
+				 var curIndex = va.match(/\w+/g);
+				return  v[curIndex[0]];
+			});
+			  hiddenHtml += '<input type="'+propertyTagType+'" name="'+names+'" value="'+defaultValue+'" />';
+		  });
+		  $(order).append($(hiddenHtml));
+	  }else{
+		 	console.warn('组件类型为空！');
+		 	alert('操作失败！即将删除组件 ');
+		 	$(order).remove();
+		 	
+	  }
+  }
+  
+  function nullValidateFunc(json){}
+  function validateCallbackFunc(obj, func){}
+  function delpanel(id,obj){
+	  if(id){
+		  $.ajax({
+				type : "POST",
+				url : "__URL__/delete",
+				data : {
+					'id' : id
+				},
+				success : function(re) {
+					  $(obj).closest("li").remove();
+				}
+			});
+	  }
+	  
+  }
+  </script>

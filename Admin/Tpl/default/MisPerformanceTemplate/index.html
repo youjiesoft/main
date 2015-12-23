@@ -1,0 +1,201 @@
+<script>
+//窗体加载加载左边树
+$(document).ready(function(){
+    var zNodes = {$treearr};
+    var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+           },
+			data: {
+				simpleData: {
+					enable: true
+				}
+			},
+            callback: {
+                onRightClick: zTreeOnRightClick
+            }
+		};
+    $.fn.zTree.init($("#misperformancetemplate_rightcontent_tree"), setting, zNodes);
+    var zTree = $.fn.zTree.getZTreeObj("misperformancetemplate_rightcontent_tree");
+    var valid='{$selectednodeid}';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+    
+    function zTreeOnRightClick(event, treeId, treeNode) {
+        if (treeNode && !treeNode.noR) {
+            zTree.selectNode(treeNode);
+            var nodes = zTree.getSelectedNodes();
+            treeNode.id = treeNode.id== -1? -1 : Math.abs(treeNode.id);
+            $(this).log(treeNode.id);
+            $.nbmMenu({'addonly':treeNode.id,'havechild':true,'left':event.clientX, 'top':event.clientY,
+                addNode:function(obj){
+                    $(obj).attr('url','__APP__/MisPerformanceType/add/type/3');
+                    $(obj).attr('title','添加考核等级分类'); 
+                    $(obj).attr('width','640'); 
+                    $(obj).attr('height','250');
+                    $(obj).attr('mask',"true");
+                    MisPerformanceTemplate_editNodes(obj,'misperformancetemplate_rightcontent_tree','1');
+                },
+                modifyNode:function(obj){
+                     $(obj).attr('url',"__APP__/MisPerformanceType/edit/id/");
+                     $(obj).attr('title',"考核等级分类");
+                     $(obj).attr('width',"640");
+                     $(obj).attr('height',"280"); 
+                     MisPerformanceTemplate_editNodes(obj,'misperformancetemplate_rightcontent_tree','2');
+                         
+                },
+                deleteNode:function(t){
+                	MisPerformanceTemplate_delNodes('misperformancetemplate_rightcontent_tree','/misperformancetype/delete/id/','__MODULE__');
+                }
+            });
+        }
+    }
+});
+
+
+
+
+//修改节点,由于每一层跳转页面不一样重写了editnodes方法
+function MisPerformanceTemplate_editNodes($this,$treeId,step){
+	$this = $($this);
+	var zTree = $.fn.zTree.getZTreeObj($treeId),
+	nodes = zTree.getSelectedNodes(),
+	treeNode = nodes[0];
+	var id=treeNode.id;
+	var pid=treeNode.pId;
+	var rel=$this.attr("rel")||"_blank";
+	//参数集
+	var options={};
+	var w=$this.attr("width");
+	var h=$this.attr("height");
+	if(w)options.width=w;
+	if(h)options.height=h;
+	options.mask=eval($this.attr("mask")||"false");
+	options.close=eval($this.attr("close")||"");
+	options.param=$this.attr("param")||"";
+	if(id==0){   //点击最外层添加为添加模板分类
+		if(step==1){
+			var title="添加模板分类";
+			var url=$this.attr("url");
+		}
+	}else{
+		//step 为1  是添加 否则是修改
+		if(step==1){ 
+			//点击第二次或第三层添加为添加模板
+			if(pid!=0){ 
+				pid=Math.abs(pid);
+				var url = "__URL__/add/id/"+pid;
+			}else{
+				id=Math.abs(id);
+				var url = "__URL__/add/id/"+id;
+			}
+			var title="添加模板名称";
+		}else{
+			//修改模板信息
+			id=Math.abs(id);
+			if(pid==0){
+				var url=$this.attr("url")+id;
+			}else{
+				var url = "__URL__/edit/id/"+id;
+			}
+			var title="修改模板名称";
+		}
+	}
+	DWZ.debug(url);
+	if(!url.isFinishedTm()){
+		alertMsg.error($this.attr("warn")||DWZ.msg("alertSelectMsg"));
+		return false;
+	}
+	$.pdialog.open(url,rel,title,options);
+}
+//删除节点,由于每一层跳转页面不一样重写了delNodes方法
+function MisPerformanceTemplate_delNodes($treeId,$url,$rel){ 
+	var zTree = $.fn.zTree.getZTreeObj($treeId);
+	nodes = zTree.getSelectedNodes();
+	treeNode = nodes[0];
+	//获得节点ID
+	var id=treeNode.id;
+	//获得pid 
+	var pid=treeNode.pId;
+	//不允许删除最顶层
+	if(id==0){
+		return false;
+	}
+	alertMsg.confirm("您确定要删除当前节点吗？", {
+		okCall: function(){
+			id=Math.abs(id);
+			if(pid==0){
+				//删除模板分类
+				var delurl="__APP__/MisPerformanceType/delete/id/"+id;
+			}else{
+				//删除模板
+				var delurl = "__URL__/delete/id/"+id;
+			}
+			$.ajax({
+				type:'POST',
+				dataType:"json",
+				url:delurl,
+				cache:false,
+				success:function(json){
+					DWZ.ajaxDone(json);
+					if (json.statusCode != DWZ.statusCode.ok){
+						error:DWZ.ajaxError;
+					} else {
+						navTab.reloadFlag($rel);
+					}
+				},
+				error:DWZ.ajaxError
+			});
+		}
+	});
+}
+</script>
+<div class="pageContent">
+	<div>
+	{:W("ShowToLevelMenu")}
+		<div class="treeleft">
+	<div class="work_statement"></div>
+			<div class="collapse" layoutH="0">
+				<div class="toggleCollapse">
+					<div></div>
+				</div>
+			</div>
+			<div class="close">
+				<div class="toggleCollapse">
+					<h2></h2>
+					<div></div>
+				</div>
+                <!-- 
+				<ul class="toolBar">
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_add">
+					<li>
+						<a class="add" url="__APP__/MisPerformanceType/add/type/3" href="javascript:;" title="添加考核等级分类" width="700" height="250" onclick="MisPerformanceTemplate_editNodes(this,'misperformancetemplate_rightcontent_tree','1')" mask="true">
+							<span></span>
+						</a>
+					</li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_delete">
+					<li>
+						<a class="delete" href="javascript:;"   onclick="MisPerformanceTemplate_delNodes('misperformancetemplate_rightcontent_tree','/misperformancetype/delete/id/','__MODULE__');">
+							<span></span>
+						</a>
+					</li>
+					</if>
+					<if condition="$_SESSION.a eq 1 or $_SESSION.misperformancetype_edit">
+					<li>
+						<a class="edit" url="__APP__/MisPerformanceType/edit/id/" title="考核等级分类" width="700" height="280" onclick="MisPerformanceTemplate_editNodes(this,'misperformancetemplate_rightcontent_tree','2');" href="javascript:;">
+							<span></span>
+						</a>
+					</li>
+					</if>
+				</ul>
+                 -->
+				<ul id="misperformancetemplate_rightcontent_tree" class="ztree" layoutH="10"></ul>
+			</div>
+		</div>
+		<div id="misperformancetemplate_rightcontent1" class="unitBox treeright">
+			<include file="unitlist" />
+		</div>
+	</div>
+</div>

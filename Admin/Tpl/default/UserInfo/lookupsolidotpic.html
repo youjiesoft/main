@@ -1,0 +1,48 @@
+<script>
+	//上传图片JS
+	function solidotlist_picture_add(file, data, response) {
+			var $box = navTab.getCurrentPanel();
+			var s = data.split(TP_PUBLIC + "/Uploadstemp/");
+			$("#swf_upload_solidotlist_add_save_name").val(s[1]);
+			var upload_name = $("#swf_upload_solidotlist_add_save_name").val();
+			$.ajax({
+				type : "POST",
+				url : "__URL__/lookuploadimg",
+				data : {
+					'upload_name' : upload_name
+				},
+				success : function(re) {
+					 $("#solidotlist_picture_add").attr("src","__PUBLIC__/Uploads/"+re);
+					 $("input[name='picture']").val(re);
+				}
+			});
+	}
+</script>
+<div class="page">
+    <div class="pageContent">
+    <form method="post" action="__URL__/index/step/solidotpic_save/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+        <input type="hidden" name="id" value="{$ul.id}">
+        <div class="pageFormContent" layoutH="58" >
+        	<p class="employeePhoto" >
+				<img id="solidotlist_picture_add"
+					style="border: 2px solid #f1f1f1;  background-color:#468cda;  width: 293px; height: 293px;"
+					<if condition="!$vo['solidpath']">src="__PUBLIC__/Images/xyimages/xyheader_image.jpg"
+					<else/>src="__PUBLIC__/Uploads/{$vo['solidpath']}"
+					</if>
+					>  
+				<input name="swf_upload_solidotlist_add_name" id="swf_upload_solidotlist_add_save_name" value="{$vo['solidpath']}" type="hidden" />
+				<br />
+				 <input id="swfupload_solidotlist_add" onUploadSuccess="solidotlist_picture_add" type="file" auto="true" multi="false" type="file" uploader="true" fileSizeLimit="2000KB" fileTypeExts="*.jpg;*.jpeg;*.gif;*.png;"
+				fileTypeDesc="*.jpg;*.jpeg;*.gif;*.png;" name="solidotlist_add_file" formData="{ uploadpath:'SolidotList' }" />
+				<span style="color:red">*请上传293*293相片</span>
+			</p>
+        </div>
+        <div class="formBar">
+            <ul>
+                <li><button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button></li>
+                <li><button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button></li>
+            </ul>
+        </div>
+    </form>
+    </div>
+</div>

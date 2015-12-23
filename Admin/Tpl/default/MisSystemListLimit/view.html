@@ -1,0 +1,41 @@
+<div class="page">
+	<div class="pageContent">
+			<div class="pageFormContent" layoutH="48">
+				<div class="tml-row">
+					<div class="tml-form-col ">
+						<label>用户名:</label>
+							<input type="text"  readonly="readonly"  
+							 <if condition="$voList['tableid'] eq 0">value="除当前用户以外的其他用户"
+							 <elseif condition="$voList['tablename']  eq user"/>
+							value="{$voList['tableid']|getFieldBy='id','name','user'}" 
+							<elseif condition="$voList['tablename']  eq rolegroup"/>
+							value="{$voList['tableid']|getFieldBy='id','name','rolegroup'}" 
+							<else /> 
+							value="{$voList['tableid']|getFieldBy='id','name','mis_expert_list'}" 
+							</if> />
+					</div>
+					<div class="tml-form-col ">
+						<label>模块名:</label>
+							<input type="text"  readonly="readonly"   value="{$voList['ModelTitle']}"  />
+					</div>
+				</div>	
+				<div class="tml-row">
+					<div class="tml-form-col ">
+						<label>禁止字段:</label>
+						<textarea style="width:500px" rows="3" cols="100">{$voList['deny']}</textarea>
+					</div>
+				</div>	
+				<div class="tml-row">
+					<div class="tml-form-col ">
+						<label>允许字段:</label>
+						<textarea style="width:500px" rows="3" cols="100">{$voList['allow']}</textarea>
+					</div>
+				</div>	
+			</div>	
+			<div class="formBar">
+				<ul>
+					<li><button class="tml-btn close enterIndex" type="button">关闭</button></li>
+				</ul>
+			</div>
+	</div>
+</div>

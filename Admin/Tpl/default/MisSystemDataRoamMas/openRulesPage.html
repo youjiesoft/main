@@ -1,0 +1,215 @@
+<script>
+var rulespagebox = $.pdialog.getCurrent();
+//tr模板
+var temptr = $("#temptr tbody").clone();
+//新增行
+function  rulesadd(obj){
+	//序列号
+	var tr = $(obj).closest('table').find('tbody:first>tr:last');
+	var index = $(tr).attr('index');
+	index = parseInt(index, 10)+1;
+	var temp = temptr;
+	//以序列号作为第一个下标
+	temp.find("tr").attr("index",index);
+	temp.find("tr").find('td').eq(0).find("input").attr("name","sourcetype["+index+"][]");
+	//temp.find("tr").find('td').eq(1).find("input").attr("name","targettype["+index+"]");
+	temp.find("tr").find("select[name^='targettype']").attr("name","targettype["+index+"]");
+	//替换order为随机
+	var num = eval("/"+temp.find("input[name='order']").val()+"/g");//temp.find("input[name='order']").val();
+	var replace = "reccls"+Math.floor(Math.random()*100000+1);	
+	temp.find(".nbm_bind_add").attr("index",index);
+	var html = temp.html();
+	html = html.replace(num,replace);
+	//alert(typeof(html));
+	tr.after(html);
+	$(obj).closest('table').find('tbody:first>tr:last').find("select").select2();
+}
+//删除行
+function  rulesdel(obj){
+	var tr = $(obj).closest('tr').remove();
+}
+
+//他来源动作shi生成单据时 其他来源动作不可选
+function check4(obj){
+	var inp = $(obj).closest("td").find("input[type='checkbox']").not(obj);
+	if($(obj).attr("checked")){
+		$(obj).closest("td").find("input[type='checkbox']").not(obj).attr("checked",false);
+		$(obj).closest("td").find("input[type='checkbox']").not(obj).attr("disabled","disabled");
+	}else{
+		$(obj).closest("td").find("input[type='checkbox']").not(obj).attr("disabled",false);
+	}
+}
+//保存数据
+function addresultinfo($form){
+	//防止添加了规则条件没选择来源动作而丢失数据，强制要求来源动作必选
+	var k = 0;
+	var b = 0;
+	$("tr:gt(1)",$form).each(function(i){
+		var $checknum = $(this).find("td").find("input[type=checkbox]:checked").size();
+		if($checknum<1){
+			k=i+1;
+			b=1;
+		} 
+	});
+	if(b==1){
+		alertMsg.error('第'+k+'行请选择来源动作！如果不需要，请删除该行！');
+		return false;	
+	}
+	//如果有配置显示查看按钮，没配置则查看按钮隐藏
+	return validateCallback($form, function(json){
+		DWZ.ajaxDone(json);
+		var navtab = navTab.getCurrentPanel();
+ 		if(json.statusCode==DWZ.statusCode.ok){
+ 			$("div",navtab).find("input[name='rulespageinfo']").val(json.data);
+ 			if(json.data!="[]"&&json.data){
+ 				$("div",navtab).find("button.rulespage").show();
+ 			}else{
+ 				$("div",navtab).find("button.rulespage").hide();
+ 			}
+ 			
+ 
+ 		}
+ 		$.pdialog.closeCurrent(); 
+	})
+}
+
+</script>
+<div class="pageContent" id="openRulesPage">
+<table id="temptr" style="display:none;">
+	<tbody>
+	<tr index=''>
+		<td>
+			<input type="checkbox" value="1" name="sourcetype[0][]">新增
+			<input type="checkbox" value="2" name="sourcetype[0][]">修改
+			<input type="checkbox" value="3" name="sourcetype[0][]">删除
+			<input type="checkbox" value="5" name="sourcetype[0][]">变更
+			<input type="checkbox" value="4" name="sourcetype[0][]"onclick="check4(this);">生成单据
+		</td>
+		<td>
+		 <div class="list_group_lay">
+			<select name="targettype[0]" class="list_select2">
+				<option value="1">新增</option>
+				<option value="2">修改</option>
+				<option value="3">删除</option>
+				<option value="4">生成单据</option>
+			</select>
+		<!-- 	<input type="radio" value="1" name="targettype[0]">新增
+			<input type="radio" value="2" name="targettype[0]">修改
+			<input type="radio" value="3" name="targettype[0]">删除
+			<input type="radio" value="4" name="targettype[0]">生成单据 -->
+		</div>
+		</td>
+		<td>
+			 {:W('ShowAddResult', array('model'=>$modelname,'multitype'=>'multi','data'=>$MisAutoBindSettableVo))}
+		</td>
+		<td>
+			<a class="nbm_bind_add" href="javascript:void(0);" onclick="rulesadd(this)" index="">添加</a>
+			<a class="nbm_bind_del" href="javascript:void(0);" onclick="rulesdel(this)">移除</a>
+		</td>
+	</tr>
+	</tbody>
+</table>
+<form method="post" action="__URL__/roamrules" class="pageForm required-validate" onsubmit="return addresultinfo(this)">
+<div class="new_version_page_content nqq_dataTable_style">
+		<div class="into_table_lay nbm_noborder" layoutH="80">
+			<table
+				class="into_table_new combination_list nbm_data_table"
+				table_data='{"searching":false,"paging":false}'>
+				<thead>
+					<tr>
+						<th style="min-width: 160px; max-width: 200px;" class="model_name_lay_left">来源动作</th>
+						<th style="min-width: 110px; max-width: 200px;" class="model_name_lay_left">目标动作</th>
+						<th style="min-width: 100px; max-width: 200px;" class="model_name_lay_left">规则条件</th>
+						<th style="min-width: 100px; max-width: 200px;" class="model_name_lay_left">操作</th>
+					</tr>
+					</thead>
+					<tbody class="maintbody">
+						<if condition="$rulespageinfo">
+							<volist name="rulespageinfo"  id="vr" key="k">
+							<tr index="{$k}">
+								<td>
+									<input type="checkbox" value="1" name="sourcetype[{$k}][]" <if condition="in_array('1',$vr['sourcetype'])">checked</if>>新增
+									<input type="checkbox" value="2" name="sourcetype[{$k}][]" <if condition="in_array('2',$vr['sourcetype'])">checked</if>>修改
+									<input type="checkbox" value="3" name="sourcetype[{$k}][]" <if condition="in_array('3',$vr['sourcetype'])">checked</if>>删除
+									<input type="checkbox" value="5" name="sourcetype[{$k}][]" <if condition="in_array('5',$vr['sourcetype'])">checked</if>>变更
+									<input type="checkbox" value="4" name="sourcetype[{$k}][]"onclick="check4(this);" <if condition="in_array('4',$vr['sourcetype'])">checked</if>>生成单据
+								</td>
+								<td>
+                                    <div class="list_group_lay">
+                                        <select name="targettype[{$k}]" class="select2 list_select2">
+                                            <option value="1"  <if condition="1 eq $vr['targettype']">selected</if>>新增</option>
+                                            <option value="2" <if condition="2 eq $vr['targettype']">selected</if>>修改</option>
+                                            <option value="3" <if condition="3 eq $vr['targettype']">selected</if>>删除</option>
+                                            <option value="4" <if condition="4 eq $vr['targettype']">selected</if>>生成单据</option>
+                                        </select>
+                                    </div>
+								<!-- <input type="radio" value="1" name="targettype[{$k}]"  <if condition="1 eq $vr['targettype']">checked</if>>新增
+								<input type="radio" value="2" name="targettype[{$k}]" <if condition="2 eq $vr['targettype']">checked</if>>修改
+								<input type="radio" value="3" name="targettype[{$k}]" <if condition="3 eq $vr['targettype']">checked</if>>删除
+								<input type="radio" value="4" name="targettype[{$k}]"  <if condition="4 eq $vr['targettype']">checked</if>>生成单据 -->
+									
+								</td>
+								<td>
+								<if condition="$inlinetable">
+									 {:W('ShowAddResult', array('model'=>$modelname,'multitype'=>'multi','inlinetable'=>$inlinetable,'data'=>$vr))}
+								<else/>
+									 {:W('ShowAddResult', array('model'=>$modelname,'multitype'=>'multi','data'=>$vr))}
+								</if>
+									
+								</td>
+								<td>
+									<a class="nbm_bind_add" href="javascript:void(0);"  onclick="rulesadd(this)" index="{$k}">添加</a>
+									<a class="nbm_bind_del" href="javascript:void(0);" onclick="rulesdel(this)">移除</a>
+								</td>
+							</tr>
+							</volist>
+						<else/>
+						<tr index="1">
+							<td>
+								<input type="checkbox" value="1" name="sourcetype[1][]">新增
+								<input type="checkbox" value="2" name="sourcetype[1][]">修改
+								<input type="checkbox" value="3" name="sourcetype[1][]">删除
+								<input type="checkbox" value="5" name="sourcetype[1][]">变更
+								<input type="checkbox" value="4" name="sourcetype[1][]"onclick="check4(this);">生成单据
+							</td>
+							<td>
+							<div class="list_group_lay">
+							<select name="targettype[0]" class="select2 list_select2">
+								<option value="1">新增</option>
+								<option value="2">修改</option>
+								<option value="3">删除</option>
+								<option value="4">生成单据</option>
+							</select>
+							<!-- <input type="radio" value="1" name="targettype[1]">新增
+							<input type="radio" value="2" name="targettype[1]">修改
+							<input type="radio" value="3" name="targettype[1]">删除
+							<input type="radio" value="4" name="targettype[1]" >生成单据 -->
+							</div>	
+							</td>
+							<td>
+								<if condition="$inlinetable">
+									 {:W('ShowAddResult', array('model'=>$modelname,'multitype'=>'multi','inlinetable'=>$inlinetable,'data'=>$MisAutoBindSettableVo))}
+								<else/>
+									 {:W('ShowAddResult', array('model'=>$modelname,'multitype'=>'multi','data'=>$MisAutoBindSettableVo))}
+								</if>
+									
+								 
+							</td>
+							<td>
+								<a class="nbm_bind_add" href="javascript:void(0);"  onclick="rulesadd(this)" index="1">添加</a>
+								<a class="nbm_bind_del" href="javascript:void(0);" onclick="rulesdel(this)">移除</a>
+							</td>
+						</tr>
+						</if>
+					</tbody>
+				</table>
+			</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue enterIndex">确定</button></li>
+			</ul>
+		</div>
+</div>
+</form>
+</div>
+

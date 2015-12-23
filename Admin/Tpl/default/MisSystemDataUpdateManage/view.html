@@ -1,0 +1,60 @@
+<div class="page">
+	<div class="pageContent">
+			<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME">layoutH="40"</if>>
+				<div class="new_version_page ">
+		<form id="MisAutoAux_view"  method="post" action="__APP__/MisAutoAux/updateControll/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)"><a class='xyz_anchornavi_top' name='MisAutoAux_view_top'></a>
+			<input type="hidden" name="callbackType" value="closeCurrent"/>
+					<if condition="$_GET['viewtype'] neq 'view'">
+					<div class="new_version_page_header pageFormContent "><span class="left tml-ml20 ">修改详情</span></div>
+					</if>
+					<div class="new_version_page_content">
+						<div class="tml-row">
+							<div class="tml-form-col">
+								<label>模型名：</label>
+								<input type="text" value="{$vo['modelnameChina']}">
+							</div>
+							<div class="tml-form-col">
+								<label>表名：</label>
+								<input type="text" value="{$vo['tablenameChina']}">
+							</div>
+							<div class="tml-form-col">
+								<label>表类型：</label>
+								<input type="text" value="{$tabletypec[$vo[tabletype]]}">
+							</div>
+							<div class="tml-form-col">
+								<label>主表id：</label>
+								<input type="text" value="{$vo['tabledataid']}">
+							</div>
+						</div>
+										
+						
+						<table class="table" width="100%" layoutH="280">
+							<thead>
+								<tr>
+								
+								<if condition="$vo['tabletype'] eq 2">	<th>表id</th> </if>
+									<th>修改字段</th>
+									<th>原数据</th>
+									<th>修改数据</th>
+								</tr>
+							</thead>	
+							<tbody>
+								<volist name="vo['beforeupdata']" id="vb" >
+									<php>$k = $key;</php>
+									<volist name="vb" id="v" key="k1">
+									<tr>
+										<if condition="$vo['tabletype'] eq 2 and $k1 eq 1" >  <php>$count = count(vb); </php> <td rowspan="{$count}">{$k}</td> </if>
+										<td>{$v.fieldnameChina}</td>
+										<td>{$v.data}</td>
+										<td>{$vo['afterupdata'][$k][$key]['data']}</td>
+									</tr>
+									</volist>
+								</volist>
+							</tbody>
+						</table>
+					</div>
+		</form>
+				</div>
+			</div>
+	</div>
+</div>

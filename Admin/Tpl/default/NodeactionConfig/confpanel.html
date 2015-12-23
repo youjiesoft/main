@@ -1,0 +1,51 @@
+<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone)">
+	<input type="hidden" name="type" value="{$check}" >
+	<input type="hidden" name="jump" value="1">
+	<div class="panelBar"></div>
+	<div class="TablePress">
+		<table class="table" layoutH="107" width="100%" >
+			<thead>
+				<tr>
+					<th>操作名称</th>
+					<th>方法名称</th>
+					<th>选中加入节点</th>
+				</tr>
+			</thead>
+			<tbody>
+				<volist id="vo" name="list">
+					<tr>
+						<td>
+							<div class="unit">
+							<label>{$vo[0]}</label>
+							<input type="hidden" name="namearr[{$key}]" value="{$vo[0]}">
+							</div>
+						</td>
+						<td>
+							<div class="unit">
+								<input type="text" name="titlearr[{$key}]" value="{$vo[1]}">
+							</div>
+						</td>
+						<td>
+							<div class="unit">
+							<!-- <input type="text" name="titlearr" value=""> -->
+								<input type="checkbox" name="selectedarr[{$key}]" <if condition='$vo[1]'>checked="checked"</if>>
+							</div>
+						</td>
+					</tr>
+				</volist>
+			</tbody>
+		</table>
+	</div>
+	<div class="formBar">
+		<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.nodeactionconfig_insert">
+				<li>
+					<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+				</li>
+			</if>
+			<li>
+				<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+			</li>
+		</ul>
+	</div>
+</form>

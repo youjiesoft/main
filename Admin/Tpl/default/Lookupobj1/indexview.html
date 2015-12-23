@@ -1,0 +1,48 @@
+<form id="pagerForm" action="__URL__/index" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+	<input type="hidden" name="jump" value="1">
+	<input type="hidden" name="{$searchname}" value="{$search}"/>
+</form>
+<div class="pageContent">
+	<div class="panelBar">
+		<ul class="toolBar">
+			 <li><a class="add js-add tml-btn tml_look_btn tml_mp" href="__URL__/add/modelname/{$model}" target="ajax" rel="LookupobjBox"><span><span class="icon icon-plus icon_lrp"></span>新增</span></a></li>
+		   <li><a class="edit js-edit tml-btn tml_look_btn tml_mp" href="__URL__/add/id/{sid_node}/modelname/{$model}/type/edit" rel="LookupobjBox" target="ajax"><span><span class="icon icon-edit icon_lrp"></span>编辑</span></a></li>
+		</ul>
+        <form rel="pagerForm" onsubmit="return divSearch(this,'LookupobjBox');" action="__URL__/index" method="post">
+        <input type="hidden" name="jump" value="1">
+        <input type="hidden" name="model" value="{$model}"/>
+        <div class="searchBar">
+            <table class="searchContent">
+                <tr>
+                    <include file="Public:quickSearchCondition" />
+                    <if condition="$_SESSION.a eq 1 or $_SESSION.mishrpersonnelindustrialinjuryinfo_exportbysearchhtml ">
+                    <td><button class="xyOutput" type="button" onclick="exportBysearch(this.form,'__URL__/index','__URL__/exportBysearchHtml');">导出</button></td>
+                    </if>
+                </tr>
+            </table>
+        </div>
+    </form>
+	</div>
+	<table    class="table" width="100%" layoutH="146">
+		<thead ename="{$ename}">
+			<tr>
+				<th width='24'>序号</th>
+				<volist id="vo" name="detailList">
+					<if condition="$vo[shows] eq 1"><th <if condition="$vo[widths]">width="{$vo[widths]}"</if><if condition="$vo[sorts]">rel="LookupobjBox" orderField="{$vo[sortname]}" class="{$sort}"</if>>{$vo[showname]}</th></if>	<!--类型-->
+				</volist>
+			</tr>
+		</thead>
+		<tbody>
+			<include file="dwzloadindex" />
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" rel="LookupobjBox" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

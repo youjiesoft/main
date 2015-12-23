@@ -1,0 +1,38 @@
+<form method="post" action="__URL__/lookupMessage/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+	<input type="hidden" name="step" value="1"/>
+	<input type="hidden" name="id" value="{$id}"/>
+	<div class="TablePress" style="border-left: 1px #B8D0D6 solid; border-right: 1px #B8D0D6 solid">
+		<table class="list" width="100%" layoutH="160">
+			<thead>
+				<tr>
+					<th>员工姓名</th>
+					<th>部门</th>
+					<th>职级</th>
+					<th>选择</th>
+				</tr>
+			</thead>
+			<tbody>
+				<volist id="vo" name="list" key="key">
+					<tr>
+						<td>{$vo['name']}-{$vo['mobile']}</td>
+						<td>{$vo['dept_id']|getFieldBy='id','name','mis_system_department'}</td>
+						<td>{$vo['duty_id']|getFieldBy='id','name','duty'}</td>
+						<td><INPUT type="radio" name="userid" value="{$vo.id}" <if condition="$key eq 1">checked="checked"</if> /></td>
+					</tr>
+				</volist>
+			</tbody>
+		</table>
+		<div layoutH="140">
+			<fieldset style="background-color:white;margin:5px;padding:5px;color:#666666;border:1px solid #999;">
+				<legend>短信息预览</legend>
+				<p style="line-height:18px;">{$messageContent}<br /><br /></p>
+			</fieldset>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">发送</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</div>
+</form>

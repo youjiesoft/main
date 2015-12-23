@@ -1,0 +1,46 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$typeTree};
+	var setting = {
+		view: {
+              selectedMulti: false,
+              fontCss: getFontCss
+		},
+		data: {
+			simpleData: {
+				enable: true
+			}
+		}
+	};
+	$.fn.zTree.init($("#nodeactionconfig_ztree"), setting, zNodes);
+	var treeObj = $.fn.zTree.getZTreeObj("nodeactionconfig_ztree");
+	var valid='{$check}';
+	var nodes = treeObj.getNodesByParam("id", valid, null);
+	treeObj.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+	<div class="work_statement"></div>
+		<div class="collapse" layoutH="0">
+			<div class="toggleCollapse">
+				<div></div>
+			</div>
+		</div>
+		<div class="close">
+			<div class="toggleCollapse">
+				<h2></h2>
+				<div></div>
+			</div>
+			<div class="clearfix p5">
+				<input style="float: left; margin: 2px 12px 0 0; width: 100px;" type="text" id="nodeactionconfigNodeKeys" />
+				<button class="tml-btn tml-btn-primary" onclick="SearchZTreeNode('nodeactionconfig_ztree','nodeactionconfigNodeKeys')" type="button">搜索</button>
+			</div>
+			<ul id="nodeactionconfig_ztree" class="ztree" layoutH="44"></ul>
+		</div>
+	</div>
+	<div id="nodeactionconfig" class="unitBox treeright">
+		<include file="confpanel" />
+	</div>
+</div>

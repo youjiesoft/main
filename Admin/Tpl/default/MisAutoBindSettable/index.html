@@ -1,0 +1,42 @@
+<script>
+$(document).ready(function(){
+	var zNodes = {$typeTree};    //控制器中，分配数据
+	var setting = {
+			view: {
+               selectedMulti: false,
+               fontCss: getFontCss
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+	$.fn.zTree.init($("#misautobindsettabletree"), setting, zNodes);
+	var zTree = $.fn.zTree.getZTreeObj("misautobindsettabletree");
+	var valid = '{$formid}';
+    var nodes = zTree.getNodesByParam("id", valid, null);
+    zTree.selectNode(nodes[0]);
+});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+	<div class="treeleft">
+		<div class="collapse" layoutH="28">
+			<div class="toggleCollapse"><div></div></div>
+		</div>
+		<div class="close">
+		   <div class="toggleCollapse"><h2></h2><div></div></div>
+			<div class="clearfix p5">
+				<div class="member_searcher">
+					<input class="add_key left" id="MisAutoBindSettableSearchNodeKeys"  type="text" placeholder="请输入查找词" name=""/>
+					<button class="btn_member icon-search right" onclick="SearchZTreeNode('misautobindsettabletree','MisAutoBindSettableSearchNodeKeys')" type="button"></button>
+				</div>
+			</div>
+			<ul id="misautobindsettabletree" class="ztree" layoutH="104"></ul>
+		</div>
+	</div>
+	<div id="MisAutoBindSetview" class="unitBox treeright">
+		<include file="indexview"  />
+	</div>
+</div>

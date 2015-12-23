@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>WEB打印控件LODOP的样例二十七:导出数据到Excel文件</title>
+
+<script language="javascript" src="LodopFuncs.js"></script>
+<object id="LODOP_OB" classid="clsid:2105C259-1E0C-4534-8141-A753534CB4CA" width=0 height=0> 
+	<embed id="LODOP_EM" TYPE="application/x-print-lodop" width=0 height=0 PLUGINSPAGE="install_lodop.exe"></embed>
+</object> 
+</head>
+<body>
+
+<h2><font color="#009999">演示导出数据到Excel文件：</font></h2>
+<p>如果超文本对象中有表格(table元素)数据,可用如下函数导出Excel文件：</p>  
+<p><font color="#0000FF">SAVE_TO_FILE(strFileName);<br>
+SET_SAVE_MODE(varModeName,varModeValue);</font><br>
+
+<br>
+参数说明：<br>
+<font color="#0000FF">strFileName</font>:要保存的文件名。<br>
+<font color="#0000FF">varModeName</font>:保存模式，有“FILE_PROMPT”“PAGE_TYPE”等可以设置。<br>
+<font color="#0000FF">varModeValue</font>:模式值，其中“PAGE_TYPE”的模式值是数字，其意义如下：<br>
+0-不分页；&nbsp;&nbsp;<br>
+1-保存到同一个Sheet中，但会加入分页符（PageBreak）；<br>
+2-分页到不同Sheet中；<h3><font color="#009999">演示：</font></h3>
+<p>
+一、弹出对话框把如下表格数据<a href="javascript:SaveAsFile();">另存为</a>Excel件。  
+
+<p>二、直接<a href="javascript:OutToFileOneSheet();">导出数据</a>到文件:<input type="text" id="T1" size="15" value="C:\Test.xls"></p>
+
+<p>三、<a href="javascript:OutToFileMoreSheet();">导出数据</a>到Excel文件时每页保存到不同Sheet中,并设置页眉页脚等,<br>
+同时返回所保存的目标文件名称为：<input type="text" id="T2" size="45" value="">
+</p>
+
+<div id='div1'>
+<table border=1 width="571" height="281">
+
+<thead>
+<tr><th width="146" bgcolor="#C0C0C0" height="16"><font color="#0000FF">作者</font></th>
+<th width="220" bgcolor="#C0C0C0" colspan="2" height="16"><font color="#0000FF">歌曲题目</font></th>
+<th width="71" bgcolor="#C0C0C0" height="16"><font color="#0000FF">国籍</font></th>
+<th width="98" bgcolor="#C0C0C0" height="16"><font color="#0000FF">日期</font></th></tr>
+</thead>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST><input value="Input Dylan"></span></td>                 
+<td width="143" height="16"><span dataFld=TITLE>Empire Burlesque</span></td>
+<td width="71" height="54" rowspan="3"><span dataFld=COUNtrY>Pop</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>USA</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1950-?-?</span></td>
+</tr>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST>Bonnie Tyler</span></td>
+<td width="143" height="16"><span dataFld=TITLE>Hide your heart</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>UK</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1968-?-?</span></td>
+</tr>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST>Dolly Parton</span></td> 
+<td width="143" height="16"><span dataFld=TITLE>Greatest Hits</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>USA</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1968-04-27</span></td>
+</tr>
+
+<tr>
+<td width="146" rowspan="3" height="60"><span dataFld=ARTIST>
+<textarea rows="2" cols="20">TextArea_Content</textarea><br>Gary Moore</span></td> 
+<td width="143" height="16"><span dataFld=TITLE>Still got the <br>blues</span></td>
+<td width="71" rowspan="4" height="92">Classic</td>
+<td width="71" height="16"><span dataFld=COUNtrY>UK</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1968-12-10</span></td>
+</tr>
+
+<tr>
+<td width="143" height="16"><span dataFld=TITLE>Eros</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>UK</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1980-09-13</span></td>
+</tr>
+
+<tr>
+<td width="143" height="16"><span dataFld=TITLE>One night only</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>UK</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1983-12-05</span></td>
+</tr>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST>Dr.Hook</span></td>
+<td width="143" height="16"><span dataFld=TITLE>Sylvias Mother</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>UK</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1983-06-01</span></td>
+</tr>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST>Rod Stewart</span></td>
+<td width="220" colspan="2" height="32" rowspan="2"><span dataFld=TITLE>
+<img border="0" src="http://s1.sinaimg.cn/middle/4fe4ba17hb5afe2caa990&690" width=150 height=40 />
+</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>UK</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>1997-10-12</span></td>
+</tr>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST>Andrea Bocelli</span></td>
+<td width="71" rowspan="2" height="11"><span dataFld=COUNtrY>EU</span></td>
+<td width="98" rowspan="2" height="11"><span dataFld=COUNtrY>2001-05-08</span></td>
+</tr>
+
+<tr>
+<td width="366" colspan="3" height="1">
+  <p align="center">370104196802231516</td>
+</tr>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST>Percy Sledge</span></td>
+<td width="220" colspan="2" height="16"><span dataFld=TITLE>When a man loves a woman</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>USA</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>2005-08-01</span></td>
+</tr>
+
+<tr>
+<td width="146" height="16"><span dataFld=ARTIST>Savage Rose</span></td>
+<td width="220" colspan="2" height="16"><span dataFld=TITLE>Black angel</span></td>
+<td width="71" height="16"><span dataFld=COUNtrY>EU</span></td>
+<td width="98" height="16"><span dataFld=COUNtrY>2004-12-19</span></td>
+</tr>
+
+<tfoot>
+<tr>
+<th width="146" bgcolor="#C0C0C0" height="16"><font color="#008080">歌曲作者</font></th>
+<th bgcolor="#C0C0C0" width="220" colspan="2" height="16"><font color="#008080">曲目名称</font></th>
+<th bgcolor="#C0C0C0" width="183" height="16" colspan="2"><font color="#008080">作者国籍</font></th>
+</tr>
+</tfoot>
+
+</table>
+</div>
+<p><a href="PrintSampIndex.html">&lt;&lt;回样例目录</a></p>
+
+<script language="javascript" type="text/javascript"> 
+	var LODOP; //声明为全局变量  
+	function SaveAsFile(){
+		LODOP=getLodop(document.getElementById('LODOP_OB'),document.getElementById('LODOP_EM'));  
+		LODOP.PRINT_INIT("");
+		LODOP.ADD_PRINT_TABLE(100,20,500,80,document.documentElement.innerHTML);
+//		LODOP.SET_SAVE_MODE("QUICK_SAVE",true);//快速生成（无表格样式,数据量较大时或许用到）
+		LODOP.SAVE_TO_FILE("新文件名.xls");
+	};	
+	function OutToFileOneSheet(){
+		LODOP=getLodop(document.getElementById('LODOP_OB'),document.getElementById('LODOP_EM'));  
+		LODOP.PRINT_INIT("");
+		LODOP.ADD_PRINT_TABLE(100,20,500,60,document.getElementById("div1").innerHTML);
+		LODOP.SET_SAVE_MODE("FILE_PROMPT",false);
+		if (LODOP.SAVE_TO_FILE(document.getElementById("T1").value)) alert("导出成功！");		
+	};
+	function OutToFileMoreSheet(){
+		LODOP=getLodop(document.getElementById('LODOP_OB'),document.getElementById('LODOP_EM'));  
+		LODOP.PRINT_INIT("");
+		LODOP.ADD_PRINT_TABLE(100,20,500,60,document.documentElement.innerHTML);
+		LODOP.SET_SAVE_MODE("PAGE_TYPE",2);
+		LODOP.SET_SAVE_MODE("CenterHeader","页眉");
+		LODOP.SET_SAVE_MODE("CenterFooter","第&P页");
+		LODOP.SET_SAVE_MODE("Caption","我的标题栏");					
+		LODOP.SET_SAVE_MODE("RETURN_FILE_NAME",1);
+		document.getElementById("T2").value=LODOP.SAVE_TO_FILE("多个Sheet的文件.xls");		
+	};					
+</script>
+
+</body>

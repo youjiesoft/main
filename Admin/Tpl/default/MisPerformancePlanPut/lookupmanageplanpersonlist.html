@@ -1,0 +1,46 @@
+<form id="pagerForm" action="__URL__/lookupmanageplanperson/jump/1/setscoretype/{$setscoretype}/planid/{$planid}" method="post">
+	<input type="hidden" name="pageNum" value="1" />
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<form rel="pagerForm" onsubmit="return divSearch(this, 'misperformanceplanput_dept');" action="__URL__/lookupmanageplanperson/jump/1/setscoretype/{$setscoretype}/planid/{$planid}" method="post">
+	</form>
+<div style="overflow:hidden;">
+	   <div class="panelBar">
+			<ul class="toolBar">
+				 <li><a class="add tml-btn tml_look_btn tml_mp" <if condition="!$setscoretype"> href="javascript:;" <else/>  href="__URL__/lookupmanageplan/setscoretype/{$setscoretype}/planid/{$planid}/type/1" target="dialog"  rel="__MODULE__setScore" mask="true" width="800" height="520"  title="选择评分人" </if> ><span><span class="icon icon-hand-right icon_lrp"></span>选择评分人</span></a></li> 
+					<li>{$toolb['html']}</li>
+			</ul>
+		</div>
+		<table class="list" width="100%">
+			<thead>
+				<tr>
+					<th width="70">员工编号</th>
+					<th width="90">员工姓名</th>
+					<th width="110">部门</th>
+					<th width="90">职级</th>
+					<th>职务</th>
+					<!-- <th>操作</th> -->
+				</tr>
+			</thead>
+		</table>
+		<table class="list" width="100%" layoutH="56">
+			<tbody id="pppbyusers">
+				<volist id="byuser" name="inusersList">
+				<tr>
+					<td style="width: 70px;">
+						<input type="hidden" name="byusers[]" value="{$byuser['id']}" />
+						{$byuser['orderno']}
+					</td>
+					<td style="width: 90px;">{$byuser['name']}</td>
+					<td style="width: 110px;">{$byuser['deptname']}</td>
+					<td style="width: 90px;">{$byuser['dutyname']}</td>
+					<td>{$vo['worktype']|getFieldBy='id','name','mis_hr_job_info'}</td>
+					<!--<td>
+						<a href="javascript:;" onclick="dellookputusers(this,{$byuser['id']},'lookbyusers');" title="删除" class="btnDel">x</a>
+					</td>  -->
+				</tr>
+				</volist>
+			</tbody>
+		</table>
+</div>

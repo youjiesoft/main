@@ -1,0 +1,56 @@
+<if condition="$groupid">
+	<li class="xypart">
+	    <input type="hidden" name="panelsort[]" value="{$sort}">
+	    <div class="part_title">
+	        <h3 class="{$color}"><a class="more" target="_blank" href="{$website}"><span <if condition="$color &&  $color neq 'grd-white'">class="tml-c-white"</if> >更多</span></a><a class="expand <if condition="$color eq 'grd-white'">black</if>" href="#"></a><span class="expand">{$name}</span></h3>
+	    </div>
+	    <div class="part_content">
+	        <if condition="$noticelist">
+	            <div class="data">
+	                <ul>
+	                    <volist id="notice" name="noticelist">
+	                        <li><a class="clearfix" target="_blank" href="{$notice['url']}" title="{$notice['title']}"><span class="hellip">{$notice['title']}</span><em class="hellip">{$notice['date']}</em></a></li>
+	                    </volist>
+	                </ul>
+	            </div>
+	        <else/>
+	        <div class="noData">
+	            没有公司新闻
+	        </div>
+	        </if>
+	    </div>
+	    <div class="part_foot">
+	        <div class="part_footer"></div>
+	    </div>
+	</li>
+<else/>
+	<li>
+	    <div class="tml_new_lay com_news"></div>
+	    <div class="tml_ka_header"><span>公司新闻</span></div>
+	    <ul class="know_cell_warp">
+	       <volist name="noticelist" id="notice" >
+	
+	        <li><a target="_blank" href="{$notice['url']}" title="{$notice['title']}"><span>{$notice['title']}</span></a></li>
+	        </volist>
+	    </ul>
+	    <div class="letter_mb"><a class="tml_new_live_link" href="http://www.966580.com/?q=main_list" target="_blank" title='更多公司新闻'>更多公司新闻</a></div>
+	</li>
+
+
+</if>
+
+
+<!-- <li>
+    <div class="tml_new_lay com_news"></div>
+    <div class="tml_live_header"><a href="#"></a></div>
+    <div class="tml_live_content">
+        <p class="tml_par">重庆市四届人大常委会31日召开联组会议，就2013年市级财政决算工作进行专题询问。重庆市财政局、市发改委、市经信委等12部门相关负责人到会应询。</p>
+        <p class="tml_par">作为重庆市四届人大常委会首次对政府财政工作进行专题询问地方政府性债务、生态环境等问题备受重庆市四届人大常委关注……<a href="#">继续阅读»</a></p>
+    </div>
+    <a class="tml_new_live_link" href="http://epf.966580.com" target="_blank" title='更多公司新闻'>更多公司新闻</a>
+</li> -->
+
+
+
+
+

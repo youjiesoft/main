@@ -1,0 +1,39 @@
+<div class="pageContent" style="border-left:1px #B8D0D6 solid;border-right:1px #B8D0D6 solid">
+<form id="pagerForm" action="__URL__/edit/type/leaveemployee/id/{$id}" method="post">
+	<input type="hidden" name="pageNum" value="1"/>
+	<input type="hidden" name="orderField" value="{$order}" />
+	<input type="hidden" name="orderDirection" value="{$sort}" />
+</form>
+<div class="panelBar">
+	<form rel="pagerForm" action="__URL__/edit/type/leaveemployee/id/{$id}" onsubmit="return divSearch(this,'hrpmLeaveEmployee');" method="post">
+	</form>
+</div>
+	<table class="table" width="99%" layoutH="99">
+		<thead>
+		<tr>
+			<th width="30">序号</th>
+			<th>离职编号</th>
+			<th>离职时间</th>
+			<th>离职类别</th>
+			<th>离职原因</th>
+		</tr>
+		</thead>
+		<tbody>
+		<volist id="vo" name="list">
+			<tr>
+				<td>{$numPerPage*($currentPage-1)+$key+1}</td>
+				<td>{$vo.orderno}</td>
+				<td>{$vo.leavedate|transTime='Y-m-d'}</td>
+				<td>{$vo['leavetype']|excelTplselected=###,'1:正式自离,2:试用自离,3:代办正式,4:代办试用'}</td>
+				<td>{$vo['leavereason']}</td>
+			</tr>
+		</volist>
+		</tbody>
+	</table>
+	<div class="panelBar panelPageBar">
+		<div class="pages">
+			<span>共{$totalCount}条</span>
+		</div>
+		<div class="pagination" targetType="dialog" rel="hrpmLeaveEmployee" totalCount="{$totalCount}" numPerPage="{$numPerPage}" pageNumShown="10" currentPage="{$currentPage}"></div>
+	</div>
+</div>

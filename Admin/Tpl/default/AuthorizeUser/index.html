@@ -1,0 +1,39 @@
+<script>
+	$(document).ready(function(){
+		var zNodes = {$typeTree};
+		var setting = {
+				view: {
+	               selectedMulti: false,
+	               fontCss: getFontCss
+	           },
+				data: {
+					simpleData: {
+						enable: true
+					}
+				}
+			};
+		$.fn.zTree.init($("#lookupAuthorizeUser"), setting, zNodes);
+	});
+</script>
+<div class="pageContent">
+{:W("ShowToLevelMenu")}
+    <div class="treeleft">
+    <div class="work_statement"></div>
+        <div class="collapse" layoutH="0">
+            <div class="toggleCollapse"><div></div></div>
+        </div>
+        <div class="close">
+            <div class="toggleCollapse" ><h2></h2><div></div></div>
+            <div class="clearfix p5">
+            	<div class="xysearcher">
+	                <input class="tree-search-input" type="text" id="AuthorizeUserSearchNodeKeys" />
+	                <input class="searchBtn" type="button" onclick="SearchZTreeNode('lookupAuthorizeUser','AuthorizeUserSearchNodeKeys')">
+                </div>
+            </div>
+            <ul id="lookupAuthorizeUser" class="ztree" layoutH="43"></ul>
+        </div>
+    </div>
+     <div id="AuthorizeUserjbsxBox" class="unitBox treeright">
+        <include file="indexview" />
+    </div>
+</div>

@@ -1,0 +1,46 @@
+<if condition="!empty($_GET['appId']) and !empty($_GET['moduleId']) and !empty($_GET['mianbanId'])" >
+	<include file="./Tpl/default/Role/actionfrag/myaction.html" />
+
+<elseif condition="!empty($_GET['appId']) and !empty($_GET['mianbanId']) " />
+	<include file="./Tpl/default/Role/actionfrag/myaction2.html" />
+
+<elseif condition="!empty($_GET['appId'])" />
+	<include file="./Tpl/default/Role/actionfrag/myaction3.html" />
+
+<else />
+<script>
+function dialoguncloseaction(json){
+	DWZ.ajaxDone(json);
+	var appId = $(":input[name=appId]").val();
+	var mianbanId = $(":input[name=mianbanId]").val();
+	var moduleId = $(":input[name=moduleId]").val();
+	var url = "__URL__/myaction/groupId/{$selectGroupId}/appId/"+appId+"/mianbanId/"+mianbanId+"/moduleId/"+moduleId;
+	$("#myactionthreeSelectBox", $.pdialog.getCurrent()).loadUrl(url);
+}
+</script>
+	<form id="setMyactionAction" method="post" action="__URL__/setMyaction" class="pageForm required-validate" onsubmit="return validateCallback(this, dialoguncloseaction)">
+		<input type="hidden" name="groupId" VALUE="{$Think.get.groupId}" />
+		<div class="pageFormContent" layoutH="100" layoutType="dialog">
+			<div class="unit">
+				<label>{$Think.lang.app}：</label>
+				<select name="appId" onchange="selectMianban_app('#setMyactionAction')">
+					<option value="">{$Think.lang.select}</option>
+					<volist id="item" name="appList">
+					<option value="{$key}" <?php echo in_array($key, $selectAppId) ? "selected" : "" ?>>{$item}</option>
+					</volist>
+				</select>
+			</div>
+			<div id="myactionSelectBox">
+				<include file="./Tpl/default/Role/actionfrag/myaction3.html" />
+			</div>
+		</div>
+		<div class="formBar">
+			<label style="float:left"><input type="checkbox" class="checkboxCtrl" group="groupActionId[]" />{$Think.lang.all_select}</label>
+			<ul>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="checkboxCtrl" group="groupActionId[]" selectType="invert">{$Think.lang.anti_select}</button></div></div></li>
+				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" onclick="$.pdialog.closeCurrent()">{$Think.lang.close}</button></div></div></li>
+			</ul>
+		</div>
+	</form>
+</if>

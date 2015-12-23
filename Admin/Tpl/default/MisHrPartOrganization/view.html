@@ -1,0 +1,105 @@
+
+<include file="Public:pagerForm" />
+<div class="page">
+	<div class="pageContent">
+		<form method="post" action="__URL__/update/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+			<input type="hidden" name="orderno" <if condition="$writable eq 0"> readonly="readonly" </if>  value="{$vo['orderno']}">
+			<input type="hidden" name="id" value="{$vo['id']}" />
+			<input type="hidden" name="callbackType" value="closeCurrent">
+			<div class="pageFormContent applecloth" layoutH="56">
+				<div class="keepContentCenter">
+					<H2 class="contentTitle contentTitle_center">党员信息</H2>
+					<fieldset>
+						<p>
+							<label>{$fields["employe_id"]}:</label>
+                            <input type="text" class="org.current_name required" size="15" name="current_name" value="{$vo['employe_id']|getFieldBy='id','name','mis_hr_personnel_person_info'}" readonly="readonly" />
+							<input type="hidden" class="org.mangid" name="employe_id" value="{$vo['employe_id']}" />
+							<a class="input-addon input-addon-addon input-addon-add" href="__URL__/lookupmanage" lookupGroup="org">党员选择</a> <span class="info"></span>
+						</p>
+						<p>
+							<label>{$fields["work_time"]}:</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="date" readonly="readonly" name="work_time" value="{$vo['work_time']|transTime}" />
+								<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+							</span>
+						</p>
+						<p>
+							<label>{$fields["apply_time"]}:</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="date" readonly="readonly" name="apply_time" value="{$vo['apply_time']|transTime}" />
+								<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+							</span>
+						</p>
+						<p>
+							<label>{$fields["approve_time"]}:</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="date" readonly="readonly" name="approve_time" value="{$vo['approve_time']|transTime}" />
+								<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+							</span>
+						</p>
+						<p>
+							<label>{$fields["organization_ship"]}:</label>
+							<select name="organization_ship"  class="combox ">
+								<option <if condition="$vo['organization_ship'] eq 2">selected</if> value="2">预备</option>
+								<option <if condition="$vo['organization_ship'] eq 1">selected</if> value="1">正式</option>
+								</select>
+						</p>
+						<p>
+							<label>{$fields["organization_owner"]}:</label><input type="text" name="organization_owner" class="" value="{$vo['organization_owner']}" />
+						</p>
+						<p>
+							<label>{$fields["member"]}:</label>
+							<select name="member" class="combox">
+								<option <if condition="$vo['member'] eq 3">selected</if> value="3">否</option>
+								<option <if condition="$vo['member'] eq 1">selected</if> value="1">是</option>
+								<option <if condition="$vo['member'] eq 2">selected</if> value="2">后选</option>
+								</select>
+						</p>
+						<p>
+							<label>{$fields["lnner_position"]}:</label><input type="text" name="lnner_position" class="" value="{$vo['lnner_position']}" />
+						</p>
+						
+						<p>
+							<label>{$fields["ln_time"]}:</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="date" readonly="readonly" name="ln_time" value="{$vo['ln_time']|transTime}" />
+								<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+							</span>
+						</p>
+						<p>
+							<label>{$fields["out_time"]}:</label>
+							<span class="xyInputWithUnit">
+								<input type="text" class="date" readonly="readonly" name="out_time" value="{$vo['out_time']|transTime}" />
+								<a href="javascript:;" class="input-addon input-addon-calendar">选择</a>
+							</span>
+						</p>
+						<p>
+							<label>{$fields["administration_position"]}:</label><input type="text" name="administration_position" class="" value="{$vo['administration_position']}" />
+						</p>
+						<p>
+							<label>{$fields["accessory_file"]}:</label><input type="text" name="accessory_file" class="" value="{$vo['accessory_file']}" />
+						</p>
+						<p>
+							<label>{$fields["type"]}:</label>
+							<select name="type" class="combox">
+								<option <if condition="$vo['type'] eq 流动">selected</if> value="流动">流动</option>
+								<option <if condition="$vo['type'] eq 正式">selected</if> value="正式">正式</option>
+								<option <if condition="$vo['type'] eq 有组织关系">selected</if> value="有组织关系">有组织关系</option>
+							</select>
+						</p>
+							<dl class="nowrap"><dt>{$fields["info"]}:</dt><dd><textarea cols="80" rows="2" name="info">{$vo['info']}</textarea></dd></dl>
+							<dl class="nowrap"><dt>{$fields["remark"]}:</dt><dd><textarea cols="80" rows="2" name="remark">{$vo['remark']}</textarea></dd></dl>
+					</fieldset>
+				</div>
+			</div>
+			<div class="formBar">
+				<ul>
+				<if condition="$_SESSION.a eq 1 or $_SESSION.mishrpartorganization_update">
+					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				</if>
+					<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+				</ul>
+			</div>
+	</form>
+	</div>
+</div>

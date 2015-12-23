@@ -1,0 +1,131 @@
+<script src="__PUBLIC__/Js/noticejs/jquery.Jcrop.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/Css/jquery.Jcrop.css" type="text/css" />
+<script type="text/javascript"></script>
+<script>
+function userinfo_picture_picedit(file, data, response){
+	var $box=navTab.getCurrentPanel();
+	var $dialog=$.pdialog.getCurrent();
+    var s=data.split(TP_PUBLIC+"/Uploadstemp/");
+    $dialog.find("img").attr("src",data);//给下面的img标签src 加值 ,然后就能显示图片了,一旦选择图片,这个之后这个图片就是自动上传了,然后返回这个图片的地址 就是data
+    $dialog.find("#picurl").val(data);
+    $dialog.find("input[name='lookuppersonpicurl']").val(s[1]);
+    return dialogSearch($("#lookuppersonpic")[0]);
+}
+var $uploadpic = '{$uploadpic}';
+if($uploadpic){
+	jQuery(function($){
+	    var jcrop_api,
+	        boundx,
+	        boundy,
+	        $preview = $('#preview-pane'),
+	        $pcnt = $('#preview-pane .preview-container'),
+	        $pimg = $('#preview-pane .preview-container img'),
+
+	        xsize = $pcnt.width(),
+	        ysize = $pcnt.height();
+	    $('#userinfo_picture_picedit').Jcrop({
+			onChange: updatePreview,
+			onSelect: updatePreview,
+			aspectRatio: xsize/ysize
+	      },function(){
+	      	var bounds = this.getBounds();
+	      	boundx = bounds[0];
+	      	boundy = bounds[1];
+	        jcrop_api = this;
+	        jcrop_api.animateTo([10,10,120,120]);
+			jcrop_api.setOptions({
+				allowResize: true,
+				allowSelect: false,
+				aspectRatio: 4/4,
+				minSize: [ 40, 40 ]
+			  });
+			$preview.appendTo(jcrop_api.ui.holder);
+	      });
+		function updatePreview(c)
+	    {
+			$("#personpicx1").val(c.x);
+			$("#personpicy1").val(c.y);
+			$('#personpicx2').val(c.x2);
+			$('#personpicy2').val(c.y2);
+	      if (parseInt(c.w) > 0)
+	      {
+	        var rx = xsize / c.w;
+	        var ry = ysize / c.h;
+	        $pimg.css({
+	          width: Math.round(rx * boundx) + 'px',
+	          height: Math.round(ry * boundy) + 'px',
+	          marginLeft: '-' + Math.round(rx * c.x) + 'px',
+	          marginTop: '-' + Math.round(ry * c.y) + 'px'
+	        });
+	      }
+		  
+	    };
+	  });
+
+}
+</script>
+	<style type="text/css">
+	.jcrop-holder #preview-pane {
+	  position: absolute;
+	  z-index: 2000;
+	  right: -280px;
+	  padding: 6px;
+	}
+	#preview-pane .preview-container {
+	  width: 180px;
+	  height: 180px;
+	  overflow: hidden;
+	}
+</style>
+<form id="lookuppersonpic" onsubmit="return dialogSearch(this);" action="__URL__/lookuppersonpic" method="post">
+	<input type="hidden" name="lookuppersonpicurl" value=""/>
+</form>
+<div class="page">
+<div class="pageContent">
+<form method="post" action="__URL__/lookuppersoninfo/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone);"  enctype="multipart/form-data">
+	<div class="pageFormContent" layoutH="56">
+		<input name="swf_upload_picsave_name" id="swf_upload_userinfo_picedit_save_name" value="" type="hidden" />
+			<input type="hidden" id="personpicx1" name="personpicx1"/>
+			<input type="hidden" id="personpicy1" name="personpicy1"/>
+			<input type="hidden" id="personpicx2" name="personpicx2"/>
+			<input type="hidden" id="personpicy2" name="personpicy2"/>
+			<input type="hidden" name="uploadpic" value="{$uploadpic}"/>
+			<input type="hidden" id="picurl" name="personpicurl" value="__PUBLIC__{$defpic}"/>
+	    <input id="swfupload_userinfo_picadd" onUploadSuccess="userinfo_picture_picedit" type="file" auto="true" multi="false" uploader="true" fileSizeLimit="2000KB" fileTypeExts="*.jpg;*.jpeg;" fileTypeDesc="*.jpg;*.jpeg;" name="userinfo_picadd_file" formData="{ uploadpath:'UserInfo' }" />
+		<div class="clear"></div>
+			<div class="container" >
+				<div class="row">
+						<div >
+							<div class="jc-demo-box">
+								
+											<img id="userinfo_picture_picedit" src="__PUBLIC__{$defpic}?{:time()}" alt="图片加载中...">
+								<!-- 
+									<if condition="$picpath eq null">	
+										<else/>
+												<img id="userinfo_picture_picedit"  style="border:2px solid #f1f1f1;" src="__PUBLIC__{$picpath}" alt="没有找到!">
+									</if>
+								 -->	
+								<if condition="$uploadpic neq null">
+									<div id="preview-pane">
+									    <div class="preview-container">
+									         <img class="jcrop-preview" id="userinfo_picture_picedit_preview" style="border:2px solid #f1f1f1;width:150px; height:150px;" src="__PUBLIC__{$defpic}?{:time()}" alt="Preview" >
+									    </div>
+								    </div>
+							    </if>
+							</div>
+						</div>
+				</div>
+		   </div>
+	</div>
+	<div class="formBar">
+	<if condition="$uploadpic neq null">
+		<ul>
+			<li>
+				<button class="tml-btn tml-btn-primary" type="submit" >{$Think.lang.save}</button>
+			</li>
+		</ul>
+	</if>
+	</div>
+</form>
+</div>
+</div>

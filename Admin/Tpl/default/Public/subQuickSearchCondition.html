@@ -1,0 +1,28 @@
+<td>
+	<volist id="qsl" name="quickSearchList">
+		<if condition="$qsl['quickname'] eq $quicksearchby">
+			<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch">
+				{$qsl['html']}
+			</div>
+		<else/>
+			<div class="__MODULE__{$qsl['quickname']} __MODULE__quickSearch" style="display:none;">
+				{$qsl['html']}
+			</div>
+		</if>
+	</volist>
+</td>
+<td>
+	<select class="combox" name="quicksearchby" onchange="quickSearchChange(this,'__MODULE__')">
+		<volist id="qsl" name="quickSearchList">
+			<option value="{$qsl['quickname']}" <eq name="quicksearchby" value="$qsl['quickname']">selected</eq> >{$qsl['showname']}</option>
+		</volist>
+	</select>
+	<!-- <input type="hidden" name="ortype" value="{$onetype}" /> -->
+	<input type="hidden" name="time" value="{$time}" />
+</td>
+<td>
+	<button class="xySearch" type="submit">{$Think.lang.subsearch}</button>
+</td>
+<td>
+	<a class="xyAdvancedSearch" href="__APP__/Search/advancedsubsearch/model/__MODULE__/domain/{$domain}" rel="__MODULE__advancedsubsearch" width="500" height="430" target="dialog" mask="true">高级检索</a>
+</td>

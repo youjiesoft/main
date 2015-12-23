@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=">
+<title>导入配置</title>
+<script>
+	//全选
+	function allcheck() {
+		var a = document.getElementById('Checkall_dutyindex');
+		var cks = document.getElementsByTagName("input");
+		for ( var i = 0; i < cks.length - 1; i++) {
+			if (cks[i].type == "checkbox" && !cks[i].disabled) {
+				cks[i].checked = a.checked;
+			}
+		}
+	}
+</script>
+</head>
+<body>
+	<div class="page">
+		<div class="pageContent">
+			<form method="post" action="__URL__/lookupimportconfig/" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+				<input type="hidden" name="importconfig" value="1">
+				<input type="hidden" name="id" value="{$MisImportFieldconfigList.id}">
+				<div class="pageFormContent " layoutH="60">
+					<table class="data-table" width="100%" cellspacing="0">
+						<thead>
+							<tr>
+								<td>
+									<strong>序列</strong>
+								</td>
+								<td>
+									<strong>导入项</strong>
+								</td>
+								<td>
+									<strong>
+										导入项
+										<input type="checkbox" id="Checkall_dutyindex" style="margin-left: 12px;" value="1" onclick="allcheck()">
+										全选
+									</strong>
+								</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td>档案号</td>
+								<td>
+									<input type="checkbox"  name="A"   disabled="disabled"  checked="checked" value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>姓名</td>
+								<td>
+									<input type="checkbox" name="B"  disabled="disabled" checked="checked" value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>身份证号</td>
+								<td>
+									<input type="checkbox" name="C"  disabled="disabled"  checked="checked"  value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td>入职时间</td>
+								<td>
+									<input type="checkbox" name="D" disabled="disabled"  checked="checked"  value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td>第一次签订合同开始时间</td>
+								<td>
+									<input type="checkbox" name="E" <if condition="in_array('E',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>6</td>
+								<td>第一次签订合同结束时间</td>
+								<td>
+									<input type="checkbox"   name="F"   <if condition="in_array('F',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> c  value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>7</td>
+								<td>第二次签订合同开始时间</td>
+								<td>
+									<input type="checkbox"   name="G"  <if condition="in_array('G',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if>  value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>8</td>
+								<td>第二次签订合同结束时间</td>
+								<td>
+									<input type="checkbox" name="H" <if condition="in_array('H',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>9</td>
+								<td>第三次签订合同开始时间</td>
+								<td>
+									<input type="checkbox" name="I" <if condition="in_array('I',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>10</td>
+								<td>第三次签订合同结束时间</td>
+								<td>
+									<input type="checkbox" name="J" <if condition="in_array('J',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>11</td>
+								<td>第四次签订合同开始时间</td>
+								<td>
+									<input type="checkbox" name="K" <if condition="in_array('K',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+							<tr>
+								<td>12</td>
+								<td>第四次签订合同结束时间</td>
+								<td>
+									<input type="checkbox" name="L" <if condition="in_array('L',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+								<tr>
+								<td>13</td>
+								<td>第五次签订合同开始时间</td>
+								<td>
+									<input type="checkbox" name="M" <if condition="in_array('M',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+								<tr>
+								<td>14</td>
+								<td>第五次签订合同结束时间</td>
+								<td>
+									<input type="checkbox" name="N"  <if condition="in_array('N',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if>   value="1">
+								</td>
+							</tr>
+								<tr>
+								<td>15</td>
+								<td>终止合同时间</td>
+								<td>
+									<input type="checkbox" name="O" <if condition="in_array('O',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+								<tr>
+								<td>16</td>
+								<td>备注</td>
+								<td>
+									<input type="checkbox" name="P" <if condition="in_array('P',$fieldAll)||$MisImportFieldconfigList.id==null"> checked="checked"</if> value="1">
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="formBar">
+					<ul>
+						<li>
+							<button class="tml-btn tml-btn-primary" type="submit">{$Think.lang.save}</button>
+						</li>
+						<li>
+							<button type="button" class="close tml-btn tml-btn-default">{$Think.lang.close}</button>
+						</li>
+					</ul>
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

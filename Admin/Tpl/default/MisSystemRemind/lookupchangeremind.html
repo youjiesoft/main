@@ -1,0 +1,65 @@
+<script>
+function openchangeremaindMenu(rel,url,title){
+	var urls="__APP__/"+url;
+	navTab.openTab(rel, urls, {title : title});
+	$.pdialog.closeCurrent();
+}
+function remove_remind(obj,type,$id,keyv){
+	var $box=$.pdialog.getCurrent(); // 获得到当前作用域 
+	$.ajax({
+		type : 'POST',
+		dataType : "json",
+		url : "__APP__/MisSystemRemind/lookupdeleteremind",
+		cache : false,
+		global:false,
+		data : {
+			type : type ,
+			id:$id,
+			keyv:keyv,
+		},
+		success : function(response) {
+			if(type=="all"){
+				$box.find(obj).parents("li.tml-mb5").remove();
+			}else{
+				var parentObj = $(obj , $box).parent();//获得到当前操作对象的父级对象
+				var curCss = 'removespan'+keyv;
+				$box.find(obj).closest("li").find('span.'+curCss).remove(); //移除当前操作整体html
+				if(isNullorEmpty(parentObj.html()) == false ){
+					parentObj.parent().remove();
+				}
+			}
+			 changehref="__URL__/lookupmyRemindDis/stepremind/1";
+			 $("#remind_div").loadUrl(changehref,{},function(){
+		         $("#remind_div").find("[layoutH]").layoutH();},false);
+		}
+	});
+}
+</script>
+<div class="page">
+	<div class="pageContent" >
+			<div class="pageFormContent layoutH="55">
+				<ul class="wake_set_ul">
+					<volist name="remindAllList" id="remindAll" key="h">  
+					<li class="tml-mb5">
+						<span class="tml-mr3"><span class='{$remindAll.span} tml-mr3"'></span>&nbsp;{$remindAll.title}：</span>
+                        <span class="wake_set_cell">
+                            <if condition="$remindAll.userid eq 'all'" >
+                                <span class="cell_remove_btn icon-trash" onclick="remove_remind(this,'all','{$remindAll.id}')"></span>
+                            </if>
+                            <volist name="remindAll['list']" id="rtvo" key="j">
+                                <if condition="$remindAll.userid neq 'all'" >
+                                    <span class="cell_remove_btn icon-trash removespan{$rtvo.keyv}" onclick="remove_remind(this,'per','{$remindAll.id}',{$rtvo.keyv})"></span>
+                                </if>
+                                <span class="removespan{$rtvo.keyv}">{$rtvo.rtitle}&nbsp;
+                                    <if condition="$remindAll.userid neq 'all'" >
+                                        <a class="cell_edit_btn icon-pencil" target="dialog" height="227" width="527" mask="true"  rel="{$remindAll.name}editremind"  title="修改提醒" href="__URL__/lookupchangeedit/id/{$remindAll.id}/md/{$remindAll.name}/list/{$rtvo.keyv}"></a>
+                                    </if>
+                                </span>
+                            </volist>
+                         </span>
+					</li>
+					</volist>
+				</ul>   
+			</div>
+	</div>
+</div>

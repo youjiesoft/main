@@ -1,0 +1,103 @@
+<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this,navTabAjaxDone);">
+		<input type="hidden" name="orderno" value="{$orderno}">
+		<input type="hidden" name="callbackType" value="closeCurrent">
+		<div class="pageFormContent applecloth" layoutH="56">
+			<div class="keepContentCenter">
+				<H2 class="contentTitle contentTitle_center">施工班组信息</H2>
+				<fieldset>
+					<legend class="fieldset_legend_toggle"><b>基本信息</b></legend>
+					<p>
+						<label>班组编码:</label><input  type="text" name="code" class="required alphanumeric textInput" <if condition='$writable eq 0'> readonly="readonly" </if> value="{$orderno}">
+					</p>
+					<p>
+						<label>班组名称:</label><input  type="text" name="name" class="required">
+					</p>
+					<p>
+						<label>专业:</label><input  type="text" name="specialty" class="required" value="{$vo['specialty']}">
+					</p>
+					<p>
+						<label>类别：</label>
+						<select name="typeid"  class="combox required">{$typeidlist}</select>
+					</p>
+					<p>
+						<label>规模:</label><input  type="text" name="scope" class="" value="{$vo['scope']}">
+					</p>
+					<p>
+						<label>供应商编码:</label>
+						<input  type="text" class="checkByInput" name="suppliercode" checkfor="MisPurchaseSupplier" insert="id" show="code" >
+						<input  type="hidden" name="supplierid" class="">
+					</p>
+					<p>
+						<label>供应商名称:</label>
+						<input  type="text"  check_key="suppliername"  class="readonly" value="" />
+					</p>
+					<p>
+						<label>区域：</label>
+						<input  type="text"  check_key="suppliersitename"  class="readonly" value="" />
+					</p>
+				</fieldset>
+				<fieldset >
+					<legend class="fieldset_legend_toggle"><b>负责人信息</b></legend>
+				<p>
+					<label>姓名:</label><input  type="text" name="managername" class="required" value="{$vo['managername']}">
+				</p>
+				<p>
+					<label>籍贯:</label><input  type="text" name="managernative" class="" value="{$vo['managernative']}">
+				</p>
+				<p>
+					<label>从业时间：</label>
+					<input type="text" class="tml-border-r0 Wdate" onfocus="WdatePicker()" name="managertime" value="">
+					<span class="input-addon input-addon-calendar"></span>
+				</p>
+				<p>
+					<label>身份证:</label><input  type="text" name="manageridcard" class="" value="{$vo['manageridcard']}">
+				</p>
+				<p>
+					<label>家庭住址:</label><input  type="text" name="manageraddress" class="" value="{$vo['manageraddress']}">
+				</p>
+				<p>
+					<label>联系方式:</label><input  type="text" name="managercontact" class="phone" value="{$vo['managercontact']}">
+				</p>
+				<p>
+					<label>居住住址:</label><input  type="text" name="managernowaddress" class="" value="{$vo['managernowaddress']}">
+				</p>
+				</fieldset>
+				<fieldset >
+					<legend class="fieldset_legend_toggle"><b>现场带班人信息</b></legend>
+					<p>
+						<label>姓名:</label><input  type="text" name="placemanagername" class="" value="{$vo['placemanagername']}">
+					</p>
+					<p>
+						<label>籍贯:</label><input  type="text" name="placemanagernative" class="" value="{$vo['placemanagernative']}">
+					</p>
+					<p>
+						<label>从业时间：</label>
+						<input type="text"  class="tml-border-r0 Wdate" onfocus="WdatePicker()" name="placemanagertime" value="">
+						<span class="input-addon input-addon-calendar"></span>
+					</p>
+					<p>
+						<label>身份证:</label><input  type="text" name="placemanageridcard" class="" value="{$vo['placemanageridcard']}">
+					</p>
+					<p>
+						<label>家庭住址:</label><input  type="text" name="placemanageraddress" class="" value="{$vo['placemanageraddress']}">
+					</p>
+					<p>
+						<label>联系方式:</label><input  type="text" name="placemanagercontact" class="phone" value="{$vo['placemanagercontact']}">
+					</p>
+					<p>
+						<label>居住住址:</label><input  type="text" name="placemanagernowaddress" class="" value="{$vo['placemanagernowaddress']}">
+					</p>
+				</fieldset>
+			</div>
+		</div>
+		<div class="formBar">
+			<ul>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misconstructionteam_insert">
+				<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}</button></li>
+			</if>
+				<li><button type="button" class="tml-btn close">{$Think.lang.close}</button></li>
+			</ul>
+		</div>
+	</form>
+</div>

@@ -1,0 +1,102 @@
+<script>
+function MisHrBasicEmployeeisexits(json){
+	if(!json.transferdate){
+		$("input[name='transferdate']").val('');
+	}
+}
+</script>
+<div class="pageContent">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
+		<input type="hidden" name="dotype" value="流程新建" />
+		<input type="hidden" name="beforeInsert" value="1" />
+		<input type="hidden" name="refreshtabs[closeall]" value="1" />
+		<input type="hidden" class="org.id" value="{$MisHrBasicEmployeeVO['id']}" name="personid"/>
+		<input type="hidden"  name="trantype" value="4"/>
+			<div class="contentTitle contentTitle_center">代办调职申请单 
+			</div>
+			<div class="pageFormContent " layoutH="105">
+			<div class="tml-row">
+			{:W('ShowOrderno',array(1,'mis_hr_personnel_train_info'))}
+			<div class="tml-form-col">
+				 <label>姓&nbsp;&nbsp;&nbsp;&nbsp;名：</label>
+				 <div class="tml-input-append">
+				 <input type="text" readonly="readonly"  callback="MisHrBasicEmployeeisexits"  size="15" name="name" value="{$MisHrBasicEmployeeVO.name}" autocomplete="off" class="org.name "   />
+				 <input type="hidden" value="{$MisHrBasicEmployeeVO.id}" class="org.id" name="personid"/>
+				 <a class="input-addon input-addon-userplus" href="__URL__/lookupmanage/type/2" lookupGroup="org">查找带回</a>
+			 	</div>
+			 </div> 
+			 <div class="tml-form-col">
+				<label>异动类型：</label>
+				<SELECT name="typeid" class="combox">
+					<volist name="tranlist" id="volist">
+						<option value="{$volist.id}">{$volist.name}</option>
+					</volist>
+				</SELECT>
+			</div>
+			<div class="tml-form-col">
+				<label>入职日期：</label>
+                <input type="text"  name="indate" class="org.indate" check_key="otherindate" value="{$MisHrBasicEmployeeVO['indate']|transTime}" readonly="readonly" />
+			</div>
+			<div class="tml-form-col">
+				<label>转正日期：</label>
+                <input type="text"  name="transferdate"  class="org.transferdate" check_key="othertransferdate" value="{$MisHrBasicEmployeeVO['transferdate']|transTime}" readonly="readonly" />
+			</div>
+			<div class="tml-form-col">
+				<label>调前部门：</label>
+				<input type="text" class="org.deptname" value="{$MisHrBasicEmployeeVO.deptid|getFieldBy='id','name','mis_system_department'}" readonly="readonly" />
+				<input type="hidden" class="org.deptid" value="{$MisHrBasicEmployeeVO.deptid}"  name="deptid"/>
+			</div>
+			<div class="tml-form-col">
+				<label>调往部门：</label>
+				<select name="newdeptid" class="combox required" onchange="chooiseWorkType(this,'js-employeetransferWrokType');">
+					<option value="">请选择</option>
+					{$depthtml}
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>调前职级：</label>
+				<input type="text" class="org.dutyname" value="{$MisHrBasicEmployeeVO.dutylevelid|getFieldBy='id','name','duty'}" readonly="readonly" />
+				<input type="hidden" class="org.dutylevelid"  name="dutylevelid" value="{$MisHrBasicEmployeeVO.dutylevelid}" readonly="readonly"/> <!-- 职级编号 -->
+			</div>
+			<div class="tml-form-col">
+				<label>调后职级：</label>
+	            <select name="newdutylevelid" class="combox">
+					<volist name="zhiwei" id="zhiweilist">
+						<option value="{$key}">{$zhiweilist}</option>
+					</volist>
+				</select>
+			</div>
+			<div class="tml-form-col">
+				<label>调前岗位：</label>
+				<input type="text" class="org.worktypename" value="{$MisHrBasicEmployeeVO.worktype|getFieldBy='id','name','mis_hr_job_info'}" readonly="readonly" />
+				<input type="hidden" class="org.worktype" name="worktype" value="{$MisHrBasicEmployeeVO.worktype}" readonly="readonly"/> 
+			</div>
+			<div class="tml-form-col">
+				<label>调后岗位：</label>
+				<select name="newworktype" id="js-employeetransferWrokType" class="combox required" >
+					<option value="">请选择岗位</option>
+					<volist name="joblist" id="worktype">
+						<option value="{$key}">{$worktype}</option>
+					</volist>
+				</select>
+			</div>
+			</div>
+			<div class="tml-form-row">
+				<label>详细描述：</label>
+				<textarea class="required textInput" style="width: 435px; height: 64px;" name="transfer"></textarea>
+			</div>
+			<br/><br/><br/><br/>
+			<div class="tml-row">
+			<div class="tml-form-col">
+				<label>申&nbsp;请&nbsp;人：</label>  
+				<input type="text" readonly="readonly" value="{$Think.SESSION.loginUserName}"/>
+			</div>
+			<div class="tml-form-col">
+				<label>申请时间：</label>
+				<input type="text" readonly="readonly" value="{$time|transTime}"/>
+			</div>
+			</div>
+		</div>
+		{:W('ShowAction')}
+	</form>
+</div>

@@ -1,0 +1,34 @@
+<div class="tml-text-c prev_next_btn">
+	<if condition="$prevlist">	<a class="prev_page_btn pnb" href="#"  onclick="changeapp('{$typeid}','','prevpage')" ><span>上一页</span></a><else/><span class="prev_page_btn_disabled pnb" >上一页 </span> </if>
+	<if condition="$nextlist">	<a class="next_page_btn pnb" href="#" onclick="changeapp('{$typeid}','','nextpage')"  ><span>下一页</span></a><else/><span class="next_page_btn_disabled pnb" >下一页 </span> </if>
+</div>
+<ul id="app_shortcut_list" class="app-shortcut-list">
+	<volist name="newappList" id="newappVol">
+		<volist  name="newappVol['list']"  id="newapp"  >
+			<li data-app-height="{$newapp['height']}" data-app-width="{$newapp['width']}" data-app-icon="{$newapp['imgsrc']}" data-app-name="{$newapp['title']}" data-app-url="{$newapp['title']}" data-app-id="1" data-node-type="appItem">
+				<a onclick="changeapp('{$typeid}','{$newapp['sortnum']}')" title="321"  href="#">
+					<img class="app-shortcut-icon" width="64px" height="64px" alt="{$newapp['title']}" <if condition="$newapp.imgsrc">src="{$newapp['imgsrc']}"<else/> src="__PUBLIC__/Images/xyicon/xyicon_36.png" </if> >
+					<span class="app-shortcut-name">{$newapp['title']}</span>
+				</a>
+			</li>
+		</volist>
+	</volist>
+</ul>
+<div class="tml-text-c">
+	<a class="person_set_btn" href="__URL__/lookupuserSetApp" target="dialog" rel="__MODULE__userSetApp" width="750" height="500" mask="true ">个人设置</a>
+</div>
+<script>
+	function changeapp(obj,$child,$page){
+	var	changehref="__APP__/MisSystemApp/lookupmyfunctionbox/typeid/"+obj;
+	 if($child){
+		 changehref="__APP__/MisSystemApp/appdis/typeid/"+obj+"/child/"+$child;
+		 $("#appDis_div").loadUrl(changehref);
+	 }else if($page){
+		 changehref="__APP__/MisSystemApp/apppage/typeid/"+obj;
+		 changehref+="/maxlimit/{$maxcount}/minlimit/{$mincount}/page/"+$page;
+		 $("#appPage_div").loadUrl(changehref); 
+	 }else{
+		 $("#appConstantly_div").loadUrl(changehref);
+	 }
+ }
+ </script>

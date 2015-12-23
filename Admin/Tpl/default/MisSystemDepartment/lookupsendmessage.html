@@ -1,0 +1,49 @@
+<script>
+/*
+eagle:当提交时，如果是发送，调用这个方法，修正了提交到控制器中的哪个方法中去。
+*/
+function commitview13_add($this){
+	var $form = $($this);
+	$(":input[name='commit']",$form).val(1);
+	$form.attr("action","__APP__/MisMessage/insert/navTabId/__MODULE__" );
+	return validateCallback($form, dialogAjaxDone);
+};
+
+</script>
+<div class="pageContent" style="border:1px #B8D0D6 solid;border-top:none;" >
+<form method="post" action="__APP__/MisMessage/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, navTabAjaxDone);">
+	<input type="hidden" name="sendmessage" value="1">
+	<input type="hidden" name="commit" value="0">
+	<input type="hidden" name="iseditor" value="1"> 
+	<input type="hidden" name="recipient" id="wl_user3" value="{$userid}"/>
+	<div class="panelBar">
+        <div style="padding:6px;">
+            <button class="xyIconSendButton" type="button" onclick="commitview13_add(this.form);">发送邮件</button>
+            <button class="xyIconSaveButton" type="submit">{$Think.lang.save}草稿</button>
+        </div>
+	</div>
+	<div class="pageFormContent" layoutH="146">
+		<div class="tml-form-row">
+			<label>收&nbsp;件&nbsp;人：</label>
+			<input type="text" class="required textInput" name="recipientname" id="wl_user2" value="{$userid|getFieldBy='id','name','user'}" readonly="readonly" />
+			<input type="hidden" name="recipient" value="{$userid}"   />
+		</div>
+		<div class="tml-form-row">
+			<label>邮件标题：</label>
+			<input type="text" value="" name="title" class="required" />
+		</div>	
+		<div class="tml-form-row">
+			<label>邮件内容：</label>
+			<textarea class="editor" name="content" rows="14" cols="50" tools="mini"></textarea>
+		</div>	
+		<!-- 附件信息 -->
+		{:W('ShowUpload')}
+	</div>
+	<div class="formBar">
+		<ul>
+			<li><button type="submit" class="tml-btn tml-btn-primary">{$Think.lang.save}草稿</button></li>
+			<li><button type="button" class="tml-btn tml-btn-primary" onclick="commitview13_add(this.form);">发送</button></li>
+		</ul>
+	</div>	
+</form>
+</div>

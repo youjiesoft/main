@@ -1,0 +1,207 @@
+<!--  模板生成方案	-->
+<if condition="$tplkey">
+<script>
+/**
+ * 默认获取当前可用下拉框 
+ */
+function setSelDatasouce(){
+	var defaultField='';
+	<volist name="anameList['datebase']" id="anamevochild" key="k" >
+ 	<if condition="$anamevochild.isprimay eq 1">
+ 	<volist name="anamevochild.list" id="item">
+ 		<if condition="$item.isdatasouce eq 1">
+		defaultField= '{$item.filed}';
+ 		</if>
+ 	</volist>
+ 	</if>
+ 	</volist>
+ 	
+	var box = navTab.getCurrentPanel();
+	var datasoueArr=new Array();
+	// 查找页面上的可用select
+	var p = $('div.tableItem input.nbm_primary_table:checked' , box).closest('div.tableItem');
+	p.find('select.opweight option:selected').each(function(){
+		if($(this).val()=='select'){
+			var trobj = $(this).closest('tr');
+			var datasoue=new Object();
+			datasoue.filed = trobj.find('td input[type="text"][name^="fieldname"]').val();
+			datasoue.title = trobj.find('td input[type="text"][name^="fieldtitle"]').val();
+			datasoueArr.push(datasoue);
+		}
+	});
+	var str = '<option value="">请选择</option>';
+	if(datasoueArr.length){
+		$.each(datasoueArr , function(i ,v){
+			if(v.filed=="{$datasoure}"){
+				$selected="selected='selected'";
+			}else{
+				$selected="";
+			}
+			str += '<option  '+$selected+'  value="'+v.filed+'">'+v.title+'</option>';
+		});
+	}
+
+	$('select.tree_datasouce' , box).change(function(){
+		var curSelectVal = $(this).val();
+		// 取得当前用户选择的下拉框组件key值。
+		// 检索组件配置文件的当前值下的数据源配置情况。
+		if(curSelectVal){
+			var nodename = '{$vo.actionname}';
+			/*$.ajax({
+				url:TP_APP+'/MisDynamicFormManage/getControllDataSouce',
+				dataType:'json',
+				data:{'filed':curSelectVal,'nodename':nodename},
+				success:function(data){
+					data = DWZ.jsonEval(data);
+					var fileddata = DWZ.jsonEval(data.data);
+					//DWZ.ajaxDone(data);
+					if(data.statusCode == DWZ.statusCode.ok){
+						//alertMsg.info(data.data);
+						// 设置字段 配置项的值
+						var htmls='';
+						$.each(fileddata , function(k,v){
+							htmls += '<option value="'+v.key+'">'+v.val+'</option>';
+						});
+						$('select.tree_datasouce_value').html(htmls);
+						$('select.tree_datasouce_text').html(htmls);
+						initChosen();
+					}else{
+						alertMsg.error(data.message);
+					}
+				}
+			});*/
+		}
+		
+		// 先将现有的禁用属性清空
+		p.find('table').find('input').attr('readonly',false);
+		p.find('table').find('a').show();
+		p.find('table').find('input[type="checkbox"]').show();
+		p.find('table tr').removeAttr('style');
+		p.find('select').each(function(){
+			$(this).attr('readonly',false);
+		});
+		
+		// 将选中数据源的那一行禁用掉。 
+		var curObj = p.find(':input[name^="fieldname"][value="'+curSelectVal+'"]').closest('tr');
+		curObj.find('input').attr('readonly',true);
+		curObj.find('input[type="checkbox"]').hide();
+		curObj.attr('title','当前行被选中为首页左侧树形菜单的数据来源，请慎重操作，数据来源只能为下拉框组件');
+		curObj.css({'background':'#ffc'});
+		// 将下拉框设为只读 
+		curObj.find('select').each(function(){
+			$(this).attr('readonly',true);
+		});
+		curObj.find('a:last').hide();
+	});
+	$('select.tree_datasouce' , box).html(str);
+	if(isNullorEmpty(defaultField)){
+		$('select.tree_datasouce' , box).val(defaultField);
+		$('select.tree_datasouce' , box).change();
+	}
+	//initChosen();
+}
+
+$(function(){
+	setSelDatasouce();
+	$('select.tree_datasouce' , box).change();
+	// 修改时进来就触发一次单选点击
+	var curSelectedVal = '{$vo[tpl][0]}';
+	if(curSelectedVal){
+		var box=navTab.getCurrentPanel();
+		$('div.tpltypelist',box).find('input[type="radio"][value="'+curSelectedVal+'"]').click();
+	}
+});
+function editbindval(obj){
+	var $box=navTab.getCurrentPanel();
+	var datasoureItem = $('div.datasoure:last', $box);
+	datasoureItem.find('select').select2("destroy");
+	var cloneTab = datasoureItem.clone();
+	cloneTab.find('a.icon-plus').attr("class","icon-remove");
+	cloneTab.find('a.icon-remove').attr("onclick","removeeditbindval(this)");
+	cloneTab.find(".select2").select2();
+	datasoureItem.after(cloneTab);
+	datasoureItem.find(".select2").select2();
+}
+function removeeditbindval(obj){
+	var $box=navTab.getCurrentPanel();
+	$(obj).parent("div.datasoure").remove();
+}
+
+</script>
+<div class="tml-row depict_warp">
+	<div class="tml-form-row tpltypelist">
+		<label>模板生成方式：</label>
+	    <?php $tpldata = $tpltypeArr[$tplkey][0]['item']; ?>
+	<!-- 模板生成类型   -->
+		<volist name="tpldata" id="item">
+			{:createTags($item,false,$vo[tpl][0])}
+		</volist>
+	</div>
+	<div class="tml-row">
+		<div class="tml-form-col">
+			<label>树或菜单配置：</label>
+			<select name="datasouce" class="select2 tree_datasouce original_width_select2"><option>字段</option></select>
+		</div>
+		
+		<!-- <div class="tml-form-col">
+			<label>值字段：</label>
+			<select name="datasouce_text" class="select2 tree_datasouce_text"><option value="">请选择</option></select>
+		</div>
+		<div class="tml-form-col">
+			<label>显示字段：</label>
+			<select name="datasouce_value" class="select2 tree_datasouce_value"><option value="">请选择</option></select>
+		</div> -->
+	</div>
+	<if condition="$tplkey eq 'zuhetpl'">
+	<input type="hidden" name="bindaname" value="{$bindaname}" />
+	<volist name='misAutoBindVoList' id='misAutoBindVo' key="j">
+	<div class="tml-form-row datasoure">
+		 <label>选择绑定数据源：</label>
+		 <input type="hidden" name="bindresult" value="{$bindresult}"/>
+		  <input type="hidden" name="bindvoid" value="{$misAutoBindVo.id}" />
+			<select name="bindval[]" class="select2 original_width_select2">
+			 <volist name="datasoucelist['list']"  id="datasouceVo">
+			 <option <if condition="$misAutoBindVo['bindval'] eq $key">selected="selected"</if> value="{$key}">{$datasouceVo}</option>
+			 </volist>
+			 <option value="all" <if condition="$misAutoBindVo['bindval'] eq all">selected="selected"</if>>公共类型</option>
+			</select>
+			<if condition="$j==1">
+				<a class="icon-plus" onclick="editbindval(this)"></a>					
+			<else/>
+				<a class="icon-remove" onclick="removeeditbindval(this)"></a>	
+			</if>		
+		</div>
+		</volist>
+	</if>
+</div>
+<div class="tml-row depict_warp">
+    <div class="sel_mod_lay">
+    <label class="mod_header_title">生成模板结构如下：</label>
+    <div class="tpl_preview">
+    	<!--  列出所有当前可用的模板生成方式 -->
+    	<?php
+    	$caurchoiseitem = $vo['tpl'][1];
+    	?>
+    	<volist name="tpldata" id="tplitem">
+     	<volist name="tplitem['tpl']" id="item">
+     		<!--  布局方式  -->
+     		<div class="preview_item item_{$tplitem['value']}">
+     		{$item['title']}
+     		<if condition="$caurchoiseitem eq $item.value">
+     			<input type="radio" name="nbm_tpl" value="{$item['value']}" checked="checked"/>
+     		<else/>
+     			<input type="radio" name="nbm_tpl" value="{$item['value']}" />
+     		</if>
+     		{$item['content']}
+     		</div>
+     	</volist>
+    	</volist>
+    </div>
+    </div>
+   </div>
+<else/>
+<div class="tml-form-row">
+	<label title="模板生成方式">模板生成方式：</label>
+	<volist name="tpltypeArr" id="item">{:createTags($item[0])}</volist>
+</div>
+</if>

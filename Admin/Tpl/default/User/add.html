@@ -1,0 +1,141 @@
+<script>
+	function checkName(){
+		ThinkAjax.send('__URL__/checkAccount/','ajax=1&account='+$F('account'));
+	}
+ 	function callback_role(json){
+ 		//获取岗位ID,根据岗位ID查询角色ID
+ 		if(json.rolegroup_id){
+ 			var oldhref = $("#addrole_accuss").attr("oldhref");
+ 			$("#addrole_accuss").attr("href",oldhref+"/"+json.rolegroup_id);
+ 		}
+ 		if(json.id){
+ 			$.ajax({
+ 				type : "POST",
+ 				url : "__URL__/lookupuserdept",
+ 				global : false,
+ 				data : {
+ 					'etype' : 2,
+ 					'employeeid':json.id,
+ 				},
+ 				success : function(re) {
+ 					if(re){
+						$(".recptuser").show();
+ 					}
+ 				}
+ 			});
+ 		$("#addXxBox").loadUrl("__URL__/lookupuserdept/etype/1/employeeid/"+json.id,{},function(){
+	         $("#addXxBox").find("[layoutH]").layoutH();},false);
+ 		}else{
+ 			$(".recptuser").hide();
+ 		}
+ 	}
+</script>
+<div class="page">
+<div class="pageContent" layoutH="0" id="useradd">
+	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtabs_afteradd)">
+		<input type="hidden" name="callbackType" value="closeCurrent" />
+		<input type="hidden" name="refreshtabs[type]" value="navTab"/>
+		<input type="hidden" name="refreshtabs[tabid]" value="__MODULE__edit"/>
+		<input type="hidden" name="refreshtabs[data]" value="{ data:{ ntdata:0 }}" />
+		<input type="hidden" name="refreshtabs[url]" value="__URL__/edit/id/"/>
+		<input type="hidden" name="refreshtabs[title]" value="后台用户_编辑"/>
+		<div class="pageFormContent user_add_lay" layoutH="40">
+            <div class="keepContentCenter form-affix-content">
+                <div class="contentTitle contentTitle_center form-affix-title">后台用户新增</div>
+			<input type="hidden" name="sex" check_key="othersex" />
+			<div class="tml-row">
+                <div class="tml-form-col">
+                    <label>人事员工：</label>
+                    <div class="tml-input-append">
+                        <input type="text" readonly="readonly" name="name" class="selectuser1.username required textInput enterIndex valid">
+                        <input type="hidden" class="selectuser1.id" name="employeid">
+                        <a style="border-right:1px solid #ccc;border-radius: 0 4px 4px 0;" class="input-addon input-addon-addon input-addon-userplus checkUser" href="javascript:;" data="selectuser1;username,name;id,id">查找带回</a>
+                    </div>
+                    <!--<input type="text" checkfor="userandMisHR" name="name" callback="callback_role" show="name" class="checkByInput required" autocomplete="off">-->
+                    <!--<input type="hidden" name="employeid"/>-->
+                    <span class="recptuser" style="color:red;display: none" >该员工已有后台帐号,请勿重复添加。</span>
+                </div>
+                <div class="tml-form-col">
+                    <label>英文登录名：</label>
+                    <input type="text" class="required alphanumeric" maxlength="64" name="account2"/>
+                </div>
+			</div>
+			<div class="tml-form-row">
+				<label>主角色：</label>
+				<select class="required select2 original_width_select2" check_key="rolegroup_id" name="role_id" onchange="changeUrl(this,'addrole_accuss');">
+					<option selected value="">---请选择角色---</option>
+					{:getDataBaseByHtml('rolegroup')}
+					<volist name="rolegrouplist" id="rglist">
+						<option value="{$rglist.id}">{$rglist.name}</option>
+					</volist>
+				</select>
+                <a class="tml-btn tml_look_btn tml_mp" style="margin-left: 10px;" href="__URL__/addRoleGroupHtml/selectId/role_id" id="role_id" rel="Rolegroupadd" target="dialog" mask="true" title="新增角色" ><span class="icon-plus"></span> 新增角色</a>
+                <!--<a class="rear_end_btn" href="__URL__/addRoleGroupHtml/selectId/role_id" id="role_id" rel="Rolegroupadd" target="dialog" mask="true" title="新增角色" >-->
+					<!--<span>新增角色</span>-->
+				<!--</a>-->
+                <a class="tml-btn tml_look_btn tml_mp" href="__URL__/roleGroupAuthorizeD/rolegroupid" oldhref="__URL__/roleGroupAuthorizeD/rolegroupid"target="navTab" id="addrole_accuss" rel="addXxBox" title="查看角色权限" target="ajax" >
+                    <span class="icon-eye-open"></span> 查看角色权限</a>
+                <!--<a class="rear_end_btn" href="__URL__/roleGroupAuthorizeD/rolegroupid" oldhref="__URL__/roleGroupAuthorizeD/rolegroupid"target="navTab" id="addrole_accuss" rel="addXxBox" title="查看角色权限" target="ajax" >-->
+					<!--<span>查看角色权限</span>-->
+				<!--</a>-->
+			</div>
+			<div class="tml-form-row">
+				<label>辅助角色：</label>
+				<!--<span class="tml-help-inline" style="color:red;">点击角色可以查看权限</span>-->
+				<ul class="addressee left" id="add_user_rolegroup" style="_display:inline;height:32px;margin:5px 0 0;width:650px; border-radius: 4px"></ul>
+                <a class="tml-btn tml_look_btn tml_mp" style="margin-left: 10px; margin-top: 8px;" href="__URL__/lookrolegroup/stepType/1/obj/add_user_rolegroup/objname/addXxBox" width="380" height="480" lookupGroup="org1"><span class="icon-plus"></span> 添加辅助角色</a>
+                <!--<a class="rear_end_btn" href="__URL__/lookrolegroup/stepType/1/obj/add_user_rolegroup/objname/addXxBox" width="380" height="480" lookupGroup="org1">-->
+                    <!--<span>添加辅助角色</span>-->
+                <!--</a>-->
+			</div>
+			 <div class="tml-form-col">
+                    <label>安全等级：</label>
+                    <input type="text" name="anquandengji" maxlength="20"  check_key="othermobilephone"/>
+                </div>
+                 <div class="tml-form-col">
+                    <label>上级：</label>
+                    {:W('Lookup',array('1',$vo,'724','1',''))}
+                </div>
+			<div class="tml-row">
+			    <div class="tml-form-col">
+					<label>{$fields["qq"]}：</label>
+					<input type="text" name="qq" maxlength="20"  />
+				</div>
+                <div class="tml-form-col">
+                    <label>外网登录地址：</label>
+                    <input type="text" value="http://"/>
+                </div>
+				<div class="tml-form-col">
+					<label>{$fields["email"]}：</label>
+					<input type="text" name="email" maxlength="100" class="  email org1.email"  check_key="otheremail" />
+				</div>
+                <div class="tml-form-col">
+                    <label>内网登录地址：</label>
+                    <input type="text" value="http://"/>
+                </div>
+                <div class="tml-form-col">
+                    <label>电话：</label>
+                    <input type="text" name="mobile" maxlength="20"  check_key="othermobilephone"/>
+                </div>
+				<div class="tml-form-col">
+					<label>状态：</label>
+					<select name="status" class="required select2 original_width_select2">
+						<option value="1">启用</option>
+						<option value="0">禁用</option>
+					</select>
+				</div>
+				<div class="tml-form-col">
+					<label>{$fields["remark"]}：</label>
+					<textarea name="remark" rows="4" style="width:800px;"></textarea>
+				</div>
+			</div>
+			<div class="tml-text-c">
+				<button class="tml_formBar_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button>
+			</div>
+		</div>
+		</div>
+		</form>
+</div>
+<div id="addXxBox" class="unitBox treeright tml-m5" style="overflow:hidden;"></div>
+</div>
+</div>

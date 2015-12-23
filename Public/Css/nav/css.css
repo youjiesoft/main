@@ -1,0 +1,49 @@
+#page-wrap							{ padding-top:26px;  float:left;} 
+a									{ text-decoration: none; }
+a:hover{ text-decoration:none;}
+ul									{ list-style: none; }
+.left                               { float:left;}
+.right                              { float:right;}
+.clear{clear:both;height:0;overflow:hidden;}
+
+/* 
+	LEVEL ONE
+*/
+ul.dropdown                         { position: relative;}
+ul.dropdown li                      { float: left; zoom: 1; vertical-align:middle; line-height:24px; height:24px;}
+ul.dropdown a:hover		            { color: #000; }
+ul.dropdown a:active                { color: #ffa500;}
+ul.dropdown li a                    { display: block; color:#FFF; font-size:13px;}
+ul.dropdown li:last-child a         { border-right: none; } /* Doesn't work in IE */
+ul.dropdown li.hover,
+ul.dropdown li:hover                { position: relative; }
+.menu_now                           { width:74px; text-align:center;}
+.menu_now a{ line-height:24px;}
+.menu_now:hover                     { background:url("../../images/nav_new_bg.png") no-repeat; width:74px; height:24px; line-height:24px; position: relative;}
+.menu_now ul li a                   { text-align:left; width:130px;}
+.menu_now ul li ul li a             { text-align:left; width:130px;}
+ul.dropdown li a:hover              { color: #ffffff; }
+.sf_sub_indicator{ background:url("../../images/nav_new_x.gif") no-repeat; width:4px; height:7px; margin-top:9px;}
+.sf_sub_indicator2{ background:url("../../images/nav_new_x2.gif") no-repeat; width:10px; height:10px; float:right; margin-left:80px; margin-top:2px;}
+.nav_new_bg3:hover{ background:url("../../images/nav_new_x3.gif") no-repeat; width:150px; height:24px; float:right; margin-left:80px; margin-top:2px;}
+
+
+
+/* 
+	LEVEL TWO
+*/
+ul.dropdown ul 						{ width: 150px; visibility: hidden; position: absolute; top: 100%; left: 0; border:1px solid #5a91c8;}
+ul.dropdown ul li 					{ font-weight: normal; background: #D8F6F6; color: #000; float: none;}
+ul.dropdown ul li a{ color:#000;}
+ul.dropdown ul li a:hover{ color:#000;}
+ul.dropdown ul li:hover{ background-color:#ffffff; width:150px; height:24px;}
+					
+									  
+                                    /* IE 6 & 7 Needs Inline Block */
+ul.dropdown ul li a					{ border-right: none; display: inline-block; } 
+
+/* 
+	LEVEL THREE
+*/
+ul.dropdown ul ul 					{ left: 100%; top: 0; }
+ul.dropdown li:hover > ul 			{ visibility: visible; }
