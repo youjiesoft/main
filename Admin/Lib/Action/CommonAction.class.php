@@ -10,6 +10,7 @@
  * @version V1.0
  */
 class CommonAction extends CommonExtendAction {
+	//定义模型对象
 	public $transaction_model='';
 	//$_excludeAction非动态表单生成action,用于排除动态表单的新增修改数据检查异常
 	public $_excludeAction = array('MisSalesMyProject');
