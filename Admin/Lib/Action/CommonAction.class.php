@@ -7937,9 +7937,10 @@ $dbmodel->commit();
 		$file_extension_lower = strtolower($info['extension']);
 		if($file_extension_lower=="docx" || $file_extension_lower=="doc"){
 			$action = $this->getActionName();
-			require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+			$ip = gethostbyname($_SERVER['SERVER_NAME']);
+			require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 			$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-			$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+			$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 			$url = __ROOT__."/Admin/index.php/$action/saveOnlineEditWord/name/".$_REQUEST['name'];
 			java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 // 			//添加自定义按钮
@@ -13083,9 +13084,11 @@ EOF;
 // 					$this->assign("file_type", 'file');
 // 					$this->assign('file_path', $file_path);
 // 					$this->display("Public:playswf");
-					require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+
+					$ip = gethostbyname($_SERVER['SERVER_NAME']);
+					require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 					$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-					$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+					$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 					java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 					$PageOfficeCtrl->setJsFunction_AfterDocumentOpened("AfterDocumentOpened");
 					$PageOfficeCtrl->setAllowCopy(false);//禁止拷贝
@@ -13127,9 +13130,10 @@ EOF;
 // 						$this->assign("file_type", 'file');
 // 						$this->assign('file_path', $file_path);
 // 						$this->display("Public:playswf");
-						require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+						$ip = gethostbyname($_SERVER['SERVER_NAME']);
+						require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 						$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-						$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+						$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 						java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 						$PageOfficeCtrl->setAllowCopy(false);//禁止拷贝
 						//$PageOfficeCtrl->setMenubar(false);//隐藏菜单栏
@@ -13442,9 +13446,10 @@ EOF;
 // 			$this->assign("file_type", 'file');
 // 			$this->assign('file_path', $file_path);
 // 			$this->display("Public:playswf");
-			require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+			$ip = GetHostByName($_SERVER['SERVER_NAME']);//获取本机IP
+			require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 			$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-			$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+			$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 			java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 			$PageOfficeCtrl->setAllowCopy(false);//禁止拷贝
 			//$PageOfficeCtrl->setMenubar(false);//隐藏菜单栏
@@ -13971,7 +13976,7 @@ code;
 	
 	function saveOnlineEditWord(){
 		$ip = GetHostByName($_SERVER['SERVER_NAME']);//获取本机IP
-		require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+		require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 		$fs = new Java("com.zhuozhengsoft.pageoffice.FileSaverPHP");//此行必须
 		echo $fs->close();//此行必须
 		$fs->load(file_get_contents("php://input"));//此行必须
