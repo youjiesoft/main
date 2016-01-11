@@ -2544,7 +2544,6 @@ EOF;
 						} 
 						$addAndEditJsArr [$k] = "\nfunction " . $functionName . "(obj){\r      {$box}" . $strjs.$str . "\r\n};";
 						$viewJsArr [$k] = "$viewstrjs$viewstr";
-							
 						// $addjsstr .= "\nfunction ".$functionName."(obj){".$str."\r\n};";
 						// }
 							
@@ -3874,6 +3873,7 @@ EOF;
 			 if($data[$controllName]['catalog']=="lookup"){
 			 	//实例化模型
 			 	$sList=D($confVo['model'])->getField($data[$controllName]['lookuporgval'].','.$data[$controllName]['lookuporg']);
+			 	logs(D($confVo['model'])->getlastsql(),'ContorllLookup');
 			 }else{
 			 	if($confVo['showoption']){
 			 		//选择select配置文件
@@ -5893,6 +5893,13 @@ EOF;
 				$detailList[$k1]['searchsortnum'] = $sort;
 				$detailList[$k1]['type']='text';
 			break;
+			case 'areainfo':
+				//搜索配置
+				$detailList[$k1]['issearch'] = $v1[$controllProperty['searchlist']['name']]?$v1[$controllProperty['searchlist']['name']]:1; //局部检索
+				$detailList[$k1]['isallsearch'] = $v1[$controllProperty['allsearchlist']['name']]?$v1[$controllProperty['allsearchlist']['name']]:1;//全局检索
+				$detailList[$k1]['searchsortnum'] = $sort;
+				$detailList[$k1]['type']='text';
+				break;
 			case 'textarea':
 					$isrichbox=$v1[$controllProperty['isrichbox']['name']];
 					if($isrichbox){
@@ -8580,6 +8587,37 @@ EOF;
 				$this->success("操作成功!",'',base64_encode(serialize($data)));
 			}
 		}catch (Exception $e){
+			echo $e->getMessage();
+			echo ('<pre>'.$e->__toString().'</pre>');
+		}
+	}
+	
+	/**
+	 * 自定义组件内容维护
+	 * @Title: componentContentEdit
+	 * @Description: todo(这里用一句话描述这个方法的作用)   
+	 * @author quqiang 
+	 * @date 2016年1月9日 下午2:30:39 
+	 * @throws
+	 */
+	function componentContentEdit(){
+		try {
+			if(!$_POST){
+				$propertyID= $_GET['propertyid'];
+				if( empty($propertyID) || !$propertyID ){
+					$msg = '当前属性未知!';
+					throw new NullDataExcetion($msg);
+				}
+				$propertyModel = M('mis_dynamic_form_propery');
+				$findAppendConditionMap['id'] = $propertyID;
+				$data = $propertyModel->where($findAppendConditionMap)->field('component')->find();
+				$this->assign('content',$data['component']);
+				$this->display();
+			}else{
+				$content = $_POST['component'];
+				$this->success("操作成功!",'',$content);
+			}
+		} catch (Exception $e) {
 			echo $e->getMessage();
 			echo ('<pre>'.$e->__toString().'</pre>');
 		}
