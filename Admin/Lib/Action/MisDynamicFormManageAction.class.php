@@ -15,7 +15,6 @@
  * 分离为	1 模板生成
  * 			2 action生成
  * 			3 model生成
- *
  */
 class MisDynamicFormManageAction extends MisDynamicFormTemplateAction {
 
