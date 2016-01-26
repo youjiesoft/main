@@ -2870,7 +2870,7 @@ EOF;
 						break;
 					case "checkbox":
 						$index =0;
-						$readonlyStr = $readonly?"readonly=\"readonly\" ":'';
+						$readonlyStr = !$readonly?"disabled=\"disabled\" ":'';
 						if($tagSelected){
 							$tagSelected= explode(',', $tagSelected);
 						}
@@ -2978,7 +2978,7 @@ EOF;
 							}
 						}else{
 							foreach ($list as $k => $v) {
-								$readonlyStr = $readonly?"readonly=\"readonly\" ":'';
+								$readonlyStr = !$readonly?"disabled=\"disabled\" ":'';
 								$html .= '<input type="checkbox"  '.$targevent.' '.$readonlyStr.' id="'.str_replace('=', '', base64_encode($names)).$index.'" name="'.$names.'" value="'.$k.'"';
 								if(in_array($k, $tagSelected))$html .= ' checked="checked" ';
 								$html .= '/><label class="tmp_label"  for="'.str_replace('=', '', base64_encode($names)).$index.'">'.$v.'</label>';
@@ -3890,33 +3890,45 @@ EOF;
 		//查询当前模型绑定字段
 		$map['bindaname']=$actionname;
 		$map['typeid']=2;
-		if(!$vo){
+		logs($vo,"BindCommonArr");
+		if(!$vo||$type=="add"){
+			//新增强制排除id 否则漫游取值出错
+			if($vo['id'])
+				unset($vo['id']);
+			logs("我是3895","BindCommon");
 			//获取
 			$flowMap=array();
 			$flowMap['projectid']=$_REQUEST['projectid'];
 			$flowMap['formobj']=$actionname;
 			$MisProjectFlowFormList=$MisProjectFlowFormModel->where($flowMap)->find();
-			//查询真实节点返回数据
-			$soureModel=D($MisProjectFlowFormList['sourcemodel']);
-			$soureMap=array();
-			$soureMap['status']=1;
-			$soureMap['projectid']=$_REQUEST['projectid']; 
-			$soureVo=$soureModel->where($soureMap)->find();
-			//根据去查询漫游 不是标准套表漫游
-			$dataArr=$MisSystemDataRoamingModel->main(1,$MisProjectFlowFormList['sourcemodel'],$soureVo['id'],4,$actionname);
-			foreach($dataArr as $targettable=>$data){
-				foreach($data as $k => $v){
-					foreach($v as $k1 => $v1){
-						$vo[key($v1)] = reset($v1);
+			if($MisProjectFlowFormList){
+				//查询真实节点返回数据
+				$soureModel=D($MisProjectFlowFormList['sourcemodel']);
+				$soureMap=array();
+				$soureMap['status']=1;
+				$soureMap['projectid']=$_REQUEST['projectid']; 
+				$soureVo=$soureModel->where($soureMap)->find();
+				//根据去查询漫游 不是标准套表漫游
+				$dataArr=$MisSystemDataRoamingModel->main(1,$MisProjectFlowFormList['sourcemodel'],$soureVo['id'],4,$actionname);
+				foreach($dataArr as $targettable=>$data){
+					foreach($data as $k => $v){
+						foreach($v as $k1 => $v1){
+							if(reset($v1)){
+								$vo[key($v1)] = reset($v1);
+							}
+							
+						}
 					}
 				}
+				logs($dataArr,"databindArr");
+				logs($vo,"databindArrVo");
+				$vo['projectworkid']=$MisProjectFlowFormList['id'];
 			}
-
-			$vo['projectworkid']=$MisProjectFlowFormList['id'];
 			$updateBackup=setOldDataToCache($actionname,$vo);
 			$updateBackupList=str_replace('=', '', base64_encode(serialize($updateBackup)));
 			$dataroamingCondition='/dataromaing/'.$updateBackupList;
 		}  
+		logs("我是3923","BindCommon");
 		$MisAutoBindSettableList=$MisAutoBindSettableModel->where($map)->order("inbindsort asc")->select();
 		//查询满足条件的表单类型
 		foreach ($MisAutoBindSettableList as $key=>$val){
@@ -4025,36 +4037,49 @@ EOF;
 						}
 					}
 				}else{ 
-					//加上数据漫游条件
-					$MisSystemDataRoamSubList=$MisSystemDataRoamSubDao->where("masid=".$val['dataroamid']." and targettable='".$tablename."'")->select();
-					if($MisSystemDataRoamSubList){
-						foreach ($MisSystemDataRoamSubList as $dskey=>$dsval){
-							if($vo[$dsval['sfield']]){
-								$bindmap[$dsval['tfield']]=$vo[$dsval['sfield']];
+					
+					//插入漫游数据进行查询 如果目标数据为空不单独处理
+					$dataArr=$MisSystemDataRoamingModel->main(2,$actionname,$vo['id'],4,$val['inbindaname'],'',$val['dataroamid']);
+// 					//加上数据漫游条件
+// 					$MisSystemDataRoamSubList=$MisSystemDataRoamSubDao->where("masid=".$val['dataroamid']." and targettable='".$tablename."'")->select();
+// 					if($MisSystemDataRoamSubList){
+// 						foreach ($MisSystemDataRoamSubList as $dskey=>$dsval){
+// 							if($vo[$dsval['sfield']]){
+// 								$bindmap[$dsval['tfield']]=$vo[$dsval['sfield']];
+// 							}
+// 						}
+// 					}
+					if(is_array(reset($dataArr))){
+						foreach(reset($dataArr) as $targettable=>$data){
+							foreach($data as $k => $v){
+								if(reset($v)){
+									$bindmap[key($v)]=reset($v);
+								}
 							}
 						}
 					}
 					unset($bindmap['iscopy']);
 					unset($bindmap['xiangmubianma']);
 					//查询绑定的附加条件
-					$MisAtuoMap=array();
-					$MisAtuoMap['bindaname']=$actionname;
-					$MisAtuoMap['inbindaname']=$val['inbindaname'];
-					$MisAutoBindSettableVo=$MisAutoBindSettableModel->where($MisAtuoMap)->find();
-					if($MisAutoBindSettableVo['inbindmap']){
-						$bindmap['_string']=$MisAutoBindSettableVo['inbindmap'];
+// 					$MisAtuoMap=array();
+// 					$MisAtuoMap['bindaname']=$actionname;
+// 					$MisAtuoMap['inbindaname']=$val['inbindaname'];
+// 					$MisAutoBindSettableVo=$MisAutoBindSettableModel->where($MisAtuoMap)->find();
+					if($val['inbindmap']){
+						$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+						), $val['inbindmap'] );
+						$bindmap['_string']=$newconditions;
 					}
-					$bindconlistArr=unserialize($MisAutoBindSettableVo['bindconlistArr']);
+					$bindconlistArr=unserialize($val['bindconlistArr']);
 					//获取表单子表附加 
 					foreach ($bindconlistArr as $bindkey=>$bindval){
 						//如果有值才生成查询
-						if($val){
-							if($vo[$bindkey]){
-								$bindmap[$bindval]=$vo[$bindkey];
-							}
+						if($vo[$bindkey]){
+							$bindmap[$bindval]=$vo[$bindkey];
 						}
 					}
 					$inbindid=$model->where($bindmap)->field("id")->order("id desc")->find();
+					logs($val['inbindaname']."==".$model->getlastsql(),"bindtabssql");
 				}
 				if($vo[$val['bindval']]){
 					$MisAutoBindSettableList[$key]['inbindid']=$inbindid['id'];
@@ -4161,7 +4186,7 @@ EOF;
 				}
 				$bindMap['status'] = 1;
 				$bindMap['bindaname'] = $actionname;
-				$MisAutoBindSettableList = $MisAutoBindModel->where($bindMap)->order("inbindsort asc")->getField("id,inbindaname,bindtype,bindaname,dataroamid,inbindtitle,inbindsort,formshowtype");
+				$MisAutoBindSettableList = $MisAutoBindModel->where($bindMap)->order("inbindsort asc")->getField("id,inbindaname,bindtype,bindaname,dataroamid,inbindtitle,inbindsort,formshowtype,inbindmap,bindconlistArr");
 			}else{
 				$bindid=$vo['id'];
 				// 查询符合条件的表单
@@ -4191,16 +4216,31 @@ EOF;
 						if(is_array(reset($dataArr))){
 							foreach(reset($dataArr) as $targettable=>$data){
 								foreach($data as $k => $v){
-									$date[key($v)] = reset($v);
-									$map[key($v)]=reset($v);
+									if(reset($v)){
+										$date[key($v)] = reset($v);
+										//$map[key($v)]=reset($v);
+									}
 								}
 							}
 						}
+						if($val['inbindmap']){
+							$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+							), $val['inbindmap'] );
+							$map['_string']=$newconditions;
+						}
+						$bindconlistArr=unserialize($val['bindconlistArr']);
+						//获取表单子表附加
+						foreach ($bindconlistArr as $bindkey=>$bindval){
+							//如果有值才生成查询
+							if($vo[$bindkey]){
+								$map[$bindval]=$vo[$bindkey];
+							}
+						}
 						$bindList = $model->where($map)->order('id desc')->find(); 
-						logs($model->getlastsql(),"zuhebindaddsql");
+						logs($val['inbindaname']."====".$model->getlastsql(),"zuhebindaddsql");
 						$MisAutoBindSettableList[$key]['id'] = $bindList['id'];
-						//不存在数据且页面也是修改则执行新增数据
-						if(!$MisAutoBindSettableList[$key]['id'] && $type=="edit"){ 
+						//不存在数据且页面也是修改则执行新增数据 只增对于套用修改
+						if(!$MisAutoBindSettableList[$key]['id'] && $type=="edit"&&$MisAutoBindSettableList[$key]['formshowtype']==0){ 
 							if(!$iszctpl){
 								$date['bindid']=$bindid;
 								$date['relationmodelname']=$actionname;
@@ -4615,7 +4655,597 @@ function getNestedForm($mainAction , $isContentSelf = false){
 
 /**
  * 通用表单改版-模板文件调用功能函数。
- *
+ */
+// 套表时
+function setFormControllAutoCreteAppend($actionName , $oprateType , $main , $originalUrl,$vo , $conf){
+	$retData = array();
+	/**
+	 * 参数定义
+	 */
+	//	当前action名称
+	$selfactionname =  MODULE_NAME;
+	// 一键保存按钮
+	$allSaveBtn = '';
+	// 通用表单产的隐藏域组件及值。
+	$hiddens = '';
+	// 隐藏域组件附属变量-子级表单临时存储数组
+	$relationArr = array();
+	// 隐藏域组件附属变量-所有构成表单临时存储
+	$actionlist = '';
+	// 重构后的url数据提交地址。
+	$restructureUrl = $originalUrl;
+	// form表单上的备用属性
+	$formParame='';
+	$funcitonname="navTabAjaxDone";
+	
+	try {
+
+		// 检查当前表单是否是关系表单
+		$isRelationForm = checkIsRelationForm($actionName, $oprateType);
+		if( $isRelationForm ){
+			/**
+			 * 处理一键保存按钮的生成
+			 * 一键保存出现依据：是关系型表单的主表
+			 */
+			// 检查当前表单是否为关系表单的主表
+			$isRelationMainForm = checkActionIsMain($actionName);
+			if( $isRelationMainForm != false && !$main){
+				if(!$main)	$main = $actionName;
+				// 一键保存结束表单数据统一提交地址
+				switch ($oprateType){
+					case 'add':
+						$oprate = 'updateControll';
+						$funcitonname=$actionName."addnavTabDone";
+						break;
+					case 'edit':
+						$oprate = 'updateControll';
+						$funcitonname="navTabAjaxDoneNoFlush";
+						break;
+					default:
+						$oprate = 'updateControll';
+				}
+				$aaa = __URL__;
+		
+				// 附加按钮的生成
+				$appendBtnHtml = '';
+				if($oprateType == 'edit' || $oprateType == 'add' ){
+					$formtype = checkFormType($actionName);
+						
+					if($formtype==1){
+						// 生成启动流程
+						if( is_array($vo) && $vo['operateid'] == 0 && $vo['id']){
+							$appendBtnHtml = <<<EOF
+			<li class="left">
+<a title="启动流程" height="227" width="640" target="dialog" rel="MisAutoHxzaddremind" href="$aaa/enterToSubmitAudit/type/$oprateType/module/$actionName" mask="true" class="tml_look_btn  tml_mp js-addremind">
+									<span class="icon-save"></span>启动流程</a>
+				<a class="enterToSubmitAudit hide" href="javascript:void(0);"><span class="icon-save"></span>启动流程</a>
+					<input type="hidden" value="1" name="__startprocessStatus__" disabled="disabled" enterToSubmitAudit="enterToSubmitAudit" />
+			</li>
+EOF;
+						}elseif(1== $_GET['bgval']){
+								
+							$appendBtnHtml = <<<EOF
+			<li class="left">
+				<a class="enterToSubmitAudit" href="javascript:void(0);"><span class="icon-save"></span>变更启动流程</a>
+					<input type="hidden" value="2" name="__startprocessStatus__" disabled="disabled" enterToSubmitAudit="enterToSubmitAudit" />
+			</li>
+EOF;
+						}
+					}else{
+						// 生成确认提交
+						if( is_array($vo)   ){
+							if(1== $_GET['bgval']){
+								$appendBtnHtml = <<<EOF
+			<li class="left">
+				<a class="enterToSubmit" href="javascript:void(0);"><span class="icon-save"></span>确认提交</a>
+					<input type="hidden" value="2" name="__startprocessStatus__" disabled="disabled" enterToSubmit="enterToSubmit" />
+					<input type="hidden" value="1" name="operateid" disabled="disabled" enterToSubmit="enterToSubmit" />
+			</li>
+EOF;
+							}else{
+								$appendBtnHtml = <<<EOF
+			<li class="left">
+				<a class="enterToSubmit" href="javascript:void(0);"><span class="icon-save"></span>确认提交</a>
+					<input type="hidden" value="1" name="operateid" disabled="disabled" enterToSubmit="enterToSubmit" />
+			</li>
+EOF;
+							}
+						}
+					}
+						
+				}
+		
+				if($oprateType == 'view'){
+					// 生成变更按钮
+					if( is_array($vo) && $vo['operateid'] == 1 ){
+						$appendBtnHtml = <<<EOF
+			<li class="left">
+				<a href="__URL__/changeEdit/bgval/1/id/{$vo['id']}" target="navTab" class="js-Change" rel="{$actionName}edit"><span class="icon-save"></span>变更</a>
+			</li>
+EOF;
+					}
+					// 变更按钮 暂时不用在这里生成，使用toolbar中的按钮组
+					$appendBtnHtml ='';
+				}
+				// 审批流表单时，表单回调函数修改。
+		
+		
+				// 获取当前表单的类型
+				$manageModel = M('mis_dynamic_form_manage');
+				$formTypeMap['actionname'] = $actionName;
+				$formTypeData = $manageModel->where($formTypeMap)->select();
+		
+				$formTypeData = reset($formTypeData);
+				$isaudit = $formTypeData['isaudit'];
+				if($isaudit && $oprateType != 'add'){
+					$funcitonnameAudit = 'navTabAjaxDone';
+				}else{
+					$funcitonnameAudit = $funcitonname;
+				}
+		
+				$taobiaoHtmlTemp = "";
+		
+				if(1== $_GET['bgval']){
+					//当遇到变更的时候，将保存按钮关闭
+					$taobiaoHtmlTemp = 'display:none;';
+				}
+				// 审批流	
+				$auditCallBack =$conf['callback']['audit']?$conf['callback']['audit']:"return validateCallback(this, {$funcitonnameAudit})";
+				// 普通表
+				$commonCallBack =$conf['callback']['common']?$conf['callback']['common']:"return validateCallback(this, {$funcitonname})";
+				// 保存,新增套表时的特殊回调
+				$enterToSubmitCallBack =$conf['callback']['common']?$conf['callback']['common']:"return validateCallback(this, navTabAjaxDone)";
+
+				$allSaveBtnTemp = <<<EOF
+		<ul class="right top_tool_bar" style="margin-right:0px;">
+			<li class="left" style="{$taobiaoHtmlTemp}">
+                <a class="allSaveBtn" href="javascript:void(0);"><span class="icon-save"></span> 保存</a>
+            </li>
+			{$appendBtnHtml}
+		</ul>
+<script>
+	var errorCount=-1;
+	$(function(){
+		// 1:普通表单。 2：审批流表单
+		var formtype = 1;
+	var box = navTab.getCurrentPanel();
+	function initFormValid(){
+		errorCount=0;
+		var formObj = \$("form.required-validate",box);
+		//formObj.unbind();
+		formObj.each(function(){
+				//$(this).logs('自定义 表单初始化' );
+				//$(this).unbind();
+				\$(this).validate({
+					 debug:false,
+					focusInvalid: true,
+					focusCleanup: true,
+					errorElement: "span",
+					ignore: ".ignore",
+					invalidHandler: function(form, validator) {
+						//$(this).logs('自定义的 invalidHandler');
+						var errors = validator.numberOfInvalids();
+						errorCount += errors;
+						$(this).logs('自定义 错误个数：' + errors);
+						if (errors) {
+							//var message = DWZ.msg("validateFormError", [errors]);
+							//alertMsg.error(message);
+							//console.log(message+errors);
+						}
+					}, submitHandler:function(form){
+			            alert("submitted");
+			        }
+				});
+			});
+	}
+		function checkStatus(obj){
+			if( $(obj).hasClass('disabled') ){
+				return false;
+			}else{
+				return true;
+			}
+		}
+		function setStatus(obj){
+			$(obj).addClass('disabled');
+		}
+		//$("form.required-validate",box).validate();
+		
+		//initFormValid();
+		// 确认提交
+		$('a.enterToSubmit:last' , box).on('click' , function(){
+			formtype = 3;
+			$('[enterToSubmit="enterToSubmit"]' , box).attr("disabled" , false);
+			clickfunction(this);
+		});
+		// 启动流程
+		$('a.enterToSubmitAudit:last' , box).on('click' , function(){
+			formtype = 2;
+			$('[enterToSubmitAudit="enterToSubmitAudit"]' , box).attr("disabled" , false);
+			clickfunction(this);
+		});
+		// 保存
+		$('a.allSaveBtn:last ' , box).on('click' , function(){
+			formtype = 1;
+			$('[enterToSubmit="enterToSubmit"]' , box).attr("disabled" , true);
+			clickfunction(this);
+		});
+		function clickfunction(_this) {
+		    initFormValid();
+			var formObj = $('form[autoformsubmit="submit"]', box);
+		    formObj.each(function() {
+		        $(this).valid();
+		    });
+		
+			errorCount = $(':input.error',box).length;
+		    $(this).logs('自定义的表单验证' + errorCount);
+		    if (errorCount > 0) {
+		        var message = DWZ.msg("validateFormError", [errorCount]);
+		        alertMsg.error(message);
+		    } else if (errorCount == 0) {
+		        var curobj = $(_this);
+		        if (checkStatus(curobj) == false) {
+		            return;
+		        } else {
+		            setStatus(curobj);
+		        }
+				var auditCallBack ='{$auditCallBack}';
+				var commonCallBack ='{$commonCallBack}';
+				var enterToSubmitCallBack ='{$enterToSubmitCallBack}';
+		
+		        // 构造一个结束的表单。让程序知道，当前这个批次的操作完成了。
+		        var endForm = $('<form action="' + TP_APP + '/Common/{$oprate}/navTabId/{$main}/endform/1{$conf['urlparame']}" method="post" onsubmit="return validateCallback(this, {$funcitonnameAudit})"></form>');
+		        //endForm.attr('action',TP_APP+'/Index/{$oprate}/navTabId/{$main}/');
+		        //endForm.attr('method','post');
+		        endForm.append($('<input type="hidden" name="__actionlistend__" value="end" />'));
+		        
+		        var settingHiddens = '{$conf['hiddens']}';
+		        if(settingHiddens)
+		        	endForm.append($(settingHiddens));
+				switch(formtype){
+					case 1:
+						endForm.attr('onsubmit' , commonCallBack);
+						//endForm.append($('<input type="hidden" name="callbackType" value="closeCurrent" />'));
+						break;
+					case 2:
+						endForm.attr('onsubmit' , auditCallBack);
+						//endForm.append($('<input type="hidden" name="callbackType" value="closeCurrent" />'));
+						break;
+					case 3:
+						endForm.attr('onsubmit' , enterToSubmitCallBack);
+						endForm.append($('<input type="hidden" name="callbackType" value="closeCurrent" />'));
+						break;
+					default:
+						endForm.attr('onsubmit' , commonCallBack);
+						break;
+				}
+				//console.warn(formtype);
+				//console.warn(endForm.attr('onsubmit'));
+				var div = $('<div></div>');
+				div.append(endForm);
+		        //console.log(div.html());
+		
+		        //endForm.append($('<input type="hidden" name="callbackType" value="closeCurrent" />'));
+		        var main = $('#{$main}_{$oprateType}').find('input[name="__main__"]').clone();
+		        var actionlist = $('#{$main}_{$oprateType}').find('input[name="__actionnamelist__"]').clone();
+		        endForm.append(main);
+		        endForm.append(actionlist);
+		   
+			   // 表有表单合并
+				var recombinationName = '__apply__form__';
+				var recombinationNameStart = '[';
+				var recombinationNameEnd = ']';
+				var formObjClone = formObj.clone(true);
+		        formObjClone.each(function(i , v) {
+					var curFormObj = $(this);
+					curFormObj.find(':input[name]').each(function(key , item){
+						var curName = $(item).attr('name');
+		
+						var reg = /\[.*\]/;
+						var typecheck = reg.test(curName);
+						if(typecheck){
+							// 将现有标签name为多提交时替换格式
+							var regName = /(\w+)(\[.*\])/;
+							var reNameArr = curName.match(regName);
+							if(typeof(reNameArr) == 'object'){
+								curName = recombinationNameStart + reNameArr[1] + recombinationNameEnd + reNameArr[2];
+							}
+							$(item).attr('name' ,recombinationName
+								+ recombinationNameStart
+								+ i
+								+ recombinationNameEnd
+								+ curName
+							);
+						}else{
+							$(item).attr('name' ,recombinationName
+								+ recombinationNameStart
+								+ i
+								+ recombinationNameEnd
+								+ recombinationNameStart
+								+ curName
+								+ recombinationNameEnd
+							 );
+						}
+					endForm.append($(item));
+			
+					});
+		        });
+		        		console.log(endForm);
+				$(endForm).submit();
+        		//endForm.ajaxSubmit();
+		    }
+		}
+	});
+</script>
+EOF;
+		
+			if($oprateType != 'view'){
+					$allSaveBtn = $allSaveBtnTemp;
+					}else{
+					$allSaveBtn = <<<EOF
+					<ul class="right top_tool_bar" style="margin-right:0px;">
+					{$appendBtnHtml}
+					</ul>
+EOF;
+					}
+						
+					$formtype = $isRelationMainForm['formtype'];
+					// 往隐藏域列表中加入套表的值关联情况页面刷新，
+					if(($oprateType == 'add' || $oprateType == 'edit' ) && $formtype==2){
+					/*
+							bindaname	套表主表action名称
+							 bindval		套表主表关系产生字段
+							  inbindaname	套表子表action名称
+							 inbindval		套表子表关系接收字段
+							 */
+							 // 获取主表的第一级子表关联信息
+							 $sql = "SELECT bindaname , bindval , inbindaname , inbindval FROM mis_auto_bind
+							 WHERE typeid=2 AND  bindaname='{$main}'";
+								$model = M('mis_auto_bind');
+								$nestFormData = $model->query($sql);
+								$json = '';
+								if (is_array($nestFormData)){
+								$temp='';
+								foreach ($nestFormData as $k=>$v){
+								// inbindval
+								$temp[$v['bindval']][]=$v;
+								}
+								$json = json_encode($temp);
+								}
+									
+								//$json = is_array($nestFormData) ? json_encode($nestFormData) : '';
+								// 获取主表的套表关联信息。
+								// style="display:none"
+								$allSaveBtn .= <<<EOF
+								<!--	套表一级子表关联数据动态修改	-->
+								<script>
+$(function(){
+		var box = navTab.getCurrentPanel();
+		var autoJson = '{$json}';
+		var curAction = '{$actionName}';
+		var curMain = '{$main}';
+		var scriptTag = '{$scriptTag}';
+		if(isNullorEmpty(autoJson)){
+          autoJson = $.parseJSON(autoJson);
+			$.each(autoJson , function(key , val){
+				var obj = $('[name="'+key+'"]',box);
+				if(typeof(obj) != undefined){
+					//obj.eq(0).off('change');
+					obj.eq(0).on('change' , function(){
+						///////////////////
+						var fieldName = key;
+						var fieldValue = $(this).val();
+						var tag = $(this).closest('form').attr('tabfor');
+		                var mainid =  $(this).closest('form').find('input[name="id"]').val();
+		                mainid = isNullorEmpty(mainid)?mainid:'';
+						var mainprojectid =  $(this).closest('form').find('input[name="projectid"]').val();
+				        projectid = isNullorEmpty(mainprojectid)?mainprojectid:'';
+		                var parames = new Object();
+		                parames.action=curAction;
+		                parames.main=curMain;
+		                parames.val=fieldValue;
+		                parames.filedval=fieldName;
+		                parames.bindrdid=mainid;
+						if(fieldValue){
+							$.ajax({
+									url:TP_APP+'/Common/getAutoFormTabs',
+									data:{'action':curAction,'main':curMain,'val':fieldValue,'filedval':fieldName,'projectid':projectid,'bindrdid':mainid},
+									type:'post',
+									dataType:'json',
+									success:function(msg){
+										if(isNullorEmpty(msg.data)){
+											var obj = $('#tabsContent_'+tag);
+				                            var header = obj.find('div.tabsHeader');
+				                            $.each(msg.data , function(key , val){
+				                                $.each(val , function(k , v){
+				                                      // 改url地址
+				                                      var tempId = k+'_'+tag;
+				                                      var curOprateObj = $('#'+tempId, header);
+				                                      curOprateObj.attr('href',v);
+				                                      var index = curOprateObj.closest('li').index();
+				console.log(tempId);
+				                                      // 重新请求子表页面
+		                                              $('.tabsContent',obj).children().eq(index).loadUrl(v,{},function(){});
+						                        });
+						                    });
+										}
+									}
+								});
+						}
+					});
+				}
+			});
+		}
+});
+			
+			
+</script>
+EOF;
+				}
+			}
+			// 隐藏域的生成
+			if( $isRelationMainForm != false && !$_GET['main']){
+				/**
+				 * 主入口代码处理
+				 */
+				if(!$main)	$main = $actionName;
+				$formtype = $isRelationMainForm['formtype'];
+				if($formtype==2){
+					$relationArr = getNestedForm($actionName );
+					// 检查套表的构成项是否为关系型表单
+					foreach ($relationArr as $key => $val){
+						$tempData = getComForm($val );
+						if( is_array( $tempData ) ) {
+							$relationArr = array_merge($relationArr , $tempData);
+						}
+					}
+				}else{
+					$relationArr = getComForm($main );
+				}
+			
+				if(is_array($relationArr)){
+					$actionlist =  join(',',$relationArr);//array_reduce($relationArr , 'reduceFunc' , $main));
+				}else{
+					$actionlist = $main;
+				}
+				$relationArr['0'] = $main;
+			}else{
+				/**
+				 * 当前为关系型表单的非入口
+				 * 二级选项
+				 * 生成隐藏域
+				 */
+				// mian参数有值，表示它是从主入口进来的
+				// 那就以main的值查询其所有子级
+				$relationArr =getNestedForm($main);
+				if(!is_array($relationArr) || count($relationArr) ==0){
+					$relationArr = getComForm($main);
+				}else{
+					// 检查套表的构成项是否为关系型表单
+					foreach ($relationArr as $key => $val){
+						$tempData = getComForm($val);
+						if( is_array( $tempData ) ) {
+							$relationArr = array_merge($relationArr , $tempData);
+						}
+					}
+				}
+				if(is_array($relationArr)){
+					$actionlist = join(',',$relationArr);//array_reduce($relationArr , 'reduceFunc' , $main);
+				}else{
+					$actionlist = $main;
+				}
+				$relationArr['0'] = $main;
+			}
+			unset($temp);
+			foreach ($relationArr as $k=>$v){
+				$temp[]=$v;
+			}
+			unset($relationArr);
+			$relationArr = $temp;
+			if( (in_array( $actionName , $relationArr ) || $actionName == $main) && $oprateType!='view' ){
+				$formParame = " autoformsubmit=\"submit\"";
+			}
+		
+			/**
+			 * 通用表单产的隐藏域组件及值html组装
+			 */
+			$hiddens = <<<EOF
+			<input type="hidden" name="__actionnamelist__" value="{$actionlist}" />
+			<input type="hidden" name="__main__" value="{$main}" />
+			<input type="hidden" name="__selfaction__" value="{$selfactionname}" />
+			<input type="hidden" name="__selfoprate__" value="{$oprateType}" />
+EOF;
+		
+			/**
+			 * 处理url重构值
+			 */
+			// 获取当前表单的类型
+						
+						 $manageModel = M('mis_dynamic_form_manage');
+						 $formTypeMap['actionname'] = $actionName;
+					 $formTypeData = $manageModel->where($formTypeMap)->select();
+					 if( is_array($formTypeData) && count($formTypeData) > 1){
+						throw new NullDataExcetion("动态重构表单的组件项：当前action{$actionName} 在manage表中存在多条记录，");
+					 }
+					 	if( is_array($formTypeData) && count($formTypeData) == 0){
+					 	throw new NullDataExcetion("动态重构表单的组件项：当前action{$actionName} 在manage表中无记录，");
+					 	}
+					 	// 			if( $isRelationMainForm != false){
+					 	// 			$formtype = $isRelationMainForm['formtype'];
+					 	$formTypeData = reset($formTypeData);
+					 	$isaudit = $formTypeData['isaudit'];
+					 	switch ($oprateType){
+					 	case 'add':
+					 		if(!$_GET['main'] && $isRelationMainForm == false ){
+								// 是关系表单但没有入口，也不是主表
+									if($isaudit){
+									// 审批 // 修改：关系型表单的非主表提交地址为默认、 nbmxkkj@20150527 2143
+										//$restructureUrl = 'updateControll';
+									}
+									}else{
+									if($formtype==0 && $isRelationMainForm != false){
+									$restructureUrl = 'updateControll';
+									}else{
+									$restructureUrl = 'updateControll';
+											if($isaudit){
+											// 审批
+												$restructureUrl = 'updateControll';
+											}
+									}
+									}
+									break;
+					 		case 'edit':
+					 			if(!$_GET['main'] && $isRelationMainForm == false ){
+					 				// 是关系表单但没有入口，也不是主表
+					 			}else{
+					 				$restructureUrl = 'updateControll';
+					 				if($isaudit){
+					 					// 审批
+					 					$restructureUrl = 'updateControll';
+					 				}
+					 			}
+					 			break;
+					 		case 'auditEdit':
+					 			$restructureUrl = 'updateControll';
+					 			if($isaudit){
+					 				// 审批
+					 				$restructureUrl = 'updateControll';
+					 			}
+					 			break;
+					 		case 'view':
+					 			$restructureUrl = 'updateControll';
+					 			if($isaudit){
+					 				// 审批
+					 				$restructureUrl = 'updateControll';
+					 			}
+					 			break;
+					 	}
+					 	$selfactiontype = $isaudit ? 'audit':'common';
+					 	$hiddens .= <<<EOF
+		
+			<input type="hidden" name="__selfactiontype__" value="{$selfactiontype}" />
+EOF;
+					 	// 			$restructureUrl
+		}
+		
+	} catch (Exception $e) {
+		echo '表配置：'.$e->__toString();
+	}
+	
+	if($oprateType == 'add'){
+		$hiddens .= <<<EOF
+		<input type="hidden" name="bindid" value="{$_GET['bindid']}" />
+		<input type="hidden" name="relationmodelname" value="{$_GET['bindaname']}" />
+EOF;
+	}
+	// 数据组装
+	$retData[0] = $allSaveBtn;		// 一键提交
+	$retData[1] = $hiddens.$conf['hiddens'];		// 隐藏属性
+	$retData[2] = $restructureUrl;	// 重构后的url
+	$retData[3] = $formParame;		//	备用的表单属性
+	$retData[4] = $conf['urlparame'];		//	地址栏参数附加
+	$retData[5] = $conf['callback']['callback'];		// 非套表使用的回调
+	return $retData;
+}
 /**
  * 动态重构表单的组件项
  * @Title: setFormControllAutoCreate
@@ -4631,8 +5261,16 @@ function getNestedForm($mainAction , $isContentSelf = false){
 function setFormControllAutoCreate($actionName , $oprateType , $main , $originalUrl , $vo){
 	// 返回结果对象
 	// 格式定义：		$retData[0] = 一键保存按钮
-	// 						$retData[1] = 关系表单所需的隐藏项
-	//						$retData[2] = 重构后的提交地址
+	// 				$retData[1] = 关系表单所需的隐藏项
+	//				$retData[2] = 重构后的提交地址
+	//				$retData[3] = 备用的表单属性
+	/*
+	 * 需要实现：
+	 * 	1。套表与非套表时的操作按钮及使用到的JS代码
+	 * 	2.表单提交需要的隐藏域，支持二开的添加
+	 * 	3.提交地址问题
+	 * 	4。form标签上的备用属性
+	 */
 	$retData = array();
 	/**
 	 * 参数定义
@@ -4858,6 +5496,8 @@ EOF;
 				var auditCallBack ='return validateCallback(this, {$funcitonnameAudit})';
 				var commonCallBack ='return validateCallback(this, {$funcitonname})';
 				var enterToSubmitCallBack ='return validateCallback(this, navTabAjaxDone)';
+				var otherCallBack = 'return iframeCallback(this, navTabAjaxDone)';
+				
 		        // 构造一个结束的表单。让程序知道，当前这个批次的操作完成了。
 		        var endForm = $('<form action="' + TP_APP + '/Common/{$oprate}/navTabId/{$main}/endform/1" method="post" onsubmit="return validateCallback(this, {$funcitonnameAudit})"></form>');
 		        //endForm.attr('action',TP_APP+'/Index/{$oprate}/navTabId/{$main}/');
@@ -4874,6 +5514,9 @@ EOF;
 					case 3:
 						endForm.attr('onsubmit' , enterToSubmitCallBack);
 						endForm.append($('<input type="hidden" name="callbackType" value="closeCurrent" />'));
+						break;
+					case 4:
+						endForm.attr('onsubmit' , otherCallBack);
 						break;
 					default:
 						endForm.attr('onsubmit' , commonCallBack);
@@ -5195,10 +5838,16 @@ EOF;
 		<input type="hidden" name="relationmodelname" value="{$_GET['bindaname']}" />
 EOF;
 	}
+// 	$retData['allSaveBtn'] = $allSaveBtn;		// 一键提交
+// 	$retData['hidden'] = $hiddens;		// 隐藏属性
+// 	$retData['url'] = $restructureUrl;	// 重构后的url
+// 	$retData['parame'] = $formParame;		//	备用的表单属性
+	
 	$retData[0] = $allSaveBtn;		// 一键提交
 	$retData[1] = $hiddens;		// 隐藏属性
 	$retData[2] = $restructureUrl;	// 重构后的url
 	$retData[3] = $formParame;		//	备用的表单属性
+	
 	return $retData;
 }
 
@@ -6074,5 +6723,23 @@ function writeLog($msg){
 	$logFile = ROOT."/systemLog.txt";
 	$msg = date('Y-m-d H:i:s').' >>> '.$msg."\r\n";
 	file_put_contents($logFile,$msg,FILE_APPEND);
+}
+
+/**
+ * 将字符串时间转换为时间戳，如果字符格式错误转换失败
+ * @Title: stringToTime
+ * @Description: todo(这里用一句话描述这个方法的作用)
+ * @param string $str	字符串时间
+ * @return string|Ambigous <'', number>
+ * @author quqiang
+ * @date 2016年1月20日 下午5:00:11
+ * @throws
+ */
+function stringToTime($str){
+	if(!$str)
+		return '';
+	$reg = '/((\d{4}-\d{2}-\d{2})|(\d{2}:\d{2}:\d{2})|(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}))$/';
+	$ret = preg_match($reg, $str , $match);
+	return $ret ? strtotime($str) : '';
 }
 ?>

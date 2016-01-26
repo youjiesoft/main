@@ -383,7 +383,9 @@ class UserInfoAction extends CommonAction {
 			$this->display ("Public:404");
 			exit;
 		}
-		$vo['age'] = $this->getAgeByToCarId($vo['chinaid'],false)+1;
+		if($vo['chinaid']){
+			$vo['age'] = $this->getAgeByToCarId($vo['chinaid'],false,false)+1;
+		}
 		$this->assign("vo",$vo);
 		//获取公司
 		$UserDeptDutyModel=D("UserDeptDuty");

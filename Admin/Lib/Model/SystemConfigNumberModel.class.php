@@ -16,6 +16,11 @@ class SystemConfigNumberModel extends CommonModel {
 		$condition = array('modelname'=>array('eq', $data['modelname']), 'table'=>array('eq', $data['table']));
 		$vo=$this->where($condition)->find();
 		if($vo){
+			if($vo['oldrule'] != $data['oldrule']){
+				//进行验证 规则1-4是否有变化，如果变化。直接将流水号重置
+				$data['numshow'] = 0;
+				$data['numnew'] = 1;
+			}
 		    $list=$this->where($condition)->data($data)->save();
 		    return $vo['id'];
 		}else{
@@ -73,7 +78,10 @@ class SystemConfigNumberModel extends CommonModel {
 		$RulesNO=$num='';
 		if(!empty($tableName)){
 			$ruleData = $this->GetRules($tableName, $modelName);
+			
 			if($ruleData['status']){
+				//进行解析规则
+				//$rule = explode("/",$ruleData['rule']);
 				//前缀一
 				if($ruleData['prefix1'])	$RulesNO.=$this->typeCheck($ruleData['prefix1'],$ruleData['prefix1_value'],$ruleData['prefix1_long']);
 				//前缀二
@@ -82,6 +90,7 @@ class SystemConfigNumberModel extends CommonModel {
 				if($ruleData['prefix3'])	$RulesNO.=$this->typeCheck($ruleData['prefix3'],$ruleData['prefix3_value'],$ruleData['prefix3_long']);
 				//前缀四
 				if($ruleData['prefix4'])	$RulesNO.=$this->typeCheck($ruleData['prefix4'],$ruleData['prefix4_value'],$ruleData['prefix4_long']);
+				
 				//流水号
 				if($ruleData['num']){
 					if(isset($max)){
@@ -103,6 +112,7 @@ class SystemConfigNumberModel extends CommonModel {
 	
 	public function getOrderno($tableName="", $modelName='',$max=0,$fieldval=null){
 		if(!empty($tableName)){
+			$oldorderno = "";
 			$RulesInfo=array();//编号返回值
 			$orderno='';//初始化流水号，订单编号
 			$ruleData = $this->GetRules($tableName, $modelName,$fieldval);
@@ -115,6 +125,13 @@ class SystemConfigNumberModel extends CommonModel {
 				if($ruleData['prefix3'])	$orderno.=$this->typeCheck($ruleData['prefix3'],$ruleData['prefix3_value'],$ruleData['prefix3_long']);
 				//前缀四
 				if($ruleData['prefix4'])	$orderno.=$this->typeCheck($ruleData['prefix4'],$ruleData['prefix4_value'],$ruleData['prefix4_long']);
+				$oldorderno = $orderno;
+				//判断：如果前缀发生了变化。则将流水号重置
+				if($ruleData['oldrule'] != $orderno  && $tableName!='mis_auto_fuhhu'){
+					$ruleData['numshow'] = 0;
+					$ruleData['numnew'] = 1;
+				}
+				
 				//流水号
 				if($ruleData['num']){
 					//先确定当前编号
@@ -160,6 +177,7 @@ class SystemConfigNumberModel extends CommonModel {
 								$cldata['status']=$ruleData['status'];
 								$cldata['num']=$ruleData['num'];
 								$cldata['numnew']=$max;
+								$cldata['oldrule']=$oldorderno;
 								$result = $model->add($cldata);
 							}else{
 								//新增
@@ -168,6 +186,7 @@ class SystemConfigNumberModel extends CommonModel {
 								$data['status']=$ruleData['status'];
 								$data['num']=$ruleData['num'];
 								$data['numnew']=$max;
+								$cldata['oldrule']=$oldorderno;
 								$result = $this->add($data);
 							}
 				    }else{
@@ -179,13 +198,27 @@ class SystemConfigNumberModel extends CommonModel {
 					    	$map['modelname']=$modelName;
 					    	$map['fieldval']=$fieldval;
 					    	$data = array('numnew'=>$max);
+					    	//判断：如果前缀发生了变化。则将流水号重置
+					    	 if($ruleData['oldrule'] != $oldorderno && $tableName!='mis_auto_fuhhu'){
+					    		$data['numshow'] = 0;
+					    		$data['numnew'] = 1;
+					    		$data['oldrule'] = $oldorderno;
+					    	} 
 					    	$result = $model->where($map)->setField($data);	
 				    	}else{
-				    	//修改
+				    		//修改
 					    	$map=array();
 					    	$map['table']=$tableName;
 					    	$map['modelname']=$modelName;
-					    	$data = array('numnew'=>$max);
+					    	$data['numnew'] =$max;
+					    	
+					    	//判断：如果前缀发生了变化。则将流水号重置
+					    	if($ruleData['oldrule'] != $oldorderno){
+					    		$data['numshow'] = 0;
+					    		$data['numnew'] = 1;
+					    		$data['oldrule'] = $oldorderno;
+					    	}
+					    	
 					    	$result = $this->where($map)->setField($data);	
 				    	}			    	
 				    }

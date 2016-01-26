@@ -290,7 +290,7 @@ class MisWorkMonitoringModel extends CommonModel {
 										}else{
 											$process_relation_parallelDao->where("id = ".$diguivo['id'])->setField("auditState",1);
 											//进入推送信息
-											$this->pushInfo($relatinfo['curAuditUser'],$tablename);
+											$this->pushInfo($relatinfo['curAuditUser'],$modelname,$data ['title']);
 										}
 									}
 								}
@@ -344,7 +344,7 @@ class MisWorkMonitoringModel extends CommonModel {
 									$userarr = array_unique(array_filter(explode(",", $userstr)));
 									$pushcurAuditUser = implode(",", $userarr);
 									//进入推送信息
-									$this->pushInfo($pushcurAuditUser,$tablename);
+									$this->pushInfo($pushcurAuditUser,$modelname,$data ['title']);
 								}
 							}
 						}else{
@@ -384,7 +384,7 @@ class MisWorkMonitoringModel extends CommonModel {
 								return false;
 							}
 							//进入推送信息
-							$this->pushInfo($relatinfo['curAuditUser'],$tablename);
+							$this->pushInfo($relatinfo['curAuditUser'],$modelname,$data ['title']);
 						}
 					}
 					//推送成功，将process_relation_form表可以进行干预的节点标记出来
@@ -399,16 +399,18 @@ class MisWorkMonitoringModel extends CommonModel {
 			return false;
 		}
 	}
-	public function pushInfo($curAuditUser,$tablename){
+	public function pushInfo($curAuditUser,$modelname,$title){
 		//把要推送的信息存入APP推送表
  		$appModel=M("mis_system_app_tuisong");
- 		$insertsqlapp = "INSERT INTO mis_system_app_tuisong ";
- 		$insertsqlapp .= " (title,content,userIds,status,createtime) ";
- 		$insertsqlapp .= " VALUES ";
- 		$insertsqlapp .= "('你有{$tablename}需要审批','内容','{$curAuditUser}','1','".time()."')";
- 		$appModel->startTrans();
- 		$appModel->execute($insertsqlapp);
- 		$appModel->commit();
+ 		$data = array();
+ 		$data['title'] = "你有{$modelname}需要审批:{$title}";
+ 		$data['userIds'] = $curAuditUser;
+ 		$data['status'] = 1;
+ 		$data['createtime'] = time();
+ 		$bool = $appModel->add($data);
+ 		if($bool == false){
+ 			return false;
+ 		}
 	}
 	/**
 	 * @Title: setZhuanShouCurAuditUser 

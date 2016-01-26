@@ -600,7 +600,7 @@ var TABLEWNEW = function() {
 			all_sum += this_num;
 			$(tb).find(".into_table_tj_"+index).html(parseFloat(sum.toFixed(decimals)));
 			$(tb).find(".into_table_all_tj_"+index).html(parseFloat(all_sum.toFixed(decimals)));
-			$(tb).parents("form").find("[name='"+bindhz+"']").val(parseFloat(all_sum.toFixed(decimals)));
+			$(tb).parents("form").find("[name='"+bindhz+"']").val(parseFloat(all_sum.toFixed(decimals))).trigger("change");
 		},
 		getTjAll:function(index) {
 			var that = this;

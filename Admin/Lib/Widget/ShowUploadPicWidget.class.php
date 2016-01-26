@@ -49,9 +49,18 @@ class ShowUploadPicWidget extends Widget{
 			$html.='</div>';
 			$html.='<div class="tml-form-row">';
 			$html.='<span id="'.$str_queue.'" class="info uploadify_queue">';
+			$root = str_replace("\\","/", PUBLIC_PATH);
+			$root = str_replace($_SERVER["DOCUMENT_ROOT"],"root/", $root);
+			$root = str_replace("root/","http://".$_SERVER["HTTP_HOST"]."/", $root);
+			$jpgArr = array("png","jpg","jpeg","gif","bmp");
 		 	//封装中部
 		 	if($data[0]){
 		 		foreach($data[0] as $key=>$val){
+		 			$file_path = str_replace("\\","/", UPLOAD_PATH.$val["attached"]);
+		 			$file_path = preg_replace("/^([\s\S]+)\/Public/", "", $file_path);
+		 			$file_path = $root.$file_path;
+		 			$info = pathinfo($val["attached"]);
+		 			$file_extension_lower = strtolower($info['extension']);
 		 			$html.='<div class="uploadify-queue-item">';
 		 			if($ActionName != "auditEdit"){
 		 				$html.='	<div class="cancel">';
@@ -68,7 +77,11 @@ class ShowUploadPicWidget extends Widget{
 		 			}
 		 			if($val['online']){
 		 				//在线查看按钮
-		 				$html.='<a class="tml-btn tml-btn-small tml-btn-green tml-ml5" style="cursor:pointer;" rel="__URL__/playSWF/name/'.$val['name'].'/filename/'.$val['filename'].'" onclick="openNewWindowsDisplayFile(this)"><span class="icon icon-file"></span> 在线查看</a>';
+		 				if(in_array($file_extension_lower,$jpgArr)){
+		 					$html.='<a id="showimg'.$val['id'].'" download="'.$val['lookname'].'" class="tml-btn tml-btn-small tml-btn-green tml-ml5" style="cursor:pointer;" data-gallery="" title="'.$val['lookname'].'" href="'.$file_path.'"><span class="icon icon-file"></span> 在线查看</a><a id="showimg'.$val['id'].'" download="'.$val['lookname'].'" style="display:none" data-gallery="" title="'.$val['lookname'].'" href="'.$file_path.'"><span class="icon icon-file"></span> 在线查看</a>';
+		 				}else{
+			 				$html.='<a class="tml-btn tml-btn-small tml-btn-green tml-ml5" style="cursor:pointer;" rel="__URL__/playSWF/name/'.$val['name'].'/filename/'.$val['filename'].'" onclick="openNewWindowsDisplayFile(this)"><span class="icon icon-file"></span> 在线查看</a>';
+		 				}
 		 			}
 					$html.='<div class="uploadify-progress">';
 					$html.='	<div class="uploadify-progress-bar" style="width: 100%;"></div>';

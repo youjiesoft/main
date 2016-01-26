@@ -37,7 +37,7 @@ class MisSystemDataRoamingModel extends CommonModel{
 			//首先通过主模型核验是否需要执行，不执行就直接中断，执行就赋值给主模型对象及通过它获取视图对象结果
 			$sourceMainTable=D($roamMasVal['sourcemodel'])->gettablename();
 			//如果存在高级模式，用高级模式的规则条件，否则用普通模式规则条件
-			if(!empty($roamMasVal['endsql'])){
+			if(!empty($roamMasVal['endsql'])&&strtolower($roamMasVal['endsql'])!='null'){
 				$rules=$roamMasVal['endsql'];
 				$rulesType='adv';//高级规则标识
 			}else{

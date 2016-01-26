@@ -313,6 +313,12 @@ class CommonAuditAction extends CommonAction {
 			} else {
 				$voList = $model->where ( $map )->order ( $orderBy )->limit ( $p->firstRow . ',' . $p->listRows )->select ();
 			}
+			
+			// 处理lookup数据 by杨东
+			if($_POST['dealLookupList']==1){
+				$this->dealLookupDelegate($voList,$name,$_POST['dealLookupType'],$_POST['viewname']);
+			}
+			
 			// 给每条数据分配该有的toolbar操作按钮
 			$this->setToolBorInVolist ( $voList );
 			
@@ -692,7 +698,7 @@ class CommonAuditAction extends CommonAction {
 						$projectmap['formobj'] = $vo ['isauditmodel'];//子流程模型
 						$projectworkid = $mis_project_flow_formDao->where($projectmap)->getField("id");
 					}
-					$projectworkid = $projectworkid?$projectworkidz:0;
+					$projectworkid = $projectworkid?$projectworkid:0;
 					$data ['url'] = __APP__ . "/" . $vo ['isauditmodel'] . "/add/auditZhuLicModel/".$name."/auditZhuLicId/".$id."/auditFlowTuiTablename/".$vo['issourcemodel']."/auditFlowTuiTableid/".$issourceid."/projectid/".$projectid."/projectworkid/".$projectworkid;
 					$data ['rel'] = $vo ['isauditmodel'] . "add";
 					$data ['title'] = $nodename . "_新增";
@@ -1689,7 +1695,7 @@ class CommonAuditAction extends CommonAction {
 				$map ['dostatus'] = 0;
 				$result = $MisWorkMonitoringModel->where ( $map )->delete ();
 				if($result == false){
-					$this->error ( "清除下级审核信息失败，请联系管理员1" );
+					$this->error ( "清除下级审核信息失败，请联系管理员" );
 				}
 				//2、清除当前节点已审核信息
 				$map = array ();
@@ -1725,6 +1731,22 @@ class CommonAuditAction extends CommonAction {
 				if($fresut == false){
 					$this->error("单据流程数据修改失败，请联系管理员");
 				}
+				/*
+				 * 如果撤回节点为子流程节点。那么必须清理掉已经转过的子流程数据对应的ID。
+				 */
+				if($oldalreadyAuditNode['flowtype'] == 3 && $oldalreadyAuditNode['id']){
+					//删除是子流程推送过的节点信息
+					$process_relation_childrenDao = M("process_relation_children");
+					$data = array();
+					//清理掉自己审批节点转过的子流程，(因为此处存在一个节点转N个子流程。不能清理掉别人审批流的转子流程)
+					$data['relation_formid'] = $oldalreadyAuditNode['id'];
+					$data['createid'] = $userid;
+					$childresult = $process_relation_childrenDao->where($data)->delete();
+					if($childresult == false){
+						$this->error("清理转子流程数据失败，请联系管理员");
+					}
+				}
+				
 				//5、封装审核意见参数
 				$_REQUEST['dotype'] = 3;// "流程审核";
 				$_REQUEST['doinfo'] = "【撤回审核过的节点，进行数据修改】  ";  //处理意见

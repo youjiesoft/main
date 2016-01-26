@@ -1730,6 +1730,7 @@ EOF;
 				 * 套表时特有属性，nbmxkj@20150625 1516
 				 */
 				if(!$_POST['__coverformoperateid__']){
+					//先关闭版控生成
 					$saveList=$this->SaveVersionWord($list,$name);
 				}
 				//调用此单据是否带提示
@@ -1823,6 +1824,19 @@ EOF;
 				$companyName=getFieldBy($companyName1, 'gongsimingchen', 'gongsijianchen', 'mis_auto_offsz');
 				$gongsiquanchen=getFieldBy($companyName1, 'gongsimingchen', 'gongsiquanchen', 'mis_auto_offsz');
 				$year=date('Y');
+				//查询当前年是否跟数据库年相同 不相同则重置
+				$classifyModel=M('mis_system_config_orderno_classify');
+				$classifymap=array();
+				$classifymap['table']=mis_auto_fuhhu;
+				$classifymap['modelname']=MisAutoVph;
+				$classifymap['fieldval']=$firstList;
+				$classifyList=$classifyModel->where($classifymap)->select();
+				if($classifyList['oldrule']!=$year){
+					$classifdata['numshow'] = 0;
+					$classifdata['numnew'] = 1;
+					$classifdata['oldrule'] = $year;
+					$result = $classifyModel->where($classifymap)->setField($classifdata);
+				}
 				$scnmodel = D('SystemConfigNumber');
 				$ordernoInfo = $scnmodel->getOrderno('mis_auto_fuhhu','MisAutoVph',null,$leixing);
 				$num=$ordernoInfo['orderno'];
@@ -2606,7 +2620,7 @@ EOF;
 				console.log("表数据查询条件:{$model->getLastSql()}");
 				</script>
 EOF;
-  		//echo $retSql;
+  		 echo $retSql;
 		if(false ===$vo && APP_DEBUG){
 			$this->error($model->getDBError());
 		}
@@ -2772,8 +2786,9 @@ EOF;
 	 * @throws
 	 */
 	function updateControll(){
+		//先获取老的数据。（因为套表中途可能重制了数据）
+		$oldrequest = $_REQUEST;
 		$originalPost = $_POST;
-		
          //logs($originalPost , $this->getActionName().'_updateControll_'.date('Y-m-d-H' , time()) ,'',__CLASS__,__FUNCTION__,__METHOD__);
          
 		// 新版套表提交
@@ -2885,10 +2900,13 @@ EOF;
 						if($bool == 1){
 							$zhuModel = A($oprateTag);
 							//终审后生成word版本
+							//先关闭版控生成
 							$saveList=$zhuModel->SaveVersionWord($retArr[$oprateTag],$oprateTag);
 						}
 					}
-						$this->success('批量单据保存成功' , '' , array( 'id'=>$retArr[$oprateTag] ,'bindid'=>$bindid,'isprocess'=>$isStartProcess ) );
+					$_REQUEST = $oldrequest;
+					unset($oldrequest);
+					$this->success('批量单据保存成功' , '' , array( 'id'=>$retArr[$oprateTag] ,'bindid'=>$bindid,'isprocess'=>$isStartProcess ) );
 				//	}
 				}
 				
@@ -3242,27 +3260,43 @@ EOF;
 							$listmap[$bsval['inbindval']]=$vo[$bsval['bindval']];
 							$bindmap[$bsval['inbindval']]=$vo[$bsval['bindval']];
 							$bindmap['status']=1;
-							$MisSystemDataRoamSubList=$MisSystemDataRoamSubDao->where("masid=".$bsval['dataroamid']." and targettable='".$tname."'")->select();
-							if($MisSystemDataRoamSubList){
-								foreach ($MisSystemDataRoamSubList as $dskey=>$dsval){
-									if($vo[$dsval['sfield']]){
-										$bindmap[$dsval['tfield']]=$vo[$dsval['sfield']];
+							//插入漫游数据进行查询 如果目标数据为空不单独处理
+							$dataArr=$MisSystemDataRoamingModel->main(2,$actionname,$vo['id'],4,$val['inbindaname'],'',$val['dataroamid']);
+							if(is_array(reset($dataArr))){
+								foreach(reset($dataArr) as $targettable=>$data){
+									foreach($data as $k => $v){
+										if(reset($v)){
+											$bindmap[key($v)]=reset($v);
+										}
 									}
 								}
 							}
+// 							$MisSystemDataRoamSubList=$MisSystemDataRoamSubDao->where("masid=".$bsval['dataroamid']." and targettable='".$tname."'")->select();
+// 							if($MisSystemDataRoamSubList){
+// 								foreach ($MisSystemDataRoamSubList as $dskey=>$dsval){
+// 									if($vo[$dsval['sfield']]){
+// 										$bindmap[$dsval['tfield']]=$vo[$dsval['sfield']];
+// 									}
+// 								}
+// 							}
 							//查询绑定的附加条件
-							$MisAtuoMap=array();
-							$MisAtuoMap['bindaname']=$actionname;
-							$MisAtuoMap['inbindaname']=$bsval['inbindaname'];
-							$MisAutoBindSettableVo=$MisAutoBindSettableModel->where($MisAtuoMap)->find();
-							if($MisAutoBindSettableVo['inbindmap']){
-								$bindmap['_string']=$MisAutoBindSettableVo['inbindmap'];
+// 							$MisAtuoMap=array();
+// 							$MisAtuoMap['bindaname']=$actionname;
+// 							$MisAtuoMap['inbindaname']=$bsval['inbindaname'];
+// 							$MisAutoBindSettableVo=$MisAutoBindSettableModel->where($MisAtuoMap)->find();
+							if($bsval['inbindmap']){
+								$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+								), $bsval['inbindmap'] );
+								$bindmap['_string']=$newconditions;
 							}
-							$bindconlistArr=unserialize($MisAutoBindSettableVo['bindconlistArr']);
-							foreach ($bindconlistArr as $bindkey=>$bindval){
-								//如果有值才生成查询
-								if($vo[$bindkey]){
-									$bindmap[$bindval]=$vo[$bindkey];
+							$bindconlistArr=array();
+							if($bsval['bindconlistArr']){
+								$bindconlistArr=unserialize($bsval['bindconlistArr']);
+								foreach ($bindconlistArr as $bindkey=>$bindval){
+									//如果有值才生成查询
+									if($vo[$bindkey]){
+										$bindmap[$bindval]=$vo[$bindkey];
+									}
 								}
 							}
 							if($bsval['bindtype']==0){
@@ -3304,7 +3338,7 @@ EOF;
 					$bindMap['_string']="bindval={$bindCondition} or bindval='all'";
 					$bindMap['status'] = 1;
 					$bindMap['bindaname'] = $name;
-					$MisAutoBindSettableList = $MisAutoBindModel->where($bindMap)->order("inbindsort asc")->getField("id,inbindaname,bindtype,bindaname,inbindtitle,inbindsort,isdelete,formshowtype,dataroamid");
+					$MisAutoBindSettableList = $MisAutoBindModel->where($bindMap)->order("inbindsort asc")->getField("id,inbindaname,bindtype,bindaname,inbindtitle,inbindsort,isdelete,formshowtype,bindconlistArr,inbindmap,dataroamid");
 				}else{
 					$bindid=$vo['id'];
 					// 查询符合条件的表单
@@ -3321,15 +3355,32 @@ EOF;
 								$map['bindid'] = $bindid;
 								$map['relationmodelname'] = $name;
 							}
-							//插入漫游数据
-							$dataArr=$MisSystemDataRoamingModel->main(2,$name,$vo['id'],4,$zcval['inbindaname'],'',$zcval['dataroamid']);
-							if(is_array(reset($dataArr))){
-								foreach(reset($dataArr) as $targettable=>$data){
-									foreach($data as $k => $v){
-										//去掉为空判断
+							//根据数据漫游查找对应数据 改为根据附件条件查询关系数据
+// 							$dataArr=$MisSystemDataRoamingModel->main(2,$name,$vo['id'],4,$zcval['inbindaname'],'',$zcval['dataroamid']);
+// 							if(is_array(reset($dataArr))){
+// 								foreach(reset($dataArr) as $targettable=>$data){
+// 									foreach($data as $k => $v){
+// 										//去掉为空判断
 // 										if(reset($v)){
-											$map[key($v)] = reset($v);
+// 											$map[key($v)] = reset($v);
 // 										}
+// 									}
+// 								}
+// 							}
+							//表单条件
+							if($zcval['inbindmap']){
+								$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+								), $zcval['inbindmap'] );
+								$map['_string']=$newconditions;
+							}
+							$bindconlistArr=array();
+							//表单附加条件
+							if($zcval['bindconlistArr']){
+								$bindconlistArr=unserialize($zcval['bindconlistArr']);
+								foreach ($bindconlistArr as $bindkey=>$bindval){
+									//如果有值才生成查询
+									if($vo[$bindkey]){
+										$map[$bindval]=$vo[$bindkey];
 									}
 								}
 							}
@@ -4702,7 +4753,7 @@ EOF;
 	 * @throws ThinkExecption
 	 +----------------------------------------------------------
 	 */
-	public function SendEmail($subject, $body, $addresses = array(),$attachments = array(),$configemail=array(),$type=0){
+	public function SendEmail($subject, $body, $addresses = array(),$attachments = array(),$configemail=array(),$type=0,$loadoption=true){
 		import("@.ORG.Mailer.PHPMailer");
 		$mail = new PHPMailer();
 		$mail->CharSet = "UTF-8";
@@ -4739,12 +4790,14 @@ EOF;
 				$mail->AddAddress($value,$configemail['name']);
 			}else {//发内部邮件
 				$_POST['messageType'] = 0;//messageType改为站内信
-				if (method_exists($this,"_before_insert")) {
-					call_user_func(array(&$this,"_before_insert"));
-				}
-				$this->insert();
-				if (method_exists($this,"_after_insert")) {
-					call_user_func(array(&$this,"_after_insert"),$list);
+				if($loadoption==true){
+					if (method_exists($this,"_before_insert")) {
+						call_user_func(array(&$this,"_before_insert"));
+					}
+					$this->insert();
+					if (method_exists($this,"_after_insert")) {
+						call_user_func(array(&$this,"_after_insert"),$list);
+					}
 				}
 			}
 		}
@@ -6452,7 +6505,8 @@ $dbmodel->commit();
 			$model->commit();
 // 		}else{
 // 			$newlist = json_decode(html_entity_decode($lookupjson),true);
-		}		
+		}
+		ob_clean();		
  		echo json_encode($newlist);
 	}
 	/**
@@ -6516,7 +6570,7 @@ $dbmodel->commit();
 		//$rs = $model->where($data)->find();
 		if(!$rs){
 			$model->add($data);
-			echo $model->getLastSql();
+			//echo $model->getLastSql();
 			$model->commit();
 		} 
 	}
@@ -6560,7 +6614,7 @@ $dbmodel->commit();
 		$data['subjson'] = html_entity_decode($_POST['subjson']);
 		$model = M('mis_lookup_datatable');
 		$model->where($data)->delete();
-		echo $model->getlastsql();
+		//echo $model->getlastsql();
 		$model->commit();
 		
 	}
@@ -7698,7 +7752,7 @@ $dbmodel->commit();
 	public function onchangeType(){
 		$masmodel = $_POST['model'];
 		$type = $_POST['val'];
-		$field = $_POST['field'];
+		$field = $_POST['field']; 
 		$submodel = $_POST['submodel'];
 		$masid = $_POST['masid'];
 		$mapkey = $_POST['mapkey'] ?$_POST['mapkey']:"masid";
@@ -7729,7 +7783,7 @@ $dbmodel->commit();
 	 * @date 2013-11-7 下午2:52:27
 	 * @throws
 	 */
-	public function getAgeByToCarId($idcard,$isYear=true){
+	public function getAgeByToCarId($idcard,$isYear=true,$isVail=true){
 		if($this->idcard_checksum18($idcard)){
 			//获得身份证的出生年月日
 			$year = substr($idcard,6, 4);
@@ -7751,7 +7805,9 @@ $dbmodel->commit();
 			}
 
 		}else{
-			$this->error("你输入的身份证有误！");
+			if($isVail!=false){
+				$this->error("你输入的身份证有误！");
+			}
 		}
 	}
 	/**
@@ -7937,9 +7993,11 @@ $dbmodel->commit();
 		$file_extension_lower = strtolower($info['extension']);
 		if($file_extension_lower=="docx" || $file_extension_lower=="doc"){
 			$action = $this->getActionName();
-			require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+// 			$ip = gethostbyname($_SERVER['SERVER_NAME']);
+			$ip = "192.168.0.238";
+			require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 			$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-			$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+			$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 			$url = __ROOT__."/Admin/index.php/$action/saveOnlineEditWord/name/".$_REQUEST['name'];
 			java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 // 			//添加自定义按钮
@@ -9154,7 +9212,7 @@ $dbmodel->commit();
 				$vo['password'] =C("EMAIL_PASSWORD");
 				$vo['pop3port']=110;
 				$vo['smtpport']=25;
-				$result = $this->SendEmail($title, $content, $email, "", $vo, 1);
+				$result = $this->SendEmail($title, $content, $email, "", $vo, 1,false);
 				if($type!=1){
 					if(!$result){
 						$this->error("操作失败！");
@@ -10519,6 +10577,7 @@ $this->assign('vo',$vo);
 		}
 		return $sql;
 	}
+	
 	/**
 	 * @Title: getReportData
 	 * @Description: todo(获取报告的所有数据公用方法)
@@ -10555,94 +10614,232 @@ $this->assign('vo',$vo);
 				    'value'=>$totalArr
 			);
 		}
-		// 验证当前模型是否存在动态建模。
-		$where = array ();
-		$where ['actionname'] = $name;
-		$managevo = $mis_dynamic_form_manageDao->where ( $where )->find ();
-		if ($managevo) {
-			// --------------验证一、是否存在内嵌表格-----------------//
-			$properywhere = array ();
-			$properywhere ['formid'] = $managevo ['id'];
-			$properywhere ['category'] = "datatable";
-			$neiqianlist = $mis_dynamic_form_properyModel->where ( $properywhere )->field ( "fieldname,title,datatablemodel,datatablename" )->select ();
-			if ($neiqianlist) {
-				// 获取内嵌表格的数据信息
-				foreach ( $neiqianlist as $nkey => $nval ) {
+		// --------------验证一、是否存在内嵌表格-----------------//
+		//查询内嵌表数据
+		$mis_dynamic_form_datatable_sort = M("mis_dynamic_form_datatable_sort");
+		$where = array();
+		$where['modelname'] = $name;
+		$neiqianlist = $mis_dynamic_form_datatable_sort->where($where)->select();
+		
+		foreach($neiqianlist as $key=>$val){
+			// 实例化内嵌表
+			$datatablename = D ( $val['tablename'] );
+			// 获取内嵌表的配置文件
+			$neiqdetailList = $scdmodel->getEmbedDetail ( $name, $val['tablename']);
+			$innerTabelObjdatatable3Data = array();
+			if($volist ['id']){
+				$where = array ();
+				$where ['masid'] = $volist ['id'];
+				//内嵌表的数据
+				$innerTabelObjdatatable3Data = $datatablename->where ( $where )->select ();
+			}
+			//定义配置文件转换后的数组变量
+			$fieldname = "datatablebdnq".$name.$val['sort'];
+			$neiqiandata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$val['title']);
+			if($bool){
+				// 获取表名称
+				$a[] = array('title'=>$showname."内嵌表【".$val['title']."】",
+						'type'=>2,
+						'value'=>$neiqiandata
+				);
+			}
+			//合并两个数组
+			$totalArr = array_merge($totalArr,$neiqiandata);
+		}
+		//-----------------------内嵌表格结束-----------------------//
+		
+		//--------------验证二、是否存在组合表单-----------------//
+		$sql = "SELECT dataroamid,bindtype,inbindmap,bindconlistArr,bindval,bindresult,inbindaname,title FROM `mis_auto_bind` LEFT JOIN node ON mis_auto_bind.`inbindaname` = node.`name`
+			WHERE mis_auto_bind.`bindaname`= '".$name."' AND mis_auto_bind.`typeid` = 0 AND mis_auto_bind.`status`=1 GROUP BY inbindaname
+			ORDER BY inbindsort ASC";
+		$model = M();
+		$bingdList = $model->query($sql);
+		//实例化漫游表
+		$MisSystemDataRoamingModel=D("MisSystemDataRoaming");
+		
+		foreach($bingdList as $bkey=>$bval){
+			//被绑模型名
+			$inbandaname = $bval['inbindaname'];
+			//实例化模型对象
+			$inbindaModel = D($inbandaname);
+			//显示节点名称
+			$showname = $bval['title'];
+			if($volist['id']){
+				$map = array();
+				$map['status'] = 1;
+				//插入漫游数据进行查询 如果目标数据为空不单独处理
+				//$dataArr=$MisSystemDataRoamingModel->main(2,$name,$volist['id'],4,$inbandaname,'',$bval['dataroamid']);
+				//if(is_array(reset($dataArr))){
+					//foreach(reset($dataArr) as $targettable=>$data){
+						//foreach($data as $k => $v){
+							//$map[key($v)]=reset($v);
+						//}
+					//}
+				//}
+				/*
+				 * 按照任玲绑定表关系，重新构建map条件获取绑定表查询条件
+				 */
+				if($bval['inbindmap']){
+					$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'), $bval['inbindmap'] );
+					$map['_string']=$newconditions;
+				}
+				$bindconlistArr=unserialize($bval['bindconlistArr']);
+				//获取表单子表附加
+				foreach ($bindconlistArr as $bindkey=>$bindval){
+					//如果有值才生成查询
+					if($vo[$bindkey]){
+						$map[$bindval]=$vo[$bindkey];
+					}
+				}
+			}
+			//第一步、判断是表单还是列表  bindtype = 0  表单
+			if($bval['bindtype']==0){
+				if($volist['id']){
+					//以主表的数据orderno查询组合的表单数据
+					$bindList = $inbindaModel->where($map)->find();
+				}
+				//获取配置文件list.inc.php,方便下面数据进行转换
+				$detailList = array();
+				$detailList = $scdmodel->getDetail($inbandaname,false);
+				//定义配置文件转换后的数组变量
+				$inbindanamedata=array();
+				$inbindanamedata = $this->getDqData($detailList,$bindList,'zh'.$inbandaname);
+				//数据标签数据结构
+				if($bool){
+					$a[] = array(
+							'title'=>$showname."__主表字段",
+							'type'=>1,
+							'value'=>$inbindanamedata
+					);
+				}else{
+					//合并两个数组
+					$totalArr = array_merge($totalArr,$inbindanamedata);
+				}
+				
+				$where = array();
+				$where['modelname'] = $inbandaname;
+				$neiqianlist = $mis_dynamic_form_datatable_sort->where($where)->select();
+				
+				foreach($neiqianlist as $k3=>$v3){
 					// 实例化内嵌表
-					$datatablename = D ( $nval ['datatablemodel'] );
+					$datatablename = D ( $v3['tablename'] );
 					// 获取内嵌表的配置文件
-					$neiqdetailList = $scdmodel->getEmbedDetail ( $name, $nval ['datatablemodel']);
-					
-					$where = array ();
-					$where ['masid'] = $volist ['id'];
-					//内嵌表的数据
-					$innerTabelObjdatatable3Data = $datatablename->where ( $where )->select ();
+					$neiqdetailList = $scdmodel->getEmbedDetail ( $inbandaname, $v3['tablename']);
+					$innerTabelObjdatatable3Data = array();
+					if($volist ['id']){
+						$where = array ();
+						$where ['masid'] = $volist ['id'];
+						//内嵌表的数据
+						$innerTabelObjdatatable3Data = $datatablename->where ( $where )->select ();
+					}
 					//定义配置文件转换后的数组变量
-					$num = $nkey+1;
-					$fieldname = "datatablebdnq".$name.$num;
-					$neiqiandata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$nval['title']);
+					$fieldname = "datatablezhnq".$inbandaname.$v3['sort'];
+					$neiqiandata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$v3['title']);
 					if($bool){
-						//分开组合表单，内嵌，以及内嵌字段
-						if($neiqiandata){
-							$nqfieldArr = array();
-							foreach($neiqiandata as $n2key=>$n2val){
-								foreach($n2val['value'] as $n3key=>$n3val){
-									$fielename = substr(md5($n2val['name'].$n3val['name']),0,8);
-									$nqfieldArr[$fielename] = array(
-											'name'=>$fielename,
-											'showname' =>$n2val['showname']."_".$n3val['showname'],
-											'colORrow' =>1,
-											'is_datatable' =>1,
-											'original' =>$n3val['original'],
-											'value' =>$n3val['value'],
-									);
-								}
-							}
-							$neiqiandata = array_merge($neiqiandata,$nqfieldArr);
-						}
 						// 获取表名称
-						$a[] = array('title'=>$showname."内嵌表【".$nval['title']."】",
+						$a[] = array('title'=>$showname."内嵌表【".$v3['title']."】",
 								'type'=>2,
 								'value'=>$neiqiandata
 						);
 					}
 					//合并两个数组
-					$neiqiantotalArr = array_merge($neiqiantotalArr,$neiqiandata);
+					$totalArr = array_merge($totalArr,$neiqiandata);
 				}
-			}//-----------------------内嵌表格结束-----------------------//
-	
-			//--------------验证二、是否存在组合表单-----------------//
-			$mis_auto_bindDao = M("mis_auto_bind");
-			$where = array();
-			$where['bindaname'] = $name;
-			$where['typeid'] = 0; //组合表类型
-			$where['status'] = 1;
-			// 查询符合条件的表单
-			$bingdList=$mis_auto_bindDao->where($where)->select();
-			
-			foreach($bingdList as $bkey=>$bval){
+			}else{
+				if($volist['id'] && $map){
+					//列表行数据
+					$bindList = $inbindaModel->where($map)->select();
+				}
+				$fieldname = "datatablezh".$inbandaname;
+				//获取配置文件list.inc.php,方便下面数据进行转换
+				$detailList = array();
+				$detailList = $scdmodel->getDetail($inbandaname,false);
+				//定义根据配置文件转换后的数组变量
+				$zhListdata=array();
+				$zhListdata = $this->getDetaileZhList($detailList,$bindList,$fieldname,$showname);
+				
+				if($bool){
+					$a[] = array('title'=>$showname.'_列表型标签',
+							'type'=>2,
+							'value'=>$zhListdata
+					);
+				}else{
+					//合并两个数组
+					$totalArr = array_merge($totalArr,$zhListdata);
+				}
+				
+				
+				$where = array();
+				$where['modelname'] = $inbandaname;
+				$neiqianlist = $mis_dynamic_form_datatable_sort->where($where)->select();
+				
+				foreach($neiqianlist as $k3=>$v3){
+					// 实例化内嵌表
+					$datatablename = D ( $v3['tablename'] );
+					// 获取内嵌表的配置文件
+					$neiqdetailList = $scdmodel->getEmbedDetail ( $inbandaname, $v3['tablename']);
+					$innerTabelObjdatatable3Data = array();
+					//循环数据列表
+					if($bindList){
+						foreach($bindList as $bdkey=>$bdval){
+							$where = array ();
+							$where ['masid'] = $bdval ['id'];
+							//内嵌表的数据
+							$innerTabelObjdatatable3Data = $datatablename->where ( $where )->select ();
+							if($innerTabelObjdatatable3Data){
+								break;
+							}
+						}
+					}
+					//定义配置文件转换后的数组变量
+					$fieldname = "datatablezhnq".$v3['tablename'].$v3['sort'];
+					$neiqiandata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$v3['title']);
+					if($bool){
+						// 获取表名称
+						$a[] = array('title'=>$showname."内嵌表【".$v3['title']."】",
+								'type'=>2,
+								'value'=>$neiqiandata
+						);
+					}
+					//合并两个数组
+					$totalArr = array_merge($totalArr,$neiqiandata);
+				}
+			}
+		}
+		//--------------验证三、是否存在套表-----------------//
+		$sql = "SELECT dataroamid,bindtype,inbindval,bindval,bindresult,inbindaname,title FROM `mis_auto_bind` LEFT JOIN node ON mis_auto_bind.`inbindaname` = node.`name`
+			WHERE mis_auto_bind.`bindaname`= '".$name."' AND mis_auto_bind.`typeid` = 2 AND mis_auto_bind.`status`=1 GROUP BY inbindaname
+			ORDER BY inbindsort ASC";
+		$bingdsetList = $model->query($sql);
+		if(count($bingdsetList)>0){
+			//存在套表数据，则进行数据获取
+			foreach($bingdsetList as $setkey=>$setval){
+				//套表被绑定模型
+				$tbinbindaname = $setval['inbindaname'];
 				//实例化模型对象
-				$inbindaModel = D($bval['inbindaname']);
-				//显示节点名称
-				$showname = getFieldBy($bval['inbindaname'], 'name', 'title', 'node');
+				$inbindaModel = D($setval['inbindaname']);
+				$showname = $setval['title'];
 				$map = array();
 				$map['status'] = 1;
-				$map['bindid'] = $volist['orderno'];
-				//第一步、判断是表单还是列表  bindtype = 0  表单
-				if($bval['bindtype']==0){		
+				$map[$setval['inbindval']] = $volist[$setval['bindval']];
+				//第一步、判断是表单还是列表
+				if($setval['bindtype']==0){//表单
 					//以主表的数据orderno查询组合的表单数据
-					$bindList = $inbindaModel->where($map)->find();
+					$bindList = array();
+					if($volist){
+						$bindList = $inbindaModel->where($map)->find();
+					}
 					//获取配置文件list.inc.php,方便下面数据进行转换
 					$detailList = array();
-					$detailList = $scdmodel->getDetail($bval['inbindaname'],false);
+					$detailList = $scdmodel->getDetail($tbinbindaname,false);
 					//定义配置文件转换后的数组变量
 					$inbindanamedata=array();
-					$inbindanamedata = $this->getDqData($detailList,$bindList,'zh'.$bval['inbindaname']);
+					$inbindanamedata = $this->getDqData($detailList,$bindList,'tb'.$tbinbindaname);
 					
 					//数据标签数据结构
 					if($bool){
 						$a[] = array(
-								'title'=>$showname."__主表字段",
+								'title'=>$showname."_表字段",
 								'type'=>1,
 								'value'=>$inbindanamedata
 						);
@@ -10650,362 +10847,96 @@ $this->assign('vo',$vo);
 						//合并两个数组
 						$totalArr = array_merge($totalArr,$inbindanamedata);
 					}
-					
-					//验证当前模型是否存在动态建模。
+					//验证内嵌表
 					$where = array();
-					$where['actionname'] = $bval['inbindaname'];
-					$managevo = $mis_dynamic_form_manageDao->where($where)->find();
-					if($managevo){
-						//验证一、是否存在内嵌表格
-						$properywhere = array();
-						$properywhere['formid'] = $managevo['id'];
-						$properywhere['category'] = "datatable";
-						$neiqianlist = $mis_dynamic_form_properyModel->where($properywhere)->field("fieldname,title,datatablemodel,datatablename")->select();
-						if($neiqianlist){
-							//获取内嵌表格的数据信息
-							$num = 1;
-							foreach($neiqianlist as $n1key=>$n1val){
-								//实例化内嵌表
-								$datatablename = D($n1val['datatablemodel']);
-								$where = array();
-								$where['masid'] =$bindList['id'];
-								$innerTabelObjdatatable3Data = $datatablename->where($where)->select();
-								//获取内嵌表的配置文件
-								$neiqdetailList = $scdmodel->getEmbedDetail($bval['inbindaname'],$n1val['datatablemodel']);
-								//定义配置文件转换后的数组变量
-								//定义内嵌的名称
-								$fieldname = "datatablezhnq".$bval['inbindaname'].$num;
-								$neiqiandata = array();
-								$neiqiandata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$n1val['title']);
-								if($bool){
-									//分开组合表单，内嵌，以及内嵌字段
-									if($neiqiandata){
-										$nqfieldArr = array();
-										foreach($neiqiandata as $n2key=>$n2val){
-											foreach($n2val['value'] as $n3key=>$n3val){
-												$fielename = substr(md5($n2val['name'].$n3val['name']),0,8);
-												$nqfieldArr[$fielename] = array(
-														'name'=>$fielename,
-														'showname' =>$n2val['showname']."_".$n3val['showname'],
-														'colORrow' =>1,
-														'is_datatable' =>1,
-														'original' =>$n3val['original'],
-														'value' =>$n3val['value'],
-												);
-											}
-										}
-										$neiqiandata = array_merge($neiqiandata,$nqfieldArr);
-									}
-									// 获取表名称
-									$a[] = array('title'=>$showname."内嵌表【".$n1val['title']."】",
-											'type'=>2,
-											'value'=>$neiqiandata
-									);
-								}else{
-									//合并两个数组
-									$neiqiantotalArr = array_merge($neiqiantotalArr,$neiqiandata);
-								}
-								$num++;
-							}
+					$where['modelname'] = $tbinbindaname;
+					$neiqianlist = $mis_dynamic_form_datatable_sort->where($where)->select();
+					
+					foreach($neiqianlist as $k3=>$v3){
+						// 实例化内嵌表
+						$datatablename = D ( $v3['tablename'] );
+						// 获取内嵌表的配置文件
+						$neiqdetailList = $scdmodel->getEmbedDetail ( $tbinbindaname, $v3['tablename']);
+						$innerTabelObjdatatable3Data = array();
+						if($bindList ['id']){
+							$where = array ();
+							$where ['masid'] = $bindList ['id'];
+							//内嵌表的数据
+							$innerTabelObjdatatable3Data = $datatablename->where ( $where )->select ();
 						}
+						//定义配置文件转换后的数组变量
+						$fieldname = "datatabletbnq".$v3['tablename'].$v3['sort'];
+						$neiqiandata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$v3['title']);
+						if($bool){
+							// 获取表名称
+							$a[] = array('title'=>$showname."内嵌表【".$v3['title']."】",
+									'type'=>2,
+									'value'=>$neiqiandata
+							);
+						}
+						//合并两个数组
+						$totalArr = array_merge($totalArr,$neiqiandata);
 					}
 				}else{
-					//列表行数据
-					$bindList = $inbindaModel->where($map)->select();
-					$fieldname = "datatablezh".$bval['inbindaname'];
+					//列表
+					$bindList = array();
+					if($volist){
+						$bindList = $inbindaModel->where($map)->select();
+					}
+					$extend = $setval['inbindaname'];
 					//获取配置文件list.inc.php,方便下面数据进行转换
 					$detailList = array();
-					$detailList = $scdmodel->getDetail($bval['inbindaname'],false);
+					$detailList = $scdmodel->getDetail($tbinbindaname,false);
+					$fieldname = "datatabletb".$tbinbindaname;
 					//定义根据配置文件转换后的数组变量
 					$zhListdata=array();
 					$zhListdata = $this->getDetaileZhList($detailList,$bindList,$fieldname,$showname);
 					
 					if($bool){
-						//分开组合表单，内嵌，以及内嵌字段
-						if($zhListdata){
-							$nqfieldArr = array();
-							foreach($zhListdata as $n2key=>$n2val){
-								foreach($n2val['value'] as $n3key=>$n3val){
-									$fielename = substr(md5($n2val['name'].$n3val['name']),0,8);
-									$nqfieldArr[$fielename] = array(
-											'name'=>$fielename,
-											'showname' =>$n2val['showname']."_".$n3val['showname'],
-											'colORrow' =>1,
-											'is_datatable' =>1,
-											'original' =>$n3val['original'],
-											'value' =>$n3val['value'],
-									);
-								}
-							}
-							$zhListdata = array_merge($zhListdata,$nqfieldArr);
-						}
-						$a[] = array('title'=>$showname.'_列表型标签',
-								'type'=>2,
+						$a[] = array('title'=>$showname.'_套表标签',
+								'type'=>3,
 								'value'=>$zhListdata
 						);
 					}else{
 						//合并两个数组
-						$neiqiantotalArr = array_merge($neiqiantotalArr,$zhListdata);
+						$totalArr = array_merge($totalArr,$zhListdata);
 					}
 					
-					//验证当前模型是否存在动态建模。
+					//处理内嵌表
 					$where = array();
-					$where['actionname'] = $bval['inbindaname'];
-					$managevo = $mis_dynamic_form_manageDao->where($where)->find();
-					if($managevo){
-						//--------------验证一、是否存在内嵌表格-----------------//
-						$properywhere = array();
-						$properywhere['formid'] = $managevo['id'];
-						$properywhere['category'] = "datatable";
-						$neiqianlist = $mis_dynamic_form_properyModel->where($properywhere)->field("fieldname,title,datatablemodel,datatablename")->select();
-						if($neiqianlist){
-							if($bindList){
-								foreach($bindList as $bdkey=>$bdval){
-									//获取内嵌表格的数据信息
-									$num = 1;
-									foreach($neiqianlist as $bdnkey=>$bdnval){
-										//实例化内嵌表
-										$datatablename = D($bdnval['datatablemodel']);
-										$where = array();
-										$where['masid'] =$bdval['id'];
-										$innerTabelObjdatastable3Data = $datatablename->where($where)->select();
-										//获取内嵌表的配置文件
-										$neiqdetailList = $scdmodel->getEmbedDetail($bval['inbindaname'],$bdnval['datatablemodel']);
-										//定义根据配置文件转换后的数组变量
-											
-										//定义内嵌的名称
-										$fieldname = "datatablezhnq".$bdnval['datatablemodel'].$num.$bdkey;
-										$showname = getFieldBy($bdnval['datatablemodel'], 'name', 'title', 'node').$num.$bdkey;
-										$zhListdata=array();
-										$zhListdata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatastable3Data,$fieldname,$showname);
-										//合并两个数组
-										$neiqiantotalArr = array_merge($neiqiantotalArr,$zhListdata);
-										
-										$num++;
-									}
-									//-----------------------内嵌表格结束-----------------------//
-								}
-							}else{
-								//获取内嵌表格的数据信息
-								$num = 1;
-								foreach($neiqianlist as $bdnkey=>$bdnval){
-									//实例化内嵌表
-									$datatablename = D($bdnval['datatablemodel']);
-									$where = array();
-									$where['masid'] =0;
-									$innerTabelObjdatastable3Data = $datatablename->where($where)->select();
-									//获取内嵌表的配置文件
-									$neiqdetailList = $scdmodel->getEmbedDetail($bval['inbindaname'],$bdnval['datatablemodel']);
-									//定义根据配置文件转换后的数组变量
-										
-									//定义内嵌的名称
-									$fieldname = "datatablezhnq".$bdnval['datatablemodel'].$num;
-									$showname = getFieldBy($bdnval['datatablemodel'], 'name', 'title', 'node').$num;
-									$zhListdata=array();
-									$zhListdata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatastable3Data,$fieldname,$showname);
-									//合并两个数组
-									$neiqiantotalArr = array_merge($neiqiantotalArr,$zhListdata);
-									
-									$num++;
+					$where['modelname'] = $tbinbindaname;
+					$neiqianlist = $mis_dynamic_form_datatable_sort->where($where)->select();
+					
+					foreach($neiqianlist as $k3=>$v3){
+						// 实例化内嵌表
+						$datatablename = D ( $v3['tablename'] );
+						// 获取内嵌表的配置文件
+						$neiqdetailList = $scdmodel->getEmbedDetail ( $tbinbindaname, $v3['tablename']);
+						$innerTabelObjdatatable3Data = array();
+						//循环数据列表
+						if($bindList){
+							foreach($bindList as $bdkey=>$bdval){
+								$where = array ();
+								$where ['masid'] = $bdval ['id'];
+								//内嵌表的数据
+								$innerTabelObjdatatable3Data = $datatablename->where ( $where )->select ();
+								if($innerTabelObjdatatable3Data){
+									break;
 								}
 							}
 						}
-					}
-				}
-			}
-			//验证三、是否存在套表
-			$where = array();
-			$where['bindaname'] = $name;
-			$where['status'] = 1; 
-			$where['typeid'] = 2;//套表类型
-			// 查询符合条件的表单
-			$bingdsetList=$mis_auto_bindDao->where($where)->select();
-			if(count($bingdsetList)>0){
-				//存在套表数据，则进行数据获取
-				foreach($bingdsetList as $setkey=>$setval){
-					//实例化模型对象
-					$inbindaModel = D($setval['inbindaname']);
-					$showname = getFieldBy($setval['inbindaname'], 'name', 'title', 'node');
-					$map = array();
-					$map['status'] = 1;
-					$map[$setval['inbindval']] = $volist[$setval['bindval']];
-					//第一步、判断是表单还是列表
-					if($setval['bindtype']==0){    		//表单
-						//以主表的数据orderno查询组合的表单数据
-						$bindList = $inbindaModel->where($map)->find();
-						//获取配置文件list.inc.php,方便下面数据进行转换
-						$detailList = array();
-						$detailList = $scdmodel->getDetail($setval['inbindaname'],false);
 						//定义配置文件转换后的数组变量
-						$inbindanamedata=array();
-						$inbindanamedata = $this->getDqData($detailList,$bindList,'tb'.$setval['inbindaname']);
-						
-						//数据标签数据结构
+						$fieldname = "datatabletbnq".$v3['tablename'].$v3['sort'];
+						$neiqiandata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$v3['title']);
 						if($bool){
-							$a[] = array(
-									'title'=>$showname."_表字段",
-									'type'=>1,
-									'value'=>$inbindanamedata
+							// 获取表名称
+							$a[] = array('title'=>$showname."内嵌表【".$v3['title']."】",
+									'type'=>2,
+									'value'=>$neiqiandata
 							);
-						}else{
-							//合并两个数组
-							$totalArr = array_merge($totalArr,$inbindanamedata);
 						}
-						//验证当前模型是否存在动态建模。
-						$where = array();
-						$where['actionname'] = $setval['inbindaname'];
-						$managevo = $mis_dynamic_form_manageDao->where($where)->find();
-						if($managevo){
-							//验证一、是否存在内嵌表格
-							$properywhere = array();
-							$properywhere['formid'] = $managevo['id'];
-							$properywhere['category'] = "datatable";
-							$neiqianlist = $mis_dynamic_form_properyModel->where($properywhere)->field("fieldname,title,datatablemodel,datatablename")->select();
-							if($neiqianlist){
-								$newArrayNeiqian = array();
-								$num = 1;
-								//获取内嵌表格的数据信息
-								foreach($neiqianlist as $n1key=>$n1val){
-									//实例化内嵌表
-									$datatablename = D($n1val['datatablemodel']);
-									$where = array();
-									$where['masid'] =$bindList['id'];
-									$innerTabelObjdatatable3Data = $datatablename->where($where)->select();
-									//获取内嵌表的配置文件
-									$neiqdetailList = $scdmodel->getEmbedDetail($setval['inbindaname'],$n1val['datatablemodel']);
-									
-									//定义内嵌的名称
-									$fieldname = "datatabletbnq".$n1val['datatablemodel'].$num;
-									$zhListdata=array();
-									$zhListdata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatatable3Data,$fieldname,$n1val['title']);
-									
-									if($bool){
-										//分开组合表单，内嵌，以及内嵌字段
-										if($zhListdata){
-											$nqfieldArr = array();
-											foreach($zhListdata as $n2key=>$n2val){
-												foreach($n2val['value'] as $n3key=>$n3val){
-													$fielename = substr(md5($n2val['name'].$n3val['name']),0,8);
-													$nqfieldArr[$fielename] = array(
-															'name'=>$fielename,
-															'showname' =>$n2val['showname']."_".$n3val['showname'],
-															'colORrow' =>1,
-															'is_datatable' =>1,
-															'original' =>$n3val['original'],
-															'value' =>$n3val['value'],
-													);
-												}
-											}
-											$zhListdata = array_merge($zhListdata,$nqfieldArr);
-										}
-										$a[] = array('title'=>$showname.'内嵌标签',
-												'type'=>2,
-												'value'=>$zhListdata
-										);
-									}else{
-										//合并两个数组
-										$neiqiantotalArr = array_merge($neiqiantotalArr,$zhListdata);
-									}
-									$num++;
-								}
-							}
-						}
-					}else{
-						//列表
-						$bindList = $inbindaModel->where($map)->select();
-						$extend = $setval['inbindaname'];
-						//获取配置文件list.inc.php,方便下面数据进行转换
-						$detailList = array();
-						$detailList = $scdmodel->getDetail($setval['inbindaname'],false);
-						$fieldname = "datatabletb".$extend;
-						//定义根据配置文件转换后的数组变量
-						$zhListdata=array();
-						$zhListdata = $this->getDetaileZhList($detailList,$bindList,$fieldname,$showname);
-						
-						if($bool){
-							//分开组合表单，内嵌，以及内嵌字段
-							if($zhListdata){
-								$nqfieldArr = array();
-								foreach($zhListdata as $n2key=>$n2val){
-									foreach($n2val['value'] as $n3key=>$n3val){
-										$fielename = substr(md5($n2val['name'].$n3val['name']),0,8);
-										$nqfieldArr[$fielename] = array(
-												'name'=>$fielename,
-												'showname' =>$n2val['showname']."_".$n3val['showname'],
-												'colORrow' =>1,
-												'is_datatable' =>1,
-												'original' =>$n3val['original'],
-												'value' =>$n3val['value'],
-										);
-									}
-								}
-								$zhListdata = array_merge($zhListdata,$nqfieldArr);
-							}
-							$a[] = array('title'=>$showname.'_套表标签',
-									'type'=>3,
-									'value'=>$zhListdata
-							);
-						}else{
-							//合并两个数组
-							$neiqiantotalArr = array_merge($neiqiantotalArr,$zhListdata);
-						}
-						//验证当前模型是否存在动态建模。
-						$where = array();
-						$where['actionname'] = $setval['inbindaname'];
-						$managevo = $mis_dynamic_form_manageDao->where($where)->find();
-						if($managevo){
-							//--------------验证一、是否存在内嵌表格-----------------//
-							$properywhere = array();
-							$properywhere['formid'] = $managevo['id'];
-							$properywhere['category'] = "datatable";
-							$neiqianlist = $mis_dynamic_form_properyModel->where($properywhere)->field("fieldname,title,datatablemodel,datatablename")->select();
-							if($neiqianlist){
-								if($bindList){
-									foreach($bindList as $bdkey=>$bdval){
-										$num = 1;
-										//获取内嵌表格的数据信息
-										foreach($neiqianlist as $bdnkey=>$bdnval){
-											//实例化内嵌表
-											$datatablename = D($bdnval['datatablemodel']);
-											$where = array();
-											$where['masid'] =$bdval['id'];
-											$innerTabelObjdatastable3Data = $datatablename->where($where)->select();
-											//获取内嵌表的配置文件
-											$neiqdetailList = $scdmodel->getEmbedDetail($setval['inbindaname'],$bdnval['datatablemodel']);
-											//定义内嵌的名称
-											$fieldname = "datatabletbnq".$bdnval['datatablemodel'].$num.$bdkey;
-											$showname = getFieldBy($bdnval['datatablemodel'], 'name', 'title', 'node').$num.$bdkey;
-											$zhListdata=array();
-											$zhListdata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatastable3Data,$fieldname,$showname);
-											//合并两个数组
-											$neiqiantotalArr = array_merge($neiqiantotalArr,$zhListdata);
-											$num ++;
-										}
-										//-----------------------内嵌表格结束-----------------------//
-									}
-								}else{
-									$num = 1;
-									//获取内嵌表格的数据信息
-									foreach($neiqianlist as $bdnkey=>$bdnval){
-										//实例化内嵌表
-										$datatablename = D($bdnval['datatablemodel']);
-										$where = array();
-										$where['masid'] = 0;
-										$innerTabelObjdatastable3Data = $datatablename->where($where)->select();
-										//获取内嵌表的配置文件
-										$neiqdetailList = $scdmodel->getEmbedDetail($setval['inbindaname'],$bdnval['datatablemodel']);
-										//定义内嵌的名称
-										$fieldname = "datatabletbnq".$bdnval['datatablemodel'].$num;
-										$showname = getFieldBy($bdnval['datatablemodel'], 'name', 'title', 'node').$num;
-										$zhListdata=array();
-										$zhListdata= $this->getDetaileZhList($neiqdetailList,$innerTabelObjdatastable3Data,$fieldname,$showname);
-										//合并两个数组
-										$neiqiantotalArr = array_merge($neiqiantotalArr,$zhListdata);
-										$num ++;
-									}
-								}
-							}
-						}
+						//合并两个数组
+						$totalArr = array_merge($totalArr,$neiqiandata);
 					}
 				}
 			}
@@ -11013,24 +10944,6 @@ $this->assign('vo',$vo);
 		if($bool){
 			return $a;
 		}else{
-			//分开组合表单，内嵌，以及内嵌字段
-			if($neiqiantotalArr){
-				$nqfieldArr = array();
-				foreach($neiqiantotalArr as $n2key=>$n2val){
-					foreach($n2val['value'] as $n3key=>$n3val){
-						$fielename = substr(md5($n2val['name'].$n3val['name']),0,8);
-						$nqfieldArr[$fielename] = array(
-								'name'=>$fielename,
-								'showname' =>$n2val['showname']."_".$n3val['showname'],
-								'colORrow' =>1,
-								'is_datatable' =>1,
-								'original' =>$n3val['original'],
-								'value' =>$n3val['value'],
-						);
-					}
-				}
-				$totalArr = array_merge($totalArr,$neiqiantotalArr,$nqfieldArr);
-			}
 			return $totalArr;
 		}
 	}
@@ -11129,61 +11042,65 @@ $this->assign('vo',$vo);
 				continue;
 			}
 			$fielename = substr(md5($extend.$v2['name']),0,8);
-			if(isset($v2['fieldcategory']) && $v2['fieldcategory']=='textarea'){ 
-				$valArr = array('name'=>$fielename,'showname'=>$v2['showname'],'istestarea'=>1,'original'=>$vo[$v2['name']],'value'=>$vo[$v2['name']]);
-			}else{
-				$valArr = array('name'=>$fielename,'showname'=>$v2['showname'],'istestarea'=>0,'original'=>$vo[$v2['name']],'value'=>$vo[$v2['name']]);
-				if(isset($v2['fieldcategory']) && $v2['fieldcategory']=='checkbox'){
-					//组合下拉框数据格式
-					if(count($v2['func']) >0){
-						$varchar = "";
-						foreach($v2['func'] as $k3=>$v3){
-							foreach($v3 as $k5=>$v5){
-								if($v5 == 'getSelectlistValue'){
-									//获取枚举数据
-									$meiju = $v2['funcdata'][$k3][$k5][1];
-									if($meiju){
-										$model=D('Selectlist');
-										$temp = $model->GetRules($meiju);
-										$meidata = $temp[$meiju];
-										$meijuarr = implode(",", array_keys($meidata));
-										break 2;
-									}
-								}else if($v5 == 'excelTplidTonameAppend'){
-									//获取枚举数据
-									$table = $v2['funcdata'][$k3][$k5][3];
-									if($table){
-										$field = $v2['funcdata'][$k3][$k5][1];
-										$model = M($table);
-										$map['status'] = 1;
-										$meidata=$model->where($map)->getField($field,true);
-										$meijuarr = implode(",", $meidata);
-										break 2;
+			if($vo){
+				if(isset($v2['fieldcategory']) && $v2['fieldcategory']=='textarea'){
+					$valArr = array('name'=>$fielename,'showname'=>$v2['showname'],'istestarea'=>1,'original'=>$vo[$v2['name']],'value'=>$vo[$v2['name']]);
+				}else{
+					$valArr = array('name'=>$fielename,'showname'=>$v2['showname'],'istestarea'=>0,'original'=>$vo[$v2['name']],'value'=>$vo[$v2['name']]);
+					if(isset($v2['fieldcategory']) && $v2['fieldcategory']=='checkbox'){
+						//组合下拉框数据格式
+						if(count($v2['func']) >0){
+							$varchar = "";
+							foreach($v2['func'] as $k3=>$v3){
+								foreach($v3 as $k5=>$v5){
+									if($v5 == 'getSelectlistValue'){
+										//获取枚举数据
+										$meiju = $v2['funcdata'][$k3][$k5][1];
+										if($meiju){
+											$model=D('Selectlist');
+											$temp = $model->GetRules($meiju);
+											$meidata = $temp[$meiju];
+											$meijuarr = implode(",", array_keys($meidata));
+											break 2;
+										}
+									}else if($v5 == 'excelTplidTonameAppend'){
+										//获取枚举数据
+										$table = $v2['funcdata'][$k3][$k5][3];
+										if($table){
+											$field = $v2['funcdata'][$k3][$k5][1];
+											$model = M($table);
+											$map['status'] = 1;
+											$meidata=$model->where($map)->getField($field,true);
+											$meijuarr = implode(",", $meidata);
+											break 2;
+										}
 									}
 								}
 							}
 						}
+						$valArr = array('name'=>$fielename,'showname'=>$v2['showname'],'istestarea'=>0,'ischecked'=>1,'checkList'=>$meijuarr,'original'=>$vo[$v2['name']],'value'=>$vo[$v2['name']]);
 					}
-					$valArr = array('name'=>$fielename,'showname'=>$v2['showname'],'istestarea'=>0,'ischecked'=>1,'checkList'=>$meijuarr,'original'=>$vo[$v2['name']],'value'=>$vo[$v2['name']]);
-				}
 				
-				if(count($v2['func']) >0){
-					$varchar = "";
-					foreach($v2['func'] as $k3=>$v3){
-						//开始html字符
-						if(isset($v2['extention_html_start'][$k3])){
-							$varchar = $v2['extention_html_start'][$k3];
-						}
-						//中间内容
-						$varchar .= getConfigFunction($vo[$v2['name']],$v3,$v2['funcdata'][$k3],$vo);
+					if(count($v2['func']) >0){
+						$varchar = "";
+						foreach($v2['func'] as $k3=>$v3){
+							//开始html字符
+							if(isset($v2['extention_html_start'][$k3])){
+								$varchar = $v2['extention_html_start'][$k3];
+							}
+							//中间内容
+							$varchar .= getConfigFunction($vo[$v2['name']],$v3,$v2['funcdata'][$k3],$vo);
 				
-						if(isset($v2['extention_html_end'][$k3])){
-							$varchar .= $v2['extention_html_end'][$k3];
+							if(isset($v2['extention_html_end'][$k3])){
+								$varchar .= $v2['extention_html_end'][$k3];
+							}
+							//结束html字符
 						}
-						//结束html字符
+						$valArr['value'] = $varchar;
 					}
-					$valArr['value'] = $varchar;
 				}
+			}else{
+				$valArr = array('name'=>$fielename,'showname'=>$v2['showname']);
 			}
 			$data[$fielename]= $valArr;
 		}
@@ -11204,6 +11121,13 @@ $this->assign('vo',$vo);
 	 */
 	public function getDetaileZhList($detailList,$volist,$fieldname,$showname){
 		$valArr = array();
+		//先定义名称
+		$fielename = substr(md5($fieldname),0,8);
+		$data[$fielename] = array(
+				'name'=>$fielename,
+				'is_datatable'=>1,
+				'showname'=>$showname,
+		);
 		foreach($detailList as $k2=>$v2){
 			if($v2['fieldcategory']=="uploadfilenew" || $v2['name'] =="id" || $v2['name'] =="action" || $v2['name'] =="auditState" || strpos(strtolower($v2['name']),"datatable")!==false || $v2['shows']==0){
 				continue;
@@ -11239,17 +11163,31 @@ $this->assign('vo',$vo);
 					}
 				}
 			}
-			$fielename = substr(md5($v2['name']),0,8);
-			//先组合内嵌字段
-			$valArr[] = array('name'=>$fielename,'is_stats'=>$v2['iscount'],'func'=>$v2['func'],'funcdata'=>$v2['funcdata'],'showname'=>$v2['showname'],'original'=>$original,'value'=>$val);
+			$subfieldname = substr(md5($v2['name']),0,8);
+			//组合内嵌表单个字段
+			$subfielename = substr(md5($fielename.$subfieldname),0,8);
+			if($volist){
+				//先组合内嵌字段
+				$valArr[] = array('name'=>$subfieldname,'is_stats'=>$v2['iscount'],'func'=>$v2['func'],'funcdata'=>$v2['funcdata'],'showname'=>$v2['showname'],'original'=>$original,'value'=>$val);
+				$data[$subfielename] = array(
+						'name'=>$subfielename,
+						'showname' =>$showname."_".$v2['showname'],
+						'colORrow' =>1,
+						'is_datatable' =>1,
+						'original' =>$original,
+						'value' =>$val,
+				);
+			}else{
+				//先组合内嵌字段
+				$valArr[] = array('name'=>$subfieldname,'showname'=>$v2['showname']);
+				$data[$subfielename] = array(
+						'name'=>$subfielename,
+						'showname' =>$showname."_".$v2['showname'],
+				);
+			}
 		}
-		$fielename = substr(md5($fieldname),0,8);
-		$data[$fielename] = array(
-				'name'=>$fielename,
-				'is_datatable'=>1,
-				'showname'=>$showname,
-				'value'=>$valArr
-		);
+		$data[$fielename]['value'] = $valArr;
+		
 		return $data;
 	}
 	/**
@@ -11585,7 +11523,6 @@ $this->assign('vo',$vo);
 				}
 			}else if($_REQUEST['dataromaing']){
 				$MisSystemDataRoamSubDao=M("mis_system_data_roam_sub");
-				$misAutoBindModel=D("MisAutoBind");
 				$dataroaming=unserialize(base64_decode($_REQUEST['dataromaing']));
 				//查询缓存表
 				$cachDao=M($dataroaming['randtable']);
@@ -11652,7 +11589,9 @@ $this->assign('vo',$vo);
 				if(is_array(reset($dataArr))){
 					foreach(reset($dataArr) as $targettable=>$data){
 						foreach($data as $k => $v){
-							$vo[key($v)] = reset($v);
+							if(reset($v)){
+								$vo[key($v)] = reset($v);
+							}
 						}
 					}
 				}
@@ -11718,7 +11657,6 @@ $this->assign('vo',$vo);
 		$map = $this->_search (); 
 	        
 		//获取fieldtype参数
-		$name=$this->getActionName();
 		$fieldtype=$_REQUEST['fieldtype'];
 		if($fieldtype||$_REQUEST['bindrdid']){
 			if($fieldtype&&$fieldtype!="#"){
@@ -11758,7 +11696,30 @@ $this->assign('vo',$vo);
 							}else{
 								$vo[key($v1)] = reset($v1);
 								if($vo[key($v1)]&&!$_REQUEST['fieldtype']){
-									$map[key($v1)]=reset($v1);
+									if($MisAutoBindSettableVo['typeid']==2){
+										$map[key($v1)]=reset($v1);
+									} 
+								}
+							}
+						}
+					}
+					//组合表
+					if($MisAutoBindSettableVo['typeid']==0){
+						if($MisAutoBindSettableVo['inbindmap']){
+							$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+							), $MisAutoBindSettableVo['inbindmap'] );
+							$map['_string']=$newconditions;
+						}
+						//表单附加条件
+						if($MisAutoBindSettableVo['bindconlistArr']){
+							if($MisAutoBindSettableVo['bindconlistArr']){
+								$bindconlistArr=unserialize($MisAutoBindSettableVo['bindconlistArr']);
+								//获取表单子表附加
+								foreach ($bindconlistArr as $bindkey=>$bindval){
+									//如果有值才生成查询
+									if($vo[$bindkey]){
+										$map[$bindval]=$vo[$bindkey];
+									}
 								}
 							}
 						}
@@ -11766,7 +11727,6 @@ $this->assign('vo',$vo);
 				}
 			}else if($_REQUEST['dataromaing']){
 				$MisSystemDataRoamSubDao=M("mis_system_data_roam_sub");
-				$misAutoBindModel=D("MisAutoBind");
 				$dataroaming=unserialize(base64_decode($_REQUEST['dataromaing']));
 				//查询缓存表
 				$cachDao=M($dataroaming['randtable']);
@@ -11790,7 +11750,31 @@ $this->assign('vo',$vo);
 						if($dataromaList[$dsval['sfield']]){
 							$vo[$dsval['tfield']]=$dataromaList[$dsval['sfield']];
 							if($vo[$dsval['tfield']]&&!$_REQUEST['fieldtype']){
-								$map[$dsval['tfield']]=$dataromaList[$dsval['sfield']];
+								//套表直接取漫游map
+								if($MisAutoBindSettableVo['typeid']==2){
+									$map[$dsval['tfield']]=$dataromaList[$dsval['sfield']];
+								}
+							}
+						}
+					}
+					//组合表
+					if($MisAutoBindSettableVo['typeid']==0){
+						if($MisAutoBindSettableVo['inbindmap']){
+							$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+							), $MisAutoBindSettableVo['inbindmap'] );
+							$map['_string']=$newconditions;
+						}
+						//表单附加条件
+						if($MisAutoBindSettableVo['bindconlistArr']){
+							if($MisAutoBindSettableVo['bindconlistArr']){
+								$bindconlistArr=unserialize($MisAutoBindSettableVo['bindconlistArr']);
+								//获取表单子表附加
+								foreach ($bindconlistArr as $bindkey=>$bindval){
+									//如果有值才生成查询
+									if($vo[$bindkey]){
+										$map[$bindval]=$vo[$bindkey];
+									}
+								}
 							}
 						}
 					}
@@ -11803,10 +11787,10 @@ $this->assign('vo',$vo);
 		
 		$this->assign("type",$_REQUEST['type']);
 		$this->assign("ecode",$_REQUEST['ecode']);
-		
 		if (method_exists ( $this, '_filter' )) {
 			$this->_filter ( $map );
 		}
+		//套表专有
 		if($_REQUEST['fieldtype']){
 			$this->getBindSetTables($map);
 		}
@@ -12109,7 +12093,9 @@ $this->assign('vo',$vo);
 					} 
 					//查询绑定的附加条件
 					if($cval['inbindmap']){
-						$tempMap['_string']=$cval['inbindmap'];
+						$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+						), $cval['inbindmap'] );
+						$tempMap['_string']=$newconditions;
 					}
 					$bindconlistArr=unserialize($cval['bindconlistArr']);
 					//获取表单子表附加
@@ -12260,6 +12246,8 @@ EOF;
 		$action = $_POST['action'];
 		$main = $_POST['main'];
 		$val = $_POST['val'];
+		//数据id
+		$bindrdid=$_POST['bindrdid'];
 		$filedval = $_POST['filedval'];
 		$formtype = $_POST['formtype'];
 	
@@ -12290,10 +12278,14 @@ EOF;
 		}
 	
 		$model = M('mis_auto_bind');
+		$MisSystemDataRoamingModel=D("MisSystemDataRoaming");
 		// 获取当前表单的子级表单
 		//$sql = "SELECT bindaname , inbindtitle, inbindaname , bindtype , typeid ,bindresult , bindval,inbindval FROM mis_auto_bind WHERE  bindaname ='{$action}' AND `level` = (SELECT id FROM `mis_dynamic_form_manage` WHERE actionname='{$action}') order by inbindsort asc";
-		$sql = "SELECT bindaname , inbindtitle, inbindaname , bindtype , typeid ,bindresult , bindval,inbindval FROM mis_auto_bind WHERE  bindaname ='{$action}'  order by inbindsort asc";
+		$sql = "SELECT bindaname , inbindtitle, inbindaname , bindtype , typeid ,bindresult , bindval,inbindval,dataroamid,bindconlistArr,inbindmap FROM mis_auto_bind WHERE  bindaname ='{$action}'  order by inbindsort asc";
 		$childArr = $model->query($sql);
+		//获取当前表单数据
+		$actionModel=D($action);
+		$vo=$actionModel->where("status=1 and id={$bindrdid}")->find();
 		$retTableInfoArr = array();
 		$chilAction = '';
 		foreach ($childArr as $ckey=>$cval){
@@ -12309,7 +12301,19 @@ EOF;
 					$tempMap[$cval['inbindval']]=$val;
 					$tempMap['status']=1;
 					//$tempMap['relationmodelname']=$cval['bindaname'];
-					$tempData = $model->where($tempMap)->find();
+					//加上数据漫游条件
+					$dataArr=$MisSystemDataRoamingModel->main(2,$action,$_POST['bindrdid'],4,$cval['inbindaname'],'',$cval['dataroamid']);
+					if(is_array(reset($dataArr))){
+						foreach(reset($dataArr) as $targettable=>$data){
+							foreach($data as $k => $v){
+								if(reset($v)){
+									$tempMap[key($v)]=reset($v);
+								}
+							}
+						}
+					} 
+					$tempData = $model->where($tempMap)->order('id desc')->find();
+					logs($model->getlastsql(),"taobiaominisql");
 					$tempArr['id'] = $tempData['id'];
 					if($tempData['id']){
 						$tempArr['id'] =$tempData['id'];
@@ -12334,13 +12338,44 @@ EOF;
 						//根据传过来的orderno 查询对应表单
 						$map=array();
 						$model = D($cval['inbindaname']);
+						//获取真实数据表名
 						$tempData=array();
 						$tempMap=array();
-						$tempMap['bindid']=$val;
+						//$tempMap['bindid']=$val;
 						$tempMap['status']=1;
-						$tempMap['relationmodelname']=$cval['bindaname'];
-						$tempData = $model->where($tempMap)->find();
+						//$tempMap['relationmodelname']=$cval['bindaname'];
+						//加上数据漫游条件
+// 						$dataArr=$MisSystemDataRoamingModel->main(2,$action,$_POST['bindrdid'],4,$cval['inbindaname'],'',$cval['dataroamid']);
+// 						if(is_array(reset($dataArr))){
+// 							foreach(reset($dataArr) as $targettable=>$data){
+// 								foreach($data as $k => $v){
+// 									if(reset($v)){
+// 										$tempMap[key($v)]=reset($v);
+// 									}
+// 								}
+// 							}
+// 						} 
+						//表单条件
+						if($cval['inbindmap']){
+							$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+							), $cval['inbindmap'] );
+							$tempMap['_string']=$newconditions;
+						}
+						$bindconlistArr=array();
+						//表单附加条件
+						if($cval['bindconlistArr']){
+							$bindconlistArr=unserialize($cval['bindconlistArr']);
+							foreach ($bindconlistArr as $bindkey=>$bindval){
+								//如果有值才生成查询
+								if($vo[$bindkey]){
+									$tempMap[$bindval]=$vo[$bindkey];
+								}
+							}
+						}
+						$tempData = $model->where($tempMap)->order('id desc')->find();
+						logs($model->getlastsql(),"zuminisql");
 						$tempArr['actionname'] =$cval['inbindaname'];
+						$tempArr['bindtype']=$cval['bindtype'];
 						if($tempData['id']){
 							$tempArr['id'] =	$tempData['id'];
 						}else{
@@ -13083,9 +13118,12 @@ EOF;
 // 					$this->assign("file_type", 'file');
 // 					$this->assign('file_path', $file_path);
 // 					$this->display("Public:playswf");
-					require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+
+					//$ip = gethostbyname($_SERVER['SERVER_NAME']);
+					$ip = "192.168.0.238";
+					require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 					$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-					$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+					$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 					java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 					$PageOfficeCtrl->setJsFunction_AfterDocumentOpened("AfterDocumentOpened");
 					$PageOfficeCtrl->setAllowCopy(false);//禁止拷贝
@@ -13127,9 +13165,11 @@ EOF;
 // 						$this->assign("file_type", 'file');
 // 						$this->assign('file_path', $file_path);
 // 						$this->display("Public:playswf");
-						require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+// 						$ip = gethostbyname($_SERVER['SERVER_NAME']);
+						$ip = "192.168.0.238";
+						require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 						$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-						$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+						$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 						java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 						$PageOfficeCtrl->setAllowCopy(false);//禁止拷贝
 						//$PageOfficeCtrl->setMenubar(false);//隐藏菜单栏
@@ -13442,9 +13482,11 @@ EOF;
 // 			$this->assign("file_type", 'file');
 // 			$this->assign('file_path', $file_path);
 // 			$this->display("Public:playswf");
-			require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+// 			$ip = GetHostByName($_SERVER['SERVER_NAME']);//获取本机IP
+			$ip = "192.168.0.238";
+			require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 			$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
-			$PageOfficeCtrl->setServerPage("http://192.168.0.238:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
+			$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
 			java_set_file_encoding("utf8");//设置中文编码，若涉及到中文必须设置中文编码
 			$PageOfficeCtrl->setAllowCopy(false);//禁止拷贝
 			//$PageOfficeCtrl->setMenubar(false);//隐藏菜单栏
@@ -13970,8 +14012,9 @@ code;
 	}
 	
 	function saveOnlineEditWord(){
-		$ip = GetHostByName($_SERVER['SERVER_NAME']);//获取本机IP
-		require_once("http://192.168.0.238:8088/JavaBridge/java/Java.inc");//此行必须
+// 		$ip = GetHostByName($_SERVER['SERVER_NAME']);//获取本机IP
+		$ip = "192.168.0.238";
+		require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 		$fs = new Java("com.zhuozhengsoft.pageoffice.FileSaverPHP");//此行必须
 		echo $fs->close();//此行必须
 		$fs->load(file_get_contents("php://input"));//此行必须
@@ -14136,6 +14179,46 @@ code;
 	    }catch (Exception $e){
 	        $this->error($e->getMessage());
 	    }
+	}
+	
+	/**
+	 * 
+	 * @Title: rebuildSetting
+	 * @Description: todo(为防止旧表单的运行错误加上的一个辅助无功能函数)   
+	 * @author quqiang 
+	 * @date 2016年1月7日 下午3:01:19 
+	 * @throws
+	 */
+	function rebuildSetting(){
+		$setting=array();
+/* 		
+ *多个追加标签间不能有字符必须为一行
+ *以下为事例 
+$setting['hiddens']="<input type=hidden value=MisAutoSxl name=jumpaction />"
+				."<input type=hidden name=refreshtabs[data] value=1 />"
+				."<input type=hidden name=callbackType value=closeCurrent />";
+ */		
+		$setting['hiddens']='';
+		$setting['callback']=array(
+				/* 
+				'common'=>'return validateCallback(this, navTabAjaxDone)', // 普通表单时使用回调
+				'audit'=>'return validateCallback(this, navTabAjaxDone)',// 审批表时使用的回调
+				'callback'=>'return iframeCallback(this, navTabAjaxDone)', */
+				// 套表时二开使用的
+				'common'=>'', // 普通表单时使用回调
+				'audit'=>'',// 审批表时使用的回调
+				// 非套表时二开使用
+				'callback'=>'',
+		);
+		$setting['url']=array(
+				//暂时不用 ，为做提交地址作变更准备。
+				'add' =>'updateControll', 	// 新增页面操作提交地址
+				'edit' =>'updateControll', 	// 修改页面操作提交地址
+				'add' =>'updateControll', 	// 查看页面操作提交地址
+		);
+		// 提交地址附加参数
+		$setting['urlparame']='';
+		return $setting;
 	}
 }
 ?>

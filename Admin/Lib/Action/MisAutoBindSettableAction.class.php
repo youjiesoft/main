@@ -211,13 +211,15 @@ class MisAutoBindSettableAction extends CommonAction {
 				$data = array ();
 				$bindconditionArr = $_POST ['bindcondition'] [$key];
 				$inbindconditionArr = $_POST ['inbindcondition'] [$key];
-				
+				$bindconlistArr=array();
 				foreach ( $bindconditionArr as $akey => $aval ) {
 					if ($aval) {
 						$bindconlistArr [$aval] = $inbindconditionArr [$akey];
 					}
 				}
-				$data ['bindconlistArr'] = serialize ( $bindconlistArr );
+				if($bindconlistArr){
+					$data ['bindconlistArr'] = serialize ( $bindconlistArr );
+				}
 				unset ( $bindconlistArr );
 				$data ['bindaname'] = $_POST ['bindaname'];
 				$data ['bindval'] = $_POST ['bindval'] [$key];

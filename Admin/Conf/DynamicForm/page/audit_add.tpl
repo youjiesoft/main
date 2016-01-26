@@ -6,14 +6,15 @@ time:2015-09-06 18
  --> 
 {~$classNodeSettingArr = getModelClassByNodeSetting('#nodeName#','add')}
 {~$appendPageContentArr = getBindTabsContent('#nodeName#','','add','',$main)}
-{~$formautosetting = setFormControllAutoCreate('#nodeName#' ,'add' , $main , 'insert',$vo)}
+{~$formautosetting = setFormControllAutoCreteAppend('#nodeName#' ,'add' , $main , 'insert',$vo,A('#nodeName#')->rebuildSetting())}
 {$appendPageContentArr[1]}
  <div class="page">
 	<div class="pageContent">
 		<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="$_REQUEST['dialog']">layoutH="40"</if><if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME"> layoutH="40"</if>>
 			<div <if condition="!$_REQUEST['dialog']">class="new_version_page"</if>>
-				<form method="post" id="#nodeName#_add" {$appendPageContentArr[5]} {$formautosetting[3]} action="__APP__/#nodeName#/{$formautosetting[2]}/navTabId/__MODULE__" 
-				class="pageForm required-validate"  onsubmit="{$appendPageContentArr[0]}">
+				<form method="post" id="#nodeName#_add" {$appendPageContentArr[5]} {$formautosetting[3]} action="__APP__/#nodeName#/{$formautosetting[2]}/navTabId/__MODULE__{$formautosetting[4]}" 
+				class="pageForm required-validate"  
+				onsubmit="<if condition="$formautosetting[5]">{$formautosetting[5]}<else/>{$appendPageContentArr[0]}</if>">
 				<a class='xyz_anchornavi_top' name='#nodeName#_add_top'></a>
 					<input type="hidden" name="callbackType" value="closeCurrent">
 					{:W('HiddenInput',$vo)}

@@ -249,6 +249,9 @@ EOF;
 			$this->error($modelPath."文件已存在!");
 		}
 		$autohtml1=$autohtml="";
+		// 附加model处理函数
+		$dateOprateCode='';
+		
 		$re= M($truetablename)->query('SHOW COLUMNS FROM `'.$truetablename."`");
 		if($re) {
 			foreach ($re as $key => $val) {
@@ -356,7 +359,15 @@ EOF;
 				$validate.="\n\t\tarray('".$v['fields']."','','".$v['title']."已经存在',self::MUST_VALIDATE,'unique',self::MODEL_BOTH),";
 			}
 			if($v['catalog'] == 'date'){
-				$autohtml1 .= "\n\t\tarray('{$v['fields']}','strtotime',self::MODEL_BOTH,'function'),";
+// 				$autohtml1 .= "\n\t\tarray('{$v['fields']}','strtotime',self::MODEL_BOTH,'function'),";
+				
+				if($this->checkTimeFormat($v['formatphp'])){
+					$dateAutoStr ="\n\t\tarray('{$v['fields']}','strtotime',self::MODEL_BOTH,'function'),";
+				}else{
+					$dateAutoStr ="\n\t\tarray('{$v['fields']}','mktime_{$v['fields']}',self::MODEL_BOTH,'callback'),";
+					$dateOprateCode.= $this->dateTimeOpraete($v['fields'],$v['formatphp']);
+				}
+				$autohtml1 .= $dateAutoStr;
 			}
 			
 			if($v['catalog'] == 'checkbox'){
@@ -379,7 +390,7 @@ EOF;
 		$autohtml1.="\n\t);";
 		$autohtml=$autohtml1;
 
-		$phpcode.=$autohtml.$validate;
+		$phpcode.=$autohtml.$validate.$dateOprateCode;
 		$phpcode.="\r\n}\r\n?>";
 		logs("Model文件生成! ".$modelPath);
 		if(!is_dir(dirname($modelPath))) mk_dir(dirname($modelPath),0777);
@@ -487,6 +498,8 @@ EOF;
 		$phpcode.="protected \$trueTableName = '".$truetablename."';";
 		$hasvalidate=false;
 		$validate="";
+		// 附加model处理函数
+		$dateOprateCode='';
 		$i=1;
 		$j=count($fieldData);
 		$iscreateOrderNo=false;
@@ -506,7 +519,17 @@ EOF;
 				$validate.="\n\t\tarray('".$v['fieldname']."','','".$v['title']."已经存在',self::EXISTS_VAILIDATE,'unique',self::MODEL_BOTH),";
 			}
 			if($v['category'] == 'date'){
-				$autohtml1 .= "\n\t\tarray('{$v['fieldname']}','strtotime',self::MODEL_BOTH,'function'),";
+				//$autohtml1 .= "\n\t\tarray('{$v['fieldname']}','strtotime',self::MODEL_BOTH,'function'),";
+				$config = unserialize(base64_decode($v['config']));
+				if($this->checkTimeFormat($config['parame']['dateformat'][1])){
+					$dateAutoStr ="\n\t\tarray('{$v['fieldname']}','strtotime',self::MODEL_BOTH,'function'),";
+				}else{
+					$dateAutoStr ="\n\t\tarray('{$v['fieldname']}','mktime_{$v['fieldname']}',self::MODEL_BOTH,'callback'),";
+					$dateOprateCode.= $this->dateTimeOpraete($v['fieldname'],$config['parame']['dateformat'][1]);
+				}
+				$autohtml1 .= $dateAutoStr;
+				
+				
 			}
 			// 字段类型为int的空值转为null存储
 			if($v['fieldtype'] == 'INT'||$v['fieldtype'] == 'DECIMAL' || $v['fieldtype']='DATE' ){
@@ -524,7 +547,7 @@ EOF;
 		$autohtml1.="\n\t);";
 		$autohtml=$autohtml1;
 
-		$phpcode.=$autohtml.$validate;
+		$phpcode.=$autohtml.$validate.$dateOprateCode;
 		$phpcode.="\r\n}\r\n?>";
 		
 		logs("数据表格Model文件生成! ".$modelPath);
@@ -535,6 +558,74 @@ EOF;
 		}
 		//生成list配置文件		
 		$this->createDatatableList($fieldData, $modelname, $truetablename);
+	}
+	/**
+	 * 日期组件非标准格式下的处理代码生成
+	 * @Title: dateTimeOpraete
+	 * @Description: todo(这里用一句话描述这个方法的作用) 
+	 * @param unknown $field
+	 * @param unknown $fmt  
+	 * @author quqiang 
+	 * @date 2016年1月13日 下午3:51:52 
+	 * @throws
+	 */
+	function dateTimeOpraete($field,$fmt){
+		$code = <<<EOF
+		
+	/**
+	 * 非标准时间格式数据处理为时间戳
+	 * @Title: mktime_{$field}
+	 * @Description: todo(非标准时间格式数据处理为时间戳) 
+	 * @return 时间戳|空值  
+	 * @author quqiang 
+	 * @date 2016年1月13日 下午3:33:53 
+	 * @throws
+	 */
+	function mktime_{$field}(\$curval){
+		if(!\$curval){
+			return \$curval;
+		}
+		\$fmt = '{$fmt}';
+		// 所有格式参数
+		\$fmtAll=array('Y','m','d','H','i','s');
+		// 将显示格式处理为通用格式
+		\$fmtOprate = str_replace(array(' ',':'),array('-','-'),\$fmt);
+		// 将显示数据处理为通用格式数据
+		\$valOprate = str_replace(array(' ',':'),array('-','-'),\$curval);
+		
+		\$curfmt = explode('-',\$fmtOprate);
+		\$curvalOprate = explode('-',\$valOprate);
+		\$ret = array();
+		foreach (\$curvalOprate as \$k=>\$v){
+			\$ret[\$curfmt[\$k]]=\$v;
+		}
+		list(\$Y,\$m,\$d,\$H,\$i,\$s) = explode('-',date('Y-m-d-H-i-s',time()));
+		\$standTime = array('Y'=>\$Y,'m'=>\$m,'d'=>\$d,'H'=>\$H,'i'=>\$i,'s'=>\$s);
+		\$mergeArr = array_merge(\$standTime,\$ret);
+		\$valus = array_values(\$mergeArr);
+		list(\$Y,\$m,\$d,\$H,\$i,\$s)=\$valus;
+		\$time = mktime(\$H,\$i,\$s,\$m,\$d,\$Y);
+		return \$time;
+	}
+EOF;
+	 return $code;
+	}
+	/**
+	 * 检查格式是否为标准格式
+	 * @Title: checkTimeFormat
+	 * @Description: todo(这里用一句话描述这个方法的作用) 
+	 * @param string $fmt
+	 * @return boolean  
+	 * @author quqiang 
+	 * @date 2016年1月13日 下午4:02:28 
+	 * @throws
+	 */
+	function checkTimeFormat($fmt){
+		$allownFormat=array('Y-m-d H:i:s','Y-m-d','H:i:s');
+		if(in_array($fmt , $allownFormat))
+			return true;
+		else
+			return false;
 	}
 	/**
 	 * 

@@ -2503,6 +2503,8 @@ EOF;
 								$str .= join(',',$hidenControlArr) ? "\r\n\t\tvar hidObj = $(\"". join(',',$hidenControlArr) ."\", box);" : "";
 								$str .="\r\n\t\tif(typeof(hidObj) != 'undefined'){";
 								$str .="\r\n\t\t\thidObj.hide();";
+								// 必填的特殊处理代码调用@nbxkj by 20160115 1721
+								$str .="\r\n\t\t\tsetReq(hidObj.find(':input'));";
 								$str .="\r\n\t\t\thidObj.find(':input').attr('disabled',true);";
 								$viewstr.=join(',',$hidenControlArr) ? "\r\n\t\tvar hidObj = $(\"". join(',',$hidenControlArr) ."\", box).hide();" : "";
 	// 							$str .="\r\n\t\t\t\$.each(hidObj , function(){";
@@ -2522,6 +2524,10 @@ EOF;
 								$viewstr.= join(',',$hidenControlArr) ? "\r\n\t\tvar showObj =$(\"". join(',',$hidenControlArr) ."\", box).show();" : "";
 								$str .="\r\n\t\tif(typeof(showObj) != 'undefined'){";
 								$str .="\r\n\t\t\tshowObj.show();";
+								// 必填的特殊处理代码调用@nbxkj by 20160115 1721
+								$str .="\r\n\t\t\tsetReq(showObj.find(':input'));";
+								$str .="\r\n\t\t\tsetClsReq(showObj.find(':input'));";
+								
 								$str .="\r\n\t\t\tshowObj.find(':input').attr('disabled',false);";
 	// 							$str .="\r\n\t\t\t\$.each(showObj , function(){";
 	// 							$str .="\r\n\t\t\t\tvar obj = $(this).find(':input');";
@@ -2544,7 +2550,6 @@ EOF;
 						} 
 						$addAndEditJsArr [$k] = "\nfunction " . $functionName . "(obj){\r      {$box}" . $strjs.$str . "\r\n};";
 						$viewJsArr [$k] = "$viewstrjs$viewstr";
-							
 						// $addjsstr .= "\nfunction ".$functionName."(obj){".$str."\r\n};";
 						// }
 							
@@ -3874,6 +3879,7 @@ EOF;
 			 if($data[$controllName]['catalog']=="lookup"){
 			 	//实例化模型
 			 	$sList=D($confVo['model'])->getField($data[$controllName]['lookuporgval'].','.$data[$controllName]['lookuporg']);
+			 	logs(D($confVo['model'])->getlastsql(),'ContorllLookup');
 			 }else{
 			 	if($confVo['showoption']){
 			 		//选择select配置文件
@@ -5893,6 +5899,13 @@ EOF;
 				$detailList[$k1]['searchsortnum'] = $sort;
 				$detailList[$k1]['type']='text';
 			break;
+			case 'areainfo':
+				//搜索配置
+				$detailList[$k1]['issearch'] = $v1[$controllProperty['searchlist']['name']]?$v1[$controllProperty['searchlist']['name']]:1; //局部检索
+				$detailList[$k1]['isallsearch'] = $v1[$controllProperty['allsearchlist']['name']]?$v1[$controllProperty['allsearchlist']['name']]:1;//全局检索
+				$detailList[$k1]['searchsortnum'] = $sort;
+				$detailList[$k1]['type']='text';
+				break;
 			case 'textarea':
 					$isrichbox=$v1[$controllProperty['isrichbox']['name']];
 					if($isrichbox){
@@ -7504,9 +7517,18 @@ EOF;
 		 * 新增页面
 		 */
 		//日期选择器
+		//选择动态建模用的日期格式
+		$controlls =require CONF_PATH.'controlls.php';
+		$dateformartdata = explode('#',$controlls['date']['property']['format']['data']);
+		foreach($dateformartdata as $key=>$val){
+			$v = preg_split("/\||@/", $val);
+			$datej_p[$v[0]] = $v;			//js-php日期格式对应
+			$dateformatlist[$v[0]]=$v[2];	//页面数据用js-中文 日期格式对应
+		}
+//		print_r($dateformartdata);
 		$model = D("Selectlist");
-		$selectlist = require $model->GetFile();
-		$dateformatlist = $selectlist['dateformatchoice']['dateformatchoice'];
+// 		$selectlist = require $model->GetFile();
+// 		$dateformatlist = $selectlist['dateformatchoice']['dateformatchoice'];
 		$this->assign('dateformatlist',$dateformatlist);
 		//文本框单位
 		$baseuntils = getBaseUnit();
@@ -7558,6 +7580,8 @@ EOF;
 					$newdata['type'] = 'date';
 					$newdata['parame'][0] = $data['dateformatlist']?$data['dateformatlist']:'';
 					$newdata['parame']['org']=$_POST['lookuporgfield']?'org'.$_POST['lookuporgfield'].'.'.$_POST['lookupbringfield']:'';
+					$newdata['parame']['dateformat'] = trim($data['dateformatlist'])?$datej_p[$data['dateformatlist']]:'';
+					//print_r($newdata['parame']);
 					break;
 				case 'select':	//下拉框
 					$newdata['type'] = 'select';
@@ -8580,6 +8604,37 @@ EOF;
 				$this->success("操作成功!",'',base64_encode(serialize($data)));
 			}
 		}catch (Exception $e){
+			echo $e->getMessage();
+			echo ('<pre>'.$e->__toString().'</pre>');
+		}
+	}
+	
+	/**
+	 * 自定义组件内容维护
+	 * @Title: componentContentEdit
+	 * @Description: todo(这里用一句话描述这个方法的作用)   
+	 * @author quqiang 
+	 * @date 2016年1月9日 下午2:30:39 
+	 * @throws
+	 */
+	function componentContentEdit(){
+		try {
+			if(!$_POST){
+				$propertyID= $_GET['propertyid'];
+				if( empty($propertyID) || !$propertyID ){
+					$msg = '当前属性未知!';
+					throw new NullDataExcetion($msg);
+				}
+				$propertyModel = M('mis_dynamic_form_propery');
+				$findAppendConditionMap['id'] = $propertyID;
+				$data = $propertyModel->where($findAppendConditionMap)->field('component')->find();
+				$this->assign('content',$data['component']);
+				$this->display();
+			}else{
+				$content = $_POST['component'];
+				$this->success("操作成功!",'',$content);
+			}
+		} catch (Exception $e) {
 			echo $e->getMessage();
 			echo ('<pre>'.$e->__toString().'</pre>');
 		}

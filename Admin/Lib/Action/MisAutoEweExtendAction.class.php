@@ -233,6 +233,9 @@ class MisAutoEweExtendAction extends CommonAction {
 			}
 			$str .= $intercycle.' '.$path1.' '.$mode.' '.$path2.'/'.$val['id'].'  >> /temp/task5.log'.chr(13).chr(10);
 		}
+		if($list){
+			$str .= '*/1 * * * *'.' '.$path1.' '.$mode.' '.$taskdir.'/index.php /Index/appTuisong'.'  >> /temp/task5.log '.chr(13).chr(10);
+		}
 		$path3 = dirname(ROOT).'/crons';
 		if(!is_dir($path3)){
 			mkdir($path3,0757);
@@ -314,6 +317,9 @@ class MisAutoEweExtendAction extends CommonAction {
 					break;
 			}
 			$str .= $intercycle.' '.$path1.' '.$mode.' '.$path2.'/'.$val['id'].'  >> /temp/task5.log '.chr(13).chr(10);
+		}
+		if($list){
+			$str .= '*/1 * * * *'.' '.$path1.' '.$mode.' '.$taskdir.'/index.php /Index/appTuisong'.'  >> /temp/task5.log '.chr(13).chr(10);
 		}
 		$path3 = dirname(ROOT).'/crons';
 		if(!is_dir($path3)){
@@ -444,7 +450,6 @@ class MisAutoEweExtendAction extends CommonAction {
 		}
 		
 	}
-
 	function regtask($path){
 		// 注册定时任务
 		$ret = exec('crontab -r');
@@ -455,8 +460,6 @@ class MisAutoEweExtendAction extends CommonAction {
 			$dir= getcwd();
 			$cmddir=$dir.'/crons/perminit.cron';
 		}
-		
-		
 		$ret = exec("sudo crontab $cmddir", $arr , $flag);
 		$msg = array('status'=>0,'msg'=>$arr);
 		if($ret){

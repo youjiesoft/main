@@ -386,13 +386,18 @@ COD;
 				$after_update.="\r\n\t\t//添加子表数据处理--".$_SESSION['loginUserName'].'@'.date('Y-m-d H:i:s');
 				$after_update.="\r\n\t\t\${$key}Mode = D('".createRealModelName($key)."');";
 				$after_update.="\r\n\t\t\${$key}Data = \${$key}Mode->create();";
+				$after_update.="\r\n\t\tunset(\${$key}Data['id']);";
 				$after_update.="\r\n\t\tif(\${$key}Data){";
+				$after_update.="\r\n\t\t\tif(\${$key}Mode->where('masid='.\${$key}Data['masid'])->find())";
 				$after_update.="\r\n\t\t\t\t\${$key}Mode->where('masid='.\${$key}Data['masid'])->save(\${$key}Data);";
+				$after_update.="\r\n\t\t\telse";
+				$after_update.="\r\n\t\t\t\t\${$key}Mode->add(\${$key}Data);";
 				$after_update.="\r\n\t\t}";
 
 				$after_insert .="\r\n\t\t// 添加子表数据处理----".$_SESSION['loginUserName'].'@'.date('Y-m-d H:i:s');
 				$after_insert .="\r\n\t\t\${$key}Mode = D('".createRealModelName($key)."');";
 				$after_insert .="\r\n\t\t\${$key}Data = \${$key}Mode->create();";
+				$after_insert .="\r\n\t\tunset(\${$key}Data['id']);";
 				$after_insert .="\r\n\t\tif(\${$key}Data){";
 				$after_insert .="\r\n\t\t\t\t\${$key}Data['masid']=\$id;";
 				$after_insert .="\r\n\t\t\t\t\${$key}Mode->add(\${$key}Data);";
@@ -408,11 +413,15 @@ COD;
 			// 时间组件的自动获取当前系统时间功能
 			if($v[$property['catalog']['name']] == 'date'){
 				// 
-				if($v[$property['acquiretime']['name']]){
-					$before_add .= "\r\n\t\t\$vo['{$v[$property['fields']['name']]}']=time();";
-				}
-				if($v[$property['editacquiretime']['name']]){
-					$after_edit .= "\r\n\t\t\$vo['{$v[$property['fields']['name']]}']=time();";
+				if($v[$property['defaulttimechar']['name']] && stringToTime($v[$property['defaulttimechar']['name']])){
+					$before_add .= "\r\n\t\t\$vo['{$v[$property['fields']['name']]}']=stringToTime('{$v[$property['defaulttimechar']['name']]}');";
+				}else{
+					if($v[$property['acquiretime']['name']]){
+						$before_add .= "\r\n\t\t\$vo['{$v[$property['fields']['name']]}']=time();";
+					}
+					if($v[$property['editacquiretime']['name']]){
+						$after_edit .= "\r\n\t\t\$vo['{$v[$property['fields']['name']]}']=time();";
+					}
 				}
 			}
 			if(($v[$property['catalog']['name']]=='lookup'||$v[$property['catalog']['name']]=='text')&&$v[$property['defaultval']['name']]){
@@ -1351,6 +1360,7 @@ EOF;
 				$after_update.="\r\n\t\t//添加子表数据处理--".$_SESSION['loginUserName'].'@'.date('Y-m-d H:i:s');
 				$after_update.="\r\n\t\t\${$key}Mode = D('".createRealModelName($key)."');";
 				$after_update.="\r\n\t\t\${$key}Data = \${$key}Mode->create();";
+				$after_update.="\r\n\t\tunset(\${$key}Data['id']);";
 				$after_update.="\r\n\t\tif(\${$key}Data){";
 				$after_update.="\r\n\t\t\t\t\${$key}Mode->where('masid='.\${$key}Data['masid'])->save(\${$key}Data);";
 				$after_update.="\r\n\t\t}";
@@ -1358,6 +1368,7 @@ EOF;
 				$after_insert .="\r\n\t\t// 添加子表数据处理----".$_SESSION['loginUserName'].'@'.date('Y-m-d H:i:s');
 				$after_insert .="\r\n\t\t\${$key}Mode = D('".createRealModelName($key)."');";
 				$after_insert .="\r\n\t\t\${$key}Data = \${$key}Mode->create();";
+				$after_insert .="\r\n\t\tunset(\${$key}Data['id']);";
 				$after_insert .="\r\n\t\tif(\${$key}Data){";
 				$after_insert .="\r\n\t\t\t\t\${$key}Data['masid']=\$id;";
 				$after_insert .="\r\n\t\t\t\t\${$key}Mode->add(\${$key}Data);";
@@ -2125,13 +2136,19 @@ EOF;
 				$after_update.="\r\n\t\t//添加子表数据处理--".$_SESSION['loginUserName'].'@'.date('Y-m-d H:i:s');
 				$after_update.="\r\n\t\t\${$key}Mode = D('".createRealModelName($key)."');";
 				$after_update.="\r\n\t\t\${$key}Data = \${$key}Mode->create();";
+				$after_update.="\r\n\t\tunset(\${$key}Data['id']);";
 				$after_update.="\r\n\t\tif(\${$key}Data){";
+				$after_update.="\r\n\t\t\tif(\${$key}Mode->where('masid='.\${$key}Data['masid'])->find())";
 				$after_update.="\r\n\t\t\t\t\${$key}Mode->where('masid='.\${$key}Data['masid'])->save(\${$key}Data);";
+				$after_update.="\r\n\t\t\telse";
+				$after_update.="\r\n\t\t\t\t\${$key}Mode->add(\${$key}Data);";
 				$after_update.="\r\n\t\t}";
-
+				
+				
 				$after_insert .="\r\n\t\t// 添加子表数据处理----".$_SESSION['loginUserName'].'@'.date('Y-m-d H:i:s');
 				$after_insert .="\r\n\t\t\${$key}Mode = D('".createRealModelName($key)."');";
 				$after_insert .="\r\n\t\t\${$key}Data = \${$key}Mode->create();";
+				$after_insert .="\r\n\t\tunset(\${$key}Data['id']);";
 				$after_insert .="\r\n\t\tif(\${$key}Data){";
 				$after_insert .="\r\n\t\t\t\t\${$key}Data['masid']=\$id;";
 				$after_insert .="\r\n\t\t\t\t\${$key}Mode->add(\${$key}Data);";

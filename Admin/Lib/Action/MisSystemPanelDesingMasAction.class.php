@@ -74,7 +74,7 @@ class MisSystemPanelDesingMasAction extends CommonAction{
 	  		$map['masid'] = $_REQUEST['id'];
 	  		$this->assign("masid",$_REQUEST['id']);
 	  		$submodel = M("mis_system_panel_desing_sub");
-	  		$sublist = $submodel->where($map)->select();
+	  		$sublist = $submodel->where($map)->order("sort asc")->select();
 	  		
 	  		$this->assign('list',$sublist);
 	  		//获取配置文件

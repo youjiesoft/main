@@ -153,7 +153,7 @@ var nbmbind={
 			//赋值给标题文本框
 			p.find("input[name^='inbindtitle']").val(selectVal);
 		}
-		/*var $box=navTab.getCurrentPanel();
+		var $box=navTab.getCurrentPanel();
 		 $.ajax({
 	         type: 'POST',
 	         url : "__URL__/lookupChangeField",
@@ -161,22 +161,24 @@ var nbmbind={
 	         global:false,
 	         dataType:'json',
 	         success:function(list){
-	        	 var selhtml="<option selected='selected' value='0'>--请选择--</option>";
-	        	 var selFieldObj = $('select.nbm_bind_field',p);
-	             if(list) {
-	            	 // 得到字段显示下拉框对象 
-	            	 // 下拉选项对象
-	            	 if(list){
-		            	 $.each(list['list'] , function(i , v){
-		            		 selhtml+="<option value=\""+i+"\">"+v+"</option>";
-		            	 });
-	            	 }
-	             }
-	             selFieldObj.html(selhtml);
+        	  var selhtml="<option selected='selected' value='0'>--请选择--</option>";
+        	 var selFieldObj = $('select.nbm_bind_field',p);
+             if(list) {
+            	 // 得到字段显示下拉框对象 
+            	 // 下拉选项对象
+            	 if(list){
+	            	 $.each(list['list'] , function(i , v){
+	            		 selhtml+="<option value=\""+i+"\">"+v+"</option>";
+	            	 });
+            	 }
+             }
+             selFieldObj.html(selhtml); 
+	             //修改W参数
+            	 $("button.condition_btn",p).attr("modelname",list['modelname']);
 	        	 //initChosen();
 	         }
 	     });
-		 */
+		 
 		
 	} 
 	function getroam(obj){
@@ -273,15 +275,15 @@ var nbmbind={
 			<table class="into_table_new combination_list nbm_data_table" table_data='{"searching":false,"paging":false}'>
 					<thead>
 						<tr>
-							<th template_key="" class="model_name_lay_left">
+							<th  rowspan="2" template_key="" class="model_name_lay_left">
 							   选择绑定表单
 							</th>
-							<th template_key="" class="model_name_lay_left">绑定标题</th>
-							<th template_key="" class="model_name_lay_left">排序</th>
-							<th template_key="" class="model_name_lay_left">
+							<th rowspan="2" template_key="" class="model_name_lay_left">绑定标题</th>
+							<th rowspan="2" template_key="" class="model_name_lay_left">排序</th>
+							<th rowspan="2" template_key="" class="model_name_lay_left">
 							   绑定值（主从表单可不选）
 							</th>
-							<th template_key="" class="model_name_lay_left">
+							<th rowspan="2" template_key="" class="model_name_lay_left">
 							  数据漫游
 							</th>
 							<!-- <th template_key="" class="model_name_lay_left">
@@ -290,21 +292,30 @@ var nbmbind={
 							<th template_key=""  class="model_name_lay_left">
 								当前表对应
 							</th> -->
-							<th template_key=""  class="model_name_lay_left">
+							<th rowspan="2" template_key=""  class="model_name_lay_left">
 								显示方式
 							</th>
-							<th  template_key=""  class="model_name_lay_left">
+							<th  rowspan="2" template_key=""  class="model_name_lay_left">
 							   	表单展示样式
 							</th>
-							<th  >是否同步删除</th>
-							<th template_key=""  class="model_name_lay_left">
+							<th  rowspan="2" >是否同步删除</th>
+							<th colspan="2" style="min-width:120px;max-width:120px;">附加条件</th>
+							<th  rowspan="2" >绑定附加条件</th>
+							<th rowspan="2" template_key=""  class="model_name_lay_left">
 								操作
 							</th>
+						</tr>
+						<tr>
+							<th>主表附加条件</th>
+							<th>子表附加条件</th>
 						</tr>
 					<tbody>
 					<if condition="$formvodata">
  		<volist name="formvodata" id="item"  key="k">
- 		<php>$ko = $key;</php>	
+ 		
+ 		<php>
+ 		$ko = $key;
+ 		</php>	
 			<tr>
 				<td> 
 				<div class="list_group_lay">
@@ -431,6 +442,56 @@ var nbmbind={
 					<input type="radio"  name="isdelete[{$k}]" <if condition="$item.isdelete eq '0'">checked</if>  value="0"/> 否
 				   	<input type="radio"  name="isdelete[{$k}]" <if condition="$item.isdelete eq '1'">checked</if>  value="1"/> 是
 				</td>
+				<?php    
+								$bindconditionlist=explode(',',$item['bindcondition']);
+								$inbindconditionlist=explode(',',$item['inbindcondition']);
+						?>
+				<!-- 主表附加条件 -->
+						<td>
+							 <volist name="bindconditionlist" id="bindconditionVo" key="coni">
+							  <div class="list_group_lay">
+								<select name="bindcondition[{$k}][]" class="select2 list_select2" >
+									 <option value="0">--请选择--</option>
+									 <volist name="MisDynamicDatabaseSubList" id="MisDynamicDatabaseSubVo"> 
+									 <option value="{$key}"  <if condition="$bindconditionVo eq $key">selected</if>>{$MisDynamicDatabaseSubVo}</option>
+									 </volist>
+								</select>
+								
+								<if condition="$coni eq '1'">
+								<span class="icon-plus nbm_bindcondition"></span>
+								<else/>
+								<span class="icon-remove nbm_remove_bindcondition"></span>
+								</if>
+								</div>
+							</volist>
+						</td>
+						<!-- 子表附加条件 -->
+						<td>
+							 <volist name="inbindconditionlist" id="inbindconditionVo" key="inconi">
+							 <div class="list_group_lay"> <div class="list_group_lay">
+							<select name="inbindcondition[{$k}][]" class="select2 list_select2 nbm_bind_field" >
+							<option value="0">--请选择--</option>
+							 <volist name="item['tablelist']" id="tableVo"> 
+								 <option value="{$tableVo.COLUMN_NAME}"  <if condition="$inbindconditionVo eq $tableVo.COLUMN_NAME">selected</if>>{$tableVo.COLUMN_COMMENT}</option>
+								 </volist>
+							</select>
+							<if condition="$inconi eq 1">
+							<span class="icon-plus nbm_bindcondition"></span>
+							<else/>
+								<span class="icon-remove nbm_remove_bindcondition"></span>
+							</if>
+							</div>
+							</volist>
+						</td>
+						<!-- 子表表单条件-->
+				<td class="nbm_ceil_form_condtion">
+					    <div class="list_group_lay">
+					    <div class="tml-row nbm_condition_content">
+			          <?php $item['rules']=$item['inbindmap'];?>
+			            {:W('ShowAddResult', array('model'=>$item['inbindaname'],'multitype'=>'multi','data'=>$item,'akey'=>$k))}
+			        </div>
+					</div>
+				</td>
 				<td>
 				<input type="hidden" name="delinbindname" value="{$item.inbindaname}"/>
 				<a class="nbm_bind_add" href="javascript:void(0);">添加</a>&nbsp;<a class="nbm_bind_del" href="javascript:void(0);">移除</a></td>
@@ -549,6 +610,36 @@ var nbmbind={
 				<td>
 					<input type="radio"  name="isdelete[0]" value="0" checked="checked" /> 否
 				   	<input type="radio"  name="isdelete[0]" value="1"/> 是
+				</td>
+				
+				<!-- 主表附加条件 -->
+				<td>
+					    <div class="list_group_lay">
+					<select  <if condition="!$MisAutoBindSettableVo"> name="bindcondition[0][]"</if>  class="select2 list_select2" >
+						 <option value="0">--请选择--</option>
+						 <volist name="MisDynamicDatabaseSubList" id="MisDynamicDatabaseSubVo">
+						 <option value="{$key}"  <if condition="$MisAutoBindSettableVo.bindval eq $key">selected</if>>{$MisDynamicDatabaseSubVo}</option>
+						 </volist>
+					</select>
+					<span class="icon-plus nbm_bindcondition"></span>
+					</div>
+				</td>
+				<!-- 子表附加条件 -->
+				<td>
+					    <div class="list_group_lay">
+					<select  <if condition="!$MisAutoBindSettableVo"> name="inbindcondition[0][]"</if> class="select2 list_select2 nbm_bind_field" >
+						 <option>--请选择--</option>
+					</select>
+					<span class="icon-plus nbm_bindcondition"></span>
+					</div>
+				</td>
+				<!-- 子表表单条件-->
+				<td class="nbm_ceil_form_condtion">
+					<div class="list_group_lay">
+						<div class="tml-row nbm_condition_content" >
+				            {:W('ShowAddResult', array('model'=>$modelname,'multitype'=>'multitype') )}
+				        </div>	
+					</div>
 				</td>
 				<td><a class="nbm_bind_add" href="javascript:void(0);">添加</a>&nbsp;<a class="nbm_bind_del" href="javascript:void(0);">移除</a></td>
 			</tr>

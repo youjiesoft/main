@@ -117,6 +117,19 @@ class SystemConfigNumberAction extends CommonAction {
 			'fieldtable'=>$_POST['fieldtable'],
 			'correlationfield'=>$_POST['correlationfield']
 		);
+		$orderno = "";
+	    //进行规则实例
+		$SystemConfigNumberModel = D("SystemConfigNumber");
+		//前缀一
+		if($aryRule['prefix1'])	$orderno.=$SystemConfigNumberModel->typeCheck($aryRule['prefix1'],$aryRule['prefix1_value'],$aryRule['prefix1_long']);
+		//前缀二
+		if($aryRule['prefix2'])	$orderno.=$SystemConfigNumberModel->typeCheck($aryRule['prefix2'],$aryRule['prefix2_value'],$aryRule['prefix2_long']);
+		//前缀三
+		if($aryRule['prefix3'])	$orderno.=$SystemConfigNumberModel->typeCheck($aryRule['prefix3'],$aryRule['prefix3_value'],$aryRule['prefix3_long']);
+		//前缀四
+		if($aryRule['prefix4'])	$orderno.=$SystemConfigNumberModel->typeCheck($aryRule['prefix4'],$aryRule['prefix4_value'],$aryRule['prefix4_long']);
+		
+	   $aryRule['oldrule'] = $orderno;
 		
        $listInfo= $model->SetRules($aryRule);
        $aryRule['masid']=$listInfo;
@@ -129,6 +142,13 @@ class SystemConfigNumberAction extends CommonAction {
        			$condition = array('masid'=>array('eq', $aryRule['masid']), 'fieldval'=>array('eq', $aryRule['fieldval']));
        			$vo=$classifyModel->where($condition)->find();
        			if($vo){
+       				unset($aryRule['numshow']);
+       				unset($aryRule['numnew']);
+       				if($vo['oldrule'] != $aryRule['oldrule']){
+       					//进行验证 规则1-4是否有变化，如果变化。直接将流水号重置
+       					$aryRule['numshow'] = 0;
+       					$aryRule['numnew'] = 1;
+       				}
        				$list=$classifyModel->where($condition)->data($aryRule)->save();
        			}else{
        				$list=$classifyModel->add($aryRule);

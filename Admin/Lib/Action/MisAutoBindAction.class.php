@@ -70,6 +70,17 @@ class MisAutoBindAction extends CommonAction {
 		$this->assign("MisDynamicFormManageVo",$MisDynamicFormManageVo);
 		$this->assign('formvodata',$bindFormData);
 		//查询当前表单绑定数据源
+		
+		// 查询真实表字段
+		$tablename = D ( $_REQUEST['aname'] )->getTableName ();
+		$DynamicconfModel = D ( "Dynamicconf" );
+		$tablelist = $DynamicconfModel->getTableInfo ( $tablename );
+		unset ( $tablelist ['id'] ); // 清除id
+		
+		foreach ( $tablelist as $tkey => $tval ) {
+			$MisDynamicDatabaseSubList [$tval ['COLUMN_NAME']] = $tval ['COLUMN_COMMENT'];
+		}
+		$this->assign ( "MisDynamicDatabaseSubList", $MisDynamicDatabaseSubList );
 		//获取可配置数据源
 		$datasoucelist=$this->getDateSoure($actionname);
 		$this->assign('datasoucelist',$datasoucelist);
@@ -138,8 +149,19 @@ class MisAutoBindAction extends CommonAction {
 			$dataroamid="";
 			$inbindformid=$val;
 			$val=getFieldBy($val,"id","actionname","mis_dynamic_form_manage");
+			$bindconditionArr = $_POST ['bindcondition'] [$key];
+			$inbindconditionArr = $_POST ['inbindcondition'] [$key];
+			$bindconlistArr=array();
+			foreach ( $bindconditionArr as $akey => $aval ) {
+				if ($aval) {
+					$bindconlistArr [$aval] = $inbindconditionArr [$akey];
+				}
+			}
 			//储存字段
 			$MisAutoBindData=array();
+			if($bindconlistArr){
+				$MisAutoBindData ['bindconlistArr'] = serialize ( $bindconlistArr );
+			}
 			$MisAutoBindData['inbackval']=implode(',', $_POST['inbackval'][$val]);
 			$MisAutoBindData['backval']=implode(',', $_POST['backval'][$val]);
 			$MisAutoBindData['dataroamid']=$_POST['dataroamid'][$key];
@@ -158,6 +180,12 @@ class MisAutoBindAction extends CommonAction {
 			$MisAutoBindData['bindformid']=getFieldBy($_POST['actionname'],"actionname","id","mis_dynamic_form_manage");
 			$MisAutoBindData['pid']=$pid;
 			$MisAutoBindData['level']=$endlevel;
+			//添加附加条件 -by xyz 2016-1-15
+				$MisAutoBindData ['bindcondition'] = implode ( ',', $_POST ['bindcondition'] [$key] ); // 主表附加条件
+				$MisAutoBindData ['inbindcondition'] = implode ( ',', $_POST ['inbindcondition'] [$key] ); // 子表附加条件
+				$MisAutoBindData ['showrules'] = str_replace ( "&#39;", "'", html_entity_decode ( $_POST ['showrules'] [$key] ) );
+				$MisAutoBindData ['rulesinfo'] = $_POST ['rulesinfo'] [$key];
+				$MisAutoBindData ['inbindmap'] = str_replace ( "&#39;", "'", html_entity_decode ($_POST ['rules'] [$key]));
 			$addresult=$MisAutoBindDao->data($MisAutoBindData)->add();
 			logs('add : '.$MisAutoBindDao->getLastSql() , 'bindFormLog');
 			if(!$addresult)
@@ -256,4 +284,5 @@ class MisAutoBindAction extends CommonAction {
 			}
 		}
 	}
+	
 }

@@ -4179,3 +4179,28 @@ function openMap(obj){
 	var url=unescape(TP_APP+'/Common/lookupgetMapCoordinate');
 	$.pdialog.open(url,rel,title,options);
 }
+/**
+ * 将每个动态隐藏的操作项，移除eror错误类。
+ * 将必填类移到属性上并从class中移除
+ * @param obj
+ */
+function setReq(obj){
+  $.each(obj , function(){
+     $(this).removeClass('error');
+    if($(this).hasClass('required')){
+      $(this).removeClass('required');
+      $(this).attr('req','required');
+    }
+  }); 
+}
+/**
+ * 每个动态隐藏项将必填属性转换为class
+ * @param obj
+ */
+function setClsReq(obj){
+  $.each(obj , function(){
+    if($(this).attr('req')){
+      $(this).addClass($(this).attr('req'));
+    }
+  }); 
+}

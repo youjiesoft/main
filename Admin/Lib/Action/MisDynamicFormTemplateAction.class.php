@@ -185,7 +185,7 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 			foreach ($replaceArr as $key=>$val){
 				if(preg_match('#(.*?)#', $key)){
 					array_push($search,$key);
-					array_push($replace, $val);
+					array_push($replace, html_entity_decode($val));
 				}
 			}
 		}
@@ -2181,6 +2181,21 @@ EOF;
 														break;
 														case 'yyyy-MM-dd HH:mm':
 														$format1 = "='Y-m-d H:i'";
+														break;
+														case 'yyyy-MM':
+														$format1 = "='Y-m'";
+														break;
+														case 'MM-dd':
+														$format1 = "='m-d'";
+														break;
+														case 'yyyy':
+														$format1 = "='Y'";
+														break;
+														case 'MM':
+														$format1 = "='m'";
+														break;
+														case 'dd':
+														$format1 = "='d'";
 														break;
 														case 'HH:mm':
 														$format1 = "='H:i'";

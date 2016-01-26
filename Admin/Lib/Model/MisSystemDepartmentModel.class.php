@@ -7,7 +7,7 @@
  * @company 重庆特米洛科技有限公司
  * @copyright 本文件归属于重庆特米洛科技有限公司
  * @date 2013-6-17 上午10:52:37
- * @version V1.0
+ * @version V1.0 
  */
 class MisSystemDepartmentModel extends CommonModel{
 	protected $trueTableName = 'mis_system_department';
@@ -59,7 +59,7 @@ class MisSystemDepartmentModel extends CommonModel{
 			}else{
 				if($checkuser){
 					$hrMap=array();
-					$hrMap['_string']="user_dept_duty.status=1  and user_dept_duty.deptid=".$v['id'];
+					$hrMap['_string']="user_dept_duty.status=1  and user.status>0 and user_dept_duty.deptid=".$v['id'];
 					if($companyid){
 						$newcompanyid=$companyid;
 					}else{
