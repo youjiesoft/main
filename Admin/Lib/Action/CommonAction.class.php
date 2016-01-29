@@ -5203,7 +5203,37 @@ EOF;
 			mkdir($path, 0777);
 		}
 	}
-
+	/**
+	 * 检查FTP上传配置
+	 * @Title: checkFtp
+	 * @Description: todo(这里用一句话描述这个方法的作用) 
+	 * @throws NullPointExcetion
+	 * @return Ftp  
+	 * @author quqiang 
+	 * @date 2016年1月26日 下午1:33:03 
+	 * @throws
+	 */
+	function checkFtp(){
+		import('@.ORG.Ftp');
+		if(!class_exists('Ftp')){
+			throw new NullPointExcetion("Ftp扩展类不存在，请检查");
+		}
+		$ftpIP = C('ftpIP');		// FTP地址
+		$ftpPort = C('ftpPort')?C('ftpPort'):21;	// FTP端口
+		$ftpId = C('ftpId');		// FTP帐号
+		$ftpPwd = C('ftpPwd');		// FTP密码
+		$ftpUrl= C('ftpUrl');		// 资源调用地址
+		if(!$ftpIP)
+			throw new NullPointExcetion('请配置FTP请求地址!');
+		if(!$ftpId)
+			throw new NullPointExcetion('请配置FTP帐号!');
+		if(!$ftpPwd)
+			throw new NullPointExcetion('请配置FTP密码!');
+		if(!$ftpUrl)
+			throw new NullPointExcetion('请配置FTP资源调用地址!');
+		$ftp = new Ftp($ftpIP,$ftpPort,$ftpId,$ftpPwd);
+		return $ftp;
+	}
 	/**
 	 * @Title: swf_upload
 	 * @Description: todo附件上传方法
@@ -5216,75 +5246,104 @@ EOF;
 	 * @throws
 	 */
 	function swf_upload($insertid,$subid=0,$m="",$projectid,$projectworkid){
-		$save_file=$_POST['swf_upload_save_name'];
-		$source_file=$_POST['swf_upload_source_name'];
-		$attModel = D("MisAttachedRecord");
-		//如果存在项目跟任务，判断是否需要归档77 
-		if($projectid && $projectworkid && $save_file){
-			$MPFFDAO = M("mis_project_flow_form"); // 实例化User对象
-			$isfile = $MPFFDAO->where("id=".$projectworkid)->getField('isfile');
-		}
-		//临时文件夹里面的文件转移到目标文件夹
-		foreach($save_file as $k=>$v){
-			if(is_array($v)){
-				foreach ($v as $key=>$val){
-					$fileinfo=pathinfo($val);
-					$from = UPLOAD_PATH_TEMP.$val;//临时存放文件
+		try{
+			$save_file=$_POST['swf_upload_save_name'];
+			$source_file=$_POST['swf_upload_source_name'];
+			$attModel = D("MisAttachedRecord");
+			//如果存在项目跟任务，判断是否需要归档77 
+			if($projectid && $projectworkid && $save_file){
+				$MPFFDAO = M("mis_project_flow_form"); // 实例化User对象
+				$isfile = $MPFFDAO->where("id=".$projectworkid)->getField('isfile');
+			}
+			if(C('ftpUse')==1){
+				$ftp = $this->checkFtp();
+			}
+			//临时文件夹里面的文件转移到目标文件夹
+			foreach($save_file as $k=>$v){
+				if(is_array($v)){
+					foreach ($v as $key=>$val){
+						$fileinfo=pathinfo($val);
+						$from = UPLOAD_PATH_TEMP.$val;//临时存放文件
+						if( file_exists($from) ){
+							$p=UPLOAD_PATH.$fileinfo['dirname'];// 目标文件夹
+							if( !file_exists($p) ) $this->createFolders($p); //判断目标文件夹是否存在
+							$to = UPLOAD_PATH.$val;
+							//保存附件信息
+							$data=array();
+							
+							if(C('ftpUse')==1){
+								// Ftp上传资源 by nbmxkj@20160126
+								$ftp->up_file($from,$val);   //上传文件
+								$remotePic .= $val;
+								$data['domain']= strrpos(C('ftpUrl'),'/')+1 == strlen(C('ftpUrl'))?C('ftpUrl'):C('ftpUrl').'/';
+								$data['isremote']=1; // 外部资源调用方式
+							}else{
+								rename($from,$to);
+							}
+							// 处理资源地址
+							//$remotePic= C('ftpUse')==1 && C('ftpUrl') ? ( strrpos(C('ftpUrl'),'/')+1 == strlen(C('ftpUrl'))?C('ftpUrl').$val:C('ftpUrl').'/'.$val ): $val;
+							$remotePic = $val;
+							//$data['type']=$type;
+							//$data['orderid']=$insertid;
+							$data['tablename'] = $m ? $m:$this->getActionName();
+							$data['tableid']=$insertid;
+							$data['subid']=$subid;
+							$data['attached']= $remotePic;
+							$data['projectid']= $projectid;
+							$data['projectworkid']= $projectworkid;
+							$data['isfile']= $isfile;
+							$data['fieldname']= $k;
+							$data['upname']=$source_file[$k][$key];
+							$data['createtime'] = time();
+							$data['createid'] = $_SESSION[C('USER_AUTH_KEY')]?$_SESSION[C('USER_AUTH_KEY')]:0;
+							$rel=$attModel->add($data);
+							if(!$rel){
+								$this->error("附件上传失败，请联系管理员！");
+							}
+						}
+					}
+				}else{
+					$fileinfo=pathinfo($v);
+					$from = UPLOAD_PATH_TEMP.$v;//临时存放文件
 					if( file_exists($from) ){
 						$p=UPLOAD_PATH.$fileinfo['dirname'];// 目标文件夹
 						if( !file_exists($p) ) $this->createFolders($p); //判断目标文件夹是否存在
-						$to = UPLOAD_PATH.$val;
-						rename($from,$to);
+						$to = UPLOAD_PATH.$v;
 						//保存附件信息
 						$data=array();
+						
+						if(C('ftpUse')==1){
+							// Ftp上传资源 by nbmxkj@20160126
+							$ftp->up_file($from,$v);   //上传文件
+							$data['isremote']=1; // 外部资源调用方式
+							$data['domain']= strrpos(C('ftpUrl'),'/')+1 == strlen(C('ftpUrl'))?C('ftpUrl'):C('ftpUrl').'/';
+						}else{
+							rename($from,$to);
+						}
+// 						$remotePic= C('ftpUse')==1 && C('ftpUrl') ? ( strrpos(C('ftpUrl'),'/')+1 == strlen(C('ftpUrl'))?C('ftpUrl').$v:C('ftpUrl').'/'.$v ): $v;
+						$remotePic = $v;
 						//$data['type']=$type;
 						//$data['orderid']=$insertid;
 						$data['tablename'] = $m ? $m:$this->getActionName();
 						$data['tableid']=$insertid;
 						$data['subid']=$subid;
-						$data['attached']= $val;
+						$data['attached']= $v;
+						$data['fieldname']= $_REQUEST['fieldname'];
+						$data['upname']=$source_file[$k];
+						$data['createtime'] = time();
+						$data['createid'] = $_SESSION[C('USER_AUTH_KEY')]?$_SESSION[C('USER_AUTH_KEY')]:0;
 						$data['projectid']= $projectid;
 						$data['projectworkid']= $projectworkid;
 						$data['isfile']= $isfile;
-						$data['fieldname']= $k;
-						$data['upname']=$source_file[$k][$key];
-						$data['createtime'] = time();
-						$data['createid'] = $_SESSION[C('USER_AUTH_KEY')]?$_SESSION[C('USER_AUTH_KEY')]:0;
 						$rel=$attModel->add($data);
 						if(!$rel){
 							$this->error("附件上传失败，请联系管理员！");
 						}
 					}
 				}
-			}else{
-				$fileinfo=pathinfo($v);
-				$from = UPLOAD_PATH_TEMP.$v;//临时存放文件
-				if( file_exists($from) ){
-					$p=UPLOAD_PATH.$fileinfo['dirname'];// 目标文件夹
-					if( !file_exists($p) ) $this->createFolders($p); //判断目标文件夹是否存在
-					$to = UPLOAD_PATH.$v;
-					rename($from,$to);
-					//保存附件信息
-					$data=array();
-					//$data['type']=$type;
-					//$data['orderid']=$insertid;
-					$data['tablename'] = $m ? $m:$this->getActionName();
-					$data['tableid']=$insertid;
-					$data['subid']=$subid;
-					$data['attached']= $v;
-					$data['fieldname']= $_REQUEST['fieldname'];
-					$data['upname']=$source_file[$k];
-					$data['createtime'] = time();
-					$data['createid'] = $_SESSION[C('USER_AUTH_KEY')]?$_SESSION[C('USER_AUTH_KEY')]:0;
-					$data['projectid']= $projectid;
-					$data['projectworkid']= $projectworkid;
-					$data['isfile']= $isfile;
-					$rel=$attModel->add($data);
-					if(!$rel){
-						$this->error("附件上传失败，请联系管理员！");
-					}
-				}
 			}
+		}catch (Exception $e){
+			$this->error($e->getMessage());
 		}
 	}
 

@@ -1425,7 +1425,7 @@ class MisDynamicFormManageAction extends MisDynamicFormTemplateAction {
 				}
 			}else{
 				$isprimary="";
-			}
+			} 
 			foreach ($fieldname[$tkey]  as $key=>$val){
 				//查询该表是否是复用表
 				$subMap=array();
@@ -1745,20 +1745,20 @@ class MisDynamicFormManageAction extends MisDynamicFormTemplateAction {
 				
 			}
 		}
-
 		$this->modifyOriginalConfig($arr1,$newarr2,$arr3);
 		$alist=array();
 		$alist=array(
 				'datebase'=>$this->gettableArr('',$creatableList,1,$_POST['datasouce']),
 		);
 		if($_POST['datasouce']){
+			//修改数据源
+			 $MisDynamicDatabaseSubDao->where("field='".$_POST['datasouce']."'  and formid=".$formid)->setField("isdatasouce",1);
+		}else{
 			//查询原单据数据源
 			$olddtmap=array();
 			$olddtmap['formid']=$formid;
 			$olddtmap['isdatasouce']=1;
 			$MisDynamicDatabaseSubDao->where($olddtmap)->setField("isdatasouce",0);
-			//修改数据源
-			 $MisDynamicDatabaseSubDao->where("field='".$_POST['datasouce']."'  and formid=".$formid)->setField("isdatasouce",1);
 		}
 		//$this -> success("操作成功", '', array('type' => 1, 'nodename' => $this -> nodeName ,'tablename'=>$this->tableName,'tpltype'=>$this->tpltype));
 		// 获取到当前action 在表单记录表中的数据，并将审批状态改为当前状态。
@@ -1835,7 +1835,6 @@ class MisDynamicFormManageAction extends MisDynamicFormTemplateAction {
 			}
 		}
 		
-		
 		// 在做操作前先检查物理表是否存在,不存时就先创建表
 		$validateTable = $this-> validateTable( $this->getTrueTableName());
 		if(!$validateTable){
@@ -1850,7 +1849,6 @@ class MisDynamicFormManageAction extends MisDynamicFormTemplateAction {
 			$msg = "节点名称修改失败！".$nodeModelObj->getDBError().' '.$nodeModelObj->getLastSql();
 			throw new NullDataExcetion($msg);
 		}
-		
 		
 		return  array(
 						'type' => 1,
@@ -2837,7 +2835,7 @@ EOF;
 			}else{
 				apamount = comboxMathematicalOperation(ret_c, decimal);
 			}
-			$(this).val(apamount);
+			$(this).val(apamount).change();
 			}catch(e){
 				console.log(e||e.message);
 			}
@@ -2868,7 +2866,7 @@ EOF;
 			 var dat = new Date().DateDiff('{$jingdu}',d1,d2);
 			 var ret=dat{$JiequStringfuhao}{$JiequStringzhi};				
 							
-			 $(this).val(ret);
+			 $(this).val(ret).change();
 		}catch(e){
 			console.log(e||e.message);
 		}
@@ -2889,7 +2887,7 @@ EOF;
 			 var ret = new Date().DateDiff('{$jingdu}',d1,d2);
 			 		
 			 
-			 $(this).val(ret);
+			 $(this).val(ret).change();
 		}catch(e){
 			console.log(e||e.message);
 		}
@@ -2907,6 +2905,7 @@ EOF;
 		try{
 			 var d1 = $('input[name="{$numbername}"]',box).val();
 			  d1 = toDate(d1);
+			  if(!d1) return ;
 			 var num={$number};
 			 var ret = new Date().DateAdd('{$jingdu}',num,d1);
 			 var fmtStr = $(this).attr('format');
@@ -2918,7 +2917,7 @@ EOF;
 				 }
 			 }
 			ret= ret.Format(finalyFMT);
-			 $(this).val(ret);
+			 $(this).val(ret).blur();
 		}catch(e){
 			 console.log(e||e.message);
 		}
@@ -2954,7 +2953,7 @@ EOF;
 				apamount = ret_c;
 			}
 	 		if(apamount){
-	 			$(this).val(apamount);
+	 			$(this).val(apamount).change();
 			}
 			
 			}catch(e){

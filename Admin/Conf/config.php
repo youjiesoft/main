@@ -2,6 +2,7 @@
 //Version 1.0
 $siteconfig = require './siteconfig.inc.php';
 $dbconfig = require 'db.inc.php';
+$ftpconfig = require 'ftp.inc.php';
 $config	= array(
 	'COPYRIGHT'=>"重庆市农业担保有限公司",//版权信息
     'SHOW_PAGE_TRACE' =>false, // 显示页面Trace信息
@@ -180,5 +181,5 @@ $config	= array(
 	),
 );
 
-return array_merge($config, $siteconfig,$dbconfig);
+return array_merge($config, $siteconfig,$dbconfig,$ftpconfig);
 ?>
