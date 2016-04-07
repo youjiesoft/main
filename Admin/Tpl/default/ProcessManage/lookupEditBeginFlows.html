@@ -1,0 +1,32 @@
+<script type="text/javascript">
+//保存所选的人
+function saveSelectUserFlowList(json){
+	var response = json.data;
+	var conditions = json.condition;
+	var connectkey = json.connectkey;
+	// 等待所有script加载完再执行这个代码块
+	pr.fnInit("prcslist",response,conditions,connectkey);
+	$.pdialog.closeCurrent();
+}
+</script>
+<div class="page">
+	<div class="pageContent">
+	<form method="post" action="__URL__/lookupUpdate/rel/ProcessManageBox" class="pageForm required-validate" onsubmit="return validateCallback(this,saveSelectUserFlowList)">
+		<div class="pageFormContent" layoutH="60">
+			<div class="tml-row pmt_warp">
+				<input type="hidden" name="modelname" value="{$row['modelname']}"/><!-- 当前模型名称 -->
+				<input type="hidden" name="choose" value="{$row['choose']}"/><!-- 审批节点 -->
+				<input type="hidden" name="ids" value="{$row['ids']}"/><!-- 当前节点ID -->
+				<input type="hidden" name="prcsid" value="{$row['prcsid']}"/><!-- 序号 -->
+	            <div class="process_warp_header">节点名称：</div>
+				<input type="text" class="required textInput node_name_input" name="process_relation_name"  value="{$row['processname']}" />
+	        </div>
+		</div>
+		<div class="formBar">
+			<ul>
+				<li><button class="tml_select_btn tml_formBar_btn_blue" type="submit">{$Think.lang.save}</button></li>
+			</ul>
+		</div>
+	</form>
+	</div>
+</div>

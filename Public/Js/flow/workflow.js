@@ -179,7 +179,7 @@ var pr = {
                     				mPar.addClass("disabled");
                     				mPar.unbind("click");
                     			}
-                    			if(row.choose != 2 & row.choose != 3){ 
+                    			if(row.choose != 2 & row.choose != 3 & row.choose != 0){ 
                     				//非审批节点或者子流程节点 不允许进行节点修改
                     				mEdit.addClass("disabled");
                     				mEdit.unbind("click");
@@ -320,14 +320,20 @@ var pr = {
     },
     fnEditChildFlows:function(row){
     	var m = "ProcessManage";
+    	var width = 800,height = 485;
     	if(row.choose == 3){
     		var url = "lookupAddChildSonFlows";
+    	}else if (row.choose == 0){
+    		//开始节点，修改名称
+    		var url = "lookupEditBeginFlows";
+    		width = 500;
+    		height = 250;
     	}else{
     		var url = "lookupEditProcessRelation";//修改当前节点
     	}
     	var options = {};
-    	options.width = 800;
-    	options.height = 485;
+    	options.width = width;
+    	options.height = height;
     	options.mask = true;
     	options.resizable = false;
     	options.maxable = false;

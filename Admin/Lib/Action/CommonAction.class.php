@@ -1295,7 +1295,6 @@ class CommonAction extends CommonExtendAction {
 	 +----------------------------------------------------------
 	 */
 	protected function _list($name, $map, $sortBy = '', $asc = false,$group='',$echoSql='',$sortstr='',$limit=true) {
-		
 		import ( '@.ORG.Browse' );
 		//map附加
 		//提醒条件
@@ -1447,6 +1446,7 @@ EOF;
 					$voList = $model->where($map)->order(  $order." ".$sort)->limit($limitval)->select();
 				}
 			}
+			logs($model->getLastSql(),'listSql');
 			$htmls.=<<<EOF
 				<script>
 				console.log("查询语句:{$model->getLastSql()}");
@@ -1737,6 +1737,7 @@ EOF;
 				$this->sysremind($name,$list);
 			}
 			if ($startprocess != 1) {
+				$this->lookupdataInteractionPrepareData($list);
 				if(!$isrelation){
 					try{
 						// 排除一些非动态表单生成的 action
@@ -3084,6 +3085,9 @@ EOF;
 				$this->_before_overProcess($id);
 			}
 			if ($startprocess !== 1) {
+				
+				$this->lookupdataInteractionPrepareData($id);
+				
 				if(!$isrelation){
 					$this->success ( "表单数据保存成功！" );
 				}else{
@@ -10029,6 +10033,7 @@ $this->assign('vo',$vo);
 						$list[$v["name"]]["ziti"] = $v["ziti"];
 						$list[$v["name"]]["zihao"] = $v["zihao"];
 						$list[$v["name"]]["hangjianju"] = $v["hangjianju"];
+						$list[$v["name"]]["fieldwidth"] = json_decode($v["fieldwidth"],true);
 						if( ! empty($v["showfield"])){//内嵌表显示字段
 							$showfield = json_decode($v["showfield"],true);
 							if(isset($list[$v["name"]]) && is_array($showfield)){
@@ -10100,6 +10105,7 @@ $this->assign('vo',$vo);
 							"ziti"=>$list[$v["name"]]["ziti"],
 							"zihao"=>$list[$v["name"]]["zihao"],
 							"hangjianju"=>$list[$v["name"]]["hangjianju"],
+							"fieldwidth"=>$list[$v["name"]]["fieldwidth"],
 							"original"=>$newTab[$k]["value"],
 							"value"=>$newTab[$k]["value"],
 					);
@@ -10664,6 +10670,27 @@ $this->assign('vo',$vo);
 		$detailList = $scdmodel->getDetail ( $name, false );
 		
 		$showname = getFieldBy($name, 'name', 'title', 'node');
+		//子表数据采集开始
+		if($volist ['id']){
+			//增加主表子表功能word版本  这个是以前缺失的部分
+			$mis_dynamic_database_masDao = M("mis_dynamic_database_mas");
+			$where = array();
+			$where['modelname'] = $name;
+			$where['isprimary'] = array('exp',"is null");
+			//查询相关字表数据
+			$sonvolist = $mis_dynamic_database_masDao->field("tablename")->where($where)->select();
+			if($sonvolist){
+				foreach ($sonvolist as $tkey=>$tval){
+					//查询字表数据
+					$sondata = M($tval['tablename'])->field("id",true)->where('masid ='.$volist ['id'])->find();
+					if($sondata && $volist){
+						$volist = array_merge($volist,$sondata);
+					}
+				}
+			}
+		}
+		//字表数据获取完毕
+		
 		// 定义配置文件转换后的数组变量
 		$totalArr = $this->getDqData ( $detailList, $volist);
 		//数据标签数据结构
@@ -10746,8 +10773,8 @@ $this->assign('vo',$vo);
 				//获取表单子表附加
 				foreach ($bindconlistArr as $bindkey=>$bindval){
 					//如果有值才生成查询
-					if($vo[$bindkey]){
-						$map[$bindval]=$vo[$bindkey];
+					if($volist[$bindkey]){
+						$map[$bindval]=$volist[$bindkey];
 					}
 				}
 			}
@@ -10785,9 +10812,9 @@ $this->assign('vo',$vo);
 					// 获取内嵌表的配置文件
 					$neiqdetailList = $scdmodel->getEmbedDetail ( $inbandaname, $v3['tablename']);
 					$innerTabelObjdatatable3Data = array();
-					if($volist ['id']){
+					if($bindList['id']){
 						$where = array ();
-						$where ['masid'] = $volist ['id'];
+						$where ['masid'] = $bindList['id'];
 						//内嵌表的数据
 						$innerTabelObjdatatable3Data = $datatablename->where ( $where )->select ();
 					}
@@ -11734,6 +11761,14 @@ $this->assign('vo',$vo);
 			$romasID=array();
 			$romasID['bindaname']=$sourcemodel;
 			$romasID['inbindaname']=$name;
+			//组合表单
+			if(getFieldBy($name, "inbindaname", "typeid", "mis_auto_bind")==0){
+				//查询数据VO
+				$actionmodel=D($sourcemodel);
+				$vo=$actionmodel->where("id=".$sourceid)->find();
+				$bindVo=M("mis_auto_bind")->where($romasID)->find();
+				$romasID['bindval']=$vo[$bindVo['bindresult']];
+			}
 			$MisAutoBindSettableVo=M("mis_auto_bind")->where($romasID)->find();
 			$datarommasid=$_REQUEST['urdataroamid']?$_REQUEST['urdataroamid']:$MisAutoBindSettableVo['dataroamid'];
 			$dataArr=$model->main(2,$sourcemodel,$sourceid,4,$targetmodel,'',$datarommasid);
@@ -11758,27 +11793,6 @@ $this->assign('vo',$vo);
 									if($MisAutoBindSettableVo['typeid']==2){
 										$map[key($v1)]=reset($v1);
 									} 
-								}
-							}
-						}
-					}
-					//组合表
-					if($MisAutoBindSettableVo['typeid']==0){
-						if($MisAutoBindSettableVo['inbindmap']){
-							$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
-							), $MisAutoBindSettableVo['inbindmap'] );
-							$map['_string']=$newconditions;
-						}
-						//表单附加条件
-						if($MisAutoBindSettableVo['bindconlistArr']){
-							if($MisAutoBindSettableVo['bindconlistArr']){
-								$bindconlistArr=unserialize($MisAutoBindSettableVo['bindconlistArr']);
-								//获取表单子表附加
-								foreach ($bindconlistArr as $bindkey=>$bindval){
-									//如果有值才生成查询
-									if($vo[$bindkey]){
-										$map[$bindval]=$vo[$bindkey];
-									}
 								}
 							}
 						}
@@ -11840,6 +11854,27 @@ $this->assign('vo',$vo);
 				}
 				// 删除缓存表
 				//self::unsetOldDataToCache($dataroaming);
+			}
+			//组合表
+			if($MisAutoBindSettableVo['typeid']==0){
+				if($MisAutoBindSettableVo['inbindmap']){
+					$newconditions = str_replace ( array ( '&quot;', '&#39;', '&lt;','&gt;'), array ('"',"'",'<','>'
+					), $MisAutoBindSettableVo['inbindmap'] );
+					$map['_string']=$newconditions;
+				}
+				//表单附加条件
+				if($MisAutoBindSettableVo['bindconlistArr']){
+					if($MisAutoBindSettableVo['bindconlistArr']){
+						$bindconlistArr=unserialize($MisAutoBindSettableVo['bindconlistArr']);
+						//获取表单子表附加
+						foreach ($bindconlistArr as $bindkey=>$bindval){
+							//如果有值才生成查询
+							if($vo[$bindkey]){
+								$map[$bindval]=$vo[$bindkey];
+							}
+						}
+					}
+				}
 			}
 			$this->assign("addvo",$vo);
 		}
@@ -12975,10 +13010,28 @@ EOF;
 			$userid = getFieldBy($History['userid'], 'id', 'name', 'user');
 			$time = transTime($History['dotime'],'Y/m/d H:i');
 		}
+		$prorelaName = "制单节点";
+		//查询当前流程开始节点名称
+		$process_info = M("process_info");
+		$promap = array();
+		$promap['nodename'] = $name;
+		$promap['default'] = 1;
+		$pinfoid = $process_info->where($promap)->getField("id");
+		if($pinfoid){
+			//实例化节点表
+			$process_relation = M("process_relation");
+			$promap = array();
+			$promap['tablename'] = "process_info";
+			$promap['pinfoid'] = $pinfoid;
+			$promap['flowtype'] = 0; //开始节点
+			//获取开始节点名称
+			$prorelaName = $process_relation->where($promap)->getField("name");
+		}
+		//模式一 begin
 		$newHinfo = array();
 		//节点名称
-		$newHinfo['createname']['original'][] = '制单节点';
-		$newHinfo['createname']['value'][] = '制单节点';
+		$newHinfo['createname']['original'][] = $prorelaName;
+		$newHinfo['createname']['value'][] = $prorelaName;
 		//审核意见
 		$newHinfo['createdoinfo']['original'][] = $History['doinfo'];
 		$newHinfo['createdoinfo']['value'][] = $History['doinfo'];
@@ -12988,11 +13041,14 @@ EOF;
 		//审核人
 		$newHinfo['createuser']['original'][] = $userid;
 		$newHinfo['createuser']['value'][] = $userid;
+		//模式一  end
 		
-		$list["createname"] = array('name'=>"createname",'showname'=>'','original'=>'','value'=>"制单节点");
+		//模式二   begin
+		$list["createname"] = array('name'=>"createname",'showname'=>'','original'=>'','value'=>$prorelaName);
 		$list["createdoinfo"] = array('name'=>"createdoinfo",'showname'=>'','original'=>'','value'=>$History['doinfo']);
 		$list["createdotime"] = array('name'=>"createdotime",'showname'=>'','original'=>'','value'=>$time);
 		$list["createuser"] = array('name'=>"createuser",'showname'=>'','original'=>'','value'=>$userid);
+		//模式二  end
 		//流程启动节点拼装完成
 		
 		//拼装流程审核节点意见---- 不管意见是否存在。节点内容全部输出。满足表格形似的意见
@@ -13437,6 +13493,7 @@ EOF;
 				if(is_array($v["value"]) && !isset($v["colORrow"]) && $v['title_none'] != 1){
 					foreach($v["value"] as $kk => $vv){
 						$data["titleArr"][] = empty($vv["showname"])?"":$vv["showname"];
+						$data["fieldwidth"][] = $v["fieldwidth"][$vv["name"]];
 					}
 				}
 				$document->setValue($v["name"],$data);
@@ -13988,10 +14045,11 @@ code;
 	 * @throws
 	 */
 	function lookupdataInteractionPrepareData($id){
+		$actionName = $this->getActionName();
 		$file =  ROOT."/Conf/datainteraction.php";
 		if(file_exists($file)){
-			$list = require $file;			
-			$actionName = $this->getActionName();
+			$list = require $file;	
+			
 			//有相关数据才设置$_REQUEST['data_interaction']		
 			if($list[$actionName]){
 				$_REQUEST['data_interaction'] = $list[$actionName];
@@ -14031,6 +14089,7 @@ code;
 		$url = $_POST['url'];
 		//测试查询
 		$result=M()->query($sql);
+		echo M()->getlastsql();
 		import ( '@.ORG.EsbApi.EsbLinkApi' );
 		$a=new esblink();
 		//循环执行数据交换

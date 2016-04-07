@@ -270,6 +270,20 @@ class ProcessManageAction extends CommonAction {
 		exit(json_encode($list));
 	}
 	/**
+	 * @Title: lookupEditBeginFlows
+	 * @Description: todo(修改开始节点名称)   
+	 * @author 黎明刚 
+	 * @date 2016年4月6日 下午12:00:03 
+	 * @throws
+	 */
+	public function lookupEditBeginFlows(){
+		//获取当前节点所有信息数据
+		$row = $_REQUEST['row'];
+		$this->assign("row",$row);
+		$this->display();
+	}
+	
+	/**
 	 * @Title: lookupEditProcessRelation
 	 * @Description: todo(流程节点修改)   
 	 * @author 黎明刚
