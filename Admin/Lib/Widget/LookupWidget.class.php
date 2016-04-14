@@ -17,16 +17,18 @@ class LookupWidget extends Widget{
 	 * $data[2]		$controllProperty	当前组件的属性ID或属性数组
 	 * $data[3]		$isedit					是否为修改操作页面
 	 * $data[4]		$isreturnvalue		是否为view操作页面
+	 * $data[5]		$ganshe				干涉页面 状态归0
 	 * @see Widget::render()
 	 */
 	public function render($data){
 		/**			数据收集			*/
 		unset($vo);
 		$controllType		=	$data[0];	//组件类型 lookup , lookupsuper
-		$vo						=	$data[1];	//页面vo数据
+		$vo					=	$data[1];	//页面vo数据
 		$controllProperty	=	$data[2];	//当前组件的属性ID或属性数组
-		$isedit					=	$data[3];	//是否为修改操作页面
+		$isedit				=	$data[3];	//是否为修改操作页面
 		$isreturnvalue		=	$data[4];	//是否为view操作页面
+		$ganshe				=	$data[5];	//干涉页面 状态归0
 		/**			数据处理			*/
 		$dir = CONF_PATH;
 		$controlls =require $dir . 'controlls.php';
@@ -53,6 +55,11 @@ class LookupWidget extends Widget{
 		if(!is_array($controllProperty)){
 			$obj = M('mis_dynamic_form_propery');
 			$controllProperty = $obj->where('id='.$controllProperty)->find();
+			if($ganshe == '1'){
+				$controllProperty[$property['islock']['dbfield']] = 1;
+				$controllProperty[$property['requiredfield']['dbfield']] = 1;
+				$controllProperty[$property['isshow']['dbfield']] = 0;
+			}
 		}
 		
 		if(!is_array($controllProperty)){
@@ -65,7 +72,7 @@ class LookupWidget extends Widget{
 				$chtml=$controllProperty[$property['checkfunc']['dbfield']];
 			}
 			$required = ''; // 必填验证
-			if($controllProperty[$property['requiredfield']['dbfield']]){
+			if($controllProperty[$property['requiredfield']['dbfield']]&&$ganshe != '1'){
 				$required = 'required';
 			}
 			$chtml = $required.'nbm '. $chtml;
@@ -106,6 +113,7 @@ class LookupWidget extends Widget{
 			$orgLookuoVal = $controllProperty[$property['org']['dbfield']]; // 值 value
 			$orgLookupText = $controllProperty[$property['org1']['dbfield']]; // 显示内容 text
 			$readonly	=	$controllProperty[$property['islock']['dbfield']]==1?false:true;
+			
 			$view = '';
 			if($lookupDetail['viewname']){
 				$view = '&viewname='.$lookupDetail['viewname'];

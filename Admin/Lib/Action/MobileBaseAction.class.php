@@ -10,62 +10,63 @@
  * @version V1.0
  */
 class MobileBaseAction extends Action {
-	protected $serviceRoot='http://120.25.218.139';
-	private $transaction_model=NULL;//事务模型
+	protected $serviceRoot='http://112.74.23.43/zhsq';
+	//事务模型
+	protected $transaction_model=NULL;
+	//无需认证的方法
+	protected $notoken=array('getPolicyAdvice','getCommunityNews','getExpress','getLookAfter','getPartyBuilding','getRedCross','getStyleService','getSocialSecurityService','getComprehensiveManagementService','getFamilyPlanningService','getDisabledService','getCivilService','login','register','getVerificationCode','checkVerificationCode','resetPassword');
 	
 	function __construct(){
+		//继承父类的构造函数
 		parent::__construct();
-		$this->serviceRoot='http://120.25.218.139';
-	}
-	/*
-	 * 服务器地址返回接口；这个接口地址不能改变
-	 * paramate $_REQUEST['type']  Formal正式环境  PreRelease 预发布环境  Test测试环境
-	 * return 返回服务器地址
-	*/
-	public function serverLink($returnType='json'){
-		$serverType=$_REQUEST['type']?$_REQUEST['type']:'Formal';
-		$server=$this->serverLinkBase($serverType);
-        if($server){
-        	$data=$server;
-        	$code='1000';
-        	$msg='1000:返回成功';
-        	return $this->getReturnData($data,$returnType,$code,$msg);        	
-		}else{
-			$server['allPath']=$this->serviceRoot.'/Admin/index.php?s=/MobileChuangke/';
-			$server['prefixPath']=$this->serviceRoot.'/Admin/';
-			$server['postfixPath']='index.php?s=/MobileChuangke/';
-			$server['phone']='02367787216';
-			$data=$server;
+		//是否注册方法标示位
+		$register=false;
+		//过滤掉无需登陆验证的方法
+		foreach($_REQUEST['_URL_'] as $key => $val ){
+			if(in_array($val,$this->notoken)){
+				$register=true;
+			}
+		}
+		//直接跳出构造函数
+		if($register){ return ;}
+
+		// ---- 调试 信息信息 ---- jiangxiaobo
+		// try{
+		// 	throw new Exception('xxxx');
+		// }catch(Exception $e){
+		// 	$token=unserialize(base64_decode(strrev($_REQUEST['token'])));
+		// 	return $this->getReturnData($data,'json',$code,$token);
+		// }
+		// ---- 调试 信息信息 ---- jiangxiaobo
+		
+		try{
+			if($_REQUEST['token']){
+				//对token做解析
+				//1反向转换2base64解密3反序列化
+				$token=unserialize(base64_decode(strrev($_REQUEST['token'])));
+				try{
+					if((!empty($token['apptype'])) && (!empty($token['phone'])) && (!empty($token['password']))){
+						//验证电话、密码和端口
+						$MobileUserBaseModel = D("MobileUserBase");
+						$MobileUserBaseModel->checkLogin($token['phone'],$token['password'],$token['apptype']);
+					}else{
+						throw new Exception('Division by zero.');
+					}
+				}catch(Exception $e){
+					$data=array();
+					$code='1003';
+					$msg='1003:令牌错误';
+					return $this->getReturnData($data,'json',$code,$msg);
+				}
+			}else{
+				throw new Exception('Division by zero.');
+			}
+		}catch(Exception $e){
+			$data=array();
 			$code='1003';
-			$msg='1003:非法操作';
-			return $this->getReturnData($data,$returnType,$code,$msg);
+			$msg='1003:令牌不存在';
+			return $this->getReturnData($data,'json',$code,$msg);
 		}
-	}	
-	/*
-	 * 服务器地址
-	*/	
-	private function serverLinkBase($serverType){
-		switch($serverType){
-			case 'Formal':
-				$server['allPath']=$this->serviceRoot.'/Admin/index.php?s=/MobileChuangke/';
-				$server['prefixPath']=$this->serviceRoot.'/Admin/';
-				$server['postfixPath']='index.php?s=/MobileChuangke/';
-				$server['phone']='02367787216';
-			break;
-			case 'PreRelease':
-				$server['allPath']=$this->serviceRoot.'/Admin/index.php?s=/MobileChuangke/';
-				$server['prefixPath']=$this->serviceRoot.'/Admin/';
-				$server['postfixPath']='index.php?s=/MobileChuangke/';
-				$server['phone']='02367787216';
-			break;
-			case 'Test':
-				$server['allPath']=$this->serviceRoot.'/Admin/index.php?s=/MobileChuangke/';
-				$server['prefixPath']=$this->serviceRoot.'/Admin/';
-				$server['postfixPath']='index.php?s=/MobileChuangke/';
-				$server['phone']='02367787216';
-			break;						
-		}
-		return $server;
 	}
 	//此方法用来处理返回数据类型，为JSON  还是  array
 	public  function getReturnData($returnData=array(),$returnType='json',$code='1001',$msg='系统内置错误'){
@@ -89,17 +90,15 @@ class MobileBaseAction extends Action {
 			}
 		}
 	}
-	protected  function illegalParameter(){
-		return $this->getReturnData(array(),'json',0,'200:非法参数');
-	}
-	
+ 
+	//重复
 	protected function  setToken($userInfo){
 		$token= serialize($userInfo);
 		$token=str_replace('=','',base64_encode($token));//base64加密
 		$token=strrev($token);//反转字符串
 		return $token;
 	}
-	
+	//重复
 	protected function CURD($modelname,$opration,$data,$condition=''){
 		if(empty($modelname) && empty($opration))return false;
 		$this->transaction_model=M();
@@ -135,7 +134,7 @@ class MobileBaseAction extends Action {
 		}
 		//$this->transaction_model->commit();
 		//echo D($modelname)->getLastSql();
-		logs(D($modelname)->getLastSql());
+		logs(D($modelname)->getLastSql(),"sql");
 		if($result===false){
 			$this->transaction_model->rollback();
 		}else{
@@ -200,7 +199,7 @@ class MobileBaseAction extends Action {
 	 * @date 2015年4月23日 下午2:44:08
 	 * @throws
 	 */
-	protected function getFormList($modelname,$fileds='id,orderno',$seachFields,$condition,$attachedModel){
+	protected function getFormList($modelname,$fileds='id,orderno',$seachFields,$condition,$attachedModel,$type=true){
 		//定义一个分页条数
 		$pageSize=intval($_REQUEST['pagesize'])?intval($_REQUEST['pagesize']):10;
 		//获取分页条码数
@@ -289,8 +288,7 @@ class MobileBaseAction extends Action {
 		$model = D($modelname);
 		//查询总条数
 		$count = $model->where ( $condition )->count ( '*' );
-		//var_dump($model->getLastSql());exit;
-		//dump($count);
+		
 		
 		//查询首页进入是否有数据
 		 $site=$_REQUEST['site'];
@@ -349,9 +347,13 @@ class MobileBaseAction extends Action {
 		$data['pagesize']=array("pagesize"=>$pageSize);
 		$data['pagenum']=array("pagenum"=>$totalPageNum);
 		$data['curpagenum']=array("curpagenum"=>$pageNum);
-		$data['count']=array("count"=>$count); 
-	
-		return $this->getReturnData($data,'json','1000',"获取数据成功");
+		$data['count']=array("count"=>$count);
+		if($type){
+			return $this->getReturnData($data,'json','1000',"获取数据成功");
+		}else{
+			return $data;
+		}
+		
 	}
 	
 	
@@ -365,7 +367,7 @@ class MobileBaseAction extends Action {
 	 * @date 2015年4月23日 下午2:44:08
 	 * @throws
 	 */
-	protected function getFormListAll($modelname,$fileds='id,orderno',$seachFields,$condition){
+	protected function getFormListAll($modelname,$fileds='id,orderno',$seachFields,$condition,$type=true){
 	
 		//$map = array();
 		//获取检索字段名称
@@ -417,7 +419,12 @@ class MobileBaseAction extends Action {
 		$volist = $this->getDateListData($modelname, $list);
 		$data=array();
 		$data['list']=$volist;
-		return $this->getReturnData($data,'json','1000',"获取数据成功");
+		if($type){
+			return $this->getReturnData($data,'json','1000',"获取数据成功");
+		}else{
+			return $data;
+		}
+		
 	}
 	
 	
@@ -478,7 +485,7 @@ class MobileBaseAction extends Action {
 	 * $arrayType  1 带key value的二维数组  ；2 一维数组
 	 * @throws
 	 */
-	protected function getFormInfo($modelname,$arrayType=2){
+	protected function getFormInfo($modelname,$arrayType=2,$type=true){
 		//获取表单ID值
 		$id = $_REQUEST['id'];
 		if(!$id){
@@ -535,7 +542,12 @@ class MobileBaseAction extends Action {
 			$message[$val['fieldname'].'_coordinatey']=$val['coordinatey'];
 		}
 		$data = array('title'=>getFieldBy($modelname, "name", "title", "node"),'data'=>$message);
-		return $this->getReturnData($data,'json','1000',"获取数据成功");
+		if($type){
+			return $this->getReturnData($data,'json','1000',"获取数据成功");
+		}else{
+			return $data;
+		}
+		
 	}
 	
 
@@ -845,318 +857,171 @@ class MobileBaseAction extends Action {
 			}
 		}
 	}
-	
-	public function login($returnType='json'){
-		if(!empty($_REQUEST['account']) && !empty($_REQUEST['pwd'])){
-			$userinfo=$this->checkLogin('arr');
-			//登陆成功
-			$data=array();
-			if($userinfo){
-				$data['userid']=$userinfo['id'];
-				$data['account']=$userinfo['account'];
-				$data['password']=$userinfo['pwd'];
-				$data['verifcode']=$userinfo['verifcode'];
-				$data['logintime']=time();
-				//获取token
-				$token=$this->setToken($data);
-				$data['token']=$token;
-				$code='1000';
-				$msg='1000:登录成功';
+}
+/**
+ * 重写父类的用户自定义异常抽象类
+ * @author liminggang
+ * @date 2015年2月11日 下午2:25:31
+ * @version V1.0
+ */
+class AppException extends Exception {
+	public function __construct($message = null, $code = 0){
+		if (!$message) {
+			if(C("APP_EXCEPTION") == 1){
+				$message = get_class($this) . " '{$this->message}' in {$this->file}({$this->line})";
 			}else{
-				$data=array();
-				$code='1002';
-				$msg='1002:密码错误';
+				$message = $this->message;
 			}
-		}else{
-			$data=array();
-			$code='1003';
-			$msg='1003:非法访问';
 		}
-		return $this->getReturnData($data,$returnType,$code,$msg);
-	}
-	
-	
-	public function checkLogin($returnType='json'){
-		//核验用户名与密码
-		$map=array();
-		$map['account']=$_REQUEST['account'];
-		$map['pwd']=$_REQUEST['pwd'];
-		$result=D('MisAutoRor')->where($map)->find();
-		//$result=$this->getMisSystemDataview('fpappsjView',$map);
-		//echo D('MisAutoRor')->getLastSql();
-		if($result){
-			//检查情况下直接返回
-			if($returnType=='check'){
-				return;
-			}else{
-				$data=$result;
-				$code='1000';
-				$msg='用户验证成功';
-			}
-		}else{
-			$data=array();
-			$code='1003';
-			$msg='1003:用户验证不符';
+		if(!$code){
+			$code = $this->code;
 		}
-		return $this->getReturnData($data,$returnType,$code,$msg);
+		parent::__construct($message, $code);
 	}
-	
-	/*
-	 * register
-	* 用户注册
-	*/
-	public function register($returnType='json'){
-		if(!empty($_REQUEST['account']) && !empty($_REQUEST['verifcode']) && !empty($_REQUEST['pwd'])){
-			//核验用户名与密码
-			$map=array();
-			$map['account']=$_REQUEST['account'];
-			//$map['verifcode']=$_REQUEST['verifcode'];
-			$userInfo=D('MisAutoRor')->where($map)->find();
-			//echo D('MisAutoRor')->getLastSql();
-			if($userInfo){
-				if($userInfo['verifcode']==$_REQUEST['verifcode']){
-					//修改类型
-					$sign='save';
-					//如果存在，则将状态改为1
-					$map['id']=$userInfo['id'];
-					$data['status']=1;
-					$data['pwd']=$_REQUEST['pwd'];
-					$result=$this->CURD('MisAutoRor','save',$data,$map);
-				}else{
-					$data=array();
-					$code='1001';
-					$msg='1001:验证码错误';
-					return $this->getReturnData($data,$returnType,$code,$msg);
-				}
-	
-			}else{
-				//新增类型
-				$sign='add';
-				$data['account']=$_REQUEST['account'];
-				$data['phone']=$_REQUEST['account'];
-				$data['pwd']=$_REQUEST['pwd'];
-				$result=$this->CURD('MisAutoRor','add',$data);
-			}
-			if($result===false){
-				$data=array();
-				$code='1001';
-				$msg='1001:用户注册失败';
-				 
-			}else{
-				//token需要id,account,password三个数据源来做数据处理
-				switch($sign){
-					case 'add':
-						//只需要一个userid重新返回
-						$returnData['userid']=$result;
-						$returnData['account']=$_REQUEST['account'];
-						$returnData['password']=$_REQUEST['pwd'];
-						$returnData['logintime']=time();
-						break;
-					case 'save':
-						//这里需要根据userinfo的数据获取id,account,password
-						$returnData['userid']=$userInfo['id'];
-						$returnData['account']=$userInfo['account'];
-						$returnData['password']=$_REQUEST['pwd'];
-						$returnData['logintime']=time();
-						break;
-				}
-				//获取token
-				$token=$this->setToken($returnData);
-				$data['token']=$token;
-				$code='1000';
-				$msg='1000:登录成功';
-			}
-		}else{
-			$data=array();
-			$code='1003';
-			$msg='1003:非法访问';
-		}
-		return $this->getReturnData($data,$returnType,$code,$msg);
+
+	public function __toString(){
+		return get_class($this) . " '{$this->message}' in {$this->file}({$this->line})\n"
+		. "{$this->getTraceAsString()}";
 	}
-	
-	private function  checkPhoneExist($phone,$type){
-		$map=array();
-		$map['phone']=$phone;
-		$result=D('MisAutoRor')->where($map)->find();
-		
-		if($result){
-			//新用户注册
-			switch($type){
-				case 1://新用户注册
-					//状态已经为1时
-					if($result['status']){
-						return $this->getReturnData($data,'json','1010',"用户已经存在");
-						exit;
-					}else{
-						//状态为0时
-						return $result['id'];
-					}
-					break;
-				case 2://找回密码
-					return $result['id'];
-					break;
-			}
-		}else{
-			return false;
-		}
+}
+/**
+ * 服务器内部错误异常类
+ * 
+ * @author liminggang
+ * @date 2015年2月11日 下午2:25:31
+ * @version V1.0
+ *         
+ */
+class AppServerException extends AppException {
+	protected $message = "服务器内部错误";
+	protected $code = "1001";
+	public function __construct($message = null, $code = 0) {
+		/**
+		 * 服务器异常类 适用于所有服务器异常，信息不同时，则传入异常信息
+		 * 
+		 * @param 异常信息 $message
+		 *        	为空时，采用默认的异常信息 【服务器内部错误】
+		 * @param 异常编码 $code
+		 *        	为空时，采用默认的编码 【1001】
+		 * @author liminggang
+		 *         @date 2015年2月11日 下午2:25:31
+		 * @version V1.0
+		 */
+		parent::__construct ( $message, $code );
 	}
+}
+/**
+ * 针对所有空参数异常类
+ * 
+ * @author liminggang
+ *         @date 2015年2月11日 下午2:25:31
+ * @version V1.0
+ *         
+ */
+class AppNullParamException extends AppException {
+	// 异常信息
+	protected $message = "缺少必要参数";
+	// 异常编码
+	protected $code = "1002";
 	/**
-	 getVerificationCode 获取验证码
+	 * 空参数异常类 适用于所有空参数异常，信息不同时，则传入异常信息
+	 * 
+	 * @param 异常信息 $message
+	 *        	不传入异常信息时，采用默认的异常信息 【缺少必要参数】
+	 * @param 异常编码 $code
+	 *        	不传入异常编码时，采用默认的编码 1002
+	 * @author liminggang
+	 *         @date 2015年2月11日 下午2:25:31
+	 * @version V1.0
+	 *         
 	 */
-	public function getVerificationCode($returnType='json'){
-		if(!empty($_REQUEST['phone']) && is_numeric($_REQUEST['phone'])){
-			$verifcode=rand(1000,9999);
-			//echo $verifcode;
-			$phone=$_REQUEST['phone'];//手机号码
-			$type=$_REQUEST['type'];//类型
-			$content=$verifcode."(您获取的手机验证码),有效期为24小时，感谢您注册创客荟。如非本人操作，请忽略此短信。";
-			$userid=$this->checkPhoneExist($phone,$type);
-			if($userid){
-				//存在手机号，回写验证码到数据库
-				$map=array();
-				$map['id']=$userid;
-				$data['verifcode']=$verifcode;
-				$result=$this->CURD('MisAutoRor','save',$data,$map);
-			}else{
-				//不存在手机号，插入到数据库
-				$data['account']=$phone;
-				$data['phone']=$phone;
-				$data['verifcode']=$verifcode;
-				$data['createtime']=time();
-				$data['status']=0;
-				$result=$this->CURD('MisAutoRor','add',$data);
-			}
-			//echo 123;
-			if($result){
-				//查询短信发送一个手机号短信间隔最短60s 一个小时不超过3条 ，一天不超过5条
-				$phoneHisteryMpdel=D('MisSystemPhoneHistery');
-				//首先查询是否发送了5条数据
-				$dstarttime=strtotime(date('Y-m-d',time()));
-				$dendtime=strtotime(date('Y-m-d',strtotime('+1 day')));
-				$dphMap['createtime']=array(array('egt',$dstarttime),array('lt',$dendtime)) ;
-				$dphMap['phone']=$phone;
-				$dphList=$phoneHisteryMpdel->where($dphMap)->count();
-				$phListInfo=$phoneHisteryMpdel->where($dphMap)->order('id desc ')->find();
-				//查询一个小时内发送的数据
-				$hendtime=$phListInfo['createtime'];
-				$hstarttime=strtotime(date('Y-m-d H:i:s',strtotime('-1 hour',$hendtime)));
-				$hphMap['createtime']=array(array('egt',$hstarttime),array('lt',$hendtime)) ;
-				$hphMap['phone']=$phone;
-				$hphList=$phoneHisteryMpdel->where($hphMap)->count();
-				$stime=time()-$hendtime;
-				if($dphList<5 &&  $hphList<3 && $stime>=60){
-					//调用短信接口
-					import('@.ORG.SmsHttp');
-					$smsHttp= new SmsHttp;
-					//短信操作
-					$smsNotic=$smsHttp->getMessage($phone,$content,$httpType=1);
-					//回写状态正常时
-					$data=$result;
-					$code='1000';
-					$msg=$smsNotic."验证码为：".$verifcode;
-					//添加号码发送短信记录
-					$phdate['phone']=$phone;
-					$phdate['createtime']=time();
-					$phresult=$this->CURD('MisSystemPhoneHistery','add',$phdate);
-				}else{
-					$data=array();
-					$code='1006';
-					if($dphList>=5){
-						$msg='1006:当天验证码获取超过5条';
-					}elseif($hphList>=3){
-						$msg='1006:一个小时内验证码获取超过3条';
-					}elseif($stime<60){
-						$msg='1006:上次获取验证码时间不足60s';
-					}
-						
-				}
-			}else{
-				$data=array();
-				$code='1006';
-				$msg='1006:获取验证码失败';
-			}
-		}else{
-			$data=array();
-			$code='1007';
-			$msg='1007:非法访问：未有手机号';
-		}
-		return $this->getReturnData($data,$returnType,$code,$msg);
+	public function __construct($message = null, $code = 0) {
+		parent::__construct ( $message, $code );
 	}
-	
-	public function checkVerificationCode($returnType='json'){
-		if(empty($_REQUEST['phone']) && empty($_REQUEST['verifcode'])){
-			$data=array();
-			$code='1003';
-			$msg='1003:非法访问';
-			return $this->getReturnData($data,$returnType,$code,$msg);
-		}
-		//核验用户名与密码
-		$map=array();
-		$map['phone']=$_REQUEST['phone'];
-		$map['verifcode']=$_REQUEST['verifcode'];
-		$result=D('MisAutoRor')->where($map)->find();
-		if($result){
-			$data=$result;
-			$code='1000';
-			$msg='验证成功';
-		}else{
-			$data=array();
-			$code='1005';
-			$msg='1005:验证不符';
-		}
-		return $this->getReturnData($data,$returnType,$code,$msg);
+}
+/**
+ * 非法访问异常类
+ * 
+ * @author liminggang
+ *         @date 2015年2月11日 下午2:25:31
+ * @version V1.0
+ *         
+ */
+class AppFeifaFangWenException extends AppException {
+	// 异常信息
+	protected $message = "非法访问";
+	// 异常编码
+	protected $code = "1003";
+	/**
+	 * 非法访问异常类 适用于所有非法访问的异常，当异常信息不同时，可以直接传入异常信息
+	 * 
+	 * @param 异常信息 $message
+	 *        	不传入异常信息时，采用默认的异常信息 【缺少必要参数】
+	 * @param 异常编码 $code
+	 *        	不传入异常编码时，采用默认的编码 1003
+	 * @author liminggang
+	 *         @date 2015年2月11日 下午2:25:31
+	 * @version V1.0
+	 *         
+	 */
+	public function __construct($message = null, $code = 0) {
+		parent::__construct ( $message, $code );
 	}
-	public function setPassword($returnType='json'){
-		if(empty($_REQUEST['account'])  && empty($_REQUEST['pwd'])){
-			$data=array();
-			$code='1003';
-			$msg='1003:非法访问';
-			return $this->getReturnData($data,$returnType,$code,$msg);
-		}
-		//核验用户名与密码
-		$map=array();
-		$map['account']=$_REQUEST['account'];
-		$data['pwd']=$_REQUEST['pwd'];
-		$result=$this->CURD('MisAutoRor','save',$data,$map);
-		if($result){
-			$data=$result;
-			$code='1000';
-			$msg='修改成功';
-		}else{
-			$data=array();
-			$code='1006';
-			$msg='1006:修改失败';
-		}
-		return $this->getReturnData($data,$returnType,$code,$msg);
+}
+/**
+ * 用户异常类
+ * 
+ * @author liminggang
+ *         @date 2015年2月11日 下午2:25:31
+ * @version V1.0
+ *         
+ */
+class AppUserException extends AppException {
+	// 异常信息
+	protected $message = "用户登陆失败";
+	// 异常编码
+	protected $code = "1004";
+	/**
+	 * 用户异常类， 适用于所有用户异常，当异常信息不同时，可以直接传入异常信息
+	 * 
+	 * @param 异常信息 $message
+	 *        	不传入异常信息时，采用默认的异常信息 【用户登陆失败】
+	 * @param 异常编码 $code
+	 *        	不传入异常编码时，采用默认的编码 1004
+	 * @author liminggang
+	 *         @date 2015年2月11日 下午2:25:31
+	 * @version V1.0
+	 *         
+	 */
+	public function __construct($message = null, $code = 0) {
+		parent::__construct ( $message, $code );
 	}
-	
-	public function resetPassword($returnType='json'){
-		if(empty($_REQUEST['account']) && empty($_REQUEST['verifcode']) && empty($_REQUEST['pwd'])){
-			$data=array();
-			$code='1003';
-			$msg='1003:非法访问';
-			return $this->getReturnData($data,$returnType,$code,$msg);
-		}
-		//核验用户名与密码
-		$map=array();
-		$map['account']=$_REQUEST['account'];
-		//$map['userid']=$_REQUEST['userid'];
-		//忘记密码
-		$map['verifcode']=$_REQUEST['verifcode'];
-		$data['pwd']=$_REQUEST['pwd'];
-		$data['status']=1;
-		$result=$this->CURD('MisAutoRor','save',$data,$map);
-		if($result){
-			$data=$result;
-			$code='1000';
-			$msg='修改成功';
-		}else{
-			$data=array();
-			$code='1006';
-			$msg='1006:修改失败';
-		}
-		return $this->getReturnData($data,$returnType,$code,$msg);
+}
+/**
+ * 短信异常类
+ * 
+ * @author liminggang
+ *         @date 2015年2月11日 下午2:25:31
+ * @version V1.0
+ *         
+ */
+class AppEmailException extends AppException {
+	// 异常信息
+	protected $message = "短信异常";
+	// 异常编码
+	protected $code = "1005";
+	/**
+	 * 用户异常类， 适用于所有用户异常，当异常信息不同时，可以直接传入异常信息
+	 * 
+	 * @param 异常信息 $message
+	 *        	不传入异常信息时，采用默认的异常信息 【缺少必要参数】
+	 * @param 异常编码 $code
+	 *        	不传入异常编码时，采用默认的编码 1005
+	 * @author liminggang
+	 * @date 2015年2月11日 下午2:25:31
+	 * @version V1.0
+	 */
+	public function __construct($message = null, $code = 0) {
+		parent::__construct ( $message, $code );
 	}
-	
-	
 }

@@ -20,6 +20,7 @@ class UploadAction extends Action {
 			$upload->thumbMaxHeight = $new_height;
 		}
 		if(!$upload->upload()) {// 上传错误提示错误信息
+			dump(111);exit;
 			echo $this->error($upload->getErrorMsg());
 		}else{// 上传成功 获取上传文件信息
 			$uploadList =  $upload->getUploadFileInfo();

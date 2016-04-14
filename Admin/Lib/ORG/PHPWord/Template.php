@@ -184,7 +184,7 @@ class PHPWord_Template {
 						"size"=>$replace["zihao"]?$replace["zihao"]:9,
 						"spacing"=>$replace["hangjianju"]?$replace["hangjianju"]:240,
 					);
-					$tableXmlStr = $this->getPHPWordTableXmlStr($replace["showname"],$replace["titleArr"],$replace["value"],NULL,$replace["showtype"],$textStyle);
+					$tableXmlStr = $this->getPHPWordTableXmlStr($replace["showname"],$replace["titleArr"],$replace["value"],NULL,$replace["showtype"],$textStyle,$replace["fieldwidth"]);
 				}else{
 					$tableXmlStr = "";
 				}
@@ -301,7 +301,7 @@ class PHPWord_Template {
 	 * @date 2015-01-30 上午90:30:00
 	 * @throws
 	 */
-	public function getPHPWordTableXmlStr($title,$titleArr,$data=NULL,$titleGroupArr=NULL,$showtype=0,$textStyle=array()){
+	public function getPHPWordTableXmlStr($title,$titleArr,$data=NULL,$titleGroupArr=NULL,$showtype=0,$textStyle=array(),$widthArray=array()){
 		$th_count = count($titleArr);
 		 
 		$obPHPWord = new PHPWord();
@@ -359,19 +359,19 @@ class PHPWord_Template {
 			{
 				$table->addRow();
 				foreach($titleArr as $k => $v){
-					$table->addCell($td_width,array('borderSize'=>6, 'borderColor'=>'000000', 'cellMargin'=>80, 'valign'=>'center', 'align'=>'center'))->addText($v,$textStyle);
+					$table->addCell($widthArray[$k]?$widthArray[$k]:$td_width,array('borderSize'=>6, 'borderColor'=>'000000', 'cellMargin'=>80, 'valign'=>'center', 'align'=>'center'))->addText($v,$textStyle);
 				}
 			}
 			foreach($data[0]["value"] as $k => $v){
 				$table->addRow();
 				foreach($data as $kk => $vv){
-					$table->addCell($td_width,$cellStyle)->addText($vv["value"][$k],$textStyle);
+					$table->addCell($widthArray[$kk]?$widthArray[$kk]:$td_width,$cellStyle)->addText($vv["value"][$k],$textStyle);
 				}
 			}
 			if(count($newStats)>0){
 				$table->addRow();
 				foreach($newStats as $k => $v){
-					$table->addCell($td_width,$cellStyle)->addText($v,$textStyle);
+					$table->addCell($widthArray[$k]?$widthArray[$k]:$td_width,$cellStyle)->addText($v,$textStyle);
 				}
 			}
 		}else{
@@ -379,10 +379,10 @@ class PHPWord_Template {
 			{
 				foreach($titleArr as $k => $v){
 					$table->addRow();
-					$table->addCell($td_width,array('borderSize'=>6, 'borderColor'=>'000000', 'cellMargin'=>80, 'align'=>'center'))->addText($v,$textStyle);
+					$table->addCell($widthArray[$k]?$widthArray[$k]:$td_width,array('borderSize'=>6, 'borderColor'=>'000000', 'cellMargin'=>80, 'align'=>'center'))->addText($v,$textStyle);
 					if(!empty($data)){
 						foreach($data[$k]["value"] as $kk => $vv){
-							$table->addCell($td_width,$cellStyle)->addText($vv,$textStyle);
+							$table->addCell($widthArray[$kk]?$widthArray[$kk]:$td_width,$cellStyle)->addText($vv,$textStyle);
 						}
 					}
 				}
@@ -391,10 +391,10 @@ class PHPWord_Template {
 					$table->addRow();
 					if(!empty($data)){
 						foreach($data[$k]["value"] as $kk => $vv){
-							$table->addCell($td_width,$cellStyle)->addText($vv,$textStyle);
+							$table->addCell($widthArray[$kk]?$widthArray[$kk]:$td_width,$cellStyle)->addText($vv,$textStyle);
 						}
 						if(count($newStats)>0){
-							$table->addCell($td_width,$cellStyle)->addText($newStats[$k],$textStyle);
+							$table->addCell($widthArray[$kk]?$widthArray[$kk]:$td_width,$cellStyle)->addText($newStats[$k],$textStyle);
 						}
 					}
 				}

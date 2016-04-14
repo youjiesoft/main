@@ -249,25 +249,19 @@ class ShowFormFlowViewWidget extends Widget{
 		$ProcessInfoHistoryModel = D("ProcessInfoHistory");
 		//查询最新流程
 		$pihmap = array();
-		$pihmap['ptmptid'] = $data['ptmptid'];
+		//$pihmap['ptmptid'] = $data['ptmptid'];
 		$pihmap['tableid']	= $data['id'];
 		$pihmap['tablename']= $modulename;
 		$pihlist = $ProcessInfoHistoryModel->where($pihmap)->order('id desc')->select();
 		// 过滤回退以前的数据
-		$ftrue = true;
-		$judge = array();
-		foreach ($pihlist as $k2 => $v2) {
-			if ($v2['dotype'] == 2) {
-				$judge[] = $v2;
-				break;
-			}
-			if ($ftrue) {
-				$judge[] = $v2;
-			}
-		}
+// 		$ftrue = true;
+// 		$judge = array();
+// 		foreach ($pihlist as $k2 => $v2) {
+// 			$judge[] = $v2;
+// 		}
 		$i = 0;
-        foreach($judge as $k3=>$v3){
-        	if($v3['ostatus']>0 || $v3['dotype'] == 5 || $v3['dotype']==8 || $v3['dotype'] == 2){
+        foreach($pihlist as $k3=>$v3){
+//         	if($v3['ostatus']>0 || $v3['dotype'] == 5 || $v3['dotype']==8 || $v3['dotype'] == 2){
         		//获取用户的头像。
         		$pic = $userModel->getUserPic($v3['userid']);
         		
@@ -300,7 +294,7 @@ class ShowFormFlowViewWidget extends Widget{
 	                $html .='</div>';
                 $html .='</div>';
                 $i++;
-        	}
+//         	}
         }
         $html .='</div>';
 		return $html;

@@ -9,7 +9,7 @@
             multi:false, //是否允许选择多个文件
             formData:{}, //发送给服务端的参数，格式：{key1:value1,key2:value2}
             fileObjName:"Filedata", //在后端接受文件的参数名称，如PHP中的$_FILES['file']
-            fileSizeLimit:204800, //允许上传的文件大小，单位KB
+            fileSizeLimit:2048000, //允许上传的文件大小，单位KB
             previewImg:false, //是否预览上传图片
             previewLoadimg:null, //预览图片前的载入图标
             dragDrop:false,//是否允许拖动上传
@@ -20,7 +20,7 @@
             itemTemplate:itemTemp, //上传队列显示的模板
             breakPoints:false, //是否开启断点续传
             fileSplitSize:1024 * 1024, //断点续传的文件块大小，单位Byte，默认1M
-			uploadLimit : 5 , // 上传文件个数限制，测试功能 @nbbmxkj 20151117 1:01
+			uploadLimit : 50 , // 上传文件个数限制，测试功能 @nbbmxkj 20151117 1:01
             getUploadedSize:null, //类型：function，自定义获取已上传文件的大小函数，用于开启断点续传模式，可传入一个参数file，即当前上传的文件对象，需返回number类型
             saveUploadedSize:null, //类型：function，自定义保存已上传文件的大小函数，用于开启断点续传模式，可传入两个参数：file：当前上传的文件对象，value：已上传文件的大小，单位Byte
             saveInfoLocal:false, //用于开启断点续传模式，是否使用localStorage存储已上传文件大小

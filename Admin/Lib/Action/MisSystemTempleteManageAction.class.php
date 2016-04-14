@@ -519,6 +519,8 @@ class MisSystemTempleteManageAction extends MisSystemTempleteManageExtendAction 
 			$modelid=$_REQUEST['modelid'];
 			//内嵌表显示字段
 			$showfield=json_encode($_REQUEST['showfield']);
+			//字段宽度 by xyz 2016-2-22
+			$fieldwidth = json_encode($_REQUEST['fieldwidth']);
 			$ziti=$_REQUEST['ziti'];
 			$zihao=$_REQUEST['zihao'];
 			$hangjianju=$_REQUEST['hangjianju'];
@@ -569,10 +571,10 @@ class MisSystemTempleteManageAction extends MisSystemTempleteManageExtendAction 
 			$data['showname']=$_REQUEST['showname'];
 			$data['is_datatable']=1;
 			$data['showfield']=$showfield;
+			$data['fieldwidth']=$fieldwidth;
 			$data['ziti']=$ziti;
 			$data['zihao']=$zihao;
 			$data['hangjianju']=$hangjianju;
-			
 			if($id){
 				//修改
 				$data['updatetime']=time();
@@ -609,6 +611,7 @@ class MisSystemTempleteManageAction extends MisSystemTempleteManageExtendAction 
 			//查询编辑表格数据a
 			$labModel=D('MisSystemTempleteLabel');
 			$labInfo=$labModel->where($labmap)->find();
+			//echo $labModel->getlastsql();
 			$formula=$labInfo['formula'];
 			
 			//替换###
@@ -622,6 +625,7 @@ class MisSystemTempleteManageAction extends MisSystemTempleteManageExtendAction 
 			$formula1['zihao']=$labInfo['zihao'];
 			$formula1['hangjianju']=$labInfo['hangjianju'];
 			$this->assign('showfield',$showfield);
+			$this->assign('fieldwidth',$labInfo['fieldwidth']);
 			$this->assign('id',$labmap['id']);
 			$this->assign('modelname',$modelname);
 			$this->assign('tablelist',$tablelist);

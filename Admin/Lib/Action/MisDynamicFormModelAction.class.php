@@ -645,7 +645,7 @@ EOF;
 		foreach ($fieldData as $fkey=>$fval){
 			$fval['config']=unserialize(base64_decode($fval['config']));
 			$fval['tablename']=$truetablename;
-			$this->getDtTagsListincData(&$detailList ,$fval,$notshowcontroll,$fval['fieldname'], $shownumber , &$shownumberCount);
+			$this->getDtTagsListincData($detailList ,$fval,$notshowcontroll,$fval['fieldname'], $shownumber , $shownumberCount);
 			$k1++;
 		}
 		$k1 = count($detailList);
@@ -804,11 +804,29 @@ EOF;
 				//查询当前查找带回配置
 				$model=D("LookupObj");
 				$selectVo=$model->GetLookupDetail($v1['config']['parame'][0]);
+				if($selectVo['viewname']){
+					$viewmodel = D("MisSystemDataviewMasView");
+					$vmap['mis_system_dataview_sub.status'] = 1;
+					$vmap['name'] = $selectVo['viewname'];
+					$vmap['otherfield'] = $selectVo['filed'];
+					//$vmap['_string'] = "isshow is not null and isshow !='' and isshow !='0'";
+					$vlist = $viewmodel->where($vmap)->find();
+					$vlistsql = strtolower($vlist['replacesql']);
+					if(strpos($vlistsql,' join ')>0){
+						$relationtable = D($v1[$controllProperty['model']['name']])->getTableName();
+					}else{
+						$relationtable = $vlist['tablename'];
+					}
+				}else{
+					$relationtable = D($v1[$controllProperty['model']['name']])->getTableName(); //xyz-2015-07-15
+				}
+				
+				
 				$fun=$fund=array();
 				$fun[0][0]="getFieldBy";
 				$detailList[$k1]['func']=$fun;
 				// id : $v1[$controllProperty['lookuporgval']['name']]
-				$fd=array("###",$selectVo['val'],$selectVo['filed'],$selectVo['mode']);
+				$fd=array("###",$selectVo['val'],$selectVo['filed'],$relationtable);
 				$fund[0][0]=$fd;
 				$detailList[$k1]['funcdata']=$fund;
 				$detailList[$k1]['table'] = $selectVo['mode']; 

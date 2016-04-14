@@ -4,7 +4,7 @@
 							<label class="label_new">
 								{$fields["#fields#"]}:
 							</label>
-							{:W('Lookup',array('1',$vo,'#propertyid#','1',''))}
+							{:W('Lookup',array('1',$vo,'#propertyid#','1','','#ganshe#'))}
 							<div class="display_none {$classNodeSettingArr['#fields#']}">{:W('Lookup',array('1',$vo,'#propertyid#','1',1))}</div>
 						</div>
 						

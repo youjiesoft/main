@@ -37,5 +37,7 @@
 								)
 							)
 							}
-							<div class="display_none {$classNodeSettingArr['#fields#']}">{$vo['#fields#']}</div>
+							<div class="display_none {$classNodeSettingArr['#fields#']}">
+								{:getControllbyHtml('table',array('type'=>'select','table'=>'#treedtable#','id'=>'#treevaluefield#','name'=>'#treeshowfield#','conditions'=>'#subimporttableobjcondition#','selected'=>$vo['#fields#'],'showtype'=>'1'))}
+							</div>
 						</div>

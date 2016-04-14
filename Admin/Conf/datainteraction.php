@@ -90,6 +90,44 @@ return array(
 			'proname'=>'pmpqjwsc',
 			'url'=>'http://192.168.0.238:8088/smartESBProject/services/dbService/procedure/4',
 			),
+			'MisAutoKhh'=>array( //生成凭证
+			'sql'=>"
+			SELECT
+		  `mis_auto_abqyr`.`orderno`                           AS `bianhao`,
+		  DATE_FORMAT(FROM_UNIXTIME(`mis_auto_abqyr`.`huijiqijian`),'%m') AS `kuaijiyue`,
+		  DATE_FORMAT(FROM_UNIXTIME(`mis_auto_abqyr`.`createtime`),'%Y-%m-%d %H:%i:%s') AS `zhidanriqi`,
+		  `use_zhidanr`.`name`                                 AS `zhidanren`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`zhaiyao`       AS `zhaiyao`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`kemubianma`    AS `kemu`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`jiefang`       AS `jiefang`,
+		  DATE_FORMAT(FROM_UNIXTIME(`mis_auto_abqyr`.`huijiqijian`),'%Y') AS `kuaijinian`,
+		  DATE_FORMAT(FROM_UNIXTIME(`mis_auto_abqyr`.`huijiqijian`),'%Y%m') AS `kuaijiqijian`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`daifang`       AS `daifang`,
+		  `usercreate`.`name`                                  AS `yewuyuan`,
+		  `usercreate`.`yongyouorderno`                        AS `yewuyuanbianhao`,
+		  `mis_system_department`.`yongyouorderno`             AS `bumenbianma`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`xiangmu`       AS `xiangmu`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`kehu`          AS `kehu`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`gongyingshang` AS `gongyingshang`,
+		  `mis_auto_wgpqu`.`name`                              AS `pingzhengleibie`,
+		  `mis_auto_abqyr_sub_pingzhengmingxi`.`id`            AS `hanghao`
+	FROM `mis_auto_abqyr`
+       LEFT JOIN `mis_auto_abqyr_sub_pingzhengmingxi`
+         ON `mis_auto_abqyr`.`id` = `mis_auto_abqyr_sub_pingzhengmingxi`.`masid`
+      LEFT JOIN `mis_system_department`
+        ON `mis_auto_abqyr_sub_pingzhengmingxi`.`bumen` = `mis_system_department`.`id`
+     LEFT JOIN `user` `usercreate`
+       ON `mis_auto_abqyr_sub_pingzhengmingxi`.`yewuyuan` = `usercreate`.`id`
+    LEFT JOIN `user` `use_zhidanr`
+      ON `mis_auto_abqyr`.`createid` = `use_zhidanr`.`id`
+   LEFT JOIN `mis_auto_wgpqu`
+     ON `mis_auto_abqyr`.`pingzhengleibie` = `mis_auto_wgpqu`.`id`
+     WHERE mis_auto_abqyr.`operateid`=1 
+			",
+			'dbsource'=>'30',
+			'proname'=>'Input_pingzheng',
+			'url'=>'http://192.168.0.238:8088/smartESBProject/services/dbService/procedure/4',
+			),
 		
 
 		

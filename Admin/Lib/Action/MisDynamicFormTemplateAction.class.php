@@ -110,6 +110,10 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 			$dwzContentHtml = $this->getPage ('audit_contenthtml' ,  $curnodeData , 2 );
 			$file = TMPL_PATH . C ( 'DEFAULT_THEME' ) . "/" . $f . "/contenthtml.html";
 			$this->createFile($dwzContentHtml, $file);
+			$updatefile = TMPL_PATH . C ( 'DEFAULT_THEME' ) . "/" . $f."/misSystemDataUpdate.html";
+			if(is_file($updatefile)){
+				unlink($updatefile);
+			}
 			
 		}else{
 			/**
@@ -130,9 +134,15 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
     				$file = TMPL_PATH . C ( 'DEFAULT_THEME' ) . "/" . $f . "/index.html";
     				$this->createFile($dynamic_index, $file);
     			}
-    				
-    			// indexview.html
-    			$indexview = $styles . $this->getPage ( 'indexview' );
+//     			dump($this->formtype);exit;
+    			$formtype=$this->formtype;
+    			// indexview.html//noaudittpl#ltrl
+    			if($formtype=='noaudittpl#ltrl'){
+    				$indexview = $styles . $this->getPage ( 'indexview_right' );
+    			}else{
+    				$indexview = $styles . $this->getPage ( 'indexview' );
+    			}
+    			
     			$file = TMPL_PATH . C ( 'DEFAULT_THEME' ) . "/" . $f . "/indexview.html";
     			$this->createFile($indexview, $file);
     			// add.html
@@ -151,7 +161,10 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 				$dwzContentHtml = $styles . $this->getPage ( 'contenthtml' , $curnodeData, 2);
     			$file = TMPL_PATH . C ( 'DEFAULT_THEME' ) . "/" . $f . "/contenthtml.html";
     			$this->createFile($dwzContentHtml, $file);
-				
+    			$updatefile = TMPL_PATH . C ( 'DEFAULT_THEME' ) . "/" . $f."/misSystemDataUpdate.html";
+    			if(is_file($updatefile)){
+    				unlink($updatefile);
+    			}
 		
 		    }catch (Exception $e){
 		        $this->error($e->getMessage());
@@ -343,6 +356,16 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 			$style = "display:none;";
 		}
 		$original = "{\$vo['{$fields}']}";
+		// 将组件全属性按属性名称封装到替换数据中
+		foreach ($data as $k=>$v){
+			// 		    var_dump($k);
+			if($k==$property ['conditions'] ['name']){
+				$cs=array('&lt;','&gt;');
+				$cr=array('<','>');
+				$v = str_replace($cs ,$cr , $v);
+			}
+			$searchArr["#{$k}#"] = $v;
+		}
 		switch ($category) {
 			case 'text' :
 	
@@ -572,19 +595,18 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 				$content='<div class="pos_relative">'.$this->getControl ( $data, true, true ).'</div>';
 				break;
 		}
-		$searchArr=array(
-				'#class#'=>$class,
-				'#style#'=>$style,
-				'#title#'=>$title,
-				'#title_class#'=>$title_class,
-				'#title_style#'=>$title_style,
-				'#content#'=>$content,
-				'#content_class#'=>$content_class,
-				'#content_style#'=>$content_style,
-				'#original#'=>$original,
-				'#category#'=>$category,
-				'#fields#'=>$fields
-		);
+		$searchArr['#class#']=$class;
+		$searchArr['#style#']=$style;
+		$searchArr['#title#']=$title;
+		$searchArr['#title_class#']=$title_class;
+		$searchArr['#title_style#']=$title_style;
+		$searchArr['#content#']=$content;
+		$searchArr['#content_class#']=$content_class;
+		$searchArr['#content_style#']=$content_style;
+		$searchArr['#original#']=$original;
+		$searchArr['#category#']=$category;
+		$searchArr['#fields#']=$fields;
+	
 		$html = $this->templateReplace($searchArr , $template);
 		return $html;
 	}
@@ -660,7 +682,6 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 		$title = $data [$property ['title'] ['name']];
 		// 真实字段名
 		$fields = $data [$property ['fields'] ['name']];
-		
 		if($data[$property['requiredfield'] ['name']]){
 		    $content_class_arr[]="required";
 		}
@@ -1881,7 +1902,7 @@ EOF;
 																				// 将组件属性转换为html代码
 																						$dataConfig = $config ['parame']; // 获取select的配置项
 																							
-									if ($config ['required']) {
+									if (!$controllProperty['ganshe_datatable']&&$config ['required']) {
 										$curCls .= ' required ';
 																						}
 																								if ($config ['checktype']) {
@@ -2005,7 +2026,7 @@ EOF;
 											$lookuptolookupconfig = $config ['lookto'];
 											$dateConfig = $config ['parame']; // 获取select的配置项
 												
-											if ($config ['required']) {
+											if (!$controllProperty['ganshe_datatable']&&$config ['required']) {
 											$curCls .= ' required ';
 											}
 													if ($config ['checktype']) {
@@ -2166,7 +2187,7 @@ EOF;
 													// 将组件属性转换为html代码
 													$dateConfig = $config ['parame']; // 获取select的配置项
 														
-													if ($config ['required']) {
+													if (!$controllProperty['ganshe_datatable']&&$config ['required']) {
 															$curCls .= ' required ';
 													}
 													if ($config ['checktype']) {
@@ -2307,7 +2328,7 @@ EOF;
 														$lookupConfig = $config ['parame']; // 获取lookup等特殊组件的配置项
 															$lookuptolookupconfig = $config ['ltol'];
 																
-															if ($config ['required']) {
+															if (!$controllProperty['ganshe_datatable']&&$config ['required']) {
 															$curCls .= ' required ';
 														}
 														if ($config ['checktype']) {
@@ -2441,7 +2462,7 @@ EOF;
 	
 							// 拼接lookup参数
 							$lookupParame ['upclass'] = $showFiled;
-									$lookupParame ['callback'] = 'lookupDataToCell';
+									$lookupParame ['callback'] = 'lookup_counter_check';//'lookupDataToCell';
 									$lookupParame ['param'] = $paramStr;
 									$lookupParame ['condition'] = array_flip ( $appendCondtionArr ); // $appendCondtionArr;//
 									$lookupParame ['lookupname'] = $orgval;
@@ -2451,15 +2472,16 @@ EOF;
 									'upclass' => $valField,
 									'name' => "{$namses}[{$val->fieldname}]"
 									)
-								); // 回写 lookup中指定的值字段名。当前字段名。
+								); // 回写 lookup中指定的值字段名。当前字段名。lookup->lookup
 									if ($lookuptolookupconfig [0]) {
-									$lookupParame ['lporder'] = $lookupParame1 ['lporder'];
+									$lookupParame ['bindlookupname'] = 'org'.$lookuptolookupconfig [0];
+									$lookupParame ['lporder'] = $lookuptolookupconfig [1];//$lookupParame1 ['lporder'];
 									$lookupParame ['lpkey'] = $lookupParame1 ['lpkey'];
 									$lookupParame ['hidden_data'] = array (
 									array (
 									'upclass' => $valField,
-											'name' => "{$namses}[{$val->fieldname}]",
-									"lporder" => $lookupParame1 ['lporder']
+									'name' => "{$namses}[{$val->fieldname}]",
+									"lporder" => $lookuptolookupconfig [1]//$lookupParame1 ['lporder']
 											)
 							);
 							}
@@ -2515,7 +2537,7 @@ EOF;
 				$tableOprateContent = <<<EOF
 	
 				<td {$oprateItem}>
-						<input type="hidden" name="datatable[#index#][{$controlTag}][id]" value="{\$item.id}" />
+						<input type="hidden" name="#hide#datatable[#index#][{$controlTag}][id]" value="{\$item.id}" />
 						<button title="删除" type="button" class="into_table_new_trash_tr into_table_btn itb_del" del_url="__URL__/delsubinfo/delmodel/{$dataTableModelName}" del_id="{\$item.id}" del_table="{$tableName}"  nbmonclick="del_sub_info('$this->nodeName','{$tableName}',{\$item.id},this)">
 						<span class="icon-remove"></span></button>
 						<button post_id="{\$item.id}" post_url="__URL__/onesave" post_id="{\$item.id}" post_table="{$tableName}" rel_type="edit" class="save_row_btn" type="button" title="编辑"><span class="icon-pencil"></span></button>

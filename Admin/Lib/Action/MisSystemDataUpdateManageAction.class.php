@@ -156,64 +156,22 @@ class MisSystemDataUpdateManageAction extends CommonAction{
 	public function edit(){
 		//对应数据的模型
 		$name = $_REQUEST['model'];
-// 		$model = D($name);
-// 		//对应数据
-// 		$map['id'] = $_REQUEST['id'];
-// 		$vo = $model->where($map)->find();
-// 		//获取数据对应的字段
-// 		$pModel = D("mis_dynamic_form_propery");
-// 		$formid = getFieldBy($name,"actionname","id","mis_dynamic_form_manage");
-// 		$pMap['formid'] = $formid;
-// 		$pMap['status'] = 1;
+		$formid = getFieldBy($name,"actionname","id","mis_dynamic_form_manage");
+		$a = A("MisSystemDataUpdateTemlete");
+		$dd = $a->test($name,$formid);
+		try{
+			$aa = A($name);
+			$aa->edit();
+			$a2 = $this->fetch($dd);//("{$name}:edit");
+		}catch (Exception $e){
+			$this->error($e->getMessage());
+		}
 		
-// 		//$pMap['category'] = array("neq","datatable");
-// 		 $pList = $pModel->field("id,fieldname,category,sort,title")->where($pMap)->select();
-// 		 //普遍字段
-// 		 $pListNoDatatable = array();
-// 		 //内嵌表字段(主表字段)
-// 		 $pListInDatatable = array();
-// 		 //内嵌表字段属性id集合
-// 		 $idsForDataTableOfPlist = array();
-// 		 //内嵌表名集合
-// 		 $datatablename = array();
-// 		foreach($pList as $key=>$val){
-// 			if($val['category'] != 'datatable'){
-// 				$pListNoDatatable[] = $val;
-// 			}else{
-// 				$pListInDatatable[] = $val;
-// 				$idsForDataTableOfPlist[] = $val['id'];
-// 				$temp['name']= $val['dbname']."_sub_".$val['fieldname'];
-// 				$temp['title']= $val['title'];
-// 				$datatablename[$val['id']] = $temp; //用id做key，方便和内嵌表数据组合
-// 				unset($temp);
-// 			}
-// 		}
-// 		//内嵌表字段（内嵌表本身字段）
-// 		$dList = array();
-// 		if($idsForDataTableOfPlist){
-// 			$dModel = D("mis_dynamic_form_datatable");
-// 			$dMap['propertyid'] = array("in",$idsForDataTableOfPlist);
-// 			$dList = $dModel->where($dMap)->select();
-// 			$dListForProid = array();
-// 			foreach($dList as $dk=>$dv){
-// 				$dListForProid[$dv['propertyid']][] = $dv;
-// 			}
-// 		}
-// 		//获取当前数据对应的内嵌表数据
-// 		if($datatablename){
-// 			foreach($datatablename as $tk=>$tv){
-// 				$iModel = M($tv['name']);
-// 				$iMap['masid'] = $_REQUEST['id'];
-// 				$iList[$tk] = $iModel->where($iMap)->select();
-// 			}
-// 		}
-// 		$this->assign("vo",$vo);
-		$aa = A($name);
-		$aa->edit();
-		$a2 = $this->fetch("{$name}:edit");
-		$this->assign("a2",$a2);
+		
 		$this->assign("curModel",$name);
-		$this->display();
+		$this->assign("a2",$a2);
+ 		$this->display();
+		//$this->display();
 	}
 	
 	function add(){

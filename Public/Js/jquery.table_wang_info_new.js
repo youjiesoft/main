@@ -1031,14 +1031,16 @@ var TABLEWNEW = function() {
 			
 			//费用报销审批表专用
 			if($(that.st.table).parents("#MisAutoEzb_edit,#MisAutoEzb_add,#MisAutoEzb_auditEdit").length!=0){
-				$("#MisAutoEzb_edit tbody,#MisAutoEzb_add tbody,#MisAutoEzb_auditEdit tbody").find(new_tr).find("[name*='[bumen]']").on("change",function(){
-					var deptid = $(this).val();
+				$("#MisAutoEzb_edit tbody,#MisAutoEzb_add tbody,#MisAutoEzb_auditEdit tbody").find(new_tr).find("[lookupgroup*='yusuanxiangmu']").on("mouseover",function(){
+					var deptid = $(this).parents("tr").find("[name*='[bumen]']").val();
+					var cmpid = $(this).parents("form").find("[name='shenqingzhuti']").val();
+					var year = $(this).parents("form").find("[name='nianfen']").val();
 					var obj = $(this).parents("tr").find("[name*='[yusuanxiangmu]']").siblings("a.icon-plus");
 					var param = obj.attr("param");
 					var index = param.indexOf("newconditions=")+14;
-					obj.attr("param",param.substr(0,index)+"deptid in ('"+deptid+"')");
+					obj.attr("param",param.substr(0,index)+"deptid in ('"+deptid+"') and cmpid in ('"+cmpid+"') and iyear in ('"+year+"')");
 				});
-				$("#MisAutoEzb_edit tbody,#MisAutoEzb_add tbody,#MisAutoEzb_auditEdit tbody").find(new_tr).find("[name*='[bumen]']").change();
+				$("#MisAutoEzb_edit tbody,#MisAutoEzb_add tbody,#MisAutoEzb_auditEdit tbody").find(new_tr).find("[lookupgroup*='yusuanxiangmu']").trigger("mouseover");
 			}
 		},
 		inArray:function (str, arr) {

@@ -207,7 +207,8 @@ EOF;
 					}
 				}
 				$conboxtreeCls = 'comboxtree';
-				if($readonly){
+				// 编辑状态处理。nbmxkj@20160226
+				if(!$isedit){
 					$conboxtreeCls='';
 				}else{
 					$conboxtreeCls='comboxtree notreadonly';

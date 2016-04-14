@@ -2904,7 +2904,8 @@ EOF;
 	 $('input[name="{$fieldname}"]',box).on('addgetdatecalc{$fieldname}',function(){
 		try{
 			 var d1 = $('input[name="{$numbername}"]',box).val();
-			  d1 = toDate(d1);
+			 var fmtjs="{$allNodeconfig[$numbername][$property ['formatjs']['name']]}";
+			  d1 = toDate(d1,fmtjs);
 			  if(!d1) return ;
 			 var num={$number};
 			 var ret = new Date().DateAdd('{$jingdu}',num,d1);
@@ -6072,8 +6073,26 @@ EOF;
 				break;
 			case 'lookup':
 			case 'lookupsuper':
-				//搜索表名
-				$relationtable = D($v1[$controllProperty['model']['name']])->getTableName(); //xyz-2015-07-15
+				//搜索表名  考虑视图情况查显示字段对应表（只适用于无连接的sql语句，带left join 等的不适用）
+				$lookupobj = D("LookupObj");
+				$lookuplist = $lookupobj->GetLookupDetail($v1[$controllProperty['lookupchoice']['name']]);
+				if($lookuplist['viewname']){
+					$viewmodel = D("MisSystemDataviewMasView");
+					$vmap['mis_system_dataview_sub.status'] = 1;
+					$vmap['name'] = $lookuplist['viewname'];
+					$vmap['otherfield'] = $lookuplist['filed'];
+					//$vmap['_string'] = "isshow is not null and isshow !='' and isshow !='0'";
+					$vlist = $viewmodel->where($vmap)->find();
+					$vlistsql = strtolower($vlist['replacesql']);
+					if(strpos($vlistsql,' join ')>0){
+						$relationtable = D($v1[$controllProperty['model']['name']])->getTableName();
+					}else{
+						$relationtable = $vlist['tablename'];
+					}
+				}else{
+					$relationtable = D($v1[$controllProperty['model']['name']])->getTableName(); //xyz-2015-07-15
+				}
+				
 				$fun=$fund=array();
 				$fun[0][0]="getFieldBy";
 				$detailList[$k1]['func']=$fun;
@@ -7457,6 +7476,11 @@ EOF;
 				// 基础档案 有审批
 				break;
 		}
+		$updatefile = TMPL_PATH.C('DEFAULT_THEME')."/".$this->nodeName."/misSystemDataUpdate.html";
+		if(is_file($updatefile)){
+			unlink($updatefile);
+		}
+				
 	}
 	/**
 	 * @Title: getControllDataSouce
@@ -7577,6 +7601,7 @@ EOF;
 					break;
 				case 'date':		//日期格式
 					$newdata['type'] = 'date';
+					$data['dateformatlist'] = $data['dateformatlist']?$data['dateformatlist']:'yyyy-MM-dd';
 					$newdata['parame'][0] = $data['dateformatlist']?$data['dateformatlist']:'';
 					$newdata['parame']['org']=$_POST['lookuporgfield']?'org'.$_POST['lookuporgfield'].'.'.$_POST['lookupbringfield']:'';
 					$newdata['parame']['dateformat'] = trim($data['dateformatlist'])?$datej_p[$data['dateformatlist']]:'';
