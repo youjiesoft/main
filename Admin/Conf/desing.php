@@ -133,7 +133,7 @@ $desing_controll=array(
 				<a href="__URL__/desing/id/#masid#/nav/#primary#" rel="DesingFormedit" target="navTab" title="点击后显示当前选项的面板">
 				<span class="ui-select #icon#"></span></a><span>$title</span>$hidden</li>',
 				
-				'showhtml'	=>	'<li><a class="" href="#url#" onclick="navToPanel(#primary#);"><span class="ui-select #icon#"></span></a><span>$title</span></li>',
+				'showhtml'	=>	'<if condition="getSesstionContion(#primary#)"><li><a class="" href="#url#" onclick="navToPanel(#primary#);"><span class="ui-select #icon#"></span></a><span>$title</span></li></if>',
 				'property'	=>array(
 						// 组件类型，重写
 						'category'		=>	array(

@@ -1406,7 +1406,7 @@ class CommonAction extends CommonExtendAction {
 	console.log("list查询:{$model->getLastSql()}");
 	</script>
 EOF;
-			echo $htmls;
+// 			echo $htmls;
 		//print_r($map);
 		if($group){
 			$count = $model->group($group)->where ( $map )->getField( 'id',true );
@@ -1452,7 +1452,7 @@ EOF;
 				console.log("查询语句:{$model->getLastSql()}");
 				</script>
 EOF;
-			 echo $htmls;
+// 			 echo $htmls;
 // 			dump($voList);
 //			echo $model->getLastSql();
 			if($echoSql=='list' && $_SESSION['a']==1){
@@ -2621,7 +2621,7 @@ EOF;
 				console.log("表数据查询条件:{$model->getLastSql()}");
 				</script>
 EOF;
-  		 echo $retSql;
+//   		 echo $retSql;
 		if(false ===$vo && APP_DEBUG){
 			$this->error($model->getDBError());
 		}
@@ -13110,20 +13110,20 @@ EOF;
 						'value'=>$newHinfo['createdoinfo']['value'],
 				),
 				'2'=>array(
-						'name'=>'2',
-						'is_stats'=>0,
-						'func'=>'',
-						'funcdata'=>'',
-						'original'=>$newHinfo['createdotime']['original'],
-						'value'=>$newHinfo['createdotime']['value'],
+					'name'=>'2',
+					'is_stats'=>0,
+					'func'=>'',
+					'funcdata'=>'',
+					'original'=>$newHinfo['createuser']['original'],
+					'value'=>$newHinfo['createuser']['value'],
 				),
 				'3'=>array(
 						'name'=>'3',
 						'is_stats'=>0,
 						'func'=>'',
 						'funcdata'=>'',
-						'original'=>$newHinfo['createuser']['original'],
-						'value'=>$newHinfo['createuser']['value'],
+						'original'=>$newHinfo['createdotime']['original'],
+						'value'=>$newHinfo['createdotime']['value'],
 				),
 		);
 		$hisarr = array();

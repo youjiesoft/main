@@ -598,9 +598,14 @@ var TABLEWNEW = function() {
 			
 			sum += this_num;
 			all_sum += this_num;
-			$(tb).find(".into_table_tj_"+index).html(parseFloat(sum.toFixed(decimals)));
-			$(tb).find(".into_table_all_tj_"+index).html(parseFloat(all_sum.toFixed(decimals)));
-			$(tb).parents("form").find("[name='"+bindhz+"']").val(parseFloat(all_sum.toFixed(decimals))).trigger("change");
+//			$(tb).find(".into_table_tj_"+index).html(parseFloat(sum.toFixed(decimals)));
+//			$(tb).find(".into_table_all_tj_"+index).html(parseFloat(all_sum.toFixed(decimals)));
+//			$(tb).parents("form").find("[name='"+bindhz+"']").val(parseFloat(all_sum.toFixed(decimals))).trigger("change");
+			
+			//2016-5-4 按农担要求不进行四舍五入
+			$(tb).find(".into_table_tj_"+index).html(parseFloat(sum));
+			$(tb).find(".into_table_all_tj_"+index).html(parseFloat(all_sum));
+			$(tb).parents("form").find("[name='"+bindhz+"']").val(parseFloat(all_sum)).trigger("change");
 		},
 		getTjAll:function(index) {
 			var that = this;
@@ -1195,7 +1200,9 @@ var TABLEWNEW = function() {
 			if(that.st.__id==1){ //初始化时第一次统计
 				tb+="_wrapper";
 			}
-			$(tb).find(tj_class).html(parseFloat(sum.toFixed(tj[index]["decimals"])));
+			//$(tb).find(tj_class).html(parseFloat(sum.toFixed(tj[index]["decimals"])));
+			//2016-5-4 按农担要求不进行四舍五入
+			$(tb).find(tj_class).html(parseFloat(sum));
 		},
 		tjInit:function(data){
 			var that = this;

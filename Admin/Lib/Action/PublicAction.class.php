@@ -382,6 +382,7 @@ class PublicAction extends PublicExtendAction {
 		$aryrole=$model->where("user_id='".$authInfo['id']."'")->getField("role_id",true);
 		//统一设置SESSION值
 		$_SESSION[C('USER_AUTH_KEY')]	= $authInfo['id'];
+		$_SESSION['user_usertype']	= $authInfo['usertype'];  //1、后台用户，2专家，3金融联络站
 		$_SESSION['companyid']	= $authInfo['companyid'];//公司信息
 		$_SESSION['email']     = $authInfo['email'];
 		$_SESSION['user_employeid']	=$authInfo['employeid'];//用户绑定员工ID

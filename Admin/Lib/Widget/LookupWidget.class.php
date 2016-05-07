@@ -240,12 +240,12 @@ class LookupWidget extends Widget{
 				$paramsEcho = arr2string($map);
 				$controllPropertyEcho = '字段名：'.$controllProperty[$property['fields']['dbfield']].'__表名：'.$tempModel->getTableName();
 				
-				$html.=<<<EOF
+// 				$html.=<<<EOF
 				
-				<script>
-				console.log("lookup查询条件:{$controllPropertyEcho}--{$orgchar}--查询条件:{$paramsEcho} 修改状态：{$isedit}");
-				</script>
-EOF;
+// 				<script>
+// 				console.log("lookup查询条件:{$controllPropertyEcho}--{$orgchar}--查询条件:{$paramsEcho} 修改状态：{$isedit}");
+// 				</script>
+// EOF;
 
 				$readonlyCls='active_lookup';
 				if($readonly){

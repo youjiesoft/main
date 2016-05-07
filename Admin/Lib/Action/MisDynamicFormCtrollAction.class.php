@@ -87,6 +87,8 @@ class MisDynamicFormCtrollAction extends MisDynamicFormBaseAction{
 				}
 			}
 		}
+		//强制加allnode 4.25 为区分复用表数据
+		 \$map['allnode']=\$this->getActionName();
 		if(\$type==1){
 			// 为了兼容普通模式下的表单使用
 			\$bindid = \$_REQUEST['bindid'];

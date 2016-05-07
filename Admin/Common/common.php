@@ -6742,4 +6742,28 @@ function stringToTime($str){
 	$ret = preg_match($reg, $str , $match);
 	return $ret ? strtotime($str) : '';
 }
+/**
+ * 首页导航组件显示
+ * @Title: getSesstionContion
+ * @Description: todo($data【导航组件对应session名称】需要动态获取) 
+ * @param unknown $id
+ * @return boolean  
+ * @author xyz
+ * @date 2016年4月12日 下午2:46:32 
+ * @throws
+ */
+function getSesstionContion($id){
+	$username = C('USER_AUTH_KEY');
+	$data = array(
+			'59'=> $username,
+			'60'=>'misautogrt_company',
+			'63'=>'misautogrt_jiashicang',
+			'66'=>'misautogrt_hangyezhixun',
+			'67'=>'misautogrt_gongnenghezi',
+	);
+	if($_SESSION.a != 1 && !$_SESSION[$data[$id]]){
+		return false;
+	}
+	return true;
+}
 ?>

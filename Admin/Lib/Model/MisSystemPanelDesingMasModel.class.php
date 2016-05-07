@@ -202,23 +202,34 @@ class MisSystemPanelDesingMasModel extends CommonModel{
 		$userrolelist = array();
 		$map['status'] = 1;
 		$map['objtype'] = 1;
-		$userrolelist = $model->where($map)->getField("objid,forbidroleids");
-		foreach($userrolelist as $usk=>$usv){
-			$userrolelist[$usk] = explode(",",$usv);
+		$userrolelist2 = $model->where($map)->select();
+		foreach($userrolelist2 as $usk=>$usv){
+			$userrolelist[$usv['objid']][] = explode(",",$usv['forbidroleids']);
+		}
+		foreach($userrolelist as $uk=>$uv){
+			$temp=array();
+			foreach($uv as $k=>$v){
+				$temp = array_merge($temp,$v);
+			}
+			sort($temp);
+			$userrolelist[$uk] = $temp;
 		}
 		//-------------------------------
 		//组禁权
 		$map2['mis_system_panel_desing_role.status'] = 1;
 		$map2['mis_system_panel_desing_role.objtype'] = 2;
-		$list2 = $model->where($map2)->getField("objid,forbidroleids");
+		$list2 = $model->where($map2)->select();
 		$panalarr = array(); //组-面板集合 array("组id"=>array("面板id集"))
 		foreach($list2 as $lk=>$lv){
-			if($panalarr[$lk]){
-				$temp = explode(",",$lv);
-				$panalarr[$lk] = array_unique(array_merge($panalarr[$lk],$temp));
-			}else{
-				$panalarr[$lk] = explode(",",$lv);
+			$panalarr[$lv['objid']][] = explode(",",$lv['forbidroleids']);
+		}
+		foreach($panalarr as $pk=>$pv){
+			$temp=array();
+			foreach($pv as $k=>$v){
+				$temp = array_merge($temp,$v);
 			}
+			sort($temp);
+			$panalarr[$pk] = $temp;
 		}
 		//用户的组集合
 		$group = array(); //用户-组集合 array("用户id"=>array("组集合"))
@@ -276,21 +287,24 @@ class MisSystemPanelDesingMasModel extends CommonModel{
 				}
 			}
 		}
+		
 		if($arr){
+			$arrkey = array_keys($arr);
 			foreach($arr as $ak=>$av){
 				foreach($userrolelist as $uk=>$uv){
-					if($ak == $uk){
-						$arr[$ak] = array_unique(array_merge($av,$uv));
-					}else{
+					if(!in_array($uk,$arrkey)){
 						$arr[$uk] = $uv;
+					}elseif($ak == $uk){
+						$arr[$ak] = array_unique(array_merge($av,$uv));
 					}
+					
 				}
+				sort($arr[$ak]);
 			}
 		}elseif($userrolelist){
 			$arr = $userrolelist;
 			
 		}
-		
 		//写入缓存文件
 		//定义个人文件缓存地址
 		$p= DConfig_PATH."/Panelconf";
@@ -302,6 +316,9 @@ class MisSystemPanelDesingMasModel extends CommonModel{
 	}
 	public function getForbitRoleOfPanel($userid,$panelid){
 		$file = DConfig_PATH."/Panelconf/panelconf.php";
+		if(!is_file($file)){
+			$this->panelRoleConfig();
+		}
 		if(is_file($file)){
 			$list = require $file;
 			if($list[$userid]&&in_array($panelid,$list[$userid])){

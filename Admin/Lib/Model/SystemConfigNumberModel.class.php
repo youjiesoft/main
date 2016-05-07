@@ -348,7 +348,6 @@ class SystemConfigNumberModel extends CommonModel {
    			}
    			$data = $data2;
    		}
-    	
     	// 获取授权节点
     	$access = getAuthAccess();
     	$returnarr = array();
@@ -369,9 +368,9 @@ class SystemConfigNumberModel extends CommonModel {
     			if(substr($v['name'], 0, 10)!="MisDynamic"){
     				if(!in_array($v['name'], $m_list))  continue;
     			}
-    			if (!isset ($access[strtoupper( APP_NAME )][strtoupper ($v ['name'])]) && !$_SESSION [C('ADMIN_AUTH_KEY')]) {
-    				continue;
-    			}
+//     			if (!isset ($access[strtoupper( APP_NAME )][strtoupper ($v ['name'])]) && !$_SESSION [C('ADMIN_AUTH_KEY')]) {
+//     				continue;
+//     			}
     			if($v['name']!='Public' && $v['name']!='Index') {
     				if ($v['type'] == 1 && $v['group_id'] == $v2['id']) {
     					$newv2['id'] = $v['id'];
@@ -388,9 +387,9 @@ class SystemConfigNumberModel extends CommonModel {
     							if(substr($v3['name'], 0, 10)!="MisDynamic"){
     								if(!in_array($v3['name'], $m_list))  continue;
     							}
-    							if (!isset ($access[strtoupper( APP_NAME )][strtoupper ($v3 ['name'])]) && !$_SESSION [C('ADMIN_AUTH_KEY')]) {
-    								continue;
-    							}
+//     							if (!isset ($access[strtoupper( APP_NAME )][strtoupper ($v3 ['name'])]) && !$_SESSION [C('ADMIN_AUTH_KEY')]) {
+//     								continue;
+//     							}
     							$newv3 = array();
     							if ($v3['level'] == 3 && $v3['pid'] == $v['id']) {
     								if (!$this->firstDetail) {
@@ -419,9 +418,9 @@ class SystemConfigNumberModel extends CommonModel {
     							if(substr($v3['name'], 0, 10)!="MisDynamic"){
     								if(!in_array($v3['name'], $m_list))  continue;
     							}
-    							if (!isset ($access[strtoupper( APP_NAME )][strtoupper ($v3 ['name'])]) && !$_SESSION [C('ADMIN_AUTH_KEY')]) {
-    								continue;
-    							}
+//     							if (!isset ($access[strtoupper( APP_NAME )][strtoupper ($v3 ['name'])]) && !$_SESSION [C('ADMIN_AUTH_KEY')]) {
+//     								continue;
+//     							}
     							$newv3 = array();
 
     							if($v3['name']===$modelname){

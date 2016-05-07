@@ -1725,6 +1725,7 @@ class CommonAuditAction extends CommonAction {
 					$oldcurAuditUser = $userid;
 				}
 				$data['curAuditUser'] = $oldcurAuditUser;
+				$data['alreadyAuditUser'] = "";
 				$data['auditState'] = 0;
 				$data['isaudittableid'] = 0; //子流程问题
 				$fresut = $process_relation_formDao->save($data);

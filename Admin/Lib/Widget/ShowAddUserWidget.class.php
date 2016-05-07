@@ -49,21 +49,21 @@ class ShowAddUserWidget extends Widget{
 		$html .='		</div>				';
 		$html .='				<span id="zhname"  style="display:none"  class="tml-form-text">用户名可用</span>';
 		$html .='			</div>';
-		$html .='			<div class="tml-row">';
-		$html .='	            <div class="tml-form-col">';
-		$html .='					<label>邮件通知：</label>';
-		$html .='					<input type="text" class="  email" onclick="changeemail(this)"  minlength="3" maxlength="20" name="useremail" />';
-		$html .='				</div>';
-		$html .='				<div class="tml-mt5">';
-		$html .='				<input class="switch-check" checked="checked" value="1" onclick="changeemail(this)"  name="issendemail"  type="checkbox">';
-		$html .='</div>';
-		$html .='</div>';
+// 		$html .='			<div class="tml-row">';
+// 		$html .='	            <div class="tml-form-col">';
+// 		$html .='					<label>邮件通知：</label>';
+// 		$html .='					<input type="text" class="  email" onclick="changeemail(this)"  minlength="3" maxlength="20" name="useremail" />';
+// 		$html .='				</div>';
+// 		$html .='				<div class="tml-mt5">';
+// 		$html .='				<input class="switch-check" checked="checked" value="1" onclick="changeemail(this)"  name="issendemail"  type="checkbox">';
+// 		$html .='</div>';
+// 		$html .='</div>';
 		$html .='<div class="tml-form-col">';
 		$html .='<label>登陆地址：</label>';
 		if($loginurl){
 			$html.='<input type="text"    name="userurl" value="'.$loginurl.'" />';
 		}else{
-			$html.='<input type="text" class="required"  placeholder="请输入系统登陆地址" name="userurl"  />';
+			$html.='<input type="text" class=""  placeholder="请输入系统登陆地址" name="userurl"  />';
 		}
 		$html.='</div></div>';
 		return $html;

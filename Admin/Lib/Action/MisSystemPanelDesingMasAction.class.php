@@ -344,8 +344,6 @@ class MisSystemPanelDesingMasAction extends CommonAction{
 				class {$actionName}Action extends AutoPanelAction{
 					public function setting(){
 					}
-					public function getConfig(){
-					}
 					/**
 					 * 显示当前面板内容
 					 * @Title: showPanel
@@ -370,6 +368,7 @@ class MisSystemPanelDesingMasAction extends CommonAction{
 		
 EOF;
 			if(!is_dir(dirname($file))) mk_dir(dirname($file),0777);
+			chmod($file, 0777);
 			if( false === file_put_contents( $file , $content )){
 				$this->error ("Action文件生成失败!");
 			}
@@ -832,6 +831,7 @@ EOF;
 				
 EOF;
 				if(!is_dir(dirname($file))) mk_dir(dirname($file),0777);
+				chmod($file, 0777);
 				if( false === file_put_contents( $file , $content )){
 					$this->error ("Action文件生成失败!");
 				}
@@ -1130,6 +1130,7 @@ EOF;
 		}
 		
 		if(!is_dir(dirname($file))) mk_dir(dirname($file),0777);
+		chmod($file, 0777);
 		if( false ===$num = file_put_contents( $file , $content )){
 			echo $name."Action文件生成失败";exit;
 		$this->error ("Action文件生成失败!");

@@ -11,7 +11,7 @@
  */
 class NodeViewModel extends ViewModel {
 	public $viewFields = array(
-		'node'=>array('_as'=>'node','id','name','icon','level','title','group_id','sort','status','remark','pid','showmenu','toolshow','type','_type'=>'LEFT'),
+		'node'=>array('_as'=>'node','id','name','icon','level','title','group_id','sort','status','remark','pid','showmenu','toolshow','category','type','_type'=>'LEFT'),
 		'`group`'=>array('_table'=>'`group`','name'=>'group_name', '_on'=>'node.group_id=`group`.id','_type'=>'LEFT'),
  	);
 }

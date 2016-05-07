@@ -271,7 +271,6 @@ class DesingFormAction extends DesingFormBaseAction {
 			$navDataMap['category']='navigation';
 			
 			$navData = $propertyObj->where($navDataMap)->order('sort asc')->select();
-			
 			if(!is_array($navDataMap)){
 				$msg = '配置数据获取失败!';
 				throw new NullDataExcetion($msg);
@@ -294,15 +293,14 @@ class DesingFormAction extends DesingFormBaseAction {
 			$souceContent = file_get_contents($path);
 			// 替换生成正文
 			 $souceContent = preg_replace_callback('/(<!--TEMPLATE_CONTENT_START-->)(.*?)(<!--TEMPLATE_CONTENT_END-->)+/s' , function($vo) use($content){
-				return $vo[1].$content.$vo[3];
+				return $vo[1].html_entity_decode($content).$vo[3];
 			} , $souceContent);
 			 
 			 // 替换生成导航
 			 	$souceContent = preg_replace_callback('/(<!--TEMPLATE_NAV_START-->)(.*?)(<!--TEMPLATE_NAV_END-->)+/s' , function($vo) use($navigation){
-			 		return $vo[1].$navigation.$vo[3];
+			 		return $vo[1].html_entity_decode( $navigation ).$vo[3];
 			 	} , $souceContent);
 			 	
-			 
 			//var_dump($souceContent);
 			file_put_contents($path , $souceContent);
 			

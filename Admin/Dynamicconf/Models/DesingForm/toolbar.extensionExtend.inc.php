@@ -10,14 +10,6 @@
  * @version V1.0
 */
 return array(
-    'js-desing' => array(
-        'ifcheck' => '1',
-        'rules' => '#operateid#==0',
-        'permisname' => 'desing_desing',
-        'html' => '<a class="js-desing desing tml-btn tml_look_btn tml_mp"  href="__URL__/desing/id/{sid_node}" rel="__MODULE__edit" target="navTab" title="页面设计_布局"><span><span class="icon icon-edit icon_lrp"></span>布局</span></a>',
-        'shows' => '1',
-        'sortnum' => '5',
-    ),
 );
 
 ?>
