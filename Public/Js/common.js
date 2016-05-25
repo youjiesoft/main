@@ -594,6 +594,12 @@ function button_refresh(json,d){
 	}
 }
 /**
+ * 打开tab的公用方法。 为了方便Bi用。
+ */
+function openNavTab(tabid,url,title){
+	navTab.openTab(tabid, url, {title : title,fresh : true});
+}
+/**
  * 生成图形报表
  * @param swfSource SWF路径
  * @param chartId 图形报表所在div的ID
@@ -3811,16 +3817,64 @@ String.prototype.replaceAll = function (str1,str2){
 /**
  * 将日期字段串转换为date对象。
  * @parame string dateStr 日期字符串。 格式求为： YYYY-MM-dd or YYYY-MM-dd H:i:s
+ * @parame string fmtjs		当前显示日期格式。为空时返回当前时间
  */
- function toDate(dateStr){
+ function toDate(dateStr,fmtjs){
+	 if(typeof fmtjs == 'undefined' || !fmtjs ){
+		 console.warn('没有传入显示格式，将返回当前时间对象');
+		 return new Date();
+	 }
+	 // 所有格式参数
+	var fmtAll=Array('yyyy','MM','dd','HH','mm','ss');
+	var regall=/[\-/ .:]/;
+	// 当前显示数据格式分解
+	var curfmt = fmtjs.split(regall);
+	// 将显示数据处理为通用格式数据
+	var curvalOprate=new Array();
+	var curvalOprate =dateStr.split(regall);
+	// 当前用户时间数据按格式分割后数组， 年，月，日，时，分，秒
+	// 按最终用户传入显示格式为准
+	// ['yyyy':'2016','MM':'01','dd':'31','HH':'15','mm':'38','ss':'01']
+	var ret=new Array();
+	for (i=0;i<curvalOprate.length ;i++ )
+	{
+		ret[curfmt[i]]=curvalOprate[i];
+	} 
+	// 实例化当前时间，并将用户指定时间数据替换掉实例化的时间对应值。
+	// 返回最后结果。
+	// 当前时间，按标准格式分解
+	var curDateObj = new Date();
+	var curDateTimeStr = curDateObj.Format('yyyy-MM-dd HH:mm:ss');
+	var curDateTimeArr = curDateTimeStr.split(regall);
+	var souceTime=new Array();
+	for(var i in curDateTimeArr){
+		souceTime[fmtAll[i]] = curDateTimeArr[i];
+	}
+	for(var i in ret){
+		souceTime[i]=ret[i];
+	}
+	var fmt= new Array();
+	fmt.push(souceTime['yyyy']);// 年
+	fmt.push(parseInt(souceTime['MM'])-1);// 月
+	fmt.push(souceTime['dd']);// 日
+	fmt.push(souceTime['HH']);// 时
+	fmt.push(souceTime['mm']);// 分
+	fmt.push(souceTime['ss']);// 秒
+	var data =  new Date(parseInt(fmt[0]),parseInt(fmt[1]),parseInt(fmt[2]),parseInt(fmt[3]),parseInt(fmt[4]),parseInt(fmt[5]));
+	return data;
+	
+	
+	return new Date();
+	
 	var reg = /[\-/ .:]/;
 	var fmt = dateStr.split(reg);
 	var count = fmt.length;
-	if( count <= 3 ){
+	if( count < 6 ){
 		for( var i = 0; i< 6-count;i++){
 			fmt.push('01');
 		}
 	}
+//	console.log(fmt);
 	fmt[1] = parseInt(fmt[1])-1;
 	var data =  new Date(parseInt(fmt[0]),parseInt(fmt[1]),parseInt(fmt[2]),parseInt(fmt[3]),parseInt(fmt[4]),parseInt(fmt[5]));
 	return data;

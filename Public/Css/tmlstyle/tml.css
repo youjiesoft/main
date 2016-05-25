@@ -8192,6 +8192,10 @@ hr {
 .txt_green{
     color: #1ABC9C;
 }
+.not_crop {
+	cursor: not-allowed;
+	background: #bbb!important;
+}
 /* 标签 */
 .tml-label {
     background-color: #999;

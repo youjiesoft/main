@@ -3,56 +3,291 @@ author : nbmxkj
 date : 2015-10-21
 desc : 图片剪裁操作页面模板
  -->
- <if condition="$src">
-<script src="__PUBLIC__/Js/noticejs/jquery.Jcrop.js"></script>
-<link rel="stylesheet" href="__PUBLIC__/Css/jquery.Jcrop.css" type="text/css" />
- <div  layoutH="40"  style="">
- <form action="__URL__/lookupCropImage" method="post" onsubmit="return validateCallback(this, dialogAjaxDone);">
- 		<input type="hidden" id="src" name="src" value="__PUBLIC__{$src}" />
-          <input type="hidden" id="x" name="pointx" value="0" />
-          <input type="hidden" id="y" name="pointxy" value="0" />
-          <input type="hidden" id="w" name="pointw" value="240" />
-          <input type="hidden" id="h" name="pointh" value="240" />
-          <input type="submit"  value="保存图片">
-   </form>
-   <div id="preview-pane">
-	    <div class="preview-container">
-	         <img class="jcrop-preview" id="cropbox" style="border:2px solid #f1f1f1;" src="__PUBLIC__{$src}?{:time()}" alt="Preview" >
-	    </div>
-    </div>
- </div>
- <script>
- // minSize:[240,240],
- // maxSize:[400,400],
- var json = {
-			aspectRatio: 0,
-			onSelect: updateCoords,
-			allowSelect:0, //允许选择
-			allowResize:0, //是否允许调整大小
-			setSelect: [ 10, 10, 210, 110 ], // 初始化时默认圈中区域
-		};
- console.info(json);
-var config = '{$config}';
-console.info(config);
-if(isNullorEmpty(config)){
-	config = $.parseJSON(config);
-	var temp = new Object();
-	for(var i in config){
-		temp[i] = typeof(config[i])=='string' ? (config[i]=='1'?1:0):config[i];
-	}
-	
-	console.info(temp);
-	json = $.extend({} , json , temp);
+<if condition="$src">
+<META HTTP-EQUIV="pragma" CONTENT="no-cache"> 
+<META HTTP-EQUIV="Cache-Control" CONTENT="no-cache, must-revalidate"> 
+<META HTTP-EQUIV="expires" CONTENT="0">
+
+<php>
+$cropConfig = array();
+if($config){
+$cropConfig = json_decode($config,true);
 }
+</php>
+<script src="__PUBLIC__/Js/crop/cropper.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/Js/crop/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="__PUBLIC__/Js/crop/cropper.css" type="text/css" />
+<form action="__URL__/lookupCrop" method="post" onsubmit="return validateCallback(this, dialogAjaxDone);">
+    <input type="hidden" name="avatar_src" value="{$src}"/>
+    <input type="hidden" name="avatar_width" value="{$cropConfig['wh']['0']}"/>
+    <input type="hidden" name="avatar_height" value="{$cropConfig['wh']['1']}"/>
+    
+    
+        <!-- Content -->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-9" style="width: 600px;height: 450px;">
+        <!-- <h3 class="page-header">Demo:</h3> -->
+        <div class="img-container" style="width: 600px;height: 450px;">
+          <img src="__PUBLIC__{$src}" alt="Picture">
+        </div>
+      </div>
+      <div class="col-md-3">
+        <!-- <h3 class="page-header">Preview:</h3> -->
+        <div class="docs-preview clearfix">
+          <div class="img-preview preview-lg"></div>
+          <div class="img-preview preview-md"></div>
+          <div class="img-preview preview-sm"></div>
+          <div class="img-preview preview-xs"></div>
+        </div>
 
-console.info(json);
+        <!-- <h3 class="page-header">Data:</h3> -->
+        <div class="docs-data">
+          <div class="input-group">
+            <label class="input-group-addon" for="dataX">X</label>
+            <input class="form-control" id="dataX" type="text" placeholder="x">
+            <span class="input-group-addon">px</span>
+          </div>
+          <div class="input-group">
+            <label class="input-group-addon" for="dataY">Y</label>
+            <input class="form-control" id="dataY" type="text" placeholder="y">
+            <span class="input-group-addon">px</span>
+          </div>
+          <div class="input-group">
+            <label class="input-group-addon" for="dataWidth">宽度</label>
+            <input class="form-control" id="dataWidth" type="text" placeholder="width">
+            <span class="input-group-addon">px</span>
+          </div>
+          <div class="input-group">
+            <label class="input-group-addon" for="dataHeight">高度</label>
+            <input class="form-control" id="dataHeight" type="text" placeholder="height">
+            <span class="input-group-addon">px</span>
+          </div>
+          <div class="input-group">
+            <label class="input-group-addon" for="dataRotate">旋转</label>
+            <input class="form-control" id="dataRotate" type="text" placeholder="rotate">
+            <span class="input-group-addon">deg</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+          
+          
+    <div class="row" style="width: 900px;">
+      <div class="col-md-9 docs-buttons" style="width: 600px;">
+        <!-- <h3 class="page-header">Toolbar:</h3> -->
+        <div class="btn-group">
+          <button class="btn btn-primary" data-method="setDragMode" data-option="move" type="button" title="移动">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;setDragMode&quot;, &quot;move&quot;)">
+              <span class="icon icon-move"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="setDragMode" data-option="crop" type="button" title="剪裁">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;setDragMode&quot;, &quot;crop&quot;)">
+              <span class="icon icon-crop"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="zoom" data-option="0.1" type="button" title="放大">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;zoom&quot;, 0.1)">
+              <span class="icon icon-zoom-in"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="zoom" data-option="-0.1" type="button" title="缩小">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;zoom&quot;, -0.1)">
+              <span class="icon icon-zoom-out"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="rotate" data-option="-45" type="button" title="-45°">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;rotate&quot;, -45)">
+              <span class="icon icon-rotate-left"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="rotate" data-option="45" type="button" title="45°">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;rotate&quot;, 45)">
+              <span class="icon icon-rotate-right"></span>
+            </span>
+          </button>
+        </div>
 
- $('#cropbox').Jcrop(json);
- function updateCoords(c){
-		$('#x').val(c.x);
-		$('#y').val(c.y);
-		$('#w').val(c.w);
-		$('#h').val(c.h);
-	};
+        <div class="btn-group">
+          <button class="btn btn-primary" data-method="disable" type="button" title="锁定">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;disable&quot;)">
+              <span class="icon icon-lock"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="enable" type="button" title="解锁">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;enable&quot;)">
+              <span class="icon icon-unlock"></span>
+            </span>
+          </button>
+          <button class="btn btn-primary" data-method="reset" type="button" title="重置">
+            <span class="docs-tooltip" data-toggle="tooltip" title="$().cropper(&quot;reset&quot;)">
+              <span class="icon icon-refresh"></span>
+            </span>
+          </button>
+        </div>
+
+        
+      </div><!-- /.docs-buttons -->
+
+    <input type="submit" class="btn btn-primary"  value="保存剪裁">
+    <!-- /.docs-toggles -->
+    </div>
+    <input class="form-control" id="putData" name="avatar_data" type="text" placeholder="Get data to here or set data with this value" style="width: 100%;">
+    
+  </div>
+  <!-- Alert -->
+    
+</form>
+ <script>
+ $(function () {
+      // Demo
+      // -------------------------------------------------------------------------
+        var $image = $('.img-container > img'),
+            $dataX = $('#dataX'),
+            $dataY = $('#dataY'),
+            $dataHeight = $('#dataHeight'),
+            $dataWidth = $('#dataWidth'),
+            $dataRotate = $('#dataRotate'),
+            options = {
+              // strict: false,
+              // responsive: false,
+              // checkImageOrigin: false
+
+              // modal: false,
+              // guides: false,
+              // highlight: false,
+              // background: false,
+
+              // autoCrop: false,
+              // autoCropArea: 0.5,
+              // dragCrop: false,
+              // movable: false,
+                resizable: false,
+              // rotatable: false,
+              // zoomable: false,
+              // touchDragZoom: false,
+              // mouseWheelZoom: false,
+
+              // minCanvasWidth: 320,
+              // minCanvasHeight: 180,
+              // minCropBoxWidth: 160,
+              // minCropBoxHeight: 90,
+              // minContainerWidth: 320,
+              // minContainerHeight: 180,
+
+              // build: null,
+              // built: null,
+              // dragstart: null,
+              // dragmove: null,
+              // dragend: null,
+              // zoomin: null,
+              // zoomout: null,
+
+              aspectRatio: {$cropConfig['wh']['0']}/{$cropConfig['wh']['1']},
+              preview: '.img-preview',
+              crop: function (data) {
+                $dataX.val(Math.round(data.x));
+                $dataY.val(Math.round(data.y));
+                $dataHeight.val(Math.round(data.height));
+                $dataWidth.val(Math.round(data.width));
+                $dataRotate.val(Math.round(data.rotate));
+              }
+            };
+
+        $image.on({
+          'build.cropper': function (e) {
+            //console.log(e.type);
+          },
+          'built.cropper': function (e) {
+            setData();
+            //console.log(e.type);
+          },
+          'dragstart.cropper': function (e) {
+            //console.log(e.type, e.dragType);
+          },
+          'dragmove.cropper': function (e) {
+            //console.log(e.type, e.dragType);
+          },
+          'dragend.cropper': function (e) {
+            // 移动完毕 
+            setData();
+            //console.log(e.type, e.dragType);
+          },
+          'zoomin.cropper': function (e) {
+              setData();
+          },
+          'zoomout.cropper': function (e) {
+                setData();
+          }
+        }).cropper(options);
+
+
+        // Methods
+        $(document.body).on('click', '[data-method]', function () {
+            var data = $(this).data(),
+            $target,
+            result;
+
+            if (data.method) {
+              data = $.extend({}, data); // Clone a new one
+    
+              if (typeof data.target !== 'undefined') {
+                $target = $(data.target);
+    
+                if (typeof data.option === 'undefined') {
+                  try {
+                    data.option = JSON.parse($target.val());
+                  } catch (e) {
+                    console.log(e.message);
+                  }
+                }
+              }
+    
+              result = $image.cropper(data.method, data.option);
+    
+              if (data.method === 'getCroppedCanvas') {
+                $('#getCroppedCanvasModal').modal().find('.modal-body').html(result);
+              }
+    
+              if ($.isPlainObject(result) && $target) {
+                try {
+                  $target.val(JSON.stringify(result));
+                } catch (e) {
+                  console.log(e.message);
+                }
+              }
+              setData();
+            }
+          }).on('keydown', function (e) {
+          switch (e.which) {
+            case 37:
+              e.preventDefault();
+              $image.cropper('move', -1, 0);
+              break;
+
+            case 38:
+              e.preventDefault();
+              $image.cropper('move', 0, -1);
+              break;
+
+            case 39:
+              e.preventDefault();
+              $image.cropper('move', 1, 0);
+              break;
+
+            case 40:
+              e.preventDefault();
+              $image.cropper('move', 0, 1);
+              break;
+          }
+          setData();
+        });
+        function setData(){
+            var result = $image.cropper('getData', '');
+            $('#putData').val(JSON.stringify(result));
+        }
+    });
  </script>
- </if>
+</if>
