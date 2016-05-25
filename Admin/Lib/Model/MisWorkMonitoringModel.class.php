@@ -173,6 +173,35 @@ class MisWorkMonitoringModel extends CommonModel {
 				//当前本该进行执行的节点数据
 				$info = $infolist[0];
 				if($infolist && $info){
+					//定义标题大概
+					if($info['title'] && $list[$info['title']]){
+						//有定义标题大概，进行标题大概转换
+						$scdmodel = D('SystemConfigDetail');
+						//读取列名称数据(按照规则，应该在index方法里面)
+						$detailList = $scdmodel->getDetail($tablename,false,'','sortnum','status');
+						foreach($detailList as $k1=>$v1){
+							if($v1['name'] == $info['title']){
+								//判断标题大概是否匹配上字段
+								if(count($v1['func']) >0){
+									$varchar = "";
+									foreach($v1['func'] as $k2=>$v2){
+										//开始html字符
+										if(isset($v1['extention_html_start'][$k2])){
+											$varchar = $v1['extention_html_start'][$k2];
+										}
+										//中间内容
+										$varchar .= getConfigFunction($list[$v1['name']],$v2,$v1['funcdata'][$k2],$list);
+										if(isset($v1['extention_html_end'][$k2])){
+											$varchar .= $v1['extention_html_end'][$k2];
+										}
+										//结束html字符
+									}
+									$list[$info['title']] = $varchar;
+									break;
+								}
+							}
+						}
+					}
 					/*
 					 * 限制子流程生单，控制自动生单
 					 */

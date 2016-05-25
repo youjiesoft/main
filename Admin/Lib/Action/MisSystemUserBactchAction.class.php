@@ -95,7 +95,7 @@ class MisSystemUserBactchAction extends CommonAction{
 		}
 		$deptlist = $model->where($departmentmap)->order("id asc")->select();
 		$param['rel']="lookupGetUserProcess";
-		$param['url']="__URL__/lookupgetUser/jump/1/deptid/#id#/parentid/#parentid#/companyid/#companyid#";
+		$param['url']="__URL__/lookupgetUser/jump/1/deptid/#id#/parentid/#parentid#/companyid/#companyid#/fengzhuangbianhao/".$fengzhuangbianhao;
 		$common = A('Common');
 		$typeTree = $common->getTree($deptlist,$param);
 		//获得树结构json值

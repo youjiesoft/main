@@ -829,6 +829,18 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 			    }
 			    $paramArr=json_encode($temp);
 			    break;
+			case 'picedit':
+				
+				unset($temp);
+				unset($wh);
+				unset($wharr);
+				$wh =  $data[$property ['widthheight'] ['name']]; // 是否允许调整大小
+				$wharr=explode(',', $wh);
+				if(count($wharr)==2){
+					$temp['wh']=$wharr;
+				}
+				$paramArr=json_encode($temp);
+				break;
 			case 'fieldset' :
 				break;
 			case 'userselect' :

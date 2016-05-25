@@ -1469,7 +1469,18 @@ return array(
 					'isforeignoprate' => 1,
 					'dbfield'=>'editacquiretime',
 					'displayright'=>1,
-			),'isshowresoult'=>array(
+			),
+			'defaulttimechar'=>array(
+					'title'	=>	'默认显示日期（先于自动获取）[数据不是日期格式自动失效]',
+					'type'	=>	'text',
+					'id'	=>	'defaulttimechar',
+					'name'	=>	'defaulttimechar',
+					'isforeignoprate' => 1,
+					'data'	=>	'',
+					'dbfield'=>'defaulttimechar',
+					'displayright'=>1,
+			),
+			'isshowresoult'=>array(
 				'title'	=>	'是否直接显示内容',
 				'type'	=>	'checkbox',
 				'id'	=>	'isshowresoult',
@@ -1508,7 +1519,7 @@ return array(
 				'id'	=>	'format',
 				'name'	=>	'format',
 				'default'	=>	'yyyy-MM-dd@Y-m-d',
-				'data'	=>	'yyyy-MM-dd@Y-m-d|年-月-日#yyyy-MM-dd HH:mm@Y-m-d H:i|年-月-日 时:分#HH:mm@H:i|时:分',
+				'data'	=>	'yyyy-MM-dd@Y-m-d|年-月-日#yyyy-MM-dd HH:mm@Y-m-d H:i|年-月-日 时:分#HH:mm@H:i|时:分#yyyy-MM@Y-m|年-月#MM-dd@m-d|月-日#yyyy@Y|年#MM@m|月#dd@d|日',
 				'displayright'=>1,
 			    'function'=>'explainDateFormat',
 				'isforeignoprate' => 1,
@@ -1641,6 +1652,17 @@ return array(
 					'displayright'=>1,
 					'isforeignoprate' => 1,
 			),
+				'iscontrollchange'	=>	array(//这个key不可修改，页面业务中已使用
+						'title'	=>	'组件关联',
+						'type'	=>	'dialog',
+						'id'	=>	'iscontrollchange',
+						'name'	=>	'iscontrollchange',
+						'dialogcontroll'=>'relationcontroll',
+						'dialogtitle'=>'组件关联设置',
+						'dbfield'=>'iscontrollchange',
+						'displayright'=>1,
+						'isforeignoprate' => 1,
+				),
 				'iscreatesearch'=>array( //这个key不可修改，页面业务中已使用
 						'title'=>'是否生成搜索',
 						'type'=>'text',
@@ -2921,4 +2943,158 @@ return array(
 			)
 		)
 	),
+		'defcomponent'		=>	array(
+				'show'	=>	1,	//是否显示在工具列表中
+				'title'	=>'自定义组件',
+				'iscreate'	=>	0 , //是否生成到数据库中字段
+				'isview'	=>	1 , //是否生成到视图页面
+				'weight'	=>	0, // 权重，用处：在字段生成时出现的默认排序位置。
+				'isline' => true, // 一个标签是否占一行
+				'isconfig'=>	0 , // 是否生成字段配置
+				'listwidth'=>'',//列表宽度
+				'html'	=>	'
+			<div class="nbm_controll $isshow" data="defcomponent" $checkorder $isline>
+  				<b><i class="$copycontrollcls"></i>$title</b>
+				自定义组件，PS：显示内容自定义，不提供预览效果
+  				$delTag $hidden 
+			</div>
+			<div class="nbmshadow">
+	               <div class="icon_stort_lay">$statusHtml</div>
+	        </div>
+		',
+			'view'=>'
+			<div class="#class#" style="#style#">
+				#component#
+			</div>',
+				'property' => array(
+						'component'	=>	array(
+								'title'	=>	'自定义组件内容',
+								'type'	=>	'dialog',
+								'id'	=>	'component',
+								'name'	=>	'component',
+								'dialogcontroll'=>'componentContentEdit',// 对话框请求的php函数名
+								'displayright'=>1,
+								'isforeignoprate' => 1,
+								'dbfield'=>'component',
+		
+						),'titlepercent'=>array(
+				'title'	=>	'标题占比',
+				'type'	=>	'select',
+				'id'	=>	'titlepercent',
+				'name'	=>	'titlepercent',
+				'displayright'	=>	0,
+				'dbfield'=>'titlepercent',
+				'default'=>'8',
+				'data'	=>	'|请选择#1|一列#2|二列#3|三列#4|四列#5|五列#6|六列#7|七列#8|八列',
+					'function'=>'titlepercentchange',
+			),'contentpercent'=>array(
+				'title'	=>	'内容框占比',
+				'type'	=>	'select',
+				'id'	=>	'contentpercent',
+				'name'	=>	'contentpercent',
+				'displayright'	=>	0,
+				'dbfield'=>'contentpercent',
+				'default'=>'0',
+				'data'	=>	'|请选择#1|一列#2|二列#3|三列#4|四列#5|五列#6|六列#7|七列#8|八列',
+					'function'=>'contentpercentchange',
+			)
+				),
+		),
+		// 图片上传编辑 
+		'picedit'	=>	array(
+				'show'	=>	1,
+				'title'	=>	'图片上传编辑 ',
+				'iscreate'	=>	1 , //是否生成到数据库中字段
+				'isview'	=>	1 , //是否生成到视图页面
+				'isline' => true, // 一个标签是否占一行
+				'listwidth'=>'',//列表宽度
+				'isconfig'=>	1 , // 是否生成字段配置
+				'html'	=>	'
+            <div class="nbm_controll $isshow" data="picedit" $checkorder $isline >
+			<label class="label_new"><i class="$copycontrollcls"></i>$title</label>
+			<div id="nbmxkjuploads" class="uploadify" style="height: 25px; width: 104px;">
+			<div id="nbmxkjuploads-button" class="uploadify-button " style="background-image: url(&quot;/system/Public/uploadify/upload.png&quot;); text-indent: -9999px; height: 25px; line-height: 25px; width: 104px;">
+			<span class="uploadify-button-text">选择上传文件</span></div></div>
+			$delTag
+             $hidden
+			</div>
+			<div class="nbmshadow upload-element">
+	           <div class="icon_stort_lay">$statusHtml</div>
+	        </div>
+		','property' => array(
+						'uploadnum'	=>	array( // 从检查类型中抽取出来的检查属性
+								'title'	=>	'上传个数',
+								'type'	=>	'text',
+								'default'=>'',
+								'id'	=>	'uploadnum',
+								'name'	=>	'uploadnum',
+								'dbfield'=>'uploadnum',
+								'displayright'=>1,
+						),'uploadtype'	=>	array( // 从检查类型中抽取出来的检查属性
+								'title'	=>	'上传限制类型',
+								'type'	=>	'text',
+								'id'	=>	'uploadtype',
+								'name'	=>	'uploadtype',
+								'dbfield'=>'uploadtype',
+								'default'=>'*.jpg;*.jpeg;*.gif;*.png;',
+								'displayright'=>0,
+						),'widthheight'	=>	array( // 从检查类型中抽取出来的检查属性
+							'title'	=>	'图片宽高',
+							'type'	=>	'text',
+							'default'=>'',
+							'id'	=>	'widthheight',
+							'name'	=>	'widthheight',
+							'dbfield'=>'widthheight',
+							'displayright'=>1,
+						),'requiredfield'	=>	array( // 从检查类型中抽取出来的检查属性
+								'title'	=>	'是否必填',
+								'type'	=>	'checkbox',
+								'default'=>'0',
+								'id'	=>	'requiredfield',
+								'name'	=>	'requiredfield',
+								'dbfield'=>'isrequired',
+								'function'=>'changetagsortandrequired',
+								'displayright'=>1,
+						),'checkfunc'	=>	array(
+								'title'	=>	'检查类型',
+								'type'	=>	'select',
+								'default'=>'',
+								'id'	=>	'checkfunc',
+								'name'	=>	'checkfunc',
+								'dbfield'=>'validatetype',
+								// select option(val|text ) # op # op
+								'data'	=>	'|无需验证#eamil|邮箱#url|网址#number|数字#digits|整数#double|浮点数#lettersonly|字母',
+								'displayright'=>0,
+						),'islock'	=>	array(
+								'title'	=>	'是否允许编辑',
+								'type'	=>	'checkbox',
+								'default'=>1,
+								'id'	=>	'islock',
+								'name'	=>	'islock',
+								'displayright'=>1,
+								'dbfield'=>'islock',
+								'function'=>'changetagsortandlock',
+						),'titlepercent'=>array(
+								'title'	=>	'标题占比',
+								'type'	=>	'select',
+								'id'	=>	'titlepercent',
+								'name'	=>	'titlepercent',
+								'displayright'	=>	1,
+								'dbfield'=>'titlepercent',
+								'default'=>'1',
+								'data'	=>	'|请选择#1|一列#2|二列#3|三列#4|四列#5|五列#6|六列#7|七列#8|八列',
+								'function'=>'titlepercentchange',
+						),'contentpercent'=>array(
+								'title'	=>	'内容框占比',
+								'type'	=>	'select',
+								'id'	=>	'contentpercent',
+								'name'	=>	'contentpercent',
+								'displayright'	=>	1,
+								'dbfield'=>'contentpercent',
+								'default'=>'7',
+								'data'	=>	'|请选择#1|一列#2|二列#3|三列#4|四列#5|五列#6|六列#7|七列#8|八列',
+								'function'=>'contentpercentchange',
+						)
+				)
+		),
 );

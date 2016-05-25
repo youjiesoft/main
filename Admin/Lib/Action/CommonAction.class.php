@@ -14250,6 +14250,36 @@ code;
 	    }
 	}
 	
+	function lookupCrop(){
+		import('@.ORG.CropAvatar');
+		$src = $_POST['avatar_src'];
+		$width = $_POST['avatar_width']?$_POST['avatar_width'] : 200;
+		$height = $_POST['avatar_height']? $_POST['avatar_height'] : 200;
+		
+		// 分解URL地址信息 可已入库与未入库的都可
+		// 分解 路径 ，区分 已上传 与 临时上传
+		$isTemp = false;
+		if(strpos($src, 'Uploadstemp/') < -1 ){
+			$isTemp = true;
+		}
+		$data = preg_split('/Uploadstemp\/|Uploads\//', $src);
+		if($isTemp){
+			$src = UPLOAD_PATH.$data[1];
+		}else{
+			$src = UPLOAD_PATH_TEMP.$data[1];
+		}
+		$putdata = $_POST['avatar_data'];
+		$crop = new CropAvatar($src, $putdata,$src , $width , $height);
+		
+// 		$response = array(
+// 				'state'  => 200,
+// 				'message' => $crop -> getMsg(),
+// 				'result' => $crop -> getResult()
+// 		);
+		
+// 		echo json_encode($response);
+		$this->success('剪裁完成');
+	}
 	/**
 	 * 显示图片剪裁操作页面
 	 * @Title: lookupCropShow
@@ -14260,6 +14290,8 @@ code;
 	 */
 	function lookupCropShow(){
 	    try{
+	    	// 截取高宽
+	    	$wh = '';
 	        $src =$_POST['src'];// str_replace('/systemui', '', $_POST['src']);
 	        $config = $_POST['config'];
 	        if(!is_array($config)){
@@ -14275,22 +14307,27 @@ code;
 	                    $config[$key] = $val;
 	                }
 	            }
+	            if($config['wh']){
+	            	$wh = $config['wh'];
+	            }
 	            $config =  json_encode($config) ; //str_replace('"', '', json_encode($config) );
 	        }
 	        $this->assign('config',$config);
 	        if(!$src){
 	            $msg ="裁剪图片来源未知";
 	        }
-	        
 	        $filepath = explode(__ROOT__."/Public", $src);
-	        $absSrc =ROOT.'/../..'.$src;
+	        $absSrc =PUBLIC_PATH.$filepath[1];
 	        if(!file_exists($absSrc)){
 	            $msg = "来源图片不存在";
 	            throw new NullDataExcetion($msg);
 	        }
+	        $image_size = getimagesize($absSrc);
+	        if($wh && ( $wh['width'] >=$image_size[0] || $wh['height'] >=$image_size[1]) ){
+				$this->error('图片尺寸小于或等于剪裁值，不可进行剪裁操作！');
+	        }
 	        $this->assign('showSrc',$src);
 	        $this->assign('src',$filepath[1]);
-	        $image_size = getimagesize($absSrc);
 	        $this->assign('width',$image_size[0]);
 	        $this->assign('height',$image_size[1]);
 	        $this->display('Public:lookupCropShow');
