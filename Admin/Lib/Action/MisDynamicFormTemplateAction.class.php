@@ -364,6 +364,11 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 				$cr=array('<','>');
 				$v = str_replace($cs ,$cr , $v);
 			}
+			if($k == $property['component']['name']){
+				$cs1=array('&#39;');
+				$cr1=array('\'');
+				$v = str_replace($cs1 ,$cr1 , $v);
+			}
 			$searchArr["#{$k}#"] = $v;
 		}
 		switch ($category) {
@@ -709,6 +714,11 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 		        $cs=array('&lt;','&gt;');
 		        $cr=array('<','>');
 		        $v = str_replace($cs ,$cr , $v);
+		    }
+		    if($k == $property['component']['name']){
+		    	$cs1=array('&#39;');
+		    	$cr1=array('\'');
+		    	$v = str_replace($cs1 ,$cr1 , $v);
 		    }
 			$searchArr["#{$k}#"] = $v;
 		}
@@ -1431,7 +1441,6 @@ class MisDynamicFormTemplateAction extends MisDynamicFormModelAction {
 						$viewval = "{\$vo['{$controllProperty[$property['fields']['name']]}']|getSelectlistValue='{$controllProperty[$property['showoption']['name']]}'}";
 						$html = $viewval;
 					}
-					// $viewval='';
 					// $islockHtml = '';
 				}
 				$islockHtml = parameReplace ( '$viewval', $viewval, $islockHtml );
