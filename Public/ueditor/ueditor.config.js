@@ -54,7 +54,7 @@
                       'indent', '|',
                       'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
                       'link', 'unlink', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-                      'simpleupload', 'insertimage', 'pagebreak', '|',
+                      'simpleupload', 'insertimage', 'insertvideo', 'pagebreak', '|',
                       'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
                       'preview'
           ]]
