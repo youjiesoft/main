@@ -4,7 +4,7 @@ $siteconfig = require './siteconfig.inc.php';
 $dbconfig = require 'db.inc.php';
 $ftpconfig = require 'ftp.inc.php';
 $config	= array(
-	'COPYRIGHT'=>"重庆市农业担保有限公司",//版权信息
+	'COPYRIGHT'=>"重庆特米洛科技有限公司",//版权信息
     'SHOW_PAGE_TRACE' =>false, // 显示页面Trace信息
 	'SERVER_ADDRESS'=>'localhost/',//外网IP地址或URL地址加单斜杠
     'APP_AUTOLOAD_PATH'=>'ORG.Util',
@@ -70,11 +70,7 @@ $config	= array(
     'AUTH_PWD_ENCODER'   =>'md5',	// 用户认证密码加密方式
     'USER_AUTH_GATEWAY'  =>'/Public/login',	// 默认认证网关
 	'AREA_TYPE'  =>'1',	// 系统的地址组件版本  1按模板取值  2按表取值
-    //无需认证模块  已移植至notauth.php
- 	//'NOT_AUTH_MODULE'	 =>'Public,MisOaItems,MisOaItemsWaitFor,UserInfo,ReportCharts,CheckFor,Search,MisChat,SendMsg,MisMessage,MisMessageInbox,MisMessageOutbox,MisMessageDrafts,MisMessageRecycle,ReportExcel,OAHelper,MisMessagePhone,MisHrRemindBecomeEmployee,MisHrRemindEmployeeContract,MisUserEvents,MisSystemFunctionalBox,WXHelper',		// 默认无需认证模块
     'REQUIRE_AUTH_MODULE'=>'',		// 默认需要认证模块  
-	//无需认证方法  已移植至notauth.php
-    //'NOT_AUTH_ACTION'	 =>'additemview,acquire,mybusiness,getFormFlow,showMessage,myCoursesList,roleGroupAuthorizeC,exportBysearchHtml,baseInfo,detail,clear_cache,workplatform,audit,insert,update,view,waitAudit,alreadyAudit,auditProcess,backprocess,auditEdit,startprocess,auditView,seeProcessDetail,seeAuditUser,playSWF,sureProcess,getAllScheduleList,setDbhaSmsgType,organization,misimportexceladd,misimportexcelinsert,tmlbbs,misFileManageDownload',	// 默认无需认证操作
     'REQUIRE_AUTH_ACTION'=>'',		// 默认需要认证操作
     'GUEST_AUTH_ON'      => false,    // 是否开启游客授权访问
     'GUEST_AUTH_ID'      => 0,     // 游客的用户ID
@@ -92,7 +88,7 @@ $config	= array(
     'PAGE_DWZLISTROWS'   => 500,     // 分页每页显示记录数
     
     /*文件上传配置*/
-   'allexts'=>array('jpg', 'gif', 'png', 'jpeg','doc','xls','csv','zip','docx','xlsx','pdf','rar'),//允许上传文件类型
+    'allexts'=>array('jpg', 'gif', 'png', 'jpeg','doc','xls','csv','zip','docx','xlsx','pdf','rar'),//允许上传文件类型
     'savePath'=> UPLOAD_PATH,//上传路径设置
     'maxSize'=> 3145728,//允许最大上传文件大小 默认3MB
     'UPLOAD_FILE_RULE'=> 'time',
@@ -119,7 +115,7 @@ $config	= array(
     'EMAIL_PASSWORD' => '77683385', //邮件发送帐号密码
     
     //系统升级相关参数
-    'System_update'=>'http://yun.tmlsoft.com/myapp/index.php/SerialNumber/index',
+    'System_update'=>'http://120.25.218.139:85/myapp/index.php/SerialNumber/index',
     'UPGRADE_PATH' => '../Upgrade',  //升级文件存档目录 以Admin为基准
     'UPGRADE_TABLE' =>'upgrade',  //升级文件存档目录 以Admin为基准
     'PAGE_LIFE_TIME'=>'3000',       //页面运行最大时间

@@ -31,7 +31,6 @@ class PublicAction extends PublicExtendAction {
 	
 	function _initialize() {
 		$this->transaction_model=M();
-		$this->transaction_model->startTrans();
 	}
 
 	public function auditDiv(){
