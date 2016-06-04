@@ -2546,6 +2546,9 @@ EOF;
 		}else{
 			$model = D ( $name);
 		}
+		if (method_exists ( $this, '_before_edit' )) {
+			$this->_before_edit ();
+		}
 		//获取当前主键
 		$id = $_REQUEST [$model->getPk ()];
 		$map['id']=$id;
@@ -6045,7 +6048,7 @@ AND STATUS=1";
 				$this->display ( 'Public:lookupfordatatable2' );
 			} elseif($_REQUEST ['viewtype']=="checkfor") {
 				$this->display('CheckFor:checkForNew');
-			} elseif($_POST["type"]=="dt") {
+			} elseif($_POST["type"]=="dt" || $_REQUEST['ismuchchoice']==1) {
 				//echo 2323;
 				$check_list = html_entity_decode($_POST["check_list"]);
 				$check_list_arr = json_decode($check_list, TRUE);
@@ -6058,7 +6061,7 @@ AND STATUS=1";
 				if($lookupDetail['tree']){
 					//多选树形结构lookup带回
         			if($_REQUEST['jump']){
-        				$this->display ( 'Public:lookupBackendUser' );
+        				$this->display ( 'Public:lookupGenerals' );
         			}else {
         				$this->display('Public:lookupGeneralsTree');
         			}
@@ -8057,7 +8060,7 @@ $dbmodel->commit();
 		if($file_extension_lower=="docx" || $file_extension_lower=="doc"){
 			$action = $this->getActionName();
 // 			$ip = gethostbyname($_SERVER['SERVER_NAME']);
-			$ip = "192.168.0.238";
+			$ip = C("DB_HOST_WORD");//"192.168.0.238";
 			require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 			$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
 			$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
@@ -13235,7 +13238,7 @@ EOF;
 // 					$this->display("Public:playswf");
 
 					//$ip = gethostbyname($_SERVER['SERVER_NAME']);
-					$ip = "192.168.0.238";
+					$ip = C("DB_HOST_WORD");//"192.168.0.238";
 					require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 					$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
 					$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
@@ -13281,7 +13284,7 @@ EOF;
 // 						$this->assign('file_path', $file_path);
 // 						$this->display("Public:playswf");
 // 						$ip = gethostbyname($_SERVER['SERVER_NAME']);
-						$ip = "192.168.0.238";
+						$ip =C("DB_HOST_WORD");// "192.168.0.238";
 						require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 						$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
 						$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
@@ -13599,7 +13602,7 @@ EOF;
 // 			$this->assign('file_path', $file_path);
 // 			$this->display("Public:playswf");
 // 			$ip = GetHostByName($_SERVER['SERVER_NAME']);//获取本机IP
-			$ip = "192.168.0.238";
+			$ip = C("DB_HOST_WORD");//"192.168.0.238";
 			require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 			$PageOfficeCtrl = new Java("com.zhuozhengsoft.pageoffice.PageOfficeCtrlPHP");//此行必须
 			$PageOfficeCtrl->setServerPage("http://{$ip}:8088/JavaBridge/poserver.zz");//此行必须，设置服务器页面
@@ -14131,7 +14134,7 @@ code;
 	
 	function saveOnlineEditWord(){
 // 		$ip = GetHostByName($_SERVER['SERVER_NAME']);//获取本机IP
-		$ip = "192.168.0.238";
+		$ip = C("DB_HOST_WORD");//"192.168.0.238";
 		require_once("http://{$ip}:8088/JavaBridge/java/Java.inc");//此行必须
 		$fs = new Java("com.zhuozhengsoft.pageoffice.FileSaverPHP");//此行必须
 		echo $fs->close();//此行必须

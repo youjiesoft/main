@@ -44,7 +44,7 @@ return array(
 				",
 			'dbsource'=>'14',
 			'proname'=>'pmpcc',
-			'url'=>'http://192.168.0.238:8088/smartESBProject/services/dbService/procedure/4',
+			'url'=>'http://'.C("DB_HOST_WORD").':8088/smartESBProject/services/dbService/procedure/4',
 			),
 	'MisAutoYxv'=>array( //请假单
 			'sql'=>"
@@ -88,7 +88,7 @@ return array(
 			",
 			'dbsource'=>'14',
 			'proname'=>'pmpqjwsc',
-			'url'=>'http://192.168.0.238:8088/smartESBProject/services/dbService/procedure/4',
+			'url'=>'http://'.C("DB_HOST_WORD").':8088/smartESBProject/services/dbService/procedure/4',
 			),
 			'MisAutoKhh'=>array( //生成凭证
 			'sql'=>"
@@ -126,7 +126,7 @@ return array(
 			",
 			'dbsource'=>'30',
 			'proname'=>'Input_pingzheng',
-			'url'=>'http://192.168.0.238:8088/smartESBProject/services/dbService/procedure/4',
+			'url'=>'http://'.C("DB_HOST_WORD").':8088/smartESBProject/services/dbService/procedure/4',
 			),
 		
 

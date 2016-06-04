@@ -29,6 +29,7 @@ class LookupWidget extends Widget{
 		$isedit				=	$data[3];	//是否为修改操作页面
 		$isreturnvalue		=	$data[4];	//是否为view操作页面
 		$ganshe				=	$data[5];	//干涉页面 状态归0
+		$ismuchchoice		=	$data[6];	//是否多选 1是0否
 		/**			数据处理			*/
 		$dir = CONF_PATH;
 		$controlls =require $dir . 'controlls.php';
@@ -120,6 +121,10 @@ class LookupWidget extends Widget{
 			}
 			if($lookupDetail['dt']){
 				$dtcon = '&lookuptodatatable=2';
+			}
+			$muchchoice='';
+			if($ismuchchoice==1){
+				$muchchoice='&ismuchchoice='.$ismuchchoice;
 			}
 			// lookup的值反写
 			$textCounterCheck=''; // 显示文本的反写  text
@@ -267,7 +272,7 @@ class LookupWidget extends Widget{
 				}
 				
 				// lookup 触发按钮
-				$html .="<a class=\"icon_elm mid_icon_elm icon-plus\" syscondition=\"{$systemconditions}\"  newconditions=\"{$conditions}\"  {$conditionOprateString}  param=\"lookupchoice={$lookupchoice}&newconditions={$view}{$dtcon}\" href=\"__URL__/{$urls}\" lookupGroup=\"{$lookupgroup}\" ></a>";//$title
+				$html .="<a class=\"icon_elm mid_icon_elm icon-plus\" syscondition=\"{$systemconditions}\"  newconditions=\"{$conditions}\" ismuchchoice=\"{$ismuchchoice}\"  {$conditionOprateString}  param=\"lookupchoice={$lookupchoice}{$muchchoice}&newconditions={$view}{$dtcon}\" href=\"__URL__/{$urls}\" lookupGroup=\"{$lookupgroup}\" ></a>";//$title
 				// 清空 lookup 按钮
 				$html .="<a title=\"清空信息-可读写\" class=\"icon_elm icon-trash\"  href=\"javascript:void(0);\" onclick=\"clearOrg('{$lookupgroup}');\"></a>";
 			}

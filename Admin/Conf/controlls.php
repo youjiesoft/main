@@ -1842,6 +1842,15 @@ return array(
 				'allowcontroll'	=>	'select,text,lookup,hiddens',				//		允许加入到looup附加条件的组件。
 				'notallowfiled'	=>	'#self#,id,orderno',								//		不允许使用的字段。如果是本字段，就书写为 #self# 其它字段为原字段名，多字段以逗号分隔。
 				'displayright'=>1,
+			),'ismuchchoice'	=>	array(
+				'title'	=>	'是否多选',
+				'type'	=>	'checkbox',
+				'default'=>1,
+				'id'	=>	'ismuchchoice',
+				'name'	=>	'ismuchchoice',
+				'displayright'=>1,
+				'dbfield'=>'ismuchchoice',
+				'isforeignoprate' => 1,
 			),
 				'dialogwidth'	=>	array(
 				'title'	=>	'弹出窗宽度',

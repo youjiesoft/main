@@ -7,14 +7,15 @@
 		header('Content-Type:text/html;Charset=utf-8');
 		//$bo="[".json_encode((object)icon_to_utf8($bo))."]";curl里解析需要，因为中文会为null
 		$bo="[".json_encode((object)$bo)."]";
-		$serverurl="http://192.168.0.238:8088/smartESBProject/services/dbService/procedure/4";
+		$ip = C("DB_HOST_WORD");
+		$serverurl="http://{$ip}:8088/smartESBProject/services/dbService/procedure/4";
 		$serverjob=__APP__."/MisSystemEsblog/main";
 	$echoJs = <<<EOF
 	<script>
 		    esblink();
 			function esblink()
 			{	
-			var serverURL = "http://192.168.0.238:8088/smartESBProject/services/dbService/procedure/4";
+			var serverURL = "http://{$ip}:8088/smartESBProject/services/dbService/procedure/4";
 			var serverjob="{$serverjob}"
 			var dbsource = "{$dbsource}"; 
 			var proname = "{$proname}"; 

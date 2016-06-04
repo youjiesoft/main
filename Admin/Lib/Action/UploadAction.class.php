@@ -1,10 +1,21 @@
 <?php 
 class UploadAction extends Action {
+	public $transaction_model='';
+	function _initialize() {
+		$this->transaction_model=M();
+		$this->transaction_model->startTrans();
+	}
 	Public function upload(){
+		//定义上传格式
+		$allowExts = array(
+				'mp4','rm','rmvb','mpeg4','mpeg3','mpeg2','mpeg1','mov','mtv','dat','wmv',
+				'avi','3gp','amv','jpg','jpeg','gif','png','doc','xls','csv','zip',
+				'pdf','xlsx','ppt','docx','rar','html','htm','txt');
+		
 		import('@.ORG.UploadFile');
 		$upload = new UploadFile();// 实例化上传类
-		$upload->maxSize  = 3145728 ;// 设置附件上传大小
-		$upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg','doc','xls','csv','zip','pdf','xlsx','ppt','docx','rar','html','htm');// 设置附件上传类型
+		$upload->maxSize  = 31457280000 ;// 设置附件上传大小
+		$upload->allowExts  = $allowExts;// 设置附件上传类型
 		$datetime=date("Y/m/d/",time());
 		$targetPath = $_SERVER['DOCUMENT_ROOT'] . $_REQUEST['uploadpath'] . '/'.$datetime;
 		$upload->savePath =  $targetPath;// 设置附件上传目录
@@ -20,7 +31,6 @@ class UploadAction extends Action {
 			$upload->thumbMaxHeight = $new_height;
 		}
 		if(!$upload->upload()) {// 上传错误提示错误信息
-			dump(111);exit;
 			echo $this->error($upload->getErrorMsg());
 		}else{// 上传成功 获取上传文件信息
 			$uploadList =  $upload->getUploadFileInfo();
