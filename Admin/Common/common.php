@@ -6760,8 +6760,9 @@ function getSesstionContion($id){
 			'63'=>'misautogrt_jiashicang',
 			'66'=>'misautogrt_hangyezhixun',
 			'67'=>'misautogrt_gongnenghezi',
+	        '144'=>'misautogrt_companyl',
 	);
-	if($_SESSION.a != 1 && !$_SESSION[$data[$id]]){
+	if($_SESSION['a'] != 1 && !$_SESSION[$data[$id]]){
 		return false;
 	}
 	return true;

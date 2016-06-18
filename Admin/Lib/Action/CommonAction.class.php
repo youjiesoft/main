@@ -197,6 +197,9 @@ class CommonAction extends CommonExtendAction {
 			if( !isset($_SESSION['a']) ){
 				$map=D('User')->getAccessfilter($qx_name,$map);	
 			}
+			if(empty($map['companyid'])){
+				unset($map['companyid']);
+			}
 			//列表页排序 ---开始-----2015-08-06 15:07 write by xyz
 			if($_REQUEST['orderField']&&strpos(strtolower($_REQUEST['orderField']),' asc')===false&&strpos(strtolower($_REQUEST['orderField']),' desc')===false){
 				$this->_list ( $name, $map);
@@ -5271,13 +5274,16 @@ EOF;
 					foreach ($v as $key=>$val){
 						$fileinfo=pathinfo($val);
 						$from = UPLOAD_PATH_TEMP.$val;//临时存放文件
+						
 						if( file_exists($from) ){
 							$p=UPLOAD_PATH.$fileinfo['dirname'];// 目标文件夹
 							if( !file_exists($p) ) $this->createFolders($p); //判断目标文件夹是否存在
 							$to = UPLOAD_PATH.$val;
+						//获取文件大小及基本信息
+							$filemsg=pathinfo($from);
+							$filesize=filesize($from);
 							//保存附件信息
 							$data=array();
-							
 							if(C('ftpUse')==1){
 								// Ftp上传资源 by nbmxkj@20160126
 								$ftp->up_file($from,$val);   //上传文件
@@ -5292,6 +5298,7 @@ EOF;
 							$remotePic = $val;
 							//$data['type']=$type;
 							//$data['orderid']=$insertid;
+							
 							$data['tablename'] = $m ? $m:$this->getActionName();
 							$data['tableid']=$insertid;
 							$data['subid']=$subid;
@@ -5301,6 +5308,11 @@ EOF;
 							$data['isfile']= $isfile;
 							$data['fieldname']= $k;
 							$data['upname']=$source_file[$k][$key];
+						
+							$data['filesize']=$this->formatBytes($filesize);
+							$data['filesuffix']=$filemsg['extension'];
+							$data['filename']=str_replace('.'.$data['filesuffix'], '', $data['upname']);
+							
 							$data['createtime'] = time();
 							$data['createid'] = $_SESSION[C('USER_AUTH_KEY')]?$_SESSION[C('USER_AUTH_KEY')]:0;
 							$rel=$attModel->add($data);
@@ -5316,9 +5328,11 @@ EOF;
 						$p=UPLOAD_PATH.$fileinfo['dirname'];// 目标文件夹
 						if( !file_exists($p) ) $this->createFolders($p); //判断目标文件夹是否存在
 						$to = UPLOAD_PATH.$v;
+						//获取文件大小及基本信息
+						$filemsg=pathinfo($from);
+						$filesize=filesize($from);
 						//保存附件信息
 						$data=array();
-						
 						if(C('ftpUse')==1){
 							// Ftp上传资源 by nbmxkj@20160126
 							$ftp->up_file($from,$v);   //上传文件
@@ -5337,6 +5351,11 @@ EOF;
 						$data['attached']= $v;
 						$data['fieldname']= $_REQUEST['fieldname'];
 						$data['upname']=$source_file[$k];
+						
+						$data['filesize']=$this->formatBytes($filesize);
+						$data['filesuffix']=$filemsg['extension'];
+						$data['filename']=str_replace('.'.$data['filesuffix'], '', $data['upname']);
+						
 						$data['createtime'] = time();
 						$data['createid'] = $_SESSION[C('USER_AUTH_KEY')]?$_SESSION[C('USER_AUTH_KEY')]:0;
 						$data['projectid']= $projectid;
@@ -5354,6 +5373,18 @@ EOF;
 		}
 	}
 
+	function formatBytes($filesize) {
+		if($filesize >= 1073741824) {
+		  $filesize = round($filesize / 1073741824 * 100) / 100 . ' gb';
+		 } elseif($filesize >= 1048576) {
+		  $filesize = round($filesize / 1048576 * 100) / 100 . ' mb';
+		 } elseif($filesize >= 1024) {
+		  $filesize = round($filesize / 1024 * 100) / 100 . ' kb';
+		 } else {
+		  $filesize = $filesize . ' bytes';
+		 }
+		 return $filesize;
+	}
 	
 	/**
 	 * @Title: area_info

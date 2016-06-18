@@ -17,6 +17,8 @@ function delOften($this){
 }
 </script>
 
+ <?php $usertype=getFieldBy($_SESSION[C('USER_AUTH_KEY')],'id','usertype','user');  ?>  
+<if condition="$usertype neq '3'">
 <div class="entry-box  entry-box-small">
             <div class="entry-box-body">
                 <div class="xystartmenu_con clearfix">
@@ -51,3 +53,4 @@ function delOften($this){
                 </div>
                 
         </div>
+        </if>

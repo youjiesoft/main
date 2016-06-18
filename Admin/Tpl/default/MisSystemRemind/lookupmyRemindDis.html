@@ -29,11 +29,12 @@ function changeapp($page){
 							<span class='icon  {$remindAll.span} tml-mr3"'></span>
 							&nbsp;{$remindAll.title}：
 						</span>
-						<volist name="remindAll['list']" id="rtvo">
-						{$rtvo.rtitle}(<a href="__APP__/{$rtvo.relhref}"
-							title="{$rtvo.reltitle}" target="navTab" rel="{$rtvo.relhref}">
-							<span class="{$remindAll.countcolor}  ">{$rtvo['count']}</span>
-						</a>)；&nbsp; </volist>
+					   <volist name="remindAll['list']" id="rtvo">
+                        <?php $usertype=getFieldBy($_SESSION[C('USER_AUTH_KEY')],'id','usertype','user');  ?>  
+                        {$rtvo.rtitle}(<if condition="$rtvo['relhref'] eq 'MisSystemSysremind/index' && $usertype eq '3'">0<else/><a href="__APP__/{$rtvo.relhref}"
+                            title="{$rtvo.reltitle}" target="navTab" rel="{$rtvo.relhref}">
+                            <span class="{$remindAll.countcolor}  ">{$rtvo['count']}</span>
+                        </a></if>)；&nbsp; </volist>
 					</li>
 					</if> </volist>
 				</ul>
