@@ -10,7 +10,7 @@ class UploadAction extends Action {
 		$allowExts = array(
 				'mp4','rm','rmvb','mpeg4','mpeg3','mpeg2','mpeg1','mov','mtv','dat','wmv',
 				'avi','3gp','amv','jpg','jpeg','gif','png','doc','xls','csv','zip',
-				'pdf','xlsx','ppt','docx','rar','html','htm','txt');
+				'pdf','xlsx','ppt','docx','rar','html','htm','txt','apk');
 		
 		import('@.ORG.UploadFile');
 		$upload = new UploadFile();// 实例化上传类

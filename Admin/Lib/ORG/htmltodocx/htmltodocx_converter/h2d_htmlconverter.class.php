@@ -522,11 +522,12 @@ function htmltodocx_insert_html_recursive(&$phpword_element, $html_dom_array, &$
 					}else{
 						$_SESSION["htmltodocx"]["html_td_index"]=0;
 					}
-					foreach($_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]] as $k => $v){
-						if( ! empty($v["rowList"])){
-							foreach($v["rowList"] as $kk => $vv){
-								if($kk>0 && $v["isFinish"] == false){
-									if($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"] && $_SESSION["htmltodocx"]["html_tr_index"]==$vv["tr"] && ($kk<count($v["rowList"])-1)){
+					
+					if(empty($attr["rowspan"])){
+						foreach($_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]] as $k => $v){
+							if( ! empty($v["rowList"]) && $v["isFinish"] == false){
+								foreach($v["rowList"] as $kk => $vv){
+									if($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"] && ($v["rowspan"]!=1)){
 										$new_current_style['vMerge']="";
 										if($v["colspan"]!==1){
 											$new_current_style['gridSpan'] = $v["colspan"];
@@ -536,9 +537,10 @@ function htmltodocx_insert_html_recursive(&$phpword_element, $html_dom_array, &$
 										}else{
 											$_SESSION["htmltodocx"]["html_td_index"] += (int)$v["colspan"];
 										}
-										$state['table']->addCell($cell_width, $new_current_style);
+										$state['table']->addCell($v["td_width"], $new_current_style);
 										unset($new_current_style);
-									}elseif($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"] && $_SESSION["htmltodocx"]["html_tr_index"]==$vv["tr"] && ($kk==count($v["rowList"])-1)){
+										$_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]][$k]["rowspan"]--;
+									}elseif($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"] && ($v["rowspan"]==1)){
 										$new_current_style['vMerge']="fusion";
 										if($v["colspan"]!==1){
 											$new_current_style['gridSpan'] = $v["colspan"];
@@ -548,14 +550,14 @@ function htmltodocx_insert_html_recursive(&$phpword_element, $html_dom_array, &$
 										}else{
 											$_SESSION["htmltodocx"]["html_td_index"] += (int)$v["colspan"];
 										}
-										$state['table']->addCell($cell_width, $new_current_style);
+										$state['table']->addCell($v["td_width"], $new_current_style);
 										$_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]][$k]["isFinish"] = true;
-										unset($new_current_style);
 									}
 								}
 							}
 						}
 					}
+					
 					if( ! empty($attr["rowspan"])){
 						$rowList = array();
 						for($i=0;$i<$attr["rowspan"];$i++){
@@ -565,15 +567,16 @@ function htmltodocx_insert_html_recursive(&$phpword_element, $html_dom_array, &$
 							}
 							$rowList[] = array(
 									"td"=>$rowListTd,
-									"tr"=>$_SESSION["htmltodocx"]["html_tr_index"]+$i
+									"tr"=>$_SESSION["htmltodocx"]["html_tr_index"]+$i,
 							);
 						}
 						$_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]][]=array(
 								"tr_index"=>$_SESSION["htmltodocx"]["html_tr_index"],
 								"td_index"=>$_SESSION["htmltodocx"]["html_td_index"],
 								"colspan"=>(int)$attr["colspan"]?(int)$attr["colspan"]:1,
-								"rowspan"=>(int)$attr["rowspan"],
+								"rowspan"=>(int)$attr["rowspan"]-1,
 								"rowList"=>$rowList,
+								"td_width"=>$cell_width,
 								"isFinish" => false
 						);
 						
@@ -586,29 +589,28 @@ function htmltodocx_insert_html_recursive(&$phpword_element, $html_dom_array, &$
 					
 					//列合并为表格最后列时
 					foreach($_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]] as $k => $v){
-						if( ! empty($v["rowList"])){
+						if( ! empty($v["rowList"]) && $v["isFinish"] == false){
 							foreach($v["rowList"] as $kk => $vv){
-								if($kk>0 && $v["isFinish"] == false){
-									$this_colspan = $attr["colspan"];
-									if($this_colspan==0){
-										$this_colspan = 1;
+								$this_colspan = $attr["colspan"];
+								if($this_colspan==0){
+									$this_colspan = 1;
+								}
+								if($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"]+$this_colspan && $_SESSION["htmltodocx"]["html_tr_index"]==$vv["tr"] && ($v["rowspan"]!=1)){
+									$new_current_style['vMerge']="";
+									if($v["colspan"]!==1){
+										$new_current_style['gridSpan'] = $v["colspan"];
 									}
-									if($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"]+$this_colspan && $_SESSION["htmltodocx"]["html_tr_index"]==$vv["tr"] && ($kk<count($v["rowList"])-1)){
-										$new_current_style['vMerge']="";
-										if($v["colspan"]!==1){
-											$new_current_style['gridSpan'] = $v["colspan"];
-										}
-										$state['table']->addCell($cell_width, $new_current_style);
-										unset($new_current_style);
-									}elseif($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"]+$this_colspan && $_SESSION["htmltodocx"]["html_tr_index"]==$vv["tr"] && ($kk==count($v["rowList"])-1)){
-										$new_current_style['vMerge']="fusion";
-										if($v["colspan"]!==1){
-											$new_current_style['gridSpan'] = $v["colspan"];
-										}
-										$state['table']->addCell($cell_width, $new_current_style);
-										$_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]][$k]["isFinish"] = true;
-										unset($new_current_style);
+									$state['table']->addCell($v["td_width"], $new_current_style);
+									unset($new_current_style);
+									$_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]][$k]["rowspan"]--;
+								}elseif($vv["td"]==$_SESSION["htmltodocx"]["html_td_index"]+$this_colspan && $_SESSION["htmltodocx"]["html_tr_index"]==$vv["tr"] && ($v["rowspan"]==1)){
+									$new_current_style['vMerge']="fusion";
+									if($v["colspan"]!==1){
+										$new_current_style['gridSpan'] = $v["colspan"];
 									}
+									$state['table']->addCell($v["td_width"], $new_current_style);
+									unset($new_current_style);
+									$_SESSION["htmltodocx"]["table_rowspan"][$_SESSION["htmltodocx"]["html_table_index"]][$k]["isFinish"] = true;
 								}
 							}
 						}
@@ -625,7 +627,6 @@ function htmltodocx_insert_html_recursive(&$phpword_element, $html_dom_array, &$
 					$state['textrun']->addText(htmltodocx_clean_text($element->innertext),  $state['current_style']);
 				}
 				break;
-
 			case 'a':
 				// Create a new text run if we aren't in one already:
 				if (!isset($state['textrun'])) {

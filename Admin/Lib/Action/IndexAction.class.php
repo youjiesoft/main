@@ -29,6 +29,15 @@ class IndexAction extends IndexExtendAction {
 	 */
 	//onload事件加载时间为2S
 	public function index(){
+		//生成首页模板缓存
+		$thismodel = D('MisSystemPanelDesingMas');
+		$thismodel->panelRoleConfig();
+		//清除权限缓存
+		$obj_dir = new Dir;
+		if(1 == 1){
+			$directory =  DConfig_PATH."/AccessList";
+			$obj_dir->del($directory);
+		}
 		//判断首页是否有跳转值传入，JSON传值，没有传值就默认为0；
 		if($_REQUEST['data']){
 			$data = $this->setURLdata($_REQUEST['data']);
@@ -45,6 +54,11 @@ class IndexAction extends IndexExtendAction {
 		//获取当前系统中登陆人的公司ID
 		$companyid = $_SESSION['companyid'];
 		$this->assign("companyid",$companyid);
+		//获取节点
+		$model = D("Public");
+		$groupid=24;
+		$accessNode = $model->menuLeftTree($groupid);
+		$this->assign("accessNode",$accessNode);
 		/*
 		 * 视图查询登陆用户以及所在公司
 		 *   *注 多组织架构，存在同一个人在多个公司

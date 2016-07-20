@@ -2131,9 +2131,27 @@ class CommonAuditAction extends CommonAction {
 			$where['auditState'] = 1;
 			$parallelist = $process_relation_parallelDao->where($where)->select();
 			if($parallelist){
+				
+				//实例化流程转授模型
+				$mis_auto_guikcDao = M("mis_auto_guikc");
+				$where1 = array();
+				$where1['operateid'] = 1;
+				$where1['id']  = array('gt',0);
+				$where1['zhuanshougei'] = $userid;  //转授给某人
+				$where1['shengxiaoriqi'] = array('elt',time());
+				$where1['shixiaoriqi'] = array('egt',time());
+				$zlist = $mis_auto_guikcDao->where($where1)->field("id,zhuanshoufanwei,zhuanshouren,zhuanshougei")->order("id desc")->find();
+				
+				//修改转授流程的子并串混搭。
 				foreach ($parallelist as $key=>$val){
-					if(in_array($userid, explode(",", $val['curAuditUser']))){
-						$process_relation_parallelDao->where("id = ".$val['id'])->setField("auditState",2);
+					if($zlist['zhuanshouren']){
+						if(in_array($userid, explode(",", $val['curAuditUser'])) || in_array($zlist['zhuanshouren'], explode(",", $val['curAuditUser']))){
+							$process_relation_parallelDao->where("id = ".$val['id'])->setField("auditState",2);
+						}
+					}else{
+						if(in_array($userid, explode(",", $val['curAuditUser']))){
+							$process_relation_parallelDao->where("id = ".$val['id'])->setField("auditState",2);
+						}
 					}
 				}
 				unset($where['auditState']);

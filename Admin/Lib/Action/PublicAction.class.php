@@ -31,6 +31,7 @@ class PublicAction extends PublicExtendAction {
 	
 	function _initialize() {
 		$this->transaction_model=M();
+		$this->transaction_model->startTrans();
 	}
 
 	public function auditDiv(){
@@ -358,13 +359,13 @@ class PublicAction extends PublicExtendAction {
 			// 				$this->error('您还没有该公司权限,请重新选择公司登陆！');
 			// 			}
             //获取公司
-			$authInfo['companyid']=$companyid['companyid'];
+			$authInfo['companyid']=$companyid['companyid']?$companyid['companyid']:0;
 			//获取部门
-			$authInfo['dept_id']=$companyid['deptid'];
+			$authInfo['dept_id']=$companyid['deptid']?$companyid['deptid']:0;
 			//获取岗位
-			$authInfo['sysworktype']=$companyid['worktype'];
+			$authInfo['sysworktype']=$companyid['worktype']?$companyid['worktype']:0;
 			//获取职级
-			$authInfo['sysdutyid']=$companyid['dutyid'];
+			$authInfo['sysdutyid']=$companyid['dutyid']?$companyid['dutyid']:0;
 		}	
 		return 	$authInfo;
 	}

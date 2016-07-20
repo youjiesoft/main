@@ -9,6 +9,7 @@ time:2015-09-06 18
  		<input type="hidden" name="pageNum" value="1"/>
  		<input type="hidden" name="orderField" value="{$order}" />
  		<input type="hidden" name="orderDirection" value="{$sort}"/>
+ 		{:getTreeParam()}
 	</form>
  		<div class="panelBar">
  			<ul class="toolBar">

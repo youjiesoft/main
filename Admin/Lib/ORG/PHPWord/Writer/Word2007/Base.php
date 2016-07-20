@@ -565,7 +565,7 @@ class PHPWord_Writer_Word2007_Base extends PHPWord_Writer_Word2007_WriterPart {
 		$borders = ($bTop || $bLeft || $bRight || $bBottom) ? true : false;
 
 		$gridSpan = $style->getGridSpan();
-		if(!is_null($gridSpan))
+		if($gridSpan)
 		{
 			$objWriter->startElement('w:gridSpan');
 			$objWriter->writeAttribute('w:val', $gridSpan);

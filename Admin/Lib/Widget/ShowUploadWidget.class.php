@@ -57,9 +57,17 @@ class ShowUploadWidget extends Widget{
 		 	//封装中部
 		 	if($data[0]){
 		 		foreach($data[0] as $key=>$val){
-		 			$file_path = str_replace("\\","/", UPLOAD_PATH.$val["attached"]);
-		 			$file_path = preg_replace("/^([\s\S]+)\/Public/", "", $file_path);
-		 			$file_path = $root.$file_path;
+		 			//检查attached里面是否包含http以及www
+		 			$a=strstr($val["attached"],"http://");
+		 			if($a==false){
+		 				$file_path = str_replace("\\","/", UPLOAD_PATH.$val["attached"]);
+			 			$file_path = preg_replace("/^([\s\S]+)\/Public/", "", $file_path);
+			 			$file_path = $root.$file_path;
+		 			}else{
+		 				$file_path=$val["attached"];
+		 			}
+// 		 			dump($val['name']);
+// 		 			dump($file_path);
 		 			$info = pathinfo($val["attached"]);
 		 			$file_extension_lower = strtolower($info['extension']);
 		 			$html.='<div class="uploadify-queue-item">';

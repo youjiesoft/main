@@ -20,7 +20,7 @@ if (!empty($_FILES)) {
 	if(file_exists($targetFile)){
 		unlink($targetFile);
 	}
-	$fileTypes = array('jpg', 'gif', 'png', 'jpeg','doc','xls','csv','zip','pdf','xlsx','ppt','docx','rar','html','htm');
+	$fileTypes = array('jpg', 'gif', 'png', 'jpeg','doc','xls','csv','zip','pdf','xlsx','ppt','docx','rar','html','htm','apk');
 	if (in_array(strtolower(end($arr)),$fileTypes)) {
 		$ret = move_uploaded_file($tempFile,$targetFile);
 		

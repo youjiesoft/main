@@ -6767,4 +6767,26 @@ function getSesstionContion($id){
 	}
 	return true;
 }
+/**
+ * 左侧树条件传值
+ * @Title: getTreeParam
+ * @Description: todo(这里用一句话描述这个方法的作用)
+ * @return string
+ * @author xiayq
+ * @date 2016-7-19 上午10:00:25
+ * @throws
+ */
+function getTreeParam(){
+	$html='';
+	if( $_REQUEST['fieldtype']){
+			
+		$paramKey = $_REQUEST['fieldtype'];
+		$paramVal =  $_REQUEST[$paramKey];
+		$html=<<<EOF
+		<input type="hidden" name="fieldtype" value="$paramKey"/>
+		<input type="hidden" name="$paramKey" value="$paramVal"/>
+EOF;
+	}
+	return $html;
+}
 ?>

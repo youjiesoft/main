@@ -5525,16 +5525,26 @@ EOF;
 //			$path = "../Public/Uploads/".$info["dirname"].'/'. $info['basename'];
 // 			$filenameUTF8 = preg_replace("/^([\s\S]+)\/Public\//", "", $rs['fileurl']);
 // 			$filenameUTF8 = PUBLIC_PATH.$filenameUTF8;
-			$path = UPLOAD_PATH."/".$info["dirname"].'/'. $info['basename']; //xyz 2015-9-6
+			$a=strstr($info["dirname"],"http://");
+		 	if($a==false){
+		 		$path = UPLOAD_PATH."/".$info["dirname"].'/'. $info['basename']; //xyz 2015-9-6
+		 	}else{
+		 		$path = $info["dirname"].'/'. $info['basename']; //xyz 2015-9-6
+		 	}
 			$path = @iconv('UTF-8', 'GBK', $path);
+			header("Cache-Control: public");
 			header("Content-Type: application/force-download");
-			//header("Content-Type: application/octet-stream");
-			header("Content-Disposition: attachment; filename=".$filename);
-			header("Content-Transfer-Encoding:­ binary");
-			header("Content-Length: " . filesize($path));
+			header("Content-Disposition: attachment; filename*=utf8''".basename(str_replace("+", "%20", urlencode($path))));
+			
+			// 			header("Content-Type: application/force-download");
+			// 			//header("Content-Type: application/octet-stream");
+			// 			header("Content-Disposition: attachment; filename=".$filename);
+			// 			header("Content-Transfer-Encoding:­ binary");
+			// 			header("Content-Length: " . filesize($path));
 			ob_clean();
 			flush();
 			readfile($path);
+			
 		}else{
 			$this->error("下载地址出错...");
 		}
@@ -5568,7 +5578,7 @@ EOF;
 		}
 		
 		$attarry = $armodel->where($armap)->select();
-		$filesArr = array('pdf','doc','docx','xls','xlsx','ppt','pptx','txt','jpg','jpeg','gif','png');
+		$filesArr = array('pdf','doc','docx','xls','xlsx','ppt','pptx','txt','jpg','jpeg','gif','png','apk');
 		foreach ($attarry as $key => $val) {
 			$pathinfo = pathinfo($val['attached']);
 			//获取除后缀的文件名称
@@ -6086,6 +6096,7 @@ AND STATUS=1";
 				$this->assign('check_list',$check_list);
 				$this->assign('check_list_arr',$check_list_arr);
 				$this->assign('type',$_POST["type"]);
+				$this->assign('ismuchchoice',$_REQUEST['ismuchchoice']);
 				
 				// 数据表格中的lookup实现按配置生成树形导航功能。
 				// modify by nbmxkj@20150818 1414
@@ -12712,7 +12723,7 @@ EOF;
 		$armap['tablename'] = $tablename;
 	
 		$attarry = $armodel->where($armap)->select();
-		$filesArr = array('pdf','doc','docx','xls','xlsx','ppt','pptx','txt','jpg','jpeg','gif','png');
+		$filesArr = array('pdf','doc','docx','xls','xlsx','ppt','pptx','txt','jpg','jpeg','gif','png','apk');
 		foreach ($attarry as $key => $val) {
 			$pathinfo = pathinfo($val['attached']);
 			//获取除后缀的文件名称
@@ -14347,11 +14358,16 @@ code;
 	            $config =  json_encode($config) ; //str_replace('"', '', json_encode($config) );
 	        }
 	        $this->assign('config',$config);
-	        if(!$src){
-	            $msg ="裁剪图片来源未知";
+// 	        if(!$src){
+// 	            $msg ="裁剪图片来源未知";
+// 	        }
+	        $a=strstr($src,"http://");
+	        if($a==false){
+	        	  $filepath = explode(__ROOT__."/Public", $src);
+	       		  $absSrc =PUBLIC_PATH.$filepath[1];
+	        }else{
+	        	$absSrc=$src;
 	        }
-	        $filepath = explode(__ROOT__."/Public", $src);
-	        $absSrc =PUBLIC_PATH.$filepath[1];
 	        if(!file_exists($absSrc)){
 	            $msg = "来源图片不存在";
 	            throw new NullDataExcetion($msg);

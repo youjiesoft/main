@@ -1741,8 +1741,8 @@ return array(
 				'type'=>'text',
 				'id'=>'conditions',
 				'name'=>'conditions',
-				'displayright'=>1,
-					'isforeignoprate' => 1,
+				'displayright'=>0,
+				'isforeignoprate' => 1,
 				'dbfield'=>'lookupconditions',
 			),'org'	=>	array(
 					'title'	=>	'外部ORG Value',
