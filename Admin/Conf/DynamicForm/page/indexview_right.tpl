@@ -21,6 +21,7 @@ time:2015-09-06 18
 			</ul>
 			<form rel="pagerForm" onsubmit="return   divSearch(this, '__MODULE__indexview')" action="__URL__/index/type/1" method="post">
 			<input type="hidden" name="jump" value="jump"/>	
+			{:getTreeParam()}
 			<div class="searchBar">
 				<table class="searchContent">
 					<tr>
