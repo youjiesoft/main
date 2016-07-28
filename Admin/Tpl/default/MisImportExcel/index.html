@@ -7,9 +7,22 @@
 <div class="pageContent">
 	<div class="panelBar tml-border-t0">
 		<ul class="toolBar">
-			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_add "><li><a class="add" href="__URL__/add" target="navTab" title="节点添加"><span>{$Think.lang.add}</span></a></li></if>
-			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_delete "><li><a class="delete" href="__URL__/delete/id/{sid_node}/navTabId/__MODULE__" target="ajaxTodo"  title="你确定要删除吗？" warn="请选择节点"><span>{$Think.lang.del}</span></a></li></if>
-			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_edit "><li><a class="edit" href="__URL__/edit/id/{sid_node}" title="节点编辑" target="navTab"  rel="__MODULE__edit" warn="请选择节点"><span>{$Think.lang.change}</span></a></li></if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_add ">
+				<li>
+				<a class="js-add add tml-btn tml_look_btn tml_mp" href="__URL__/add" target="navTab" rel="__MODULE__add"  title="导入顺序图_新增"><span><span class="icon icon-plus icon_lrp"></span>新增</span></a>
+				<!-- <a class="add" href="__URL__/add" target="navTab" title="节点添加"><span>{$Think.lang.add}</span></a> -->
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_delete ">
+				<li>
+					<a class="js-delete delete tml-btn tml_look_btn tml_mp" href="__URL__/delete/id/{sid_node}/navTabId/__MODULE__" target="ajaxTodo" title="你确定要删除吗？" warn="请选择一条组记录"><span><span class="icon icon-trash icon_lrp"></span>删除</span></a>
+				</li>
+			</if>
+			<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_edit ">
+				<li>
+					<a class="js-edit edit tml-btn tml_look_btn tml_mp"  href="__URL__/edit/id/{sid_node}" rel="__MODULE__edit" target="navTab" title="导入顺序图_修改"><span><span class="icon icon-edit icon_lrp"></span>修改</span></a>
+				</li>
+			</if>
 			<volist name="toolbarextension" id="toolb">
 				<if condition="$_SESSION.a eq 1 or $toolb['ifcheck'] eq 0 or ($toolb['ifcheck'] eq 1 and !empty($toolb['permisname']) and $_SESSION[$toolb['permisname']])">
 					<li>{$toolb['html']}</li>

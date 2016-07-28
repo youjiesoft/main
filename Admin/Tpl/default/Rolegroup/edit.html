@@ -10,7 +10,7 @@
 			<!-- text组件 end -->
 			<!-- select组件 start -->
 			<div class="col_1_3 form_group_lay field_pid " >
-				<label class="label_new">{$fields["pid"]}:</label>
+				<label class="label_new">状态:</label>
 				<select name="pid" class="select2">
 					<option value="0" selected>无上级组</option>
 					{:getDataBaseByHtml('Rolegroup',array('selected'=>$vo['pid']))}

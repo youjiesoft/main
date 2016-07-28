@@ -2,7 +2,7 @@
 	<div class="pageContent">
 	<form method="post" id="pagerForm" action="__URL__/insert/navTabId/MisImportExceledit" class="pageForm required-validate" onsubmit="return validateCallback(this, dialogAjaxDone)">
 		<input type="hidden" name="eid" value="{$eid}" >
-		<table class="table" width="100%" layoutH="58">
+		<table class="table" width="100%" layoutH="98">
 				<thead>
 					<tr>
 						<th><input type="checkbox" group="cols[]" class="checkboxCtrl"></th>
@@ -34,8 +34,9 @@
 		</table>
 		<div class="formBar">
 			<ul>
-				<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
-				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
+				<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button></li>
+				<!-- <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+				<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li> -->
 			</ul>
 		</div>
 	</form>

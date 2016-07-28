@@ -6149,7 +6149,7 @@ function richtext2str($str,$length=0) {
 	if($length){
 		missubstr($str,$length);
 	}
-	$str = str_replace("&nbsp", "", $str);
+	$str = str_replace("&nbsp;", "", $str);
 	return $str;
 }
 /**

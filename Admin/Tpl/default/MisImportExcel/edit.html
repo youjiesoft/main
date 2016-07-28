@@ -106,9 +106,9 @@
 			<div class="formBar">
 				<ul>
 				<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcel_update">
-					<li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li>
+					<li><button class="tml_formBar_btn tml_formBar_btn_blue enterIndex" type="submit">保存</button></li>
+					<!-- <li><div class="buttonActive"><div class="buttonContent"><button type="submit">{$Think.lang.save}</button></div></div></li> -->
 				</if>
-					<li><div class="button"><div class="buttonContent"><button type="button" class="close">{$Think.lang.close}</button></div></div></li>
 				</ul>
 			</div>
         </div>
@@ -118,18 +118,22 @@
 	<!-- sub页面处理模板 -->
 	<div class="pageContent">
 		<div class="panelBar">
-			<ul class="toolBar">
+		
+		<ul class="toolBar">
 				<if condition="$vo.auditState elt 0">
 					<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcelsub_add ">
-						<li><a class="add" href="__APP__/MisImportExcelSub/add/eid/{$vo.id}" target="dialog" title="新增导入列" mask="true" ><span>{$Think.lang.add}</span></a></li>
+						<li>
+							 <a class="add tml-btn tml_look_btn tml_mp" href="__APP__/MisImportExcelSub/add/eid/{$vo.id}" target="dialog" title="新增导入列" width="800" height="400"  mask="true" ><span><span class="icon icon-plus icon_lrp"></span>新增</span></a> 
+						</li>
 					</if>
 					<if condition="$_SESSION.a eq 1 or $_SESSION.misimportexcelsub_edit ">
-						<!--li><a class="edit"  href="__APP__/MisImportExcelSub/edit/eid/{$vo.id}" mask="true" target="dialog" title="编辑导入列" warn="请先选择要修改的记录"><span>{$Think.lang.edit}</span></a></li-->
-						<li><a warn="请先选择要修改的记录" title="编辑" mask="true" target="dialogIds" rel="id" postType="string" href="__APP__/MisImportExcelSub/edit" width="840" height="400" class="edit"><span>{$Think.lang.edit}</span></a></li>
+						<li>
+							<a warn="请先选择要修改的记录"  title="编辑" mask="true" target="dialogIds" rel="id" postType="string" href="__APP__/MisImportExcelSub/edit" width="800" height="400" class="edit tml-btn tml_look_btn tml_mp"><span><span class="icon icon-edit icon_lrp"></span>修改</span></a>
+						</li>
 					</if>
 					
 					<if condition="$_SESSION.a eq 1 or $_SESSION.ordersortinfo_selectToOrderSort ">
-						<li><a title="排序" mask="true" target="dialog" href="__APP__/OrderSortInfo/selectToOrderSort/tablename/MisImportExcelSub/where/{$url}/refresh/navTabId-MisImportExceledit" width="800" height="400" class="edit"><span>排序</span></a></li>
+						<li><a title="排序" mask="true" target="dialog" href="__APP__/OrderSortInfo/selectToOrderSort/tablename/MisImportExcelSub/where/{$url}/refresh/navTabId-MisImportExceledit" width="800" height="400" class="edit tml-btn tml_look_btn tml_mp"><span><span class="icon icon-edit icon_lrp"></span>排序</span></a></li>
 					</if>
 				</if>
 			</ul>

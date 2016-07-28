@@ -14358,16 +14358,12 @@ code;
 	            $config =  json_encode($config) ; //str_replace('"', '', json_encode($config) );
 	        }
 	        $this->assign('config',$config);
-// 	        if(!$src){
-// 	            $msg ="裁剪图片来源未知";
-// 	        }
-	        $a=strstr($src,"http://");
-	        if($a==false){
-	        	  $filepath = explode(__ROOT__."/Public", $src);
-	       		  $absSrc =PUBLIC_PATH.$filepath[1];
-	        }else{
-	        	$absSrc=$src;
+	        if(!$src){
+	            $msg ="裁剪图片来源未知";
 	        }
+	        
+	        $filepath = explode(__ROOT__."/Public", $src);
+	        $absSrc =PUBLIC_PATH.$filepath[1];
 	        if(!file_exists($absSrc)){
 	            $msg = "来源图片不存在";
 	            throw new NullDataExcetion($msg);

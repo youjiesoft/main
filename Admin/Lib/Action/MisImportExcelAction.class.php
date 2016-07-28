@@ -83,6 +83,7 @@ class MisImportExcelAction extends CommonAction {
 	 */
 	public function _before_add(){
 		$pid=$_SESSION['currentNodeId'];
+		$pid=$_REQUEST['pid'];
 		if($pid){
 			$this->assign("pid", $pid);
 		}
@@ -197,8 +198,16 @@ class MisImportExcelAction extends CommonAction {
 		$map['status']=array("egt",0);
 		$this->assign("vo",$vo);
 		$this->assign("num",$num);
-		$sublist =$model2->where($map)->order('sort')->select();
-		$url = $this->orderSortMapToStr($map);
+		$count =$model2->where($map)->order('sort')->count();
+		$pagenum=$_REQUEST['pageNum']?$_REQUEST['pageNum']:1;
+		$numPerPage=10;
+		$sublist =$model2->where($map)->order('sort')->limit(($pagenum-1)*$numPerPage.','.$numPerPage)->select();
+		$this->assign ( 'totalCount', $count );
+		$this->assign ( 'numPerPage', $numPerPage);
+		$this->assign ( 'dwznumPerPage', C('PAGE_DWZLISTROWS'));
+		$this->assign ( 'currentPage', !empty($_REQUEST[C('VAR_PAGE')])?$_REQUEST[C('VAR_PAGE')]:1);
+		
+ 		$url = $this->orderSortMapToStr($map);
 		$this->assign('url', $url);
 		$this->assign('map', ($sql));
 		$this->assign("sublist", $sublist);

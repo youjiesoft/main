@@ -233,7 +233,8 @@ class SystemConfigDetailModel extends CommonModel {
 							$list[$k]['html'] = str_replace( "#extendurl#",$extendurl,$list[$k]['html'] );
 						}
 					}else{
-						if(($v['name'] == 'action' || $v['name'] == 'status')&& !$_SESSION['a']){
+// 						if(($v['name'] == 'action' || $v['name'] == 'status')&& !$_SESSION['a']){
+						if($v['name'] == 'status' && !$_SESSION['a']){
 							unset($list[$k]);
 						}
 					}
@@ -260,6 +261,7 @@ class SystemConfigDetailModel extends CommonModel {
 						$list['js-ismore'] = $ismorearr;
 					}
 				}
+// 				dump($list['js-delete']);
 				return $list;
 			} else {
 				return '';

@@ -2241,11 +2241,13 @@ function editAutoForm() {
 		if ($tplType) {
 			$addjsstr = $editjsstr=$viewloadStr = <<<EOF
 $(function(){
+	initTableWNEW();
     {$box}
 EOF;
 		} else {
 			$addjsstr = $editjsstr=$viewloadStr = <<<EOF
 $(function(){
+	initTableWNEW();
     {$box}
 EOF;
 		}

@@ -11,6 +11,81 @@
 		}
 	}
 </script>
+<!-- 
+普通表单：新增页面
+author:nbmxkj
+time:2015-09-06 18
+ -->
+{~$classNodeSettingArr =getModelClassByNodeSetting('MisImportExcel','add')}
+{~$appendPageContentArr =getBindTabsContent('MisImportExcel',$vo,'add','',$main)}
+{~$formautosetting = setFormControllAutoCreteAppend('MisImportExcel' ,'add' ,$main , 'insert',$vo,A('MisImportExcel')->rebuildSetting())}
+{$appendPageContentArr[1]}
+<div class="page">
+	<div class="pageContent">
+		<div class="pageFormContent applecloth anchorsToolBarParen" <if condition="$_REQUEST['dialog']">layoutH="40"</if><if condition="!$_REQUEST['main'] or $_REQUEST['main'] eq MODULE_NAME"> layoutH="40"</if>>
+			<div <if condition="!$_REQUEST['dialog']">class="new_version_page"</if>>
+				<form id="MisImportExcel_add"
+					{$appendPageContentArr[5]} {$formautosetting[3]}  method="post" action="__APP__/MisImportExcel/{$formautosetting[2]}/navTabId/__MODULE__{$formautosetting[4]}" class="pageForm required-validate"	 onsubmit="<if condition="$formautosetting[5]">{$formautosetting[5]}<else/>{$appendPageContentArr[0]}</if>">
+					<a class='xyz_anchornavi_top' name='MisImportExcel_add_top'></a> 
+					<input type="hidden" name="callbackType" value="closeCurrent" />
+					<input type="hidden" name="pid" value="{$pid}" >
+					{:W('HiddenInput',$vo)} 
+					{$formautosetting[1]}
+					<if condition="$_GET['viewtype'] neq 'view'&& !$_GET['main'] ">
+					<div class="new_version_page_header pageFormContent ">
+						<span class="left tml-ml20 ">导入顺序图</span>
+						{:W('ShowAnchorNavi',array('MisImportExcel', 'add',$main))}
+						{$formautosetting[0]}
+					</div>
+					</if>
+					<div class="new_version_page_content">
+					
+						<!-- 文本框组件 -->
+						<div class="col_1_3 form_group_lay field_name" original="{$vo['name']}" category="text" style="">
+							<label class="label_new">名称:</label>
+							<input  dropback="#dropback#"  type="text"  name="name"  class=" input_new  required" <if condition="$vo['name'] neq ''">value="{$vo['name']}"<else/>value=""</if>  >
+							<div class="display_none {$classNodeSettingArr['name']}">{$vo['name']}</div>
+						</div>					
+						<!-- 下拉框组件 -->
+						<div class="col_1_3 form_group_lay field_tableobj" original="{$vo['tableobj']}" category="select" style="">
+							<label class="label_new">插入数据对象:</label>
+							<select class="required select2 select_elm " name="tableobj">
+								<option value="">请选择表对象</option>
+								<volist id="vo" name="tables">
+									<option value="{$key}">{$vo}</option>
+								</volist>
+							</select>
+						</div>
+											
+						<!-- 下拉框组件 -->
+						<div class="col_1_3 form_group_lay field_importcatalog" original="{$vo['importcatalog']}" category="select" style="">
+							<label class="label_new">插入数据文件类型:</label>
+							<select name="importcatalog" class="select2 select_elm required">
+								<option value="">请选择类型</option>
+								<option value="1">后缀为xls或xlsx格式</option>
+								<option value="2">后缀为csv格式</option>
+							</select>
+						</div>
+												
+						<!-- 文本域组件 -->
+						<div class="col_1_7 form_group_lay field_remark" original="{$vo['remark']}" category="textarea" style="">
+							<label class="label_new">备注:</label>
+							<textarea   cols="0" rows="0"  class="text_area " name="remark"><if condition="$vo['remark']"><else/></if></textarea>
+							<div class="display_none {$classNodeSettingArr['remark']}">{$vo['remark']}</div>
+						</div>
+
+						<if condition="!$appendPageContentArr[4]">{:W('ShowAction',array('data'=>$vo))}</if>
+					</div>
+				</form>
+				<div class="clear"></div>
+				{$appendPageContentArr[2]}
+				{$appendPageContentArr[3]}
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
 <div class="page">
 	<div class="pageContent">
 	<form method="post" action="__URL__/insert/navTabId/__MODULE__" class="pageForm required-validate" onsubmit="return validateCallback(this, refreshtwopageadd)">
@@ -24,12 +99,12 @@
 			<label>插入数据对象：</label>
 				<input type="text" class="required combox checkByInput" autocomplete="off" checkfor="Exnt_Tables" insert="TABLE_NAME" show="TABLE_NAME"  value="请选择表对象" />
 				<input type="hidden" class="required" name="tableobj" value="">
-		   		<!--<select class="required combox" name="tableobj">
+		   		<select class="required combox" name="tableobj">
 					<option value="">请选择表对象</option>
 					<volist id="vo" name="tables">
 						<option value="{$key}">{$vo}</option>
 					</volist>
-				</select>-->
+				</select>
 		      </div>
 			<div class="unit">
 				<label>插入数据文件类型：</label>
@@ -54,5 +129,5 @@
 		</div>
 	</form>
 	</div>
-</div>
+</div> -->
 

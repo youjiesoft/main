@@ -115,9 +115,10 @@
 			if(upload_save_name){
 				swf_upload_save_name = upload_save_name;
 			}
-            var inputStr = '<input id="'+ pId +'_selectbtn" upload_save_name="'+swf_upload_save_name+'" class="selectbtn" style="display:none;" type="file" name="fileselect[]"';
+//			console.error('222');
+            var inputStr = '<input aaaa="1111"  id="'+ pId +'_selectbtn" upload_save_name="'+swf_upload_save_name+'" class="selectbtn" style="display:none;" type="file" name="fileselect[]"';
             inputStr += option.multi ? " multiple" :"";
-            inputStr += ' accept="';
+            inputStr += ' acceptss="';
             inputStr += getAcceptString(option.fileTypeExts);
             inputStr += '"/>';
             inputStr += '<a id="'+ pId +'_fileuploadbtn" href="javascript:void(0)" class="btn btn-default btn-sm Huploadify-button">';
