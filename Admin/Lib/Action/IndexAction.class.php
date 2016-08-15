@@ -36,7 +36,9 @@ class IndexAction extends IndexExtendAction {
 		$obj_dir = new Dir;
 		if(1 == 1){
 			$directory =  DConfig_PATH."/AccessList";
-			$obj_dir->del($directory);
+			if(is_dir($directory)){
+				$obj_dir->del($directory);
+			}
 		}
 		//判断首页是否有跳转值传入，JSON传值，没有传值就默认为0；
 		if($_REQUEST['data']){

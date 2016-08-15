@@ -188,8 +188,10 @@ class MisAutoMbwExtendAction extends CommonAction {
 		$modelMonitoring = M('MisWorkMonitoring');
 		$map = array();
 		$map['shixiaoriqi'] = array('lt',$newtime);
+		//是否已失效  0:表示未失效 1:表示已失效
+		$map['yishixiao'] = 0;
 		//创建流程转售查询
-		$listMbw = $modelMbw->where($map)->field('shixiaoriqi,zhuanshougei,zhuanshouren')->select();
+		$listMbw = $modelMbw->where($map)->field('id,shixiaoriqi,zhuanshougei,zhuanshouren')->select();
 		//遍历每行数据
 		foreach ( $listMbw as $key => $val ) {
 			// 如果当前时间大于失效时间就把审核人变回原来的审核人
@@ -216,6 +218,11 @@ class MisAutoMbwExtendAction extends CommonAction {
 					}
 					$chenggongshu++;
 				}
+				//将当前恢复过的数据进行失效处理
+				$where = array();
+				$where['id'] = $val['id'];
+				$where['yishixiao'] =1;
+				$modelMbw->save($where);
 			}
 		}
 		$this->transaction_model->commit();//事务提交

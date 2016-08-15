@@ -2115,6 +2115,8 @@ class CommonExtendAction extends Action {
 	 * @throws
 	 */
 	public function lookupgetMapCoordinate(){
+		$fieldname=$_REQUEST['fieldname'];
+		$this->assign("fieldname",$fieldname);
 		//获取地址
 		$address = $_POST['address'];
 		$this->assign("address",$address);

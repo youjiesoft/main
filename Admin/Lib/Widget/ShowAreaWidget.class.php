@@ -101,17 +101,17 @@ class ShowAreaWidget extends Widget{
 			 	<!-- 当前使用字段	-->
 			 	<input type="hidden"  name="areainfo[{$fieldName}][fieldname]" value="{$fieldName}" />
 			 	<!-- 表单使用的当前字段，用于存储最终结果值 -->
-			 	<input type="hidden" class="address_detail" name="{$fieldName}" value="{$detail}" />
+			 	<input type="hidden" id="address_detail_{$fieldName}"  class="address_detail" name="{$fieldName}" value="{$detail}" />
 			 	
 			 	<select data-souce='{$souceStr}' data-required='{$required}' cascade  class=" address_level_elm left select2 next  nbm1 {$required}" names="areainfo[{$fieldName}][data]">{$option}</select>
 			 	<!-- 详细地址信息 -->
 			 	<input class="address_four_level address input_new left" placeholder="详情地址，具体到街道\村庄" type="text" name="areainfo[{$fieldName}][address]" value="{$address}" />
-			 	<input class="address_detail_coordinatex" name="areainfo[{$fieldName}][coordinatex]" id="address_detail_coordinatex" type="hidden" value="{$coordinatex}"/>
-			 	<input class="address_detail_coordinatey" name="areainfo[{$fieldName}][coordinatey]" id="address_detail_coordinatey" type="hidden" value="{$coordinatey}"/>
+			 	<input class="address_detail_coordinatex" name="areainfo[{$fieldName}][coordinatex]" id="address_detail_coordinatex_{$fieldName}" type="hidden" value="{$coordinatex}"/>
+			 	<input class="address_detail_coordinatey" name="areainfo[{$fieldName}][coordinatey]" id="address_detail_coordinatey_{$fieldName}" type="hidden" value="{$coordinatey}"/>
 			 	<!-- 地图标注 -->
-			 	<a class="icon-map-marker tml_map_link" style="cursor:pointer" onclick="openMap(this);" mask="true" rel="lookupgetMapCoordinate"  title="地图"></a>
+			 	<a class="icon-map-marker tml_map_link" style="cursor:pointer" onclick="openMap('{$fieldName}');" mask="true" rel="lookupgetMapCoordinate"  title="地图"></a>
 			 	<!-- 完整地址信息 -->
-			 	<input name="areainfo[{$fieldName}][detail]" value="{$detail}" id="address_detail_address" class="area_push detail split_address input_new left {$required}"  placeholder="地址显示：省、市、区县、详细地址" type="text"  />
+			 	<input name="areainfo[{$fieldName}][detail]" value="{$detail}" id="address_detail_address_{$fieldName}" class="area_push detail split_address input_new left {$required}"  placeholder="地址显示：省、市、区县、详细地址" type="text"  />
 			 </div>
 EOF;
 		// 测试版的调用JS

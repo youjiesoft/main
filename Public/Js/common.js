@@ -4214,11 +4214,11 @@ function cbjchangeeventfunc(i , v){
 }
 function openMap(obj){
 	//获取地址
-	var address = $("#address_detail_address").val();
+	var address = $("#address_detail_address_"+obj).val();
 	//获取横坐标
-	var xmap = $("#address_detail_coordinatex").val();
+	var xmap = $("#address_detail_coordinatex_"+obj).val();
 	//获取纵坐标
-	var ymap = $("#address_detail_coordinatey").val();
+	var ymap = $("#address_detail_coordinatey_"+obj).val();
 	$this = $(obj);
 	var title=$this.attr("title")||$this.text();
 	var rel=$this.attr("rel")||"_blank";
@@ -4230,7 +4230,7 @@ function openMap(obj){
 	options.maxable = true;
 	options.minable = false;
 	options.param={xmap:xmap,ymap:ymap,address:address};
-	var url=unescape(TP_APP+'/Common/lookupgetMapCoordinate');
+	var url=unescape(TP_APP+'/Common/lookupgetMapCoordinate/fieldname/'+obj);
 	$.pdialog.open(url,rel,title,options);
 }
 /**

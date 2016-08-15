@@ -44,10 +44,15 @@ class ShowNotifyViewWidget extends Widget{
 					$arr['classval'] = '';
 				}
 			}
-			$map = array();
-			$map['id'] = array(' in ',explode(",", $val["informpersonid"]));
-			$userlist = $userModel->where($map)->field("id,name")->select();
-			$arr['audituser'] = $userlist;
+			if($val["informpersonid"]){
+				$map = array();
+				$map['id'] = array(' in ',explode(",", $val["informpersonid"]));
+				$userlist = $userModel->where($map)->field("id,name")->select();
+				$arr['audituser'] = array();
+				if($userlist){
+					$arr['audituser'] = $userlist;
+				}
+			}
 			$auditUserArr[] = $arr;
 		}
 		//$disableNoneModel知会人员 默认不显示状态的模块 -by xyz 2015-10-28

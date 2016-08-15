@@ -1693,7 +1693,7 @@ EOF;
 			$this->swf_upload($list,0,null,$_POST['projectid'],$_POST['projectworkid']);
 			// 地区信息处理@nbmxkj - 20141030 1603
 			$this->area_info($list);
-
+			$this->map_info($list);
 			/*
 			 * 处理插入成功后，处理数据的后置函数
 			 */
@@ -2672,6 +2672,8 @@ EOF;
 
 		//获取附件信息
 		$this->getAttachedRecordList($id,true,true,$name);
+		//获取地图信息
+		
 		// 获取现 可能有的地区信息
 		$areaModel = M('MisAddressRecord');
 		if(C('AREA_TYPE')==1){
@@ -3050,6 +3052,8 @@ EOF;
 			$this->swf_upload($id,0,null,$vo['projectid'],$vo['projectworkid']);
 			// 地区信息修改 @nbmxkj - 20141030 16:05
 			$this->area_info($id);
+			//地图定位修改
+			$this->map_info($id);
 			//执行成功后，用A方法进行实例化，判断当前控制器中是否存在_after_update方法
 			$module2=A($name);
 			if (method_exists($module2,"_after_update")) {
@@ -5386,6 +5390,81 @@ EOF;
 		 return $filesize;
 	}
 	
+	/**
+	 * @Title: 地图定位信息_info
+	 * @Description: todo(地区信息处理)
+	 * @param int 		$inserid	数据ID
+	 * @param string 	$modelName 	Model名 , 默认为空， 为空时代码中获取当中前的action名
+	 * @author quqiang
+	 * @date 2014-10-29 下午9:21:15
+	 * @throws
+	 */
+	function map_info($inserid,$modelName=''){
+		if($_POST['mapinfotag']){
+			/*
+			 * 获取页面地址POST数据。
+			* */
+			$dataArr=$_POST['mapinfo'];
+			foreach ($dataArr as $key=>$val){
+				// $key // 当前字段名
+				$fieldName = $val['fieldname']; // 当前使用的字段名
+				$detail = $val['detail']; // detail	//	完整信息
+				$tablename=$val['tablename'];	//	tablename	//	存入表名
+				$modelName=!empty($modelName) ? $modelName : $tablename;
+				// 实例地区信息表
+				$model = M('mis_address_map_record');
+				if(C('AREA_TYPE')==1){
+					$modelName = !empty($modelName) ? $modelName : $this->getActionName();
+				}elseif(C('AREA_TYPE')==2){
+					$modelName = !empty($modelName) ? $modelName : (D($this->getActionName())->getTableName());
+				}else{
+					$modelName = !empty($modelName) ? $modelName : $this->getActionName();
+				}
+				$data = '';
+				$data['tablename'] = $modelName;
+				$data['tableid'] = $inserid;
+				$data['detail'] = $detail;
+				$data['fieldname'] = $fieldName;
+				//横坐标
+				$data['coordinatex'] = $val['coordinatex'];
+				//纵坐标
+				$data['coordinatey'] =  $val['coordinatey'];
+				// 检查当前数据是否存在
+				$map['tablename'] = $data['tablename'];
+				$map['tableid'] = $data['tableid'];
+				$map['fieldname'] = $data['fieldname'];
+				$resoult = $model->where($map)->find();
+				if($resoult['id']){
+					$data['id']=$resoult['id'];
+				}
+				if(C('TOKEN_NAME')) $data[C('TOKEN_NAME')]= $_POST[C('TOKEN_NAME')];
+		
+				$fmtdata = $model->create($data);
+				if(false === $fmtdata){
+					$this->error($model->getError());
+				}
+				// var_dump($data);
+				if($resoult['id']){
+					// 修改
+					$ret = $model->where($map)->save($fmtdata);
+					if(!$ret){
+						//$this->error("地区信息更新失败");
+						$msg = '地图信息更新失败'.'ERROR: '.$model->getDBError().'  SQL:'.$model->getLastSql();
+						throw new NullDataExcetion($msg);
+					}
+				}else{
+					$ret = $model->data($fmtdata)->add();
+					if(!$ret){
+						//$this->error("地区信息写入失败");
+						$msg = '地图信息写入失败'.'ERROR: '.$model->getDBError().'  SQL:'.$model->getLastSql();
+						throw new NullDataExcetion($msg);
+					}
+				}
+			}
+				
+		}
+		
+	}
 	/**
 	 * @Title: area_info
 	 * @Description: todo(地区信息处理)

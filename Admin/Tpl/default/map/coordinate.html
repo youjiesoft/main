@@ -22,8 +22,9 @@
 	var dizhi='{$address}';
 	var xmap = '{$newcoordinatex}';
 	var ymap = '{$newcoordinatey}';
+	var fieldname = '{$fieldname}';
 	
-	console.log(xmap);
+	console.log(fieldname);
 	
 	if(!isNullorEmpty(xmap) || !isNullorEmpty(ymap)){
 		dizhi = "重庆市";
@@ -92,9 +93,11 @@
 			alertMsg.error("坐标不能为空");
 			return false;
 		}
-		$("#address_detail_coordinatex").val(xmap);
-		$("#address_detail_coordinatey").val(ymap);
-		$("#address_detail_address").val(dizhi);
+		$("#address_detail_coordinatex_"+fieldname).val(xmap);
+		$("#address_detail_coordinatey_"+fieldname).val(ymap);
+		$("#address_detail_address_"+fieldname).val(dizhi);
+		var address_detail=dizhi+'|'+xmap+'|'+ymap;
+		$("#address_detail_"+fieldname).val(address_detail);
 		//成功后，关闭当前dialog
 		$.pdialog.closeCurrent(); 
 	}

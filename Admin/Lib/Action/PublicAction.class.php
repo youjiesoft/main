@@ -31,7 +31,7 @@ class PublicAction extends PublicExtendAction {
 	
 	function _initialize() {
 		$this->transaction_model=M();
-		$this->transaction_model->startTrans();
+// 		$this->transaction_model->startTrans();
 	}
 
 	public function auditDiv(){
@@ -725,11 +725,15 @@ class PublicAction extends PublicExtendAction {
 		$obj_dir = new Dir;
 		if($_REQUEST['runtime'] == 1){
 			$directory =  DConfig_PATH."/AccessList";
-			$obj_dir->del($directory);
+			if(is_dir($directory)){
+				$obj_dir->del($directory);
+			}
 		}
 		if($_REQUEST['runtime'] == 3){
 			$directory = RUNTIME_PATH."/Data/_fields";
-			$obj_dir->del($directory);
+			if(is_dir($directory)){
+				$obj_dir->del($directory);
+			}
 		}
 		//清除整个目录，必须放在最下面
 		if($_REQUEST['runtime'] == 2){

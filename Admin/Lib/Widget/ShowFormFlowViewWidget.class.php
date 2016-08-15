@@ -20,13 +20,34 @@ class ShowFormFlowViewWidget extends Widget{
 		$where['tablename'] = $modulename;
 		$where['doing'] = 1;
 		$where['flowtype'] =array('gt',1);
-		$relaformlist = $process_relation_formDao->where($where)->order("sort asc")->getField("relationid,flowtype,auditState,id,name,auditUser,parallel,bacthname,isaudittableid,isauditmodel");
+		$relaformlist = $process_relation_formDao->where($where)->order("sort asc")->getField("relationid,flowtype,auditState,id,name,auditUser,parallel,bacthname,isaudittableid,isauditmodel,catgory");
+		
+		//查询开始节点名称
+		$prorelaName = "制单节点";
+		//查询当前流程开始节点名称
+		$process_info = M("process_info");
+		$promap = array();
+		$promap['nodename'] = $modulename;
+		$promap['default'] = 1;
+		$pinfoid = $process_info->where($promap)->getField("id");
+		if($pinfoid){
+			//实例化节点表
+			$process_relation = M("process_relation");
+			$promap = array();
+			$promap['tablename'] = "process_info";
+			$promap['pinfoid'] = $pinfoid;
+			$promap['flowtype'] = 0; //开始节点
+			//获取开始节点名称
+			$prorelaName = $process_relation->where($promap)->getField("name");
+		}
 		$createUser[] = array(
 				'relationid'=>0,
 				'auditUser'=>$data['createid'],
-				'name'=>'制单节点',
+				'name'=>$prorelaName,
 				'auditState'=>1,
 		);
+		//开始节点查询完毕
+		
 		$relaformlist = array_merge($createUser,$relaformlist);
 		$auditUserArr = array();
 		$bool = true;
@@ -273,7 +294,7 @@ class ShowFormFlowViewWidget extends Widget{
         		}else{
         			$relationname = getFieldBy($v3['ostatus'], 'id', 'name', 'process_relation_form');
         		}
-        		$class = "";
+        		$class = "";	
         		if($v3['dotype'] == 6){
         			//打回的样式
         			$class = "tml_waring_color";

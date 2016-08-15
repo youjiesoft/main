@@ -510,6 +510,7 @@ return array(
 		'title'	=>	'隐藏域组件',
 		'iscreate'	=>	1 , //是否生成到数据库中字段
 		'isview'	=>	1 , //是否生成到视图页面
+		'weight'	=>	2,//权重
 		'isline' => false, // 一个标签是否占一行
 		'isconfig'=>	0 , // 是否生成字段配置
 		'listwidth'=>'',//列表宽度
@@ -1914,6 +1915,7 @@ return array(
 		'title'	=>	'上传组件',
 		'iscreate'	=>	1 , //是否生成到数据库中字段
 		'isview'	=>	1 , //是否生成到视图页面
+		'weight'	=>	3,//权重
 		'isline' => true, // 一个标签是否占一行
 		'listwidth'=>'',//列表宽度
 		'isconfig'=>	1 , // 是否生成字段配置
@@ -2010,6 +2012,7 @@ return array(
         'title'	=>	'图片上传组件',
         'iscreate'	=>	1 , //是否生成到数据库中字段
         'isview'	=>	1 , //是否生成到视图页面
+        'weight'	=>	3,//权重
         'isline' => true, // 一个标签是否占一行
         'listwidth'=>'',//列表宽度
         'isconfig'=>	1 , // 是否生成字段配置
@@ -2345,6 +2348,7 @@ return array(
 		'title'	=>	'地区信息',
 		'isview'	=>	1 , //是否生成到视图页面
 		'iscreate'	=>	1 , //是否生成到数据库中字段
+		'weight'	=>	3,//权重
 		'isline' => true, // 一个标签是否占一行
 		'listwidth'=>'',//列表宽度
 		'isconfig'=>	1 , // 是否生成字段配置
@@ -2365,6 +2369,99 @@ return array(
 				<a class="icon-map-marker address_icon_link left" href="#"></a>
 				<input class="split_address input_new left" placeholder="地址显示：省、市、区县、详细地址" type="text" disabled />
 			</div>
+			$delTag $hidden 
+		</div>
+		<div class="nbmshadow adds_element">
+	        <div class="icon_stort_lay">$statusHtml</div>
+	    </div>
+		','property' => array(
+			'datashare'	=>	array(
+					'title'	=>	'复用时数据共用',
+					'type'	=>	'checkbox',
+					'default'=>'0',
+					'id'	=>	'datashare',
+					'name'	=>	'datashare',
+					'dbfield'=>'datashare',
+					'displayright'=>1,
+			),
+			'length'	=>	array(
+				'title'	=>	'字段长度',
+				'type'	=>	'text',
+				'default'=>'200',
+				'id'	=>	'length',
+				'name'	=>	'length',
+				'dbfield'=>'tablelength',
+				'displayright'=>1,
+				'checkvaluetovisable'=>'ids',
+				//'dbfield'=>'dblength',
+			),
+			'requiredfield'	=>	array( // 从检查类型中抽取出来的检查属性
+					'title'	=>	'是否必填',
+					'type'	=>	'checkbox',
+					'default'=>'0',
+					'id'	=>	'requiredfield',
+					'name'	=>	'requiredfield',
+					'dbfield'=>'isrequired',
+			    'function'=>'changetagsortandrequired',
+					'displayright'=>1,
+			),'checkfunc'	=>	array(
+					'title'	=>	'检查类型',
+					'type'	=>	'select',
+					'default'=>'',
+					'id'	=>	'checkfunc',
+					'name'	=>	'checkfunc',
+					'dbfield'=>'validatetype',
+					// select option(val|text ) # op # op
+					'data'	=>	'|无需验证#eamil|邮箱#url|网址#number|数字#digits|整数#double|浮点数#lettersonly|字母',
+					'displayright'=>1,
+			),
+			'islock'	=>	array(
+				'title'	=>	'是否允许编辑',
+				'type'	=>	'checkbox',
+				'default'=>1,
+				'id'	=>	'islock',
+				'name'	=>	'islock',
+				'displayright'=>1,
+				'dbfield'=>'islock',
+				'function'=>'changetagsortandlock',
+			),'titlepercent'=>array(
+				'title'	=>	'标题占比',
+				'type'	=>	'select',
+				'id'	=>	'titlepercent',
+				'name'	=>	'titlepercent',
+				'displayright'	=>	1,
+				'dbfield'=>'titlepercent',
+				'default'=>'1',
+				'data'	=>	'|请选择#1|一列#2|二列#3|三列#4|四列#5|五列#6|六列#7|七列#8|八列',
+					'function'=>'titlepercentchange',
+			),'contentpercent'=>array(
+				'title'	=>	'内容框占比',
+				'type'	=>	'select',
+				'id'	=>	'contentpercent',
+				'name'	=>	'contentpercent',
+				'displayright'	=>	1,
+				'dbfield'=>'contentpercent',
+				'default'=>'7',
+				'data'	=>	'|请选择#1|一列#2|二列#3|三列#4|四列#5|五列#6|六列#7|七列#8|八列',
+					'function'=>'contentpercentchange',
+				)
+		)
+	),'mapinfo'	=>	array(
+		'show'	=>	1,
+		'title'	=>	'地图定位',
+		'isview'	=>	1 , //是否生成到视图页面
+		'weight'	=>	3,//权重
+		'iscreate'	=>	1 , //是否生成到数据库中字段
+		'isline' => true, // 一个标签是否占一行
+		'listwidth'=>'',//列表宽度
+		'isconfig'=>	1 , // 是否生成字段配置
+		'html'	=>	'
+		<div class="$isshow nbm_controll" data="mapinfo" $checkorder $isline >
+			<label class="label_new "><i class="$copycontrollcls"></i> 地图组件：</label>
+			<div class="address_elm left">
+				<input class="split_address input_new left" style="width:calc(100% - 50px)" placeholder="地址显示：省、市、区县、详细地址" type="text" disabled />
+			<a class="icon-map-marker address_icon_link left" href="#"></a>
+				</div>
 			$delTag $hidden 
 		</div>
 		<div class="nbmshadow adds_element">
@@ -3016,6 +3113,7 @@ return array(
 				'iscreate'	=>	1 , //是否生成到数据库中字段
 				'isview'	=>	1 , //是否生成到视图页面
 				'isline' => true, // 一个标签是否占一行
+				'weight'	=>	3,//权重
 				'listwidth'=>'',//列表宽度
 				'isconfig'=>	1 , // 是否生成字段配置
 				'html'	=>	'
@@ -3046,7 +3144,7 @@ return array(
 								'name'	=>	'uploadtype',
 								'dbfield'=>'uploadtype',
 								'default'=>'*.jpg;*.jpeg;*.gif;*.png;',
-								'displayright'=>0,
+								'displayright'=>1,
 						),'widthheight'	=>	array( // 从检查类型中抽取出来的检查属性
 							'title'	=>	'图片宽高',
 							'type'	=>	'text',
