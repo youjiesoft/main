@@ -1918,7 +1918,7 @@ return array(
 		'weight'	=>	3,//权重
 		'isline' => true, // 一个标签是否占一行
 		'listwidth'=>'',//列表宽度
-		'isconfig'=>	1 , // 是否生成字段配置
+		'isconfig'=>	0 , // 是否生成字段配置
 		'html'	=>	'
             <div class="nbm_controll $isshow" data="upload" $checkorder $isline >
 			<label class="label_new"><i class="$copycontrollcls"></i>$title</label>
@@ -2015,7 +2015,7 @@ return array(
         'weight'	=>	3,//权重
         'isline' => true, // 一个标签是否占一行
         'listwidth'=>'',//列表宽度
-        'isconfig'=>	1 , // 是否生成字段配置
+        'isconfig'=>	0 , // 是否生成字段配置
         'html'	=>	'
             <div class="nbm_controll $isshow" data="uploadpic" $checkorder $isline >
 			<label class="label_new"><i class="$copycontrollcls"></i>$title</label>
@@ -3115,7 +3115,7 @@ return array(
 				'isline' => true, // 一个标签是否占一行
 				'weight'	=>	3,//权重
 				'listwidth'=>'',//列表宽度
-				'isconfig'=>	1 , // 是否生成字段配置
+				'isconfig'=>	0 , // 是否生成字段配置
 				'html'	=>	'
             <div class="nbm_controll $isshow" data="picedit" $checkorder $isline >
 			<label class="label_new"><i class="$copycontrollcls"></i>$title</label>

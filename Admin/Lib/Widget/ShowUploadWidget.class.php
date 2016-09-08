@@ -36,12 +36,12 @@ class ShowUploadWidget extends Widget{
 		$name = MODULE_NAME;
 		 if($data[0]){
 		 	//封装头部
-		 	$html.='<div class="fieldset_show_box">';
-		 	$html.='<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">';
-		 	$html.='<a name="upload"></a><b>相关附件</b>';
-		 	$html.='<div class="tml_style_line tml_sl4 tml_slb_blue"></div>';
-		 	$html.='</legend>';
-        $html.= '</div>';
+// 		 	$html.='<div class="fieldset_show_box">';
+// 		 	$html.='<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">';
+// 		 	$html.='<a name="upload"></a><b>相关附件</b>';
+// 		 	$html.='<div class="tml_style_line tml_sl4 tml_slb_blue"></div>';
+// 		 	$html.='</legend>';
+//        		$html.= '</div>';
         $html.= '<div class="fieldsetjs_show_box">';
 		 	$html.='<div class="tml-form-row">';
 			$html.='	<label>'.$fieldTitle.'：</label>';
@@ -103,12 +103,12 @@ class ShowUploadWidget extends Widget{
 		 	$html.='</span></div>';
 		 	$html.='</div>';
 		 }else{
-		 	$html.='<div class="fieldset_show_box">';
-		 	$html.='<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">';
-	 		$html.='	<a name="upload"></a><b>添加附件</b>';
-		 	$html.='	<div class="tml_style_line tml_sl4 tml_slb_blue"></div>';
-		 	$html.='</legend>';
-        $html.= '</div>';
+// 		 	$html.='<div class="fieldset_show_box">';
+// 		 	$html.='<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">';
+// 	 		$html.='	<a name="upload"></a><b>添加附件</b>';
+// 		 	$html.='	<div class="tml_style_line tml_sl4 tml_slb_blue"></div>';
+// 		 	$html.='</legend>';
+//         	$html.= '</div>';
         $html.= '<div class="fieldsetjs_show_box">';
 		 	$html.='<div class="tml-form-row">';
 			$html.='	<label>'.$fieldTitle.'：</label>';

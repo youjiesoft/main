@@ -2671,7 +2671,7 @@ EOF;
 		$this->assign("downdataid",$downdataid);
 
 		//获取附件信息
-		$this->getAttachedRecordList($id,true,true,$name);
+		$this->getAttachedRecordList($id,true,true);
 		//获取地图信息
 		
 		// 获取现 可能有的地区信息
@@ -3145,6 +3145,33 @@ EOF;
 		//$this->error ('错误中断');
 	}
 	/**
+	 * @Title: delete_record
+	 * @Description: 删除表单时删除附件表、地址表、地图表数据
+	 * @param string $modelName  模型名称
+	 * @param int  $id   模型ID
+	 * @author yangxi
+	 * @date 2016-8-15 下午5:07:53
+	 * @throws
+	 */
+	public function delete_record($id,$modelName){
+		$addressmodel = D('MisAddressRecord');//地址
+		$attachedmodel = M('mis_attached_record');//附件
+		$mapmodel = M('mis_address_map_record');//地图
+		if(C('AREA_TYPE')==1){
+			$modelName = !empty($modelName) ? $modelName : $this->getActionName();
+		}elseif(C('AREA_TYPE')==2){
+			$modelName = !empty($modelName) ? $modelName : (D($this->getActionName())->getTableName());
+		}else{
+			$modelName = !empty($modelName) ? $modelName : $this->getActionName();
+		}
+		$map['tablename']=$modelName;
+		$map['tableid']=$id;
+		$addressresult=$addressmodel->where($map)->delete();
+		$attachedresult=$attachedmodel->where($map)->delete();
+		$mapresult=$mapmodel->where($map)->delete();
+		
+	}
+	/**
 	 +----------------------------------------------------------
 	 * 默认主键删除操作
 	 +----------------------------------------------------------
@@ -3220,6 +3247,8 @@ EOF;
 // 						$this->unsetOldDataToCache($updateBackup);
 // 					}
 				}
+				//删除附件表、地址表、地图表数据
+				$this->delete_record($id);
 				$condition = array ($pk => array ('eq',$id) );
 				$list=$model->where ( $condition )->delete();
 				// 				$list=true;
@@ -5303,7 +5332,15 @@ EOF;
 							//$data['type']=$type;
 							//$data['orderid']=$insertid;
 							
-							$data['tablename'] = $m ? $m:$this->getActionName();
+							if(C('AREA_TYPE')==1){
+								$modelName = !empty($m) ? $m : $this->getActionName();
+							}elseif(C('AREA_TYPE')==2){
+								$modelName = !empty($m) ? $m : (D($this->getActionName())->getTableName());
+							}else{
+								$modelName = !empty($m) ? $m : $this->getActionName();
+							}
+							
+							$data['tablename'] =$modelName;
 							$data['tableid']=$insertid;
 							$data['subid']=$subid;
 							$data['attached']= $remotePic;
@@ -5349,7 +5386,15 @@ EOF;
 						$remotePic = $v;
 						//$data['type']=$type;
 						//$data['orderid']=$insertid;
-						$data['tablename'] = $m ? $m:$this->getActionName();
+						if(C('AREA_TYPE')==1){
+							$modelName = !empty($m) ? $m : $this->getActionName();
+						}elseif(C('AREA_TYPE')==2){
+							$modelName = !empty($m) ? $m : (D($this->getActionName())->getTableName());
+						}else{
+							$modelName = !empty($m) ? $m : $this->getActionName();
+						}
+							
+						$data['tablename'] =$modelName;
 						$data['tableid']=$insertid;
 						$data['subid']=$subid;
 						$data['attached']= $v;
@@ -5651,7 +5696,11 @@ EOF;
 		$armap['status'] = 1;
 		//添加一个查询的对象模型
 		if ($tablename == '') {
-			$armap['tablename'] = $this->getActionName();
+			if(C('AREA_TYPE')==1){
+				$armap['tablename'] = $this->getActionName();
+			}elseif(C('AREA_TYPE')==2){
+				$armap['tablename'] = D($this->getActionName())->getTableName();
+			}
 		} else {
 			$armap['tablename'] = $tablename;
 		}

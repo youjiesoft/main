@@ -50,12 +50,12 @@ class ShowCropWidget extends Widget {
 		
 		if ($data [0]) {
 			// 修改现有图
-			$html .= '<div class="fieldset_show_box">';
-			$html .= '<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">';
-			$html .= '<a name="upload"></a><b>'.$widgetTitle.'</b>';
-			$html .= '<div class="tml_style_line tml_sl4 tml_slb_blue"></div>';
-			$html .= '</legend>';
-			$html .= '</div>';
+// 			$html .= '<div class="fieldset_show_box">';
+// 			$html .= '<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">';
+// 			$html .= '<a name="upload"></a><b>'.$widgetTitle.'</b>';
+// 			$html .= '<div class="tml_style_line tml_sl4 tml_slb_blue"></div>';
+// 			$html .= '</legend>';
+// 			$html .= '</div>';
 			$html .= '<div class="fieldsetjs_show_box">';
 			$html .= '<div class="tml-form-row">';
 			$html .= '	<label>' . $fieldTitle . '：</label>';
@@ -126,13 +126,6 @@ class ShowCropWidget extends Widget {
 			// 添加新图
 			$html = <<<EOF
 
-<div class="fieldset_show_box">
-	<legend class="fieldset_legend_toggle side-catalog-text side-catalog-firstanchor">
-		<a name="upload"></a>
-		<b>{$widgetTitle}</b>
-	<div class="tml_style_line tml_sl4 tml_slb_blue"></div>
-	</legend>
-</div>
 <div class="fieldsetjs_show_box">
 	<div class="tml-form-row">
 		<label>{$fieldTitle}：</label>

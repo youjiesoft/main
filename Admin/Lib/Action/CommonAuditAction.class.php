@@ -2194,8 +2194,20 @@ class CommonAuditAction extends CommonAction {
 					$bool = true;
 				}
 			}else{
+				//实例化流程转授模型
+				$mis_auto_guikcDao = M("mis_auto_guikc");
+				$where1 = array();
+				$where1['operateid'] = 1;
+				$where1['id']  = array('gt',0);
+				$where1['zhuanshougei'] = $userid;  //转授给某人
+				$where1['shengxiaoriqi'] = array('elt',time());
+				$where1['shixiaoriqi'] = array('egt',time());
+				$zlist = $mis_auto_guikcDao->where($where1)->field("id,zhuanshoufanwei,zhuanshouren,zhuanshougei")->order("id desc")->find();
 				// 节点并行，表示必须把当前待审核人全部审核完成，才通过此流程节点。才代表此流程节点完成。
 				$diffUserArr = array_diff ( $curAuditUser, array ( $userid ) );
+				if($zlist['zhuanshouren']){
+					$diffUserArr = array_diff ( $curAuditUser, array ( $zlist['zhuanshouren'] ) );
+				}
 				if (count ( $diffUserArr )) {
 					// 此流程节点未完成
 					//保留已审核人员

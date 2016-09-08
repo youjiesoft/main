@@ -622,7 +622,9 @@ class AuthorizeCoreAction extends CommonAction{
 		//用户组重新授权时 删除缓存权限
 		$obj_dir = new Dir;
 		$directory =  DConfig_PATH."/AccessList";
-		$obj_dir->del($directory);
+		if(is_dir($directory)){
+			$obj_dir->del($directory);
+		}
 		
 		$this->success ( L('_SUCCESS_') );
 	}
